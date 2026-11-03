@@ -1186,6 +1186,167 @@ body.auth-enter #app { animation: auUp .6s .1s cubic-bezier(.22,.8,.24,1) both; 
 @media (max-width: 640px) { .cloud-state { font-size: 0; padding: .38rem; } .cloud-state::first-letter { font-size: .85rem; } }
 .notif-box { border: 1px solid var(--border); background: var(--surface-2); border-radius: 14px; padding: .85rem 1rem; display: flex; flex-direction: column; gap: .6rem; margin-top: .3rem; }
 
+/* =========================================================
+   Mi horario de clases
+   ========================================================= */
+.hor-top { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; gap: 1rem; margin: 1rem 0; align-items: start; }
+.hor-mods { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+.hor-mod { border-radius: 14px; overflow: hidden; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform .2s var(--ease), box-shadow .2s; }
+.hor-mod:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.hor-mod header { background: var(--c); color: #fff; font-weight: 800; padding: .55rem .8rem; letter-spacing: .3px; }
+:root[data-theme="dark"] .hor-mod header { color: #0b1220; }
+.hor-mod p { padding: .6rem .8rem .3rem; font-size: .8rem; font-weight: 600; color: var(--ink-2); flex: 1; line-height: 1.3; }
+.hor-mod-c { background: var(--cb); color: var(--c); font-weight: 800; text-align: center; padding: .3rem; font-size: .85rem; }
+.hor-mod footer { padding: .45rem .8rem .55rem; font-size: .78rem; color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .4rem; }
+.hor-mod footer b { font-size: 1.05rem; color: var(--c); }
+.hor-mod footer small { width: 100%; color: var(--muted); font-size: .7rem; }
+.hor-warn { font-size: .68rem; font-weight: 800; color: var(--risk); background: var(--risk-bg); border-radius: 6px; padding: 0 .35rem; }
+.hor-card { overflow: hidden; }
+.hor-card.editing { box-shadow: 0 0 0 2px var(--primary-ring), var(--shadow); }
+.hor-wrap { overflow-x: auto; }
+.hor-table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 760px; }
+.hor-table th, .hor-table td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); text-align: center; padding: 0; }
+.hor-table thead th { background: var(--nav); color: #e2e8f0; font-size: .78rem; padding: .45rem .3rem; font-weight: 800; }
+.hor-table thead th small { display: block; font-weight: 600; font-size: .64rem; color: #94a3b8; margin-top: 1px; }
+.hor-dh, .hor-day { position: sticky; left: 0; z-index: 2; text-align: left !important; padding: .55rem .8rem !important; min-width: 104px; }
+.hor-day { background: var(--nav); color: #f1f5f9; font-weight: 800; font-size: .86rem; }
+tr.today .hor-day { background: var(--primary-btn); }
+tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7rem; opacity: .85; }
+.hor-c { height: 58px; min-width: 78px; background: var(--cb); color: var(--c); cursor: default; transition: filter .15s, transform .15s, box-shadow .15s; position: relative; }
+.hor-c[data-act] { cursor: pointer; }
+.hor-c[data-act]:hover { filter: brightness(.96); box-shadow: inset 0 0 0 2px var(--c); }
+.hor-c b { display: block; font-size: .86rem; letter-spacing: .3px; }
+.hor-c small { display: block; font-size: .66rem; opacity: .85; font-weight: 600; }
+.hor-c:not([class*="cat-"]) { background: var(--surface-2); }
+.hor-free { color: var(--muted); font-size: .78rem; font-weight: 700; opacity: .7; }
+.hor-other { background: repeating-linear-gradient(135deg, var(--surface-2) 0 6px, var(--surface-3) 6px 8px) !important; }
+.hor-txt { color: var(--ink-2); font-size: .76rem !important; }
+.hor-c.now { box-shadow: inset 0 0 0 3px var(--primary); }
+.hor-c.now::after { content: 'Ahora'; position: absolute; top: 3px; right: 4px; font-size: .55rem; font-weight: 800; background: var(--primary-btn); color: #fff; border-radius: 4px; padding: 0 4px; animation: ringPulse 1.6s ease-out infinite; }
+.hor-brk { width: 22px; min-width: 22px; background: repeating-linear-gradient(0deg, var(--surface-2) 0 4px, var(--surface) 4px 8px) !important; }
+.hor-table thead .hor-brk { background: var(--nav) !important; padding: .2rem 0 !important; }
+.hor-table thead .hor-brk span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: .6rem; font-weight: 700; color: #94a3b8; }
+.hor-th { width: 48px; font-size: .86rem; background: var(--surface-2); }
+.hor-table thead .hor-th { background: var(--nav); }
+.hor-table tfoot th, .hor-table tfoot td { background: var(--surface-2); padding: .5rem .8rem; font-size: .8rem; font-weight: 700; color: var(--ink-2); }
+.hor-table tfoot td.l { text-align: left; }
+.editing .hor-c { cursor: crosshair; }
+.editing .hor-c:hover { box-shadow: inset 0 0 0 2px var(--primary); }
+.hor-pal { position: sticky; top: 64px; z-index: 20; margin-top: 1rem; border: 2px solid var(--primary-ring); }
+.hor-pal-h { font-size: .86rem; color: var(--ink-2); margin-bottom: .6rem; }
+.hor-pal-list { display: flex; flex-wrap: wrap; gap: .45rem; }
+.hor-brush { border: 2px solid transparent; background: var(--cb, var(--surface-2)); color: var(--c, var(--ink-2)); border-radius: 11px; padding: .4rem .7rem; font: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; transition: transform .15s, border-color .15s, box-shadow .15s; }
+.hor-brush b { font-size: .85rem; } .hor-brush small { font-size: .66rem; opacity: .8; font-weight: 600; }
+.hor-brush:hover { transform: translateY(-1px); }
+.hor-brush.on { border-color: var(--c, var(--primary)); box-shadow: 0 0 0 3px var(--primary-ring); }
+.hor-brush.free { background: var(--surface-2); color: var(--muted); }
+.hor-brush.other { background: repeating-linear-gradient(135deg, var(--surface-2) 0 6px, var(--surface-3) 6px 8px); color: var(--ink-2); }
+.hor-today h3 { font-size: .98rem; }
+.hor-tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .45rem; }
+.hor-tl-i { display: grid; grid-template-columns: 74px 1fr auto; gap: .6rem; align-items: center; padding: .5rem .6rem; border-radius: 11px; background: var(--cb, var(--surface-2)); border-left: 4px solid var(--c, var(--border-2)); transition: transform .15s, opacity .2s; }
+.hor-tl-i[data-act] { cursor: pointer; } .hor-tl-i[data-act]:hover { transform: translateX(2px); }
+.hor-tl-i.done { opacity: .55; }
+.hor-tl-i.now { box-shadow: 0 0 0 2px var(--c); }
+.hor-tl-t { white-space: nowrap; font-weight: 800; font-size: .82rem; color: var(--c, var(--ink)); line-height: 1.1; }
+.hor-tl-t small { display: block; font-weight: 600; font-size: .68rem; color: var(--muted); }
+.hor-tl-b b { display: block; font-size: .88rem; color: var(--c, var(--ink)); }
+.hor-tl-b small { color: var(--ink-2); font-size: .72rem; }
+.hor-tl-i em { font-style: normal; font-size: .68rem; font-weight: 800; color: var(--c); }
+.hor-bydays { display: none; }
+.hor-dcard { padding: .7rem .8rem; } .hor-dcard h4 { font-size: .9rem; margin-bottom: .45rem; }
+.hor-dcard.today { box-shadow: 0 0 0 2px var(--primary-ring); }
+.hor-dline { display: grid; grid-template-columns: 1fr auto; gap: 0 .5rem; padding: .4rem .55rem; border-radius: 9px; background: var(--cb, var(--surface-2)); color: var(--c, var(--ink)); margin-bottom: .35rem; border-left: 3px solid var(--c, var(--border)); }
+.hor-dline span { grid-column: 1 / -1; font-size: .7rem; font-weight: 700; color: var(--muted); }
+.hor-dline small { font-size: .7rem; align-self: center; }
+.hor-sum { margin-top: 1rem; }
+.mini-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.mini-table th, .mini-table td { border-bottom: 1px solid var(--border); padding: .5rem .55rem; text-align: center; }
+.mini-table th { font-size: .7rem; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); font-weight: 800; }
+.mini-table .l { text-align: left; } .mini-table tr.tot td { background: var(--surface-2); }
+.ht-prev { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .35rem; }
+.ht-row { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: .5rem; padding: .3rem .5rem; border: 1px solid var(--border); border-radius: 9px; font-size: .84rem; }
+.ht-row.brk { background: var(--surface-2); }
+.ht-row .pl-num input { width: 52px; }
+.ht-brk { display: grid; grid-template-columns: auto 1fr auto auto; gap: .5rem; align-items: end; margin-bottom: .4rem; }
+.hor-colrow { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; padding: .4rem 0; border-bottom: 1px solid var(--border); }
+.hor-sw { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--surface); background: var(--c); cursor: pointer; box-shadow: 0 0 0 1px var(--border); transition: transform .15s; }
+.hor-sw:hover { transform: scale(1.12); } .hor-sw.on { box-shadow: 0 0 0 2px var(--c); }
+.hor-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.hor-chip { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; border: 0; border-left: 4px solid var(--c); background: var(--cb); color: var(--c); border-radius: 10px; padding: .45rem .7rem; font: inherit; cursor: pointer; text-align: left; transition: transform .15s, opacity .2s; }
+.hor-chip:hover { transform: translateY(-1px); }
+.hor-chip span { font-size: .7rem; font-weight: 800; } .hor-chip b { font-size: .86rem; } .hor-chip small { font-size: .66rem; color: var(--ink-2); }
+.hor-chip.done { opacity: .5; } .hor-chip.now { box-shadow: 0 0 0 2px var(--c); }
+.pl-home-t { font-size: .72rem; font-weight: 800; color: var(--primary); background: var(--primary-light); border-radius: 6px; padding: 0 .35rem; margin-right: .2rem; }
+.pl-fit { margin: .2rem 0 .6rem; }
+@media (max-width: 1000px) { .hor-top { grid-template-columns: 1fr; } }
+@media (max-width: 760px) {
+  .hor-card:not(.editing) { display: none; }
+  .hor-bydays { display: grid; grid-template-columns: 1fr; gap: .6rem; margin-top: 1rem; }
+  .hor-mods { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hor-pal { top: 56px; }
+  .ht-brk { grid-template-columns: 1fr 1fr; }
+}
+@media print {
+  .rp-hor { font-size: 9pt; }
+  .rph-title { background: #0f2c4c !important; color: #fff !important; text-align: center; font-weight: 800; letter-spacing: .5px; padding: 5px; border-radius: 6px; margin: 8px 0 6px; text-transform: uppercase; font-size: 10.5pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rph-mods { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .rph-mod { border: 1px solid #ccc; border-radius: 6px; overflow: hidden; text-align: center; break-inside: avoid; }
+  .rph-mh { color: #fff; font-weight: 800; padding: 3px; } .rph-mn { padding: 4px 3px; font-size: 7.5pt; font-weight: 600; min-height: 26px; } .rph-mc { font-weight: 800; padding: 2px; } .rph-mf { color: #fff; font-weight: 700; padding: 2px; font-size: 7.5pt; }
+  .rph-table { width: 100%; border-collapse: collapse; }
+  .rph-table th, .rph-table td { border: 1px solid #bbb; padding: 3px 2px; text-align: center; font-size: 8pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rph-table thead th, .rph-table tbody th { background: #0f2c4c !important; color: #fff !important; }
+  .rph-table small { font-size: 6.5pt; font-weight: 600; }
+  .rph-brk { width: 10px; background: #e5e7eb !important; }
+  .rph-free { color: #888; background: #f1f1f1 !important; }
+  .rph-legend { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; font-size: 8pt; }
+  .rph-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: middle; }
+  .rph-mod, .rph-mh, .rph-mf, .rph-mc, .rph-legend i { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rph-blue .rph-mh, .rph-blue .rph-mf, i.rph-blue { background: #3b82f6 !important; } .rph-blue .rph-mc, .rph-blue-l { background: #bfdbfe !important; color: #1e3a8a; }
+  .rph-violet .rph-mh, .rph-violet .rph-mf, i.rph-violet { background: #7c6fe0 !important; } .rph-violet .rph-mc, .rph-violet-l { background: #d6d1fa !important; color: #3b2f8f; }
+  .rph-green .rph-mh, .rph-green .rph-mf, i.rph-green { background: #65a30d !important; } .rph-green .rph-mc, .rph-green-l { background: #c7e3a0 !important; color: #365314; }
+  .rph-orange .rph-mh, .rph-orange .rph-mf, i.rph-orange { background: #c2741a !important; } .rph-orange .rph-mc, .rph-orange-l { background: #fbcf86 !important; color: #7c2d12; }
+  .rph-teal .rph-mh, .rph-teal .rph-mf, i.rph-teal { background: #16a085 !important; } .rph-teal .rph-mc, .rph-teal-l { background: #a7e5d3 !important; color: #134e4a; }
+  .rph-pink .rph-mh, .rph-pink .rph-mf, i.rph-pink { background: #db2777 !important; } .rph-pink .rph-mc, .rph-pink-l { background: #fbcfe8 !important; color: #831843; }
+  .rph-amber .rph-mh, .rph-amber .rph-mf, i.rph-amber { background: #d97706 !important; } .rph-amber .rph-mc, .rph-amber-l { background: #fde68a !important; color: #78350f; }
+  .rph-red .rph-mh, .rph-red .rph-mf, i.rph-red { background: #dc2626 !important; } .rph-red .rph-mc, .rph-red-l { background: #fecaca !important; color: #7f1d1d; }
+}
+
+/* Grupos: temas, subtemas y fechas */
+.gt-tools { display: flex; flex-wrap: wrap; gap: .5rem .8rem; align-items: center; }
+.gt-deal { border: 1px dashed var(--primary-ring); background: var(--primary-light); border-radius: 12px; padding: .8rem; display: flex; flex-direction: column; gap: .6rem; animation: popIn .25s var(--ease) both; }
+.gt-list { display: flex; flex-direction: column; gap: .7rem; }
+.gt-row { border: 1px solid var(--border); border-radius: 13px; padding: .7rem .8rem; display: flex; flex-direction: column; gap: .5rem; background: var(--surface); }
+.gt-row:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-ring); }
+.gt-head { display: flex; flex-wrap: wrap; gap: .3rem .6rem; align-items: baseline; }
+.gt-head b { color: var(--primary); }
+.gt-grid { display: grid; grid-template-columns: 1fr 160px 120px; gap: .5rem; }
+.gt-top { grid-template-columns: 2fr 1fr 1fr; }
+.grp-stats { display: flex; flex-wrap: wrap; gap: .3rem; }
+.grp-topic { color: var(--primary); }
+@media (max-width: 640px) { .gt-grid { grid-template-columns: 1fr 1fr; } .gt-grid label:first-child { grid-column: 1 / -1; } .gt-top { grid-template-columns: 1fr; } .gt-top label { grid-column: auto !important; } }
+@media print {
+  .rp-topic { border: 1px solid #555; padding: 6px 8px; margin-bottom: 8px; font-size: 10pt; }
+  .rp-notes { font-size: 9pt; color: #333; margin-top: 3px; white-space: pre-line; }
+  .rp-h3 { font-size: 11pt; margin: 10px 0 5px; }
+  .rp-crono td { vertical-align: top; }
+  .rp-subs { font-size: 7.5pt; color: #333; margin-top: 2px; }
+  .rp-grp-date { float: right; font-size: 8.5pt; font-weight: 700; }
+  .rp-grp-t { font-size: 9pt; margin: 3px 0; }
+  .rp-grp-subs { margin: 0 0 4px 16px; padding: 0; font-size: 8.5pt; }
+}
+/* Barra superior con «Horario»: cabe en celulares pequeños */
+@media (max-width: 480px) {
+  .nav-actions { gap: .22rem; }
+  .nav-btn { padding: .42rem .42rem; }
+  .nav-btn[data-act="license"] { display: none; }
+}
+@media (max-width: 360px) {
+  .nav-inner { gap: .25rem; padding: .45rem .4rem; }
+  .nav-btn { padding: .38rem .32rem; }
+  .nav-btn .i { width: 17px; height: 17px; }
+  .logo { width: 30px; height: 30px; font-size: 1.1rem; }
+}
+
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
 </head>
@@ -1204,6 +1365,7 @@ body.auth-enter #app { animation: auUp .6s .1s cubic-bezier(.22,.8,.24,1) both; 
       <button id="cloudState" class="cloud-state" data-act="settings" hidden></button>
       <button class="nav-btn" data-act="go-home" data-view="home" title="Panel principal"><svg class="i" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span class="lbl">Inicio</span></button>
       <button class="nav-btn" data-act="go-calendar" data-view="calendar" title="Calendario y agenda"><svg class="i" viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V10h14zm0-12H5V6h14zM7 12h5v5H7z"/></svg><span class="lbl">Calendario</span></button>
+      <button class="nav-btn" data-act="go-horario" data-view="horario" title="Mi horario de clases"><svg class="i" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7z"/></svg><span class="lbl">Horario</span></button>
       <button class="nav-btn" data-act="go-week" data-view="semana" title="Mi semana: lo que toca en cada módulo"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm2 16H8v-2h8zm0-4H8v-2h8zm-3-5V3.5L18.5 9z"/></svg><span class="lbl">Mi semana</span></button>
       <button class="nav-btn" data-act="backup-menu" title="Respaldos"><svg class="i" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">Respaldo</span></button>
       <button class="nav-btn" data-act="settings" title="Ajustes"><svg class="i" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.22l-2.39.96a7 7 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54a7.4 7.4 0 0 0-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7 7 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.5.5 0 0 0-.12-.61zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg><span class="lbl">Ajustes</span></button>
@@ -1227,14 +1389,14 @@ body.auth-enter #app { animation: auUp .6s .1s cubic-bezier(.22,.8,.24,1) both; 
 <div id="printArea"></div>
 
 <script>
-const PLAN_LIB = {"app":"Praxis Pro","kind":"planificacion","version":1,"calendar":{"year":"2025-2026","periods":[{"id":"P1","start":"2025-09-01","end":"2025-11-07","entrega":2},{"id":"P2","start":"2025-11-11","end":"2026-01-31","entrega":2},{"id":"P3","start":"2026-02-02","end":"2026-04-17","entrega":2},{"id":"P4","start":"2026-04-20","end":"2026-06-08","entrega":2}],"holidays":[{"date":"2025-09-24","name":"Día de las Mercedes"},{"date":"2025-11-10","name":"Día de la Constitución (trasladado)"},{"date":"2026-01-21","name":"Día de la Altagracia"},{"date":"2026-01-26","name":"Día de Duarte"},{"date":"2026-02-27","name":"Día de la Independencia"},{"date":"2026-05-04","name":"Día del Trabajo (trasladado)"},{"date":"2026-06-04","name":"Corpus Christi"}],"breaks":[{"name":"Vacaciones de Navidad","start":"2025-12-19","end":"2026-01-05"},{"name":"Semana Santa","start":"2026-03-30","end":"2026-04-03"}],"comp":{"P1":{"CO":11,"PLCC":6,"RP":6,"EC":6,"DPyE":6,"AyS":6,"CyT":6},"P2":{"CO":10,"PLCC":6,"RP":5,"EC":6,"DPyE":5,"AyS":6,"CyT":5},"P3":{"CO":11,"PLCC":6,"RP":6,"EC":6,"DPyE":6,"AyS":6,"CyT":6},"P4":{"CO":8,"PLCC":5,"RP":4,"EC":5,"DPyE":4,"AyS":5,"CyT":4}}},"plans":[]};
+const PLAN_LIB = {"app": "Praxis Pro", "kind": "planificacion", "version": 1, "calendar": {"year": "2025-2026", "periods": [{"id": "P1", "start": "2025-09-01", "end": "2025-11-07", "entrega": 2}, {"id": "P2", "start": "2025-11-11", "end": "2026-01-31", "entrega": 2}, {"id": "P3", "start": "2026-02-02", "end": "2026-04-17", "entrega": 2}, {"id": "P4", "start": "2026-04-20", "end": "2026-06-08", "entrega": 2}], "holidays": [{"date": "2025-09-24", "name": "Día de las Mercedes"}, {"date": "2025-11-10", "name": "Día de la Constitución (trasladado)"}, {"date": "2026-01-21", "name": "Día de la Altagracia"}, {"date": "2026-01-26", "name": "Día de Duarte"}, {"date": "2026-02-27", "name": "Día de la Independencia"}, {"date": "2026-05-04", "name": "Día del Trabajo (trasladado)"}, {"date": "2026-06-04", "name": "Corpus Christi"}], "breaks": [{"name": "Vacaciones de Navidad", "start": "2025-12-19", "end": "2026-01-05"}, {"name": "Semana Santa", "start": "2026-03-30", "end": "2026-04-03"}], "comp": {"P1": {"CO": 11, "PLCC": 6, "RP": 6, "EC": 6, "DPyE": 6, "AyS": 6, "CyT": 6}, "P2": {"CO": 10, "PLCC": 6, "RP": 5, "EC": 6, "DPyE": 5, "AyS": 6, "CyT": 5}, "P3": {"CO": 11, "PLCC": 6, "RP": 6, "EC": 6, "DPyE": 6, "AyS": 6, "CyT": 6}, "P4": {"CO": 8, "PLCC": 5, "RP": 4, "EC": 5, "DPyE": 4, "AyS": 5, "CyT": 4}}}, "plans": []};
 'use strict';
 /* =========================================================
    PRAXIS PRO 9.0 — Núcleo: utilidades, datos, cálculo
    ========================================================= */
 const AppConfig = {
   appName: 'Praxis Pro',
-  version: '9.0',
+  version: '9.1',
   author: 'Ronnil Javier Miranda Fernández',
   logo: 'P'
 };
@@ -1890,13 +2052,18 @@ function setRec(s, raId, data) {
 }
 
 /* ---------- Grupos de trabajo ----------
-   m.groups = [{ id, name, type, date, actKey, groups: [{ name, members: [sid] }] }] */
+   m.groups = [{ id, name, type, date, actKey, topic, notes, cal, groups: [{ name, members: [sid], tema, subs: [], date, time, evId }] }] */
 function normGroupSet(g) {
   if (!g || typeof g !== 'object' || !Array.isArray(g.groups)) return null;
   return {
     id: String(g.id || uid()), name: String(g.name || 'Grupos').slice(0, 80), type: String(g.type || 'Exposición'),
     date: isoDate(g.date) || todayISO(), actKey: g.actKey ? String(g.actKey) : '',
-    groups: g.groups.map((x, i) => ({ name: String((x && x.name) || `Grupo ${i + 1}`).slice(0, 40), members: Array.isArray(x && x.members) ? x.members.map(String) : [] }))
+    topic: String(g.topic || '').slice(0, 160), notes: String(g.notes || '').slice(0, 1000), cal: g.cal !== false,
+    groups: g.groups.map((x, i) => ({
+      name: String((x && x.name) || `Grupo ${i + 1}`).slice(0, 40), members: Array.isArray(x && x.members) ? x.members.map(String) : [],
+      tema: String((x && x.tema) || '').slice(0, 160), subs: (Array.isArray(x && x.subs) ? x.subs : []).map(s => String(s).trim().slice(0, 160)).filter(Boolean).slice(0, 20),
+      date: isoDate(x && x.date) || '', time: isoTime(x && x.time), evId: x && x.evId ? String(x.evId) : ''
+    }))
   };
 }
 
@@ -2110,6 +2277,7 @@ function render() {
     if (state.view === 'module' && curMod()) app.innerHTML = renderModule(curMod());
     else if (state.view === 'calendar') app.innerHTML = renderCalendar();
     else if (state.view === 'semana') app.innerHTML = renderMiSemana();
+    else if (state.view === 'horario') app.innerHTML = renderHorario();
     else { state.view = 'home'; state.modId = null; app.innerHTML = renderHome(); }
   } catch (err) {
     console.error(err);
@@ -2147,6 +2315,7 @@ function renderHome() {
   ${needBackup ? `<div class="alert alert-warn"><div><strong>Respaldo pendiente.</strong> ${s.lastBackup ? 'Tu último respaldo fue hace ' + daysAgo(s.lastBackup) + '.' : 'Todavía no has descargado ningún respaldo.'} Las notas solo están guardadas en este navegador.</div><button class="btn btn-sm btn-warn" data-act="backup-download">Descargar respaldo</button></div>` : ''}
   ${notifHomeBanner()}
   ${!s.school ? `<div class="alert alert-info"><div>Completa el nombre del centro y el año escolar en <strong>Ajustes</strong> para que salgan en los reportes.</div><button class="btn btn-sm btn-secondary" data-act="settings">Abrir ajustes</button></div>` : ''}
+  ${renderHomeHorario()}
   ${renderHomePlan()}
   ${renderHomeAgenda()}
   ${renderHomeAlerts()}
@@ -3934,11 +4103,13 @@ function makeGroups(m, o) {
   return { groups: best.map((members, i) => ({ name: `Grupo ${i + 1}`, members })) };
 }
 function groupsText(m, gs, title) {
-  return `${title}\n` + gs.groups.map(g => `\n${g.name}:\n` + g.members.map(id => { const s = findStu(m, id); return s ? `  ${s.num}. ${s.name}` : ''; }).filter(Boolean).join('\n')).join('\n');
+  return `${title}${gs.topic ? `\nTema central: ${gs.topic}` : ''}\n` + gs.groups.map(g => `\n${g.name}${g.tema ? ' — ' + g.tema : ''}${g.date ? ` (${dShort(g.date)}${g.time ? ' ' + fmtTime12(g.time) : ''})` : ''}:\n` + (g.subs && g.subs.length ? g.subs.map(x => `  • ${x}`).join('\n') + '\n' : '') + g.members.map(id => { const s = findStu(m, id); return s ? `  ${s.num}. ${s.name}` : ''; }).filter(Boolean).join('\n')).join('\n');
 }
 function printGroups(m, gs, title) {
-  const cols = gs.groups.map(g => `<div class="rp-grp"><b>${esc(g.name)}</b><ol>${g.members.map(id => { const s = findStu(m, id); return s ? `<li>${esc(s.name)}</li>` : ''; }).join('')}</ol><div class="rp-grp-line">Tema:</div><div class="rp-grp-line">Nota:</div></div>`).join('');
-  printHTML(`<section class="rp-page">${reportHead(m, title)}<div class="rp-grps">${cols}</div></section>`, 'portrait');
+  const dated = gs.groups.filter(g => g.date || g.tema);
+  const crono = dated.length ? `<table class="rp-table rp-crono"><thead><tr><th>Fecha</th><th>Hora</th><th class="l">Grupo</th><th class="l">Tema</th><th class="l">Integrantes</th><th>Nota</th></tr></thead><tbody>${gs.groups.slice().sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999') || (a.time || '').localeCompare(b.time || '')).map(g => `<tr><td>${g.date ? esc(dLong(g.date)) : '—'}</td><td>${g.date && g.time ? esc(fmtTime12(g.time)) : ''}</td><td class="l"><b>${esc(g.name)}</b></td><td class="l">${esc(g.tema || '')}${g.subs && g.subs.length ? `<div class="rp-subs">${g.subs.map(x => '• ' + esc(x)).join('<br>')}</div>` : ''}</td><td class="l">${g.members.map(id => { const s = findStu(m, id); return s ? esc(s.name) : ''; }).filter(Boolean).join(', ')}</td><td style="width:40px"></td></tr>`).join('')}</tbody></table>` : '';
+  const cols = gs.groups.map(g => `<div class="rp-grp"><b>${esc(g.name)}</b>${g.date ? `<span class="rp-grp-date">${esc(dLong(g.date))}${g.time ? ' · ' + esc(fmtTime12(g.time)) : ''}</span>` : ''}<ol>${g.members.map(id => { const s = findStu(m, id); return s ? `<li>${esc(s.name)}</li>` : ''; }).join('')}</ol>${g.tema ? `<div class="rp-grp-t"><b>Tema:</b> ${esc(g.tema)}</div>` : '<div class="rp-grp-line">Tema:</div>'}${g.subs && g.subs.length ? `<ul class="rp-grp-subs">${g.subs.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}<div class="rp-grp-line">Nota:</div></div>`).join('');
+  printHTML(`<section class="rp-page">${reportHead(m, title)}${gs.topic ? `<div class="rp-topic"><b>Tema central:</b> ${esc(gs.topic)}${gs.notes ? `<div class="rp-notes">${esc(gs.notes)}</div>` : ''}</div>` : ''}${crono ? `<h3 class="rp-h3">Cronograma</h3>${crono}<h3 class="rp-h3">Integrantes por grupo</h3>` : ''}<div class="rp-grps">${cols}</div>${signLine()}</section>`, 'portrait');
 }
 function saveGroupsDialog() {
   const m = curMod(), t = toolState(m); if (!t.preview) return;
@@ -3946,14 +4117,19 @@ function saveGroupsDialog() {
   openModal({
     title: 'Guardar grupos', icon: '👥',
     body: `<label class="field">Nombre<input type="text" id="gsName" maxlength="80" value="${esc(t.opts.type + ' · ' + fmtDate(todayISO()))}"></label>
+      <label class="field">Tema central (opcional)<input type="text" id="gsTopic" maxlength="160" placeholder="Ej.: Lenguajes de programación web"></label>
+      <label class="check"><input type="checkbox" id="gsNext" checked> Después de guardar, asignar los temas y las fechas de cada grupo</label>
       <label class="field">Vincular con una actividad del registro (opcional)
         <select id="gsAct"><option value="">Sin vincular</option>${slots.map(x => `<option value="${esc(x.key)}">${esc(x.label)}</option>`).join('')}</select>
         <small>Si la vinculas, podrás calificar a cada grupo con una sola nota y se anota a todos sus integrantes.</small></label>`,
     actions: [{ label: 'Cancelar' }, {
       label: 'Guardar', cls: 'btn-primary', onClick: ov => {
-        m.groups.unshift(normGroupSet({ id: uid(), name: ov.querySelector('#gsName').value.trim() || t.opts.type, type: t.opts.type, date: todayISO(), actKey: ov.querySelector('#gsAct').value, groups: t.preview.groups }));
+        const gs = normGroupSet({ id: uid(), name: ov.querySelector('#gsName').value.trim() || t.opts.type, type: t.opts.type, date: todayISO(), actKey: ov.querySelector('#gsAct').value, topic: ov.querySelector('#gsTopic').value.trim(), groups: t.preview.groups });
+        m.groups.unshift(gs);
         t.preview = null; t.swap = ''; t.savedOpen = true;
-        persist(); render(); toast('Grupos guardados. Puedes calificarlos abajo, en «Grupos guardados».', 'ok', 3200);
+        persist(); render();
+        if (ov.querySelector('#gsNext').checked) setTimeout(() => groupTopicsDialog(gs.id), 220);
+        else toast('Grupos guardados. Puedes calificarlos abajo, en «Grupos guardados».', 'ok', 3200);
       }
     }]
   });
@@ -3963,10 +4139,15 @@ function renderSavedGroups(m, t) {
   const open = t && t.savedOpen;
   return `<div class="section-head saved-head"><h2>Grupos guardados <span class="badge">${m.groups.length}</span></h2><button class="btn btn-sm btn-ghost" data-act="grp-saved-toggle">${open ? 'Ocultar ▴' : 'Mostrar ▾'}</button></div>${open ? `<div class="rep-grid">${m.groups.map(gs => {
     const r = gs.actKey ? resolveAct(gs.actKey) : null;
-    return `<div class="card rep-card"><h3>👥 ${esc(gs.name)}</h3>
-      <p>${gs.groups.length} grupos · ${gs.groups.reduce((a, g) => a + g.members.length, 0)} estudiantes · ${fmtDate(gs.date)}${r ? `<br>Vinculado a: <b>RA ${m.ras.indexOf(r.ra) + 1} · ${esc(r.c.count > 1 ? r.c.label + ' ' + (r.i + 1) : r.c.label)}</b>` : ''}</p>
+    const withT = gs.groups.filter(g => g.tema).length, withD = gs.groups.filter(g => g.date).length, onCal = gs.groups.filter(g => g.evId && db.agenda.some(e => e.id === g.evId)).length;
+    const next = gs.groups.filter(g => g.date && g.date >= todayISO()).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
+    return `<div class="card rep-card grp-saved"><h3>👥 ${esc(gs.name)}</h3>
+      <p>${gs.topic ? `<b class="grp-topic">${esc(gs.topic)}</b><br>` : ''}${gs.groups.length} grupos · ${gs.groups.reduce((a, g) => a + g.members.length, 0)} estudiantes · ${fmtDate(gs.date)}${r ? `<br>Vinculado a: <b>RA ${m.ras.indexOf(r.ra) + 1} · ${esc(r.c.count > 1 ? r.c.label + ' ' + (r.i + 1) : r.c.label)}</b>` : ''}</p>
+      <div class="grp-stats"><span class="badge ${withT === gs.groups.length ? 'ok' : withT ? 'info' : ''}">📝 ${withT}/${gs.groups.length} con tema</span><span class="badge ${withD === gs.groups.length ? 'ok' : withD ? 'info' : ''}">📆 ${withD}/${gs.groups.length} con fecha</span>${onCal ? `<span class="badge ok">🔔 ${onCal} en el calendario</span>` : ''}</div>
+      ${next ? `<p class="small">Próximo: <b>${esc(next.name)}</b> · ${esc(cap(longDate(next.date)))}${next.time ? ' · ' + fmtTime12(next.time) : ''}${next.tema ? ' · ' + esc(next.tema) : ''}</p>` : ''}
       <div class="row-wrap">
-        <button class="btn btn-sm btn-primary" data-act="grp-grade" data-id="${gs.id}">Calificar por grupo</button>
+        <button class="btn btn-sm btn-primary" data-act="grp-topics" data-id="${gs.id}">📝 Temas y fechas</button>
+        <button class="btn btn-sm btn-secondary" data-act="grp-grade" data-id="${gs.id}">Calificar por grupo</button>
         <button class="btn btn-sm btn-secondary" data-act="grp-copy" data-id="${gs.id}">${ICON.copy} Copiar</button>
         <button class="btn btn-sm btn-secondary" data-act="grp-print" data-id="${gs.id}">Imprimir</button>
         <button class="btn btn-sm btn-ghost" style="color:var(--bad)" data-act="grp-del" data-id="${gs.id}">${ICON.trash}</button>
@@ -3997,6 +4178,116 @@ function gradeGroupsDialog(id) {
     onOpen: ov => {
       const upd = () => { const r = resolveAct(ov.querySelector('#ggAct').value); ov.querySelector('#ggMax').textContent = r ? `Nota máxima: ${fmtN(r.c.max)}` : ''; };
       ov.querySelector('#ggAct').addEventListener('change', upd); upd();
+    }
+  });
+  return md;
+}
+
+/* ---------- Temas, subtemas y fechas de cada grupo ---------- */
+/** Días de clase del módulo desde una fecha (horario → días de asistencia → lunes a viernes; respeta feriados y recesos). */
+function modClassDates(m, from, count) {
+  const wds = typeof horHas === 'function' && horHas(m) ? horModDays(m) : (m.weekdays && m.weekdays.length ? m.weekdays : [1, 2, 3, 4, 5]);
+  const out = []; let d = from, g = 0;
+  const inCal = iso => db.cal && db.cal.periods.length && iso >= db.cal.periods[0].start && iso <= db.cal.periods[db.cal.periods.length - 1].end;
+  while (out.length < count && g++ < 400) {
+    if (wds.includes(wdOf(d)) && (!inCal(d) || isClassDay(d))) out.push(d);
+    d = addDays(d, 1);
+  }
+  return out;
+}
+/** Hora de inicio de la clase del módulo ese día (según el horario). */
+function modClassTime(m, iso) { if (typeof horBlocks !== 'function') return ''; const b = horBlocks(wdOf(iso)).find(x => x.mod === m); return b ? m2hm(b.start) : ''; }
+/** Crea, actualiza o quita los eventos del calendario de un conjunto de grupos. */
+function syncGroupEvents(m, gs) {
+  const type = EV_TYPES[gs.type] ? gs.type : (norm(gs.type).includes('debat') ? 'Exposición' : 'Otro');
+  let n = 0;
+  gs.groups.forEach(g => {
+    const ev = g.evId ? db.agenda.find(e => e.id === g.evId) : null;
+    if (!gs.cal || !g.date) { if (ev) db.agenda = db.agenda.filter(e => e.id !== ev.id); g.evId = ''; return; }
+    const members = g.members.map(id => { const s = findStu(m, id); return s ? `${s.num}. ${s.name}` : ''; }).filter(Boolean);
+    const data = normAgenda({ id: ev ? ev.id : uid(), title: `${gs.type} ${g.name}${g.tema ? ': ' + g.tema : gs.topic ? ': ' + gs.topic : ''}`, date: g.date, time: g.time, type, modId: m.id, done: ev ? ev.done : false,
+      notes: [gs.topic ? `Tema central: ${gs.topic}` : '', g.tema ? `Tema: ${g.tema}` : '', g.subs.length ? 'Subtemas:\n' + g.subs.map(x => '• ' + x).join('\n') : '', 'Integrantes:\n' + members.join('\n')].filter(Boolean).join('\n\n') });
+    if (ev) Object.assign(ev, data); else db.agenda.push(data);
+    g.evId = data.id; n++;
+  });
+  return n;
+}
+function groupTopicsDialog(id) {
+  const m = curMod(), gs0 = m && m.groups.find(x => x.id === id); if (!gs0) return;
+  const gs = JSON.parse(JSON.stringify(gs0));
+  const mem = g => g.members.map(sid => { const s = findStu(m, sid); return s ? esc(s.name.split(' ').slice(0, 2).join(' ')) : ''; }).filter(Boolean).join(', ');
+  const row = (g, i) => `<div class="gt-row" data-gi="${i}">
+      <div class="gt-head"><b>${esc(g.name)}</b><span class="small muted">${mem(g)}</span>${g.evId && db.agenda.some(e => e.id === g.evId) ? '<span class="badge ok">🔔 agendado</span>' : ''}</div>
+      <div class="gt-grid">
+        <label class="field">Tema<input type="text" data-gt="tema" maxlength="160" value="${esc(g.tema)}" placeholder="Tema que le toca"></label>
+        <label class="field">Fecha<input type="date" data-gt="date" value="${g.date}"></label>
+        <label class="field">Hora<input type="time" data-gt="time" value="${g.time}"></label>
+      </div>
+      <label class="field">Subtemas <small>uno por línea (opcional)</small><textarea data-gt="subs" rows="${Math.max(2, Math.min(6, g.subs.length + 1))}" placeholder="Ej.: Historia&#10;Características&#10;Ejemplos">${esc(g.subs.join('\n'))}</textarea></label>
+    </div>`;
+  const read = ov => {
+    gs.topic = ov.querySelector('#gtTopic').value.trim(); gs.type = ov.querySelector('#gtType').value; gs.notes = ov.querySelector('#gtNotes').value.trim(); gs.cal = ov.querySelector('#gtCal').checked;
+    ov.querySelectorAll('.gt-row').forEach(r => { const g = gs.groups[+r.dataset.gi]; g.tema = r.querySelector('[data-gt=tema]').value.trim(); g.date = r.querySelector('[data-gt=date]').value; g.time = r.querySelector('[data-gt=time]').value; g.subs = r.querySelector('[data-gt=subs]').value.split('\n').map(x => x.trim()).filter(Boolean); });
+  };
+  const draw = ov => { ov.querySelector('#gtList').innerHTML = gs.groups.map(row).join(''); };
+  const md = openModal({
+    title: `Temas y fechas · ${gs.name}`, icon: '📝', wide: true, sub: `${modShort(m)}${m.course ? ' ' + m.course : ''} · ${gs.groups.length} grupos. Escribe el tema de cada grupo, sus subtemas y el día que presenta.`,
+    body: `<div class="form-grid gt-top">
+        <label class="field" style="grid-column:span 2">Tema central<input type="text" id="gtTopic" maxlength="160" value="${esc(gs.topic)}" placeholder="Ej.: Bases de datos relacionales"></label>
+        <label class="field">Tipo<select id="gtType">${['Exposición', 'Práctica', 'Proyecto', 'Debate', 'Investigación', 'Otro'].map(x => `<option ${gs.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+      </div>
+      <label class="field">Indicaciones para todos (opcional)<textarea id="gtNotes" rows="2" placeholder="Ej.: 10 minutos por grupo, diapositivas y una actividad para la clase.">${esc(gs.notes)}</textarea></label>
+      <div class="gt-tools">
+        <button type="button" class="btn btn-sm btn-secondary" id="gtDealT">🎯 Repartir temas…</button>
+        <button type="button" class="btn btn-sm btn-secondary" id="gtDealD">📆 Repartir fechas según mi horario…</button>
+        <label class="check"><input type="checkbox" id="gtCal" ${gs.cal ? 'checked' : ''}> 🔔 Agendar cada grupo en el calendario (te avisa)</label>
+      </div>
+      <div id="gtDeal" class="gt-deal" hidden></div>
+      <div id="gtList" class="gt-list"></div>`,
+    actions: [{ label: 'Cancelar' }, {
+      label: 'Guardar', cls: 'btn-primary', onClick: ov => {
+        read(ov);
+        const i = m.groups.findIndex(x => x.id === id); if (i < 0) return;
+        const ng = normGroupSet(gs); const n = syncGroupEvents(m, ng); m.groups[i] = ng;
+        persist(); render();
+        toast(n ? `Guardado. ${n} ${n === 1 ? 'grupo quedó agendado' : 'grupos quedaron agendados'} en el calendario.` : 'Temas y fechas guardados.', 'ok', 3500);
+      }
+    }],
+    onOpen: ov => {
+      draw(ov);
+      const deal = ov.querySelector('#gtDeal');
+      ov.querySelector('#gtDealT').onclick = () => {
+        read(ov);
+        deal.hidden = false;
+        deal.innerHTML = `<label class="field">Lista de temas <small>uno por línea; para subtemas usa «Tema: subtema 1; subtema 2»</small><textarea id="gdList" rows="5" placeholder="HTML: etiquetas; formularios&#10;CSS: selectores; flexbox&#10;JavaScript"></textarea></label>
+          <div class="row-wrap"><label class="check"><input type="checkbox" id="gdRand"> Sortear (al azar)</label><span class="spacer"></span><button type="button" class="btn btn-sm btn-ghost" id="gdX">Cancelar</button><button type="button" class="btn btn-sm btn-primary" id="gdGo">Repartir</button></div>`;
+        deal.querySelector('#gdX').onclick = () => { deal.hidden = true; };
+        deal.querySelector('#gdGo').onclick = () => {
+          let L = deal.querySelector('#gdList').value.split('\n').map(x => x.trim()).filter(Boolean).map(x => { const k = x.indexOf(':'); return k > 0 ? { t: x.slice(0, k).trim(), s: x.slice(k + 1).split(/;|\|/).map(y => y.trim()).filter(Boolean) } : { t: x, s: [] }; });
+          if (!L.length) { toast('Escribe al menos un tema.', 'error'); return; }
+          if (deal.querySelector('#gdRand').checked) L = shuffle(L);
+          gs.groups.forEach((g, i) => { const it = L[i % L.length]; g.tema = it.t; g.subs = it.s; });
+          deal.hidden = true; draw(ov);
+          toast(L.length < gs.groups.length ? `Hay ${L.length} temas para ${gs.groups.length} grupos: algunos se repiten.` : 'Temas repartidos.', L.length < gs.groups.length ? 'warn' : 'ok', 2600);
+        };
+      };
+      ov.querySelector('#gtDealD').onclick = () => {
+        read(ov);
+        const hasH = typeof horHas === 'function' && horHas(m);
+        deal.hidden = false;
+        deal.innerHTML = `<div class="form-grid"><label class="field">Desde<input type="date" id="gdFrom" value="${todayISO()}"></label><label class="field">Grupos por clase<input type="text" id="gdPer" inputmode="numeric" value="2"></label>
+          <label class="field">Hora<select id="gdTime"><option value="hor" ${hasH ? 'selected' : ''}>${hasH ? 'La de mi horario' : 'Sin hora (no hay horario)'}</option><option value="keep">Dejar la que tengan</option></select></label></div>
+          <p class="small muted">Usa los días de clase de ${esc(modShort(m))}${hasH ? ` según tu horario (${horModDays(m).map(d => HOR_DS[d]).join(', ')})` : ''} y salta feriados y recesos del calendario escolar.</p>
+          <div class="row-wrap"><span class="spacer"></span><button type="button" class="btn btn-sm btn-ghost" id="gdX">Cancelar</button><button type="button" class="btn btn-sm btn-primary" id="gdGo">Repartir fechas</button></div>`;
+        deal.querySelector('#gdX').onclick = () => { deal.hidden = true; };
+        deal.querySelector('#gdGo').onclick = () => {
+          const from = deal.querySelector('#gdFrom').value || todayISO(), per = Math.max(1, parseInt(deal.querySelector('#gdPer').value, 10) || 1), useH = deal.querySelector('#gdTime').value === 'hor';
+          const ds = modClassDates(m, from, Math.ceil(gs.groups.length / per));
+          gs.groups.forEach((g, i) => { const d = ds[Math.floor(i / per)]; if (!d) return; g.date = d; if (useH) g.time = modClassTime(m, d); });
+          deal.hidden = true; draw(ov);
+          toast(`Fechas del ${dShort(ds[0])} al ${dShort(ds[ds.length - 1])}.`, 'ok', 2600);
+        };
+      };
     }
   });
   return md;
@@ -4431,9 +4722,11 @@ const ACTIONS = {
   'grp-copy': el => { const m = curMod(), gs = el.dataset.id ? m.groups.find(x => x.id === el.dataset.id) : toolState(m).preview; if (gs) copyText(groupsText(m, gs, `${modShort(m)}${m.course ? ' ' + m.course : ''} · ${gs.name || toolState(m).opts.type}`), 'Grupos copiados. Pégalos en WhatsApp o en un documento.'); },
   'grp-print': el => { const m = curMod(), gs = el.dataset.id ? m.groups.find(x => x.id === el.dataset.id) : toolState(m).preview; if (gs) printGroups(m, gs, `Grupos de ${(gs.type || toolState(m).opts.type).toLowerCase()}${gs.name ? ' · ' + gs.name : ''}`); },
   'grp-grade': el => gradeGroupsDialog(el.dataset.id),
+  'grp-topics': el => groupTopicsDialog(el.dataset.id),
   'grp-del': el => {
     const m = curMod(), gs = m.groups.find(x => x.id === el.dataset.id); if (!gs) return;
-    confirmBox('Eliminar grupos', `¿Eliminar «${gs.name}»? Las notas ya anotadas se conservan.`, 'Eliminar', () => { m.groups = m.groups.filter(x => x.id !== gs.id); persist(); render(); toast('Grupos eliminados.', 'ok'); });
+    const evs = gs.groups.filter(g => g.evId && db.agenda.some(e => e.id === g.evId)).length;
+    confirmBox('Eliminar grupos', `¿Eliminar «${gs.name}»? Las notas ya anotadas se conservan.${evs ? ` También se quitan sus ${evs} eventos del calendario.` : ''}`, 'Eliminar', () => { const ids = gs.groups.map(g => g.evId).filter(Boolean); db.agenda = db.agenda.filter(e => !ids.includes(e.id)); m.groups = m.groups.filter(x => x.id !== gs.id); persist(); render(); toast('Grupos eliminados.', 'ok'); });
   },
 
   /* Alertas */
@@ -5032,7 +5325,8 @@ function settingsDialog() {
     </div>
     <p class="muted small">El año escolar (por ejemplo 2026-2027) define los meses de la asistencia: de agosto a junio.</p>
     <label class="check"><input type="checkbox" id="stRound" ${s.roundTotal ? 'checked' : ''}> Mostrar la nota final redondeada a entero (ej.: 69.5 → 70)</label>
-    ${notifSettingsHTML()}`,
+    ${notifSettingsHTML()}
+    <div class="row-wrap"><button class="btn btn-sm btn-ghost" type="button" data-act="license">🛡 Licencia de uso</button></div>`,
     onOpen: ov => notifSettingsWire(ov),
     actions: [{ label: 'Cancelar' }, {
       label: 'Guardar', cls: 'btn-primary', onClick: ov => {
@@ -5524,7 +5818,7 @@ function plWeekCard(P, ri, r, wk, k, cw, ti, times) {
 }
 
 /* ---------- Clase del día ---------- */
-function modDaysOfWeek(m, w) { if (!w) return []; const wd = m.weekdays && m.weekdays.length ? m.weekdays : [1, 2, 3, 4, 5]; return w.days.filter(d => wd.includes(wdOf(d))); }
+function modDaysOfWeek(m, w) { if (!w) return []; const wd = typeof horHas === 'function' && horHas(m) ? horModDays(m) : m.weekdays && m.weekdays.length ? m.weekdays : [1, 2, 3, 4, 5]; return w.days.filter(d => wd.includes(wdOf(d))); }
 function firstModDay(m, w) { return modDaysOfWeek(m, w)[0] || ''; }
 function nextClassDay(m, from) {
   const W = calWeeks(); if (!W.length) return '';
@@ -5538,16 +5832,20 @@ function dayPlan(m, P, iso) {
   const W = calWeeks(), wi = weekIndexOf(iso), w = W[wi];
   const at = w && iso >= w.mon && iso < addDays(w.mon, 7) ? planWeekAt(P, wi) : null;
   const saved = P.daily[iso];
-  const mins = sessionMinutes(m, P, w);
-  const split = { Inicio: Math.round(mins * 0.1 / 5) * 5 || 5, Cierre: Math.round(mins * 0.15 / 5) * 5 || 5 }; split.Desarrollo = Math.max(5, mins - split.Inicio - split.Cierre);
+  // Con horario: los minutos reales de ese día (horas pedagógicas del curso) repartidos 5 / 30 / 10 por cada 45 min
+  const hmin = typeof horMinutes === 'function' ? horMinutes(m, wdOf(iso)) : 0;
+  const mins = hmin || sessionMinutes(m, P, w);
+  let split;
+  if (hmin) split = horSplit(hmin);
+  else { split = { Inicio: Math.round(mins * 0.1 / 5) * 5 || 5, Cierre: Math.round(mins * 0.15 / 5) * 5 || 5 }; split.Desarrollo = Math.max(5, mins - split.Inicio - split.Cierre); }
   const gen = {
     status: 'plan', comp: compOfDay(iso),
     ce: at ? at.week.ce.join(', ') : '',
     intent: at ? `Que los estudiantes trabajen en: ${lowerFirst(firstSentence((at.week.rows.find(r => r.m === 'Desarrollo') || at.week.rows[0] || {}).act))}` : '',
-    mom: at ? MOMS.map(mm => { const rs = at.week.rows.filter(r => r.m === mm); return { m: mm, min: split[mm], act: rs.map(r => r.act).join(' ') }; }).filter(x => x.act) : MOMS.map(mm => ({ m: mm, min: split[mm], act: '' })),
+    mom: at ? MOMS.map(mm => { const rs = at.week.rows.filter(r => r.m === mm); return { m: mm, min: split[mm], act: rs.map(r => r.act).join(' ') }; }) : MOMS.map(mm => ({ m: mm, min: split[mm], act: '' })),
     res: at ? uniqJoin(at.week.rows.map(r => r.rec)) : '', eval: at ? uniqJoin(at.week.rows.map(r => r.tec)) : '', refl: '',
   };
-  return { saved: !!saved, day: saved ? Object.assign({}, gen, saved, { comp: saved.comp || gen.comp }) : gen, at, w, mins };
+  return { saved: !!saved, day: saved ? Object.assign({}, gen, saved, { comp: saved.comp || gen.comp }) : gen, at, w, mins, hor: !!hmin, split };
 }
 const lowerFirst = s => { s = String(s || '').trim(); return s ? s.charAt(0).toLowerCase() + s.slice(1) : '…'; };
 const firstSentence = s => { const t = String(s || '').trim(); const i = t.search(/\.\s/); return (i > 0 ? t.slice(0, i) : t.replace(/\.$/, '')) + '.'; };
@@ -5556,10 +5854,12 @@ function plClase(m, P) {
   const st = plState(), W = calWeeks();
   if (!W.length) return `<div class="empty"><div class="big">📅</div><p>Configura el calendario escolar para ver las clases.</p></div>`;
   if (!st.date || !isoDate(st.date)) st.date = nextClassDay(m, todayISO());
-  const iso = st.date, { saved, day, at, w } = dayPlan(m, P, iso);
+  const iso = st.date, { saved, day, at, w, mins, hor: fromHor } = dayPlan(m, P, iso);
+  const hb = fromHor ? horBlocks(wdOf(iso)).filter(b => b.mod === m) : [];
+  const momSum = day.mom.reduce((a, x) => a + x.min, 0);
   const isClass = isClassDay(iso), ra = at ? at.ra : null;
   const ceTxt = ra ? day.ce.split(/,\s*/).map(c => { const f = ra.ces.find(x => x[0] === c.trim()); return f ? `<li><b>${esc(f[0])}</b> ${esc(f[1])}</li>` : (c.trim() ? `<li><b>${esc(c)}</b></li>` : ''); }).join('') : '';
-  const wd = m.weekdays && m.weekdays.length ? m.weekdays : null;
+  const wd = (typeof horHas === 'function' && horHas(m)) || (m.weekdays && m.weekdays.length) ? true : null;
   return `<section class="card card-pad pl-day-top">
       <div class="pl-day-nav">
         <button class="btn btn-secondary btn-icon" data-act="pl-day-step" data-d="-1" title="Clase anterior">‹</button>
@@ -5568,7 +5868,7 @@ function plClase(m, P) {
         <button class="btn btn-sm btn-ghost" data-act="pl-day-today">Próxima clase</button>
       </div>
       <div class="pl-day-title"><h2>${cap(longDate(iso))}</h2>
-        <p class="muted small">${w ? weekLabel(w) : 'Fuera del calendario'}${ra ? ` · ${esc(ra.code)} (semana ${at.k + 1} de ${ra.seq.length})` : ''} · ${day.mins || sessionMinutes(m, P, w)} min de clase${wd ? '' : ' · <span title="Marca los días de clase en Asistencia › Días automáticos">días de clase sin definir (lunes a viernes)</span>'}</p></div>
+        <p class="muted small">${w ? weekLabel(w) : 'Fuera del calendario'}${ra ? ` · ${esc(ra.code)} (semana ${at.k + 1} de ${ra.seq.length})` : ''} · ${mins} min de clase${fromHor ? ` <span class="badge info" title="Según tu horario">🕘 ${hb.map(b => `${hoursLbl(b.from, b.to)} · ${m2h12(b.start)}–${m2h12(b.end)}`).join(' y ')}</span>` : wd ? '' : ' · <span title="Pon tu horario (botón Horario) o marca los días en Asistencia › Días automáticos">días de clase sin definir (lunes a viernes)</span>'}</p></div>
       <div class="row-wrap">
         ${saved ? `<span class="badge ${day.status === 'done' ? 'ok' : day.status === 'moved' ? 'warn' : 'info'}">${day.status === 'done' ? 'Impartida' : day.status === 'moved' ? 'Reprogramada' : 'Planificada y guardada'}</span>` : '<span class="badge">Generada desde la secuencia</span>'}
         <button class="btn btn-sm ${day.status === 'done' ? 'btn-secondary' : 'btn-ok'}" data-act="pl-day-done">${day.status === 'done' ? 'Desmarcar impartida' : '✓ Marcar como impartida'}</button>
@@ -5581,7 +5881,8 @@ function plClase(m, P) {
         <label class="field">Indicador(es) de logro (CE)<input type="text" class="pl-in" data-pd="ce" data-key="pd-ce" value="${esc(day.ce)}"></label>
         ${ceTxt ? `<ul class="pl-ce-list">${ceTxt}</ul>` : ''}
         <label class="field">Intención pedagógica<textarea class="pl-ta" data-pd="intent" data-key="pd-intent" rows="${taRows(day.intent)}">${esc(day.intent)}</textarea></label>
-        <h3 class="pl-h3">Momentos de la clase</h3>
+        <h3 class="pl-h3">Momentos de la clase <span class="muted small" style="font-weight:600">${momSum} de ${mins} min</span></h3>
+        ${momSum !== mins ? `<div class="alert alert-info pl-fit"><div>Los momentos suman <b>${momSum} min</b> y ${fromHor ? 'tu horario de este día tiene' : 'la clase dura'} <b>${mins} min</b>.</div><button class="btn btn-sm btn-primary" data-act="pl-day-fit">Ajustar a ${mins} min</button></div>` : ''}
         <div class="pl-bar">${day.mom.map(x => `<span class="pl-m-${x.m.toLowerCase()}" style="flex:${Math.max(1, x.min)}" title="${esc(x.m)}: ${x.min} min">${x.min >= day.mom.reduce((a, y) => a + y.min, 0) * 0.3 ? esc(x.m) + ' · ' : ''}${x.min}′</span>`).join('')}</div>
         ${day.mom.map((x, j) => `<div class="pl-mom pl-m-${x.m.toLowerCase()}"><div class="pl-mom-h"><b>${esc(x.m)}</b><label class="pl-num">Min<input type="text" inputmode="numeric" data-pd-min="${j}" value="${x.min}"></label></div>
           <textarea class="pl-ta" data-pd-act="${j}" data-key="pd-act-${j}" rows="${taRows(x.act, 3)}">${esc(x.act)}</textarea></div>`).join('')}
@@ -5675,10 +5976,11 @@ function renderHomePlan() {
   const mods = db.modules.filter(m => m.plan); if (!mods.length || !db.cal) return '';
   const t = todayISO(); if (!isClassDay(t)) return '';
   const W = calWeeks(), wi = weekIndexOf(t), w = W[wi];
-  const items = mods.filter(m => modDaysOfWeek(m, w).includes(t)).map(m => { const at = planWeekAt(m.plan, wi); const sv = m.plan.daily[t]; return { m, at, sv }; });
+  const twd = wdOf(t), blocks = typeof horBlocks === 'function' ? horBlocks(twd) : [];
+  const items = mods.filter(m => modDaysOfWeek(m, w).includes(t)).map(m => { const at = planWeekAt(m.plan, wi); const sv = m.plan.daily[t]; const bs = blocks.filter(b => b.mod === m); return { m, at, sv, bs, k: bs.length ? bs[0].start : 9999 }; }).sort((a, b) => a.k - b.k);
   if (!items.length) return '';
   return `<section class="card card-pad pl-home"><div class="section-head" style="margin-top:0"><h3>📘 Clases de hoy según tu planificación</h3><button class="btn btn-sm btn-ghost" data-act="go-week">Mi semana →</button></div>
-    <div class="pl-home-list">${items.map(({ m, at, sv }) => `<button class="pl-home-item" data-act="pl-open-day-mod" data-mod="${m.id}" data-date="${t}"><b>${esc(modShort(m))} ${esc(m.course || '')}</b><span>${at ? `${esc(at.ra.code)} · ${esc((at.week.rows.find(r => r.m === 'Desarrollo') || at.week.rows[0] || {}).act || '').slice(0, 120)}` : 'Sin semana planificada'}</span>${sv && sv.status === 'done' ? '<em class="badge ok">Impartida</em>' : ''}</button>`).join('')}</div></section>`;
+    <div class="pl-home-list">${items.map(({ m, at, sv, bs }) => `<button class="pl-home-item" data-act="pl-open-day-mod" data-mod="${m.id}" data-date="${t}"><b>${bs.length ? `<span class="pl-home-t">${bs.map(b => m2h12(b.start)).join(' · ')}</span> ` : ''}${esc(modShort(m))} ${esc(m.course || '')}</b><span>${at ? `${esc(at.ra.code)} · ${esc((at.week.rows.find(r => r.m === 'Desarrollo') || at.week.rows[0] || {}).act || '').slice(0, 120)}` : 'Sin semana planificada'}</span>${sv && sv.status === 'done' ? '<em class="badge ok">Impartida</em>' : ''}</button>`).join('')}</div></section>`;
 }
 
 /* ---------- Reportes PDF ---------- */
@@ -5876,6 +6178,16 @@ Object.assign(ACTIONS, {
   'pl-day-today': () => { plState().date = nextClassDay(curMod(), todayISO()); render(); },
   'pl-day-done': () => { const m = curMod(), iso = plState().date, { day } = dayPlan(m, m.plan, iso); saveDay(m, iso, { status: day.status === 'done' ? 'plan' : 'done' }); render(); toast(day.status === 'done' ? 'Clase desmarcada.' : 'Clase marcada como impartida.', 'ok', 1800); },
   'pl-day-moved': () => { const m = curMod(), iso = plState().date, { day } = dayPlan(m, m.plan, iso); saveDay(m, iso, { status: day.status === 'moved' ? 'plan' : 'moved' }); render(); },
+  'pl-day-fit': () => {
+    const m = curMod(), iso = plState().date, r = dayPlan(m, m.plan, iso), mins = r.mins;
+    const sp = r.split || horSplit(mins), names = [...new Set(r.day.mom.map(x => x.m))];
+    const want = {}; let tw = 0; names.forEach(n => { want[n] = sp[n] || 0; tw += want[n]; });
+    const mom = r.day.mom.map(x => Object.assign({}, x));
+    if (!tw) { const each = Math.floor(mins / Math.max(1, mom.length)); mom.forEach(x => x.min = each); }
+    else names.forEach(n => { const tgt = Math.round(want[n] * mins / tw), rows = mom.filter(x => x.m === n), old = rows.reduce((a, x) => a + x.min, 0); let left = tgt; rows.forEach((x, i) => { x.min = i === rows.length - 1 ? left : Math.round(tgt * (old ? x.min / old : 1 / rows.length)); left -= x.min; }); });
+    const diff = mins - mom.reduce((a, x) => a + x.min, 0); const dev = mom.find(x => x.m === 'Desarrollo') || mom[0]; if (dev) dev.min += diff;
+    saveDay(m, iso, { mom }); render(); toast(`Momentos ajustados a ${mins} min.`, 'ok', 1800);
+  },
   'pl-day-reset': () => { const m = curMod(), iso = plState().date; delete m.plan.daily[iso]; persist(); render(); toast('Plan de clase generado otra vez desde la secuencia.', 'ok'); },
   'go-week': () => { state.view = 'semana'; render(); window.scrollTo(0, 0); },
   'wk-step': el => { const st = plState(); st.week = Math.max(0, Math.min(calWeeks().length - 1, (st.week || 0) + (+el.dataset.d))); render(); },
@@ -5900,6 +6212,321 @@ Object.assign(ACTIONS, {
     db.cal = normCal(C); calTouch(); persist(); render();
   },
   'cal-del': el => { const C = db.cal, k = el.dataset.k, i = +el.dataset.i; C[k].splice(i, 1); db.cal = normCal(C); calTouch(); persist(); render(); },
+});
+
+/* =========================================================
+   Mi horario de clases
+   - Tabla de días × horas pedagógicas con el módulo (y curso) de cada hora.
+   - Horas pedagógicas ajustables: entrada, duración, recesos, días.
+   - La planificación usa el horario: días de clase de cada módulo y minutos
+     de cada clase repartidos en Inicio / Desarrollo / Cierre.
+   db.settings.horario = { start, n, min, dur[], breaks[{after,name,min}], days[], cells{'wd-n': {m}|{t}}, colors{modId}, split[3], lead }
+   ========================================================= */
+const HOR_DAYS = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado' };
+const HOR_DS = { 1: 'Lun', 2: 'Mar', 3: 'Mié', 4: 'Jue', 5: 'Vie', 6: 'Sáb' };
+const HOR_PAL = ['blue', 'violet', 'green', 'orange', 'teal', 'pink', 'amber', 'red'];
+const hm2m = s => { const [h, m] = String(s || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
+const m2hm = n => `${pad2(Math.floor(n / 60) % 24)}:${pad2(n % 60)}`;
+const m2h12 = n => fmtTime12(m2hm(n));
+function horDefault() {
+  return { start: '08:00', n: 8, min: 45, dur: [], breaks: [{ after: 3, name: 'Recreo', min: 15 }, { after: 5, name: 'Almuerzo', min: 60 }], days: [1, 2, 3, 4, 5], cells: {}, colors: {}, split: [5, 30, 10], lead: 10 };
+}
+function normHorario(h) {
+  const d = horDefault(); h = h && typeof h === 'object' ? h : {};
+  const n = Math.round(clampNum(h.n, 1, 14, d.n)), min = Math.round(clampNum(h.min, 10, 180, d.min));
+  const out = {
+    start: isoTime(h.start) || d.start, n, min,
+    dur: (Array.isArray(h.dur) ? h.dur : []).slice(0, n).map(x => clampNum(x, 0, 180, 0)),
+    breaks: (Array.isArray(h.breaks) ? h.breaks : d.breaks).map(b => ({ after: clampNum(b.after, 1, n, 1), name: String(b.name || 'Receso').slice(0, 30), min: clampNum(b.min, 1, 240, 15) })).filter(b => b.after < n).sort((a, b) => a.after - b.after),
+    days: (Array.isArray(h.days) && h.days.length ? h.days : d.days).map(Number).filter(x => x >= 1 && x <= 6).sort(),
+    cells: {}, colors: {}, split: Array.isArray(h.split) && h.split.length === 3 && h.split.every(x => +x >= 0) && h.split.some(x => +x > 0) ? h.split.map(Number) : d.split,
+    lead: clampNum(h.lead, 0, 60, d.lead)
+  };
+  Object.entries(h.cells && typeof h.cells === 'object' ? h.cells : {}).forEach(([k, v]) => {
+    const [wd, hn] = k.split('-').map(Number);
+    if (!(wd >= 1 && wd <= 6 && hn >= 1 && hn <= n) || !v) return;
+    if (v.m) out.cells[k] = { m: String(v.m) }; else if (v.t) out.cells[k] = { t: String(v.t).slice(0, 30) };
+  });
+  Object.entries(h.colors && typeof h.colors === 'object' ? h.colors : {}).forEach(([k, v]) => { if (HOR_PAL.includes(v)) out.colors[k] = v; });
+  return out;
+}
+function horMut() { return (db.settings.horario = normHorario(db.settings.horario)); }
+let _horCache = { raw: null, val: null };
+/** Horario actual (en caché mientras no cambie). */
+function hor() {
+  const raw = db.settings.horario;
+  if (raw && _horCache.raw === raw && _horCache.json === JSON.stringify(raw)) return _horCache.val;
+  const val = normHorario(raw); _horCache = { raw, json: JSON.stringify(raw), val }; return val;
+}
+/** Horas y recesos del día con su hora de inicio y fin (en minutos desde las 0:00). */
+function horSlots(h = hor()) {
+  let t = hm2m(h.start); const out = [];
+  for (let n = 1; n <= h.n; n++) {
+    const min = h.dur[n - 1] || h.min;
+    out.push({ k: 'h', n, start: t, end: t + min, min }); t += min;
+    const b = h.breaks.find(x => x.after === n);
+    if (b) { out.push({ k: 'b', name: b.name, start: t, end: t + b.min, min: b.min, after: n }); t += b.min; }
+  }
+  return out;
+}
+const horHours = (h = hor()) => horSlots(h).filter(s => s.k === 'h');
+function horCell(wd, n, h = hor()) { return h.cells[`${wd}-${n}`] || null; }
+function horColor(m, h = hor()) { return h.colors[m.id] || HOR_PAL[Math.max(0, db.modules.indexOf(m)) % HOR_PAL.length]; }
+/** Horas (números) de un módulo en un día de la semana. */
+function horModHours(m, wd, h = hor()) { const out = []; for (let n = 1; n <= h.n; n++) { const c = horCell(wd, n, h); if (c && c.m === m.id) out.push(n); } return out; }
+function horHas(m, h = hor()) { return Object.values(h.cells).some(c => c.m === m.id); }
+function horModDays(m, h = hor()) { return h.days.filter(wd => horModHours(m, wd, h).length); }
+function horModWeek(m, h = hor()) { return h.days.reduce((a, wd) => a + horModHours(m, wd, h).length, 0); }
+/** Minutos de clase de un módulo en un día de la semana (suma de sus horas pedagógicas). */
+function horMinutes(m, wd, h = hor()) { const hs = horHours(h); return horModHours(m, wd, h).reduce((a, n) => a + hs[n - 1].min, 0); }
+/** Bloques seguidos (sin receso en medio) de un módulo en un día. */
+function horBlocks(wd, h = hor()) {
+  const slots = horSlots(h), out = []; let cur = null;
+  slots.forEach(s => {
+    if (s.k === 'b') { cur = null; return; }
+    const c = horCell(wd, s.n, h); const key = c ? (c.m ? 'm:' + c.m : 't:' + c.t) : '';
+    if (!key) { cur = null; return; }
+    if (cur && cur.key === key) { cur.to = s.n; cur.end = s.end; cur.min += s.min; }
+    else { cur = { key, mod: c.m ? findMod(c.m) : null, txt: c.t || '', from: s.n, to: s.n, start: s.start, end: s.end, min: s.min }; out.push(cur); }
+  });
+  return out.filter(b => b.mod || b.txt);
+}
+/** Reparto Inicio / Desarrollo / Cierre de una clase según la proporción del horario (45 min → 5, 30, 10). */
+function horSplit(mins, h = hor()) {
+  const [a, b, c] = h.split, tot = a + b + c || 1;
+  const r = x => mins <= 45 ? Math.max(mins >= 15 ? 5 : 1, Math.round(mins * x / tot)) : Math.max(5, Math.round(mins * x / tot / 5) * 5);
+  const i = r(a), ci = r(c); return { Inicio: i, Desarrollo: Math.max(5, mins - i - ci), Cierre: ci };
+}
+const hoursLbl = (a, b) => a === b ? `Hora ${a}` : `Horas ${a}–${b}`;
+const minLbl = n => n >= 60 ? `${Math.floor(n / 60)} h${n % 60 ? ' ' + (n % 60) + ' min' : ''}` : `${n} min`;
+/** Los días de clase de Asistencia siguen al horario. */
+function horSyncWeekdays() {
+  const h = hor();
+  db.modules.forEach(m => { const ds = horModDays(m, h); if (ds.length) m.weekdays = ds; });
+}
+/** Próxima fecha (desde hoy) con ese día de la semana. */
+function nextDateOfWd(wd) { const t = todayISO(); return addDays(t, ((wd - wdOf(t)) + 7) % 7); }
+
+/* ---------- Pantalla ---------- */
+function horState() { if (!state.hor) state.hor = { edit: false, brush: null }; return state.hor; }
+function renderHorario() {
+  const h = hor(), st = horState(), slots = horSlots(h), hours = slots.filter(s => s.k === 'h');
+  const mods = db.modules, total = mods.reduce((a, m) => a + horModWeek(m, h), 0);
+  const realMin = mods.reduce((a, m) => a + h.days.reduce((x, wd) => x + horMinutes(m, wd, h), 0), 0);
+  const empty = !Object.keys(h.cells).length;
+  const t = todayISO(), twd = wdOf(t), now = new Date().getHours() * 60 + new Date().getMinutes();
+  const cellHTML = (wd, s) => {
+    const c = horCell(wd, s.n, h), m = c && c.m ? findMod(c.m) : null;
+    const isNow = wd === twd && now >= s.start && now < s.end;
+    const lbl = m ? `<b>${esc(modShort(m))}</b><small>${esc(m.course || '')}</small>` : c && c.t ? `<b class="hor-txt">${esc(c.t)}</b>` : '<span class="hor-free">Libre</span>';
+    const act = st.edit ? `data-act="hor-paint" data-wd="${wd}" data-n="${s.n}"` : m ? `data-act="hor-open" data-mod="${m.id}" data-wd="${wd}"` : '';
+    return `<td class="hor-c${m ? ' cat-' + horColor(m, h) : c && c.t ? ' hor-other' : ''}${isNow ? ' now' : ''}" ${act} title="${esc(`${HOR_DAYS[wd]} · hora ${s.n} · ${m2h12(s.start)}–${m2h12(s.end)}${m ? ' · ' + modTitle(m) : ''}`)}">${lbl}</td>`;
+  };
+  const table = `<div class="hor-wrap"><table class="hor-table">
+    <thead><tr><th class="hor-dh">Día / hora</th>${slots.map(s => s.k === 'h' ? `<th><b>${s.n}</b><small>${m2h12(s.start)}</small></th>` : `<th class="hor-brk" title="${esc(s.name)} ${m2h12(s.start)}–${m2h12(s.end)}"><span>${esc(s.name)}</span></th>`).join('')}<th class="hor-th" title="Horas pedagógicas del día">TH</th></tr></thead>
+    <tbody>${h.days.map(wd => `<tr class="${wd === twd ? 'today' : ''}"><th class="hor-day">${HOR_DAYS[wd]}</th>${slots.map(s => s.k === 'h' ? cellHTML(wd, s) : '<td class="hor-brk"></td>').join('')}<td class="hor-th"><b>${hours.filter(s => { const c = horCell(wd, s.n, h); return c && c.m && findMod(c.m); }).length}</b></td></tr>`).join('')}</tbody>
+    <tfoot><tr><th class="hor-dh">Total</th><td colspan="${slots.length}" class="l">${total} horas pedagógicas a la semana · ${minLbl(realMin)} reales</td><td class="hor-th"><b>${total}</b></td></tr></tfoot>
+  </table></div>`;
+  const palette = st.edit ? `<div class="hor-pal card card-pad">
+      <div class="hor-pal-h"><b>✏️ Editando:</b> elige un módulo y toca las horas para ponerlo. Toca otra vez para quitarlo.</div>
+      <div class="hor-pal-list">${mods.map(m => `<button class="hor-brush cat-${horColor(m, h)}${st.brush === m.id ? ' on' : ''}" data-act="hor-brush" data-b="${m.id}"><b>${esc(modShort(m))}</b><small>${esc(m.course || '')}</small></button>`).join('')}
+        <button class="hor-brush other${st.brush && st.brush.startsWith('t:') ? ' on' : ''}" data-act="hor-brush-txt"><b>＋ Otra</b><small>${st.brush && st.brush.startsWith('t:') ? esc(st.brush.slice(2)) : 'reunión, guardia…'}</small></button>
+        <button class="hor-brush free${st.brush === '' ? ' on' : ''}" data-act="hor-brush" data-b=""><b>Libre</b><small>borrar</small></button></div>
+      <div class="row-wrap" style="margin-top:.6rem"><button class="btn btn-sm btn-secondary" data-act="hor-colors">🎨 Colores</button><button class="btn btn-sm btn-ghost" data-act="hor-clear-all">🧹 Vaciar horario</button><span class="spacer"></span><button class="btn btn-sm btn-primary" data-act="hor-edit">✓ Listo</button></div>
+    </div>` : '';
+  // Hoy
+  const blocks = h.days.includes(twd) ? horBlocks(twd, h) : [];
+  const off = typeof holidayOf === 'function' && db.cal ? (holidayOf(t) || breakOf(t)) : '';
+  const todayCard = `<section class="card card-pad hor-today">
+      <div class="section-head" style="margin-top:0"><h3>📍 Hoy · ${esc(cap(longDate(t)))}</h3>${blocks.length ? `<span class="badge info">${blocks.filter(b => b.mod).reduce((a, b) => a + b.to - b.from + 1, 0)} horas</span>` : ''}</div>
+      ${off ? `<div class="alert alert-warn" style="margin:0 0 .6rem"><div>${esc(off)}: según el calendario escolar no hay docencia.</div></div>` : ''}
+      ${blocks.length ? `<ol class="hor-tl">${blocks.map(b => { const stt = now >= b.end ? 'done' : now >= b.start ? 'now' : 'next'; const m = b.mod;
+        return `<li class="hor-tl-i ${stt}${m ? ' cat-' + horColor(m, h) : ''}" ${m ? `data-act="hor-open" data-mod="${m.id}" data-wd="${twd}" role="button" title="${esc(modFull(m))}"` : ''}>
+          <span class="hor-tl-t">${m2h12(b.start)}<small>${m2h12(b.end)}</small></span>
+          <span class="hor-tl-b"><b>${m ? esc(modShort(m)) + ' · ' + esc(m.course || '') : esc(b.txt)}</b><small>${hoursLbl(b.from, b.to)} · ${minLbl(b.min)}</small></span>
+          <em>${stt === 'now' ? 'Ahora' : stt === 'done' ? '✓' : ''}</em></li>`; }).join('')}</ol>`
+        : `<p class="muted small">${empty ? 'Todavía no has puesto tu horario.' : h.days.includes(twd) ? 'Hoy no tienes clases en tu horario.' : 'Hoy no es día de clases.'}</p>`}
+    </section>`;
+  // Organigrama de módulos
+  const cards = `<div class="hor-mods">${mods.map(m => { const n = horModWeek(m, h), hw = m.plan ? m.plan.hw : null, ds = horModDays(m, h);
+    return `<article class="hor-mod cat-${horColor(m, h)}"><header>${esc(modShort(m))}</header><p>${esc(modFull(m))}</p><div class="hor-mod-c">${esc(m.course || '—')}</div>
+      <footer><b>${n}</b> ${n === 1 ? 'hora' : 'horas'} a la semana${hw && n && hw !== n ? `<span class="hor-warn" title="La planificación dice ${hw} horas semanales">⚠ plan: ${hw}</span>` : ''}<small>${ds.map(d => HOR_DS[d]).join(' · ') || 'Sin horas en el horario'}</small></footer></article>`; }).join('')}</div>`;
+  // Vista por día (celular)
+  const byDay = `<div class="hor-bydays">${h.days.map(wd => { const bs = horBlocks(wd, h);
+    return `<section class="card hor-dcard${wd === twd ? ' today' : ''}"><h4>${HOR_DAYS[wd]}</h4>${bs.length ? bs.map(b => `<div class="hor-dline${b.mod ? ' cat-' + horColor(b.mod, h) : ''}" ${b.mod ? `data-act="hor-open" data-mod="${b.mod.id}" data-wd="${wd}" role="button"` : ''}><span>${m2h12(b.start)}–${m2h12(b.end)}</span><b>${b.mod ? esc(modShort(b.mod)) + ' ' + esc(b.mod.course || '') : esc(b.txt)}</b><small>${hoursLbl(b.from, b.to)}</small></div>`).join('') : '<p class="small muted">Libre</p>'}</section>`; }).join('')}</div>`;
+  return `<div class="mod-head">
+    <button class="btn btn-secondary btn-icon" data-act="go-home" title="Volver al panel">${ICON.back}</button>
+    <div><h1>Mi horario de clases</h1><p class="muted small">${total} horas pedagógicas a la semana · ${minLbl(realMin)} · hora de ${h.min} min${db.settings.year ? ' · año escolar ' + esc(db.settings.year) : ''}</p></div>
+    <span class="spacer"></span>
+    <div class="row-wrap">
+      ${st.edit ? '' : `<button class="btn btn-primary" data-act="hor-edit">✏️ Editar horario</button>`}
+      <button class="btn btn-secondary" data-act="hor-times">⏱ Horas pedagógicas</button>
+      <button class="btn btn-secondary" data-act="hor-print" ${empty ? 'disabled' : ''}>${ICON.print} PDF</button>
+    </div>
+  </div>
+  ${empty && !st.edit ? `<div class="alert alert-info"><div><strong>Pon tu horario una sola vez.</strong> Con él, la planificación sabe qué días y cuántos minutos das en cada curso y reparte el inicio, el desarrollo y el cierre de cada clase. También te avisa antes de cada clase.</div><div class="row-wrap"><button class="btn btn-sm btn-primary" data-act="hor-edit">✏️ Hacer mi horario</button><button class="btn btn-sm btn-secondary" data-act="hor-preset">Cargar mi horario 2026-2027</button></div></div>` : ''}
+  ${palette}
+  <div class="hor-top">${todayCard}${cards}</div>
+  <section class="card hor-card${st.edit ? ' editing' : ''}"><div class="toolbar"><strong>Distribución de días y horas de clase</strong><span class="spacer"></span><span class="muted small">${st.edit ? 'Modo edición' : 'Toca una clase para abrir su plan del día'}</span></div>${table}</section>
+  ${st.edit ? '' : byDay}
+  <section class="card card-pad hor-sum"><h3 class="side-h">Carga horaria semanal</h3>
+    <div class="table-wrap"><table class="mini-table"><thead><tr><th class="l">Módulo</th><th>Curso</th><th>Horas en el horario</th><th>Horas de la planificación</th><th>Tiempo real</th><th class="l">Días</th></tr></thead>
+    <tbody>${mods.map(m => { const n = horModWeek(m, h), hw = m.plan ? m.plan.hw : null, mins = h.days.reduce((x, wd) => x + horMinutes(m, wd, h), 0);
+      return `<tr><td class="l"><span class="cat-dot cat-${horColor(m, h)}"></span> <b>${esc(modShort(m))}</b> ${esc(modFull(m))}</td><td>${esc(m.course || '')}</td><td><b>${n}</b></td><td>${hw ? `${hw}${n && hw !== n ? ' <span class="badge risk">no coincide</span>' : n ? ' <span class="badge ok">✓</span>' : ''}` : '—'}</td><td>${mins ? minLbl(mins) : '—'}</td><td class="l">${horModDays(m, h).map(d => HOR_DAYS[d]).join(', ') || '—'}</td></tr>`; }).join('')}
+      <tr class="tot"><td class="l"><b>Total</b></td><td></td><td><b>${total}</b></td><td>${mods.reduce((a, m) => a + (m.plan ? m.plan.hw : 0), 0) || '—'}</td><td>${minLbl(realMin)}</td><td></td></tr></tbody></table></div>
+    <p class="small muted" style="margin-top:.6rem">Cada clase se reparte en <b>Inicio ${h.split[0]}′ · Desarrollo ${h.split[1]}′ · Cierre ${h.split[2]}′</b> por cada ${h.split.reduce((a, b) => a + b, 0)} minutos (ej.: 90 min → ${Object.values(horSplit(90, h)).join(' / ')} · 135 min → ${Object.values(horSplit(135, h)).join(' / ')}). Cámbialo en «Horas pedagógicas». Los días de clase de cada módulo en Asistencia y en la planificación salen de aquí.</p>
+  </section>`;
+}
+
+/** Inicio: las clases de hoy según el horario. */
+function renderHomeHorario() {
+  const h = hor(); if (!Object.keys(h.cells).length) return '';
+  const t = todayISO(), wd = wdOf(t), bs = h.days.includes(wd) ? horBlocks(wd, h).filter(b => b.mod) : [];
+  const off = db.cal && typeof holidayOf === 'function' ? (holidayOf(t) || breakOf(t)) : '';
+  const now = new Date().getHours() * 60 + new Date().getMinutes(), nx = bs.find(b => now < b.end);
+  return `<section class="card card-pad hor-home"><div class="section-head" style="margin-top:0"><h3>🕘 Mi horario de hoy</h3><button class="btn btn-sm btn-ghost" data-act="go-horario">Ver horario →</button></div>
+    ${off ? `<p class="small muted">${esc(off)}: no hay docencia.</p>` : bs.length ? `<div class="hor-chips">${bs.map(b => `<button class="hor-chip cat-${horColor(b.mod, h)}${now >= b.end ? ' done' : now >= b.start ? ' now' : ''}" data-act="hor-open" data-mod="${b.mod.id}" data-wd="${wd}"><span>${m2h12(b.start)}</span><b>${esc(modShort(b.mod))} ${esc(b.mod.course || '')}</b><small>${hoursLbl(b.from, b.to)} · ${minLbl(b.min)}</small></button>`).join('')}</div>
+      <p class="small muted" style="margin-top:.5rem">${nx ? (now >= nx.start ? `Ahora estás en <b>${esc(modShort(nx.mod))} ${esc(nx.mod.course || '')}</b> hasta las ${m2h12(nx.end)}.` : `Próxima clase: <b>${esc(modShort(nx.mod))} ${esc(nx.mod.course || '')}</b> a las ${m2h12(nx.start)}.`) : 'Ya terminaron tus clases de hoy. 🎉'}</p>`
+      : '<p class="small muted">Hoy no tienes clases en tu horario.</p>'}
+  </section>`;
+}
+
+/* ---------- Diálogos ---------- */
+function horTimesDialog() {
+  const h = horMut();
+  const draw = ov => {
+    const g = readTimes(ov), sl = horSlots(g);
+    ov.querySelector('#htPrev').innerHTML = sl.map(s => s.k === 'h' ? `<div class="ht-row"><b>${s.n}</b><span>${m2h12(s.start)} – ${m2h12(s.end)}</span><label class="pl-num">Min<input type="text" inputmode="numeric" data-htd="${s.n}" value="${g.dur[s.n - 1] || ''}" placeholder="${g.min}"></label></div>` : `<div class="ht-row brk"><b>☕</b><span>${esc(s.name)} · ${m2h12(s.start)} – ${m2h12(s.end)}</span><span class="small muted">${s.min} min</span></div>`).join('') + `<p class="small muted">Sales a las <b>${m2h12(sl[sl.length - 1].end)}</b>.</p>`;
+    ov.querySelector('#htSplitPrev').textContent = [45, 90, 135, 180].map(x => `${x} min → ${Object.values(horSplit(x, g)).join(' / ')}`).join(' · ');
+    ov.querySelectorAll('[data-htd]').forEach(i => i.onchange = () => draw(ov));
+  };
+  const readTimes = ov => {
+    const dur = [...ov.querySelectorAll('[data-htd]')].map(i => parseInt(i.value, 10) || 0);
+    const breaks = [...ov.querySelectorAll('.ht-brk')].map(r => ({ after: +r.querySelector('[data-hb=after]').value, name: r.querySelector('[data-hb=name]').value, min: parseInt(r.querySelector('[data-hb=min]').value, 10) || 0 })).filter(b => b.min > 0);
+    return normHorario(Object.assign({}, h, {
+      start: ov.querySelector('#htStart').value, n: parseInt(ov.querySelector('#htN').value, 10), min: parseInt(ov.querySelector('#htMin').value, 10),
+      dur: dur.length ? dur : h.dur, breaks, days: [...ov.querySelectorAll('[data-htday]:checked')].map(i => +i.dataset.htday),
+      split: ['#htS0', '#htS1', '#htS2'].map(s => parseInt(ov.querySelector(s).value, 10) || 0), lead: parseInt(ov.querySelector('#htLead').value, 10)
+    }));
+  };
+  const brkRow = (b, n) => `<div class="ht-brk"><label class="pl-num">Después de la hora<select data-hb="after">${Array.from({ length: n - 1 }, (_, i) => `<option ${b.after === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('')}</select></label><input type="text" data-hb="name" value="${esc(b.name)}" maxlength="30"><label class="pl-num">Min<input type="text" inputmode="numeric" data-hb="min" value="${b.min}"></label><button type="button" class="btn btn-ghost btn-icon" data-hbdel title="Quitar">${ICON.trash}</button></div>`;
+  openModal({
+    title: 'Horas pedagógicas', icon: '⏱', wide: true, sub: 'Ajústalas a como te las dé el centro. Las horas de cada clase se calculan solas.',
+    body: `<div class="form-grid">
+        <label class="field">Hora de entrada<input type="time" id="htStart" value="${h.start}"></label>
+        <label class="field">Horas por día<input type="text" id="htN" inputmode="numeric" value="${h.n}"></label>
+        <label class="field">Duración de la hora (min)<input type="text" id="htMin" inputmode="numeric" value="${h.min}"></label>
+        <label class="field">Avisarme antes de cada clase (min)<input type="text" id="htLead" inputmode="numeric" value="${h.lead}"><small>0 = no avisar</small></label>
+      </div>
+      <div class="field">Días de clase<div class="row-wrap">${Object.entries(HOR_DAYS).map(([k, v]) => `<label class="check"><input type="checkbox" data-htday="${k}" ${h.days.includes(+k) ? 'checked' : ''}> ${v}</label>`).join('')}</div></div>
+      <div class="field">Recesos<div id="htBrks">${h.breaks.map(b => brkRow(b, h.n)).join('')}</div><button type="button" class="btn btn-sm btn-ghost" id="htAddB" style="align-self:flex-start">${ICON.plus} Agregar receso</button></div>
+      <div class="field">Horario resultante <small>Si una hora dura distinto, escribe sus minutos.</small><div id="htPrev" class="ht-prev"></div></div>
+      <div class="field">Reparto de cada clase (minutos por cada hora)
+        <div class="row-wrap"><label class="pl-num">Inicio<input type="text" id="htS0" inputmode="numeric" value="${h.split[0]}"></label><label class="pl-num">Desarrollo<input type="text" id="htS1" inputmode="numeric" value="${h.split[1]}"></label><label class="pl-num">Cierre<input type="text" id="htS2" inputmode="numeric" value="${h.split[2]}"></label></div>
+        <small id="htSplitPrev"></small></div>`,
+    actions: [{ label: 'Cancelar' }, {
+      label: 'Guardar', cls: 'btn-primary', onClick: ov => {
+        const g = readTimes(ov);
+        if (!g.days.length) { toast('Marca al menos un día.', 'error'); return false; }
+        const lost = Object.keys(h.cells).filter(k => { const [wd, n] = k.split('-').map(Number); return n > g.n || !g.days.includes(wd); }).length;
+        g.cells = h.cells; g.colors = h.colors;
+        db.settings.horario = normHorario(g); horSyncWeekdays();
+        persist(); render(); toast(lost ? `Horas guardadas. ${lost} clases quedaron fuera de los días u horas nuevos.` : 'Horas pedagógicas guardadas.', lost ? 'warn' : 'ok', 4000);
+      }
+    }],
+    onOpen: ov => {
+      const wire = () => { ov.querySelectorAll('[data-hbdel]').forEach(b => b.onclick = () => { b.closest('.ht-brk').remove(); draw(ov); }); ov.querySelectorAll('.ht-brk input, .ht-brk select').forEach(i => i.onchange = () => draw(ov)); };
+      ov.querySelector('#htAddB').onclick = () => { ov.querySelector('#htBrks').insertAdjacentHTML('beforeend', brkRow({ after: 1, name: 'Receso', min: 15 }, parseInt(ov.querySelector('#htN').value, 10) || h.n)); wire(); draw(ov); };
+      ['#htStart', '#htN', '#htMin', '#htS0', '#htS1', '#htS2'].forEach(s => ov.querySelector(s).addEventListener('change', () => {
+        if (s === '#htN') { const n = parseInt(ov.querySelector('#htN').value, 10) || h.n; ov.querySelectorAll('[data-hb=after]').forEach(sel => { const v = sel.value; sel.innerHTML = Array.from({ length: Math.max(1, n - 1) }, (_, i) => `<option ${+v === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join(''); }); }
+        draw(ov);
+      }));
+      wire(); draw(ov);
+    }
+  });
+}
+function horColorsDialog() {
+  const h = horMut();
+  openModal({
+    title: 'Colores de los módulos', icon: '🎨',
+    body: `<div class="menu-list">${db.modules.map(m => `<div class="hor-colrow"><b>${esc(modShort(m))} ${esc(m.course || '')}</b><div class="row">${HOR_PAL.map(c => `<button type="button" class="hor-sw cat-${c}${horColor(m, h) === c ? ' on' : ''}" data-mid="${m.id}" data-c="${c}" title="${COLOR_NAMES[c] || c}"></button>`).join('')}</div></div>`).join('')}</div>`,
+    actions: [{ label: 'Listo', cls: 'btn-primary' }],
+    onOpen: ov => ov.querySelectorAll('.hor-sw').forEach(b => b.onclick = () => {
+      horMut().colors[b.dataset.mid] = b.dataset.c; persist(); render();
+      ov.querySelectorAll(`.hor-sw[data-mid="${b.dataset.mid}"]`).forEach(x => x.classList.toggle('on', x === b));
+    })
+  });
+}
+/** Horario 2026-2027 del docente (organigrama de módulos y asignaturas). */
+const HOR_PRESET = {
+  1: ['DISW', 'DISW', '', '', 'DAS', 'DAS', 'ADS', 'DAS'],
+  2: ['DISW', 'DAS', 'ADS', 'ADS', 'DISW', 'ADR', 'DISW', 'DPW'],
+  3: ['DISW', 'DPW', '', 'DPW', 'DPW', 'ADR', 'ADS', 'ADS'],
+  4: ['DAS', 'ADS', 'DISW', 'DPW', 'DAS', 'DISW', 'DAS', 'DAS'],
+  5: ['DPW', '', '', '', 'ADR', '', '', '']
+};
+const HOR_PRESET_COL = { ADS: 'blue', DPW: 'violet', DAS: 'green', ADR: 'orange', DISW: 'teal' };
+function horPreset() {
+  const key = m => norm(modShort(m)).replace(/[^a-z0-9]/g, '');
+  const by = {}; db.modules.forEach(m => { const k = key(m); if (!by[k]) by[k] = m; });
+  const miss = Object.keys(HOR_PRESET_COL).filter(k => !by[k.toLowerCase()]);
+  const go = () => {
+    snapshot('Antes de cargar el horario 2026-2027');
+    const h = horMut(); h.cells = {}; h.n = Math.max(h.n, 8);
+    Object.entries(HOR_PRESET).forEach(([wd, row]) => row.forEach((ab, i) => { const m = ab && by[ab.toLowerCase()]; if (m) h.cells[`${wd}-${i + 1}`] = { m: m.id }; }));
+    Object.entries(HOR_PRESET_COL).forEach(([ab, c]) => { const m = by[ab.toLowerCase()]; if (m) h.colors[m.id] = c; });
+    db.settings.horario = normHorario(h); horSyncWeekdays();
+    persist(); render(); toast(`Horario cargado: ${db.modules.reduce((a, m) => a + horModWeek(m), 0)} horas a la semana. Revisa la hora de entrada y los recesos en «Horas pedagógicas».`, 'ok', 5000);
+  };
+  if (miss.length) confirmBox('Faltan módulos', `No encontré estos módulos por su abreviatura: ${miss.join(', ')}. Se cargarán solo los que sí están. ¿Continuar?`, 'Cargar', go, { danger: false });
+  else go();
+}
+function printHorario() {
+  const h = hor(), s = db.settings, slots = horSlots(h), mods = db.modules.filter(m => horModWeek(m, h));
+  const total = mods.reduce((a, m) => a + horModWeek(m, h), 0);
+  const html = `<section class="rp-page rp-hor">
+    <div class="rp-head"><div><div class="rp-school">${esc(s.school || 'Centro educativo')}</div><h1>Horario de clases ${esc(s.year || '')}</h1><div class="rp-meta">Docente: <b>${esc(s.teacher || '')}</b> · ${total} horas pedagógicas a la semana · hora de ${h.min} min · entrada ${m2h12(hm2m(h.start))}</div></div><div class="rp-date">${today()}</div></div>
+    <div class="rph-title">Organigrama de módulos y asignaturas</div>
+    <div class="rph-mods">${mods.map((m, i) => `<div class="rph-mod rph-${horColor(m, h)}"><div class="rph-mh">${esc(modShort(m))}</div><div class="rph-mn">${esc(modFull(m))}</div><div class="rph-mc">${esc(m.course || '')}</div><div class="rph-mf">${horModWeek(m, h)} horas a la semana</div></div>`).join('')}</div>
+    <div class="rph-title">Distribución de días y horas de clases</div>
+    <table class="rph-table"><thead><tr><th>Día / hora</th>${slots.map(x => x.k === 'h' ? `<th>${x.n}<br><small>${m2h12(x.start)}–${m2h12(x.end)}</small></th>` : `<th class="rph-brk"><small>${esc(x.name)}</small></th>`).join('')}<th>TH</th></tr></thead>
+    <tbody>${h.days.map(wd => `<tr><th>${HOR_DAYS[wd]}</th>${slots.map(x => { if (x.k === 'b') return '<td class="rph-brk"></td>'; const c = horCell(wd, x.n, h), m = c && c.m ? findMod(c.m) : null;
+      return m ? `<td class="rph-${horColor(m, h)}-l"><b>${esc(modShort(m))}</b><br><small>${esc(m.course || '')}</small></td>` : c && c.t ? `<td><b>${esc(c.t)}</b></td>` : '<td class="rph-free">Libre</td>'; }).join('')}<td><b>${horHours(h).filter(x => { const c = horCell(wd, x.n, h); return c && c.m && findMod(c.m); }).length}</b></td></tr>`).join('')}</tbody></table>
+    <div class="rph-legend">${mods.map(m => `<span><i class="rph-${horColor(m, h)}"></i>${esc(modShort(m))} · ${esc(modFull(m))} · ${esc(m.course || '')} · ${horModWeek(m, h)} h · ${horModDays(m, h).map(d => HOR_DS[d]).join(', ')}</span>`).join('')}</div>
+    ${signLine()}
+  </section>`;
+  printHTML(html, 'landscape');
+}
+
+Object.assign(ACTIONS, {
+  'go-horario': () => { state.view = 'horario'; state.modId = null; state.search = ''; render(); window.scrollTo(0, 0); },
+  'hor-edit': () => { const st = horState(); st.edit = !st.edit; if (st.edit) { snapshot('Antes de editar el horario'); if (st.brush == null) st.brush = (db.modules[0] || {}).id || ''; } render(); },
+  'hor-brush': el => { horState().brush = el.dataset.b; render(); },
+  'hor-brush-txt': () => {
+    const md = openModal({ title: 'Otra actividad', icon: '📌', body: '<label class="field">Nombre<input type="text" id="hbTxt" maxlength="30" placeholder="Ej.: Reunión, Guardia, Planificación"></label>',
+      actions: [{ label: 'Cancelar' }, { label: 'Usar', cls: 'btn-primary', onClick: ov => { const v = ov.querySelector('#hbTxt').value.trim(); if (!v) return false; horState().brush = 't:' + v; render(); } }],
+      onOpen: ov => setTimeout(() => ov.querySelector('#hbTxt').focus(), 60) });
+    return md;
+  },
+  'hor-paint': el => {
+    const h = horMut(), st = horState(), k = `${el.dataset.wd}-${el.dataset.n}`, cur = h.cells[k], b = st.brush;
+    const val = !b ? null : b.startsWith('t:') ? { t: b.slice(2) } : { m: b };
+    const same = cur && val && ((val.m && cur.m === val.m) || (val.t && cur.t === val.t));
+    if (!val || same) delete h.cells[k]; else h.cells[k] = val;
+    horSyncWeekdays(); persist(); render();
+  },
+  'hor-open': el => {
+    const m = findMod(el.dataset.mod); if (!m) return;
+    const d = nextDateOfWd(+el.dataset.wd);
+    state.view = 'module'; state.modId = m.id; state.search = '';
+    if (m.plan) { state.tab = 'planificacion'; const st = plState(); st.sub = 'clase'; st.date = d; } else state.tab = 'resumen';
+    render(); window.scrollTo(0, 0);
+  },
+  'hor-times': () => horTimesDialog(),
+  'hor-colors': () => horColorsDialog(),
+  'hor-print': () => printHorario(),
+  'hor-preset': () => horPreset(),
+  'hor-clear-all': () => confirmBox('Vaciar horario', 'Se quitan todas las clases del horario (las horas pedagógicas se mantienen). Puedes deshacerlo desde Respaldo › Puntos de restauración.', 'Vaciar', () => { snapshot('Antes de vaciar el horario'); horMut().cells = {}; persist(); render(); toast('Horario vacío.', 'ok'); })
 });
 
 /* =========================================================
@@ -6174,7 +6801,7 @@ function withViewTransition(fn) {
    Funcionan mientras Praxis Pro está abierto (aunque esté minimizado o en otra pestaña).
    ========================================================= */
 const NOTIF_LOG = 'praxisNotifLog';
-function notifPrefs() { const n = db.settings.notif; return Object.assign({ agenda: true, alerts: true, before: 30 }, n && typeof n === 'object' ? n : {}); }
+function notifPrefs() { const n = db.settings.notif; return Object.assign({ agenda: true, alerts: true, before: 30, classes: true }, n && typeof n === 'object' ? n : {}); }
 function notifSupported() { return 'Notification' in window; }
 function notifGranted() { return notifSupported() && Notification.permission === 'granted'; }
 function notifLog() { try { const o = JSON.parse(localStorage.getItem(NOTIF_LOG) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
@@ -6203,7 +6830,7 @@ function notifGo(go) {
   if (!go) return;
   const [k, id, tab] = String(go).split(':');
   if (k === 'calendar') { state.view = 'calendar'; state.modId = null; }
-  else if (k === 'mod' && findMod(id)) { state.view = 'module'; state.modId = id; state.tab = tab || 'resumen'; }
+  else if (k === 'mod' && findMod(id)) { state.view = 'module'; state.modId = id; state.tab = tab || 'resumen'; if (state.tab === 'planificacion') { const st = plState(); st.sub = 'clase'; st.date = todayISO(); } }
   else { state.view = 'home'; state.modId = null; }
   render(); window.scrollTo(0, 0);
 }
@@ -6242,6 +6869,18 @@ function notifTick(force) {
         fire(`ev:${e.key}:${t}:${e.time}`, `${when} · ${e.title}`, `${fmtTime12(e.time)}${e.mod ? ' · ' + modTag(e.mod) : ''}${e.sub ? ' · ' + e.sub : ''}`, e.modId && e.src === 'act' ? `mod:${e.modId}:registro` : 'calendar', true);
       }
     });
+  }
+  // 2b) Antes de cada clase del horario
+  if (P.classes && typeof horBlocks === 'function') {
+    const h = hor(), wd = wdOf(t), lead = h.lead;
+    const noClass = db.cal && db.cal.periods.length && t >= db.cal.periods[0].start && t <= db.cal.periods[db.cal.periods.length - 1].end && !isClassDay(t);
+    if (lead > 0 && h.days.includes(wd) && !noClass) {
+      const now = hmToMin(nowHM());
+      horBlocks(wd, h).filter(b => b.mod).forEach(b => {
+        const left = b.start - now;
+        if (left <= lead && left > -5) fire(`cls:${t}:${b.mod.id}:${b.from}`, `${left > 1 ? `En ${left} min` : 'Ahora'} · ${modShort(b.mod)} ${b.mod.course || ''}`, `${hoursLbl(b.from, b.to)} · ${m2h12(b.start)}–${m2h12(b.end)} · ${modFull(b.mod)}`, b.mod.plan ? `mod:${b.mod.id}:planificacion` : `mod:${b.mod.id}:resumen`, true);
+      });
+    }
   }
   // 3) Alertas tempranas nuevas (cada estudiante y tipo se avisa una vez; si sale y vuelve, se avisa otra vez)
   if (P.alerts) {
@@ -6292,6 +6931,7 @@ function notifSettingsHTML() {
     ${perm === 'denied' ? '<p class="small muted">Para activarlos: toca el candado junto a la dirección › Notificaciones › Permitir, y recarga.</p>' : ''}
     <label class="check"><input type="checkbox" id="stNfAgenda" ${P.agenda ? 'checked' : ''}> Resumen del día y recordatorio de tareas, prácticas y eventos agendados</label>
     <label class="field" style="max-width:320px">Recordarme antes de las actividades con hora<select id="stNfBefore">${[[0, 'A la hora exacta'], [10, '10 minutos antes'], [15, '15 minutos antes'], [30, '30 minutos antes'], [60, '1 hora antes'], [120, '2 horas antes']].map(([v, l]) => `<option value="${v}" ${+P.before === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+    <label class="check"><input type="checkbox" id="stNfClasses" ${P.classes ? 'checked' : ''}> Avisarme antes de cada clase de mi horario (${typeof hor === 'function' ? hor().lead : 10} min antes · cámbialo en Horario › Horas pedagógicas)</label>
     <label class="check"><input type="checkbox" id="stNfAlerts" ${P.alerts ? 'checked' : ''}> Alertas tempranas de estudiantes (faltas seguidas, no entregó, bajó su rendimiento)</label>
     <p class="small muted">Los avisos llegan mientras Praxis Pro está abierto, aunque esté minimizado. Instálalo como aplicación y déjalo abierto en tu jornada.</p>
   </div>`;
@@ -6301,7 +6941,7 @@ function notifSettingsWire(ov) {
   const t = ov.querySelector('#stNotifTest'); if (t) t.onclick = () => showNotif('Praxis Pro · Prueba', 'Los avisos funcionan en este equipo. ✔', 'test', 'home');
 }
 function notifSettingsRead(ov) {
-  return { agenda: ov.querySelector('#stNfAgenda').checked, alerts: ov.querySelector('#stNfAlerts').checked, before: +ov.querySelector('#stNfBefore').value };
+  return { agenda: ov.querySelector('#stNfAgenda').checked, alerts: ov.querySelector('#stNfAlerts').checked, classes: ov.querySelector('#stNfClasses').checked, before: +ov.querySelector('#stNfBefore').value };
 }
 /** Aviso en el inicio para activar los avisos. */
 function notifHomeBanner() {
