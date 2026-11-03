@@ -14,7 +14,12 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDomain":"praxis-pro-a65b2.firebaseapp.com","projectId":"praxis-pro-a65b2","storageBucket":"praxis-pro-a65b2.firebasestorage.app","messagingSenderId":"788262926679","appId":"1:788262926679:web:61d814e54cb27c825da612"}; var CLOUD_SIGNUP = false;
-if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });</script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  var hadSW = !!navigator.serviceWorker.controller, swReloaded = false;
+  addEventListener('load', function () { navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) { reg.update(); document.addEventListener('visibilitychange', function () { if (!document.hidden) reg.update(); }); }); });
+  // Cuando llega una versión nueva: guarda y recarga una sola vez
+  navigator.serviceWorker.addEventListener('controllerchange', function () { if (!hadSW || swReloaded) return; swReloaded = true; try { if (typeof dirty !== 'undefined' && dirty) saveNow(); sessionStorage.setItem('praxisUpdated', '1'); } catch (e) { } location.reload(); });
+}</script>
 <script>(function(){try{var t=localStorage.getItem('praxisTheme')||'light';var d=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
 <style>
 :root {
@@ -1264,9 +1269,15 @@ tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7re
 .mini-table th { font-size: .7rem; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); font-weight: 800; }
 .mini-table .l { text-align: left; } .mini-table tr.tot td { background: var(--surface-2); }
 .ht-prev { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .35rem; }
-.ht-row { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: .5rem; padding: .3rem .5rem; border: 1px solid var(--border); border-radius: 9px; font-size: .84rem; }
-.ht-row.brk { background: var(--surface-2); }
-.ht-row .pl-num input { width: 52px; }
+.ht-table { display: flex; flex-direction: column; gap: .35rem; }
+.ht-row { display: grid; grid-template-columns: 80px 1fr 1fr 60px; align-items: end; gap: .6rem; padding: .4rem .6rem; border: 1px solid var(--border); border-radius: 10px; font-size: .84rem; }
+.ht-row > b { align-self: center; color: var(--primary); }
+.ht-row input[type=time] { width: 100%; }
+.ht-row > span.small { align-self: center; text-align: right; }
+.ht-row.brk { background: repeating-linear-gradient(135deg, var(--surface-2) 0 6px, var(--surface) 6px 12px); align-items: center; }
+.ht-row.brk input { padding: .3rem .5rem; font-size: .84rem; }
+.ht-row.brk > span:not(.small) { font-weight: 600; color: var(--ink-2); }
+@media (max-width: 560px) { .ht-row { grid-template-columns: 1fr 1fr; } .ht-row > b, .ht-row.brk > input { grid-column: 1 / -1; } .ht-row > span.small { text-align: left; } }
 .ht-brk { display: grid; grid-template-columns: auto 1fr auto auto; gap: .5rem; align-items: end; margin-bottom: .4rem; }
 .hor-colrow { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; padding: .4rem 0; border-bottom: 1px solid var(--border); }
 .hor-sw { width: 26px; height: 26px; border-radius: 50%; border: 3px solid var(--surface); background: var(--c); cursor: pointer; box-shadow: 0 0 0 1px var(--border); transition: transform .15s; }
@@ -1396,7 +1407,7 @@ const PLAN_LIB = {"app": "Praxis Pro", "kind": "planificacion", "version": 1, "c
    ========================================================= */
 const AppConfig = {
   appName: 'Praxis Pro',
-  version: '9.1',
+  version: '9.2',
   author: 'Ronnil Javier Miranda Fernández',
   logo: 'P'
 };
@@ -3889,7 +3900,7 @@ function printRecResults(m) {
    Herramientas de clase: participación al azar y grupos equilibrados
    ========================================================= */
 function toolState(m) {
-  if (!state.tool || state.tool.modId !== m.id) state.tool = { modId: m.id, raId: '', catId: '', pick: '', used: [], onlyPresent: true, showList: false, savedOpen: false, preview: null, swap: '', opts: { type: 'Exposición', mode: 'count', n: 5, balance: 'perf', present: true, conduct: true, norepeat: true } };
+  if (!state.tool || state.tool.modId !== m.id) state.tool = { modId: m.id, raId: '', catId: '', pick: '', used: [], onlyPresent: true, showList: false, savedOpen: true, preview: null, swap: '', opts: { type: 'Exposición', mode: 'count', n: 5, balance: 'perf', present: true, conduct: true, norepeat: true, topic: '' } };
   const t = state.tool;
   if (!findRa(m, t.raId)) t.raId = (findRa(m, state.raId) || m.ras[0] || {}).id || '';
   const ra = findRa(m, t.raId);
@@ -4005,6 +4016,8 @@ function renderGroupTool(m, t) {
   const spread = pv ? groupSpread(m, pv.groups) : null;
   return `<section class="card card-pad tool-card">
     <h3 class="tool-h">👥 Formar grupos</h3>
+    <p class="small muted" style="margin:-.2rem 0 .6rem">Forma los grupos y luego asigna a cada uno su <b>tema</b>, <b>subtemas</b> y <b>fecha</b>; se agendan en el calendario y salen en el PDF.</p>
+    <label class="field" style="margin-bottom:.6rem">Tema central (opcional)<input type="text" id="gpTopic" maxlength="160" value="${esc(o.topic || '')}" placeholder="Ej.: Lenguajes de programación web"></label>
     <div class="form-grid">
       <label class="field">Para<select id="gpType">${['Exposición', 'Práctica', 'Proyecto', 'Otro'].map(x => `<option ${o.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
       <label class="field">Cómo dividir<select id="gpMode"><option value="count" ${o.mode === 'count' ? 'selected' : ''}>Cantidad de grupos</option><option value="size" ${o.mode === 'size' ? 'selected' : ''}>Estudiantes por grupo</option></select></label>
@@ -4020,7 +4033,7 @@ function renderGroupTool(m, t) {
       <button class="btn btn-primary" data-act="grp-make">${pv ? '🔀 Mezclar otra vez' : '👥 Formar grupos'}</button>
       <span class="muted small">${n} estudiantes</span>
     </div>
-    ${pv ? `<div class="row-wrap tool-actions grp-actions"><button class="btn btn-sm btn-secondary" data-act="grp-copy" data-id="">${ICON.copy} Copiar</button><button class="btn btn-sm btn-secondary" data-act="grp-print" data-id="">${ICON.print.replace('class="i"', 'class="i i-sm"')} Imprimir</button><button class="btn btn-sm btn-ok" data-act="grp-save">Guardar grupos</button><span class="spacer"></span><button class="btn btn-sm btn-ghost" data-act="grp-clear">🧹 Limpiar</button></div>` : ''}
+    ${pv ? `<div class="row-wrap tool-actions grp-actions"><button class="btn btn-sm btn-secondary" data-act="grp-copy" data-id="">${ICON.copy} Copiar</button><button class="btn btn-sm btn-secondary" data-act="grp-print" data-id="">${ICON.print.replace('class="i"', 'class="i i-sm"')} Imprimir</button><button class="btn btn-sm btn-primary" data-act="grp-save-topics">📝 Guardar y asignar temas y fechas</button><button class="btn btn-sm btn-ok" data-act="grp-save">Guardar grupos</button><span class="spacer"></span><button class="btn btn-sm btn-ghost" data-act="grp-clear">🧹 Limpiar</button></div>` : ''}
     ${pv ? `<p class="small muted" style="margin-bottom:.5rem">${o.balance === 'perf' ? `Promedios de los grupos entre <b>${spread.min}%</b> y <b>${spread.max}%</b>. ` : ''}${spread.repeats ? `${spread.repeats} parejas ya trabajaron juntas antes. ` : ''}Toca a dos estudiantes para intercambiarlos.</p><div class="grp-grid">${cards}</div>` : ''}
   </section>`;
 }
@@ -4117,7 +4130,7 @@ function saveGroupsDialog() {
   openModal({
     title: 'Guardar grupos', icon: '👥',
     body: `<label class="field">Nombre<input type="text" id="gsName" maxlength="80" value="${esc(t.opts.type + ' · ' + fmtDate(todayISO()))}"></label>
-      <label class="field">Tema central (opcional)<input type="text" id="gsTopic" maxlength="160" placeholder="Ej.: Lenguajes de programación web"></label>
+      <label class="field">Tema central (opcional)<input type="text" id="gsTopic" maxlength="160" value="${esc(t.opts.topic || '')}" placeholder="Ej.: Lenguajes de programación web"></label>
       <label class="check"><input type="checkbox" id="gsNext" checked> Después de guardar, asignar los temas y las fechas de cada grupo</label>
       <label class="field">Vincular con una actividad del registro (opcional)
         <select id="gsAct"><option value="">Sin vincular</option>${slots.map(x => `<option value="${esc(x.key)}">${esc(x.label)}</option>`).join('')}</select>
@@ -4291,6 +4304,14 @@ function groupTopicsDialog(id) {
     }
   });
   return md;
+}
+
+/** Guarda los grupos de la vista previa y abre directamente «Temas y fechas». */
+function saveGroupsQuick() {
+  const m = curMod(), t = toolState(m); if (!t.preview) return;
+  const gs = normGroupSet({ id: uid(), name: `${t.opts.type} · ${fmtDate(todayISO())}`, type: t.opts.type, date: todayISO(), topic: t.opts.topic || '', groups: t.preview.groups });
+  m.groups.unshift(gs); t.preview = null; t.swap = ''; t.savedOpen = true;
+  persist(); render(); setTimeout(() => groupTopicsDialog(gs.id), 200);
 }
 
 /* =========================================================
@@ -4505,6 +4526,7 @@ document.addEventListener('change', e => {
   else if (t.id === 'tlRa') { const tt = toolState(curMod()); tt.raId = t.value; tt.catId = ''; render(); }
   else if (t.id === 'tlCat') { toolState(curMod()).catId = t.value; render(); }
   else if (t.id === 'tlPresent') { const tt = toolState(curMod()); tt.onlyPresent = t.checked; render(); }
+  else if (t.id === 'gpTopic') { toolState(curMod()).opts.topic = t.value.trim(); }
   else if (['gpType', 'gpMode', 'gpN', 'gpBal', 'gpPresent', 'gpConduct', 'gpNorep'].includes(t.id)) {
     const o = toolState(curMod()).opts;
     if (t.id === 'gpType') o.type = t.value;
@@ -4723,6 +4745,7 @@ const ACTIONS = {
   'grp-print': el => { const m = curMod(), gs = el.dataset.id ? m.groups.find(x => x.id === el.dataset.id) : toolState(m).preview; if (gs) printGroups(m, gs, `Grupos de ${(gs.type || toolState(m).opts.type).toLowerCase()}${gs.name ? ' · ' + gs.name : ''}`); },
   'grp-grade': el => gradeGroupsDialog(el.dataset.id),
   'grp-topics': el => groupTopicsDialog(el.dataset.id),
+  'grp-save-topics': () => saveGroupsQuick(),
   'grp-del': el => {
     const m = curMod(), gs = m.groups.find(x => x.id === el.dataset.id); if (!gs) return;
     const evs = gs.groups.filter(g => g.evId && db.agenda.some(e => e.id === g.evId)).length;
@@ -6228,11 +6251,15 @@ const HOR_PAL = ['blue', 'violet', 'green', 'orange', 'teal', 'pink', 'amber', '
 const hm2m = s => { const [h, m] = String(s || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
 const m2hm = n => `${pad2(Math.floor(n / 60) % 24)}:${pad2(n % 60)}`;
 const m2h12 = n => fmtTime12(m2hm(n));
+/** Horas del centro del docente: 8:15 a 3:45, recreo 10:30–11:00 (tras la 3.ª), almuerzo 1:15–2:15 (tras la 6.ª). */
+const HOR_SCHOOL = { start: '08:15', n: 8, min: 45, dur: [], breaks: [{ after: 3, name: 'Recreo', min: 30 }, { after: 6, name: 'Almuerzo', min: 60 }] };
 function horDefault() {
-  return { start: '08:00', n: 8, min: 45, dur: [], breaks: [{ after: 3, name: 'Recreo', min: 15 }, { after: 5, name: 'Almuerzo', min: 60 }], days: [1, 2, 3, 4, 5], cells: {}, colors: {}, split: [5, 30, 10], lead: 10 };
+  return Object.assign({ days: [1, 2, 3, 4, 5], cells: {}, colors: {}, split: [5, 30, 10], lead: 10, at: 0 }, JSON.parse(JSON.stringify(HOR_SCHOOL)));
 }
 function normHorario(h) {
   const d = horDefault(); h = h && typeof h === 'object' ? h : {};
+  // Horarios guardados con el ejemplo anterior (8:00, recreo tras la 3.ª de 15 min, almuerzo tras la 5.ª): pasan a las horas del centro
+  if (h.start === '08:00' && Array.isArray(h.breaks) && JSON.stringify(h.breaks.map(b => [b.after, b.min])) === '[[3,15],[5,60]]' && !(Array.isArray(h.dur) && h.dur.some(Boolean))) h = Object.assign({}, h, JSON.parse(JSON.stringify(HOR_SCHOOL)));
   const n = Math.round(clampNum(h.n, 1, 14, d.n)), min = Math.round(clampNum(h.min, 10, 180, d.min));
   const out = {
     start: isoTime(h.start) || d.start, n, min,
@@ -6240,7 +6267,7 @@ function normHorario(h) {
     breaks: (Array.isArray(h.breaks) ? h.breaks : d.breaks).map(b => ({ after: clampNum(b.after, 1, n, 1), name: String(b.name || 'Receso').slice(0, 30), min: clampNum(b.min, 1, 240, 15) })).filter(b => b.after < n).sort((a, b) => a.after - b.after),
     days: (Array.isArray(h.days) && h.days.length ? h.days : d.days).map(Number).filter(x => x >= 1 && x <= 6).sort(),
     cells: {}, colors: {}, split: Array.isArray(h.split) && h.split.length === 3 && h.split.every(x => +x >= 0) && h.split.some(x => +x > 0) ? h.split.map(Number) : d.split,
-    lead: clampNum(h.lead, 0, 60, d.lead)
+    lead: clampNum(h.lead, 0, 60, d.lead), at: +h.at || 0
   };
   Object.entries(h.cells && typeof h.cells === 'object' ? h.cells : {}).forEach(([k, v]) => {
     const [wd, hn] = k.split('-').map(Number);
@@ -6299,6 +6326,8 @@ function horSplit(mins, h = hor()) {
 }
 const hoursLbl = (a, b) => a === b ? `Hora ${a}` : `Horas ${a}–${b}`;
 const minLbl = n => n >= 60 ? `${Math.floor(n / 60)} h${n % 60 ? ' ' + (n % 60) + ' min' : ''}` : `${n} min`;
+/** De dos copias del horario (este equipo / la nube), la que se cambió más recientemente. */
+function horNewer(local, remote) { const a = local && +local.at || 0, b = remote && +remote.at || 0; return a > b ? local : null; }
 /** Los días de clase de Asistencia siguen al horario. */
 function horSyncWeekdays() {
   const h = hor();
@@ -6393,55 +6422,93 @@ function renderHomeHorario() {
 
 /* ---------- Diálogos ---------- */
 function horTimesDialog() {
-  const h = horMut();
+  const h0 = horMut();
+  let g = normHorario(JSON.parse(JSON.stringify(h0)));
+  const hm = n => m2hm(n);
+  /** Filas editables: cada hora con su inicio y fin; los recesos salen de los huecos entre horas. */
+  const rowsHTML = () => {
+    const sl = horSlots(g);
+    return `<div class="ht-table">${sl.map(x => x.k === 'h'
+      ? `<div class="ht-row"><b>${x.n}.ª hora</b><label class="pl-num">Inicia<input type="time" data-hs="${x.n}" value="${hm(x.start)}"></label><label class="pl-num">Termina<input type="time" data-he="${x.n}" value="${hm(x.end)}"></label><span class="small muted">${x.min} min</span></div>`
+      : `<div class="ht-row brk"><b>☕</b><input type="text" data-bn="${x.after}" value="${esc(x.name)}" maxlength="30" aria-label="Nombre del receso"><span>${m2h12(x.start)} – ${m2h12(x.end)}</span><span class="small muted">${x.min} min</span></div>`).join('')}</div>
+      <p class="small muted">Entras a las <b>${m2h12(sl[0].start)}</b> y sales a las <b>${m2h12(sl[sl.length - 1].end)}</b>. Los recesos se calculan solos con el espacio entre una hora y la siguiente.</p>`;
+  };
+  const fromRows = ov => {
+    const n = g.n, st = [], en = [];
+    for (let k = 1; k <= n; k++) { st.push(hm2m(ov.querySelector(`[data-hs="${k}"]`).value)); en.push(hm2m(ov.querySelector(`[data-he="${k}"]`).value)); }
+    const names = {}; ov.querySelectorAll('[data-bn]').forEach(i => { names[i.dataset.bn] = i.value.trim(); });
+    for (let k = 0; k < n; k++) { if (!(en[k] > st[k])) return `La ${k + 1}.ª hora termina antes de empezar.`; if (k && st[k] < en[k - 1]) return `La ${k + 1}.ª hora empieza antes de que termine la ${k}.ª.`; }
+    const durs = en.map((e, k) => e - st[k]);
+    const freq = {}; durs.forEach(d => { freq[d] = (freq[d] || 0) + 1; });
+    const min = +Object.keys(freq).sort((a, b) => freq[b] - freq[a])[0];
+    g.start = hm(st[0]); g.min = min; g.dur = durs.map(d => d === min ? 0 : d);
+    g.breaks = []; for (let k = 1; k < n; k++) { const gap = st[k] - en[k - 1]; if (gap > 0) g.breaks.push({ after: k, name: names[k] || (gap >= 45 ? 'Almuerzo' : 'Recreo'), min: gap }); }
+    g = normHorario(g); return '';
+  };
+  const readTop = ov => {
+    const n = parseInt(ov.querySelector('#htN').value, 10), min = parseInt(ov.querySelector('#htMin').value, 10);
+    g.n = n >= 1 && n <= 14 ? n : g.n; if (min >= 10 && min <= 180 && min !== g.min) { g.min = min; g.dur = []; }
+    g.start = ov.querySelector('#htStart').value || g.start;
+    g.days = [...ov.querySelectorAll('[data-htday]:checked')].map(i => +i.dataset.htday);
+    g.split = ['#htS0', '#htS1', '#htS2'].map(s => parseInt(ov.querySelector(s).value, 10) || 0);
+    g.lead = parseInt(ov.querySelector('#htLead').value, 10);
+    g = normHorario(g);
+  };
   const draw = ov => {
-    const g = readTimes(ov), sl = horSlots(g);
-    ov.querySelector('#htPrev').innerHTML = sl.map(s => s.k === 'h' ? `<div class="ht-row"><b>${s.n}</b><span>${m2h12(s.start)} – ${m2h12(s.end)}</span><label class="pl-num">Min<input type="text" inputmode="numeric" data-htd="${s.n}" value="${g.dur[s.n - 1] || ''}" placeholder="${g.min}"></label></div>` : `<div class="ht-row brk"><b>☕</b><span>${esc(s.name)} · ${m2h12(s.start)} – ${m2h12(s.end)}</span><span class="small muted">${s.min} min</span></div>`).join('') + `<p class="small muted">Sales a las <b>${m2h12(sl[sl.length - 1].end)}</b>.</p>`;
+    ov.querySelector('#htRows').innerHTML = rowsHTML();
+    ov.querySelector('#htStart').value = g.start; ov.querySelector('#htMin').value = g.min;
     ov.querySelector('#htSplitPrev').textContent = [45, 90, 135, 180].map(x => `${x} min → ${Object.values(horSplit(x, g)).join(' / ')}`).join(' · ');
-    ov.querySelectorAll('[data-htd]').forEach(i => i.onchange = () => draw(ov));
+    // Al cambiar el inicio o el fin de una hora, las siguientes se corren lo mismo (los recesos se mantienen)
+    ov.querySelectorAll('[data-hs],[data-he]').forEach(i => i.onchange = () => {
+      const isS = 'hs' in i.dataset, k = +(isS ? i.dataset.hs : i.dataset.he), sl = horSlots(g).filter(x => x.k === 'h'), cur = sl[k - 1];
+      const v = hm2m(i.value); if (!i.value) { draw(ov); return; }
+      const delta = isS ? v - cur.start : v - cur.end;
+      if (!delta) return;
+      if (!isS && v <= cur.start) { toast('La hora no puede terminar antes de empezar.', 'error'); draw(ov); return; }
+      if (isS && k > 1 && v < sl[k - 2].end) { toast(`La ${k}.ª hora no puede empezar antes de que termine la ${k - 1}.ª.`, 'error'); draw(ov); return; }
+      if (isS) { if (k === 1) g.start = m2hm(v); else { const b = g.breaks.find(x => x.after === k - 1); const gap = v - sl[k - 2].end; if (b) { if (gap > 0) b.min = gap; else g.breaks = g.breaks.filter(x => x !== b); } else if (gap > 0) g.breaks.push({ after: k - 1, name: gap >= 45 ? 'Almuerzo' : 'Recreo', min: gap }); } }
+      else { const d = Array.from({ length: g.n }, (_, x) => g.dur[x] || g.min); d[k - 1] = cur.min + delta; g.dur = d.map(x => x === g.min ? 0 : x); }
+      g = normHorario(g); draw(ov);
+    });
+    ov.querySelectorAll('[data-bn]').forEach(i => i.onchange = () => { fromRows(ov); });
   };
-  const readTimes = ov => {
-    const dur = [...ov.querySelectorAll('[data-htd]')].map(i => parseInt(i.value, 10) || 0);
-    const breaks = [...ov.querySelectorAll('.ht-brk')].map(r => ({ after: +r.querySelector('[data-hb=after]').value, name: r.querySelector('[data-hb=name]').value, min: parseInt(r.querySelector('[data-hb=min]').value, 10) || 0 })).filter(b => b.min > 0);
-    return normHorario(Object.assign({}, h, {
-      start: ov.querySelector('#htStart').value, n: parseInt(ov.querySelector('#htN').value, 10), min: parseInt(ov.querySelector('#htMin').value, 10),
-      dur: dur.length ? dur : h.dur, breaks, days: [...ov.querySelectorAll('[data-htday]:checked')].map(i => +i.dataset.htday),
-      split: ['#htS0', '#htS1', '#htS2'].map(s => parseInt(ov.querySelector(s).value, 10) || 0), lead: parseInt(ov.querySelector('#htLead').value, 10)
-    }));
-  };
-  const brkRow = (b, n) => `<div class="ht-brk"><label class="pl-num">Después de la hora<select data-hb="after">${Array.from({ length: n - 1 }, (_, i) => `<option ${b.after === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('')}</select></label><input type="text" data-hb="name" value="${esc(b.name)}" maxlength="30"><label class="pl-num">Min<input type="text" inputmode="numeric" data-hb="min" value="${b.min}"></label><button type="button" class="btn btn-ghost btn-icon" data-hbdel title="Quitar">${ICON.trash}</button></div>`;
   openModal({
-    title: 'Horas pedagógicas', icon: '⏱', wide: true, sub: 'Ajústalas a como te las dé el centro. Las horas de cada clase se calculan solas.',
+    title: 'Horas pedagógicas', icon: '⏱', wide: true, sub: 'Escribe la hora en que empieza y termina cada hora de clase, tal como te la dio el centro.',
     body: `<div class="form-grid">
-        <label class="field">Hora de entrada<input type="time" id="htStart" value="${h.start}"></label>
-        <label class="field">Horas por día<input type="text" id="htN" inputmode="numeric" value="${h.n}"></label>
-        <label class="field">Duración de la hora (min)<input type="text" id="htMin" inputmode="numeric" value="${h.min}"></label>
-        <label class="field">Avisarme antes de cada clase (min)<input type="text" id="htLead" inputmode="numeric" value="${h.lead}"><small>0 = no avisar</small></label>
+        <label class="field">Hora de entrada<input type="time" id="htStart" value="${g.start}"></label>
+        <label class="field">Horas por día<input type="text" id="htN" inputmode="numeric" value="${g.n}"></label>
+        <label class="field">Duración de la hora (min)<input type="text" id="htMin" inputmode="numeric" value="${g.min}"></label>
+        <label class="field">Avisarme antes de cada clase (min)<input type="text" id="htLead" inputmode="numeric" value="${g.lead}"><small>0 = no avisar</small></label>
       </div>
-      <div class="field">Días de clase<div class="row-wrap">${Object.entries(HOR_DAYS).map(([k, v]) => `<label class="check"><input type="checkbox" data-htday="${k}" ${h.days.includes(+k) ? 'checked' : ''}> ${v}</label>`).join('')}</div></div>
-      <div class="field">Recesos<div id="htBrks">${h.breaks.map(b => brkRow(b, h.n)).join('')}</div><button type="button" class="btn btn-sm btn-ghost" id="htAddB" style="align-self:flex-start">${ICON.plus} Agregar receso</button></div>
-      <div class="field">Horario resultante <small>Si una hora dura distinto, escribe sus minutos.</small><div id="htPrev" class="ht-prev"></div></div>
+      <div class="row-wrap"><button type="button" class="btn btn-sm btn-secondary" id="htMine">🏫 Usar el horario de mi centro (8:15 · recreo 10:30 · almuerzo 1:15)</button></div>
+      <div class="field">Días de clase<div class="row-wrap">${Object.entries(HOR_DAYS).map(([k, v]) => `<label class="check"><input type="checkbox" data-htday="${k}" ${g.days.includes(+k) ? 'checked' : ''}> ${v}</label>`).join('')}</div></div>
+      <div class="field">Horas de clase y recesos <small>Cambia cualquier hora y las siguientes se corren solas. Los recesos son el espacio entre una hora y otra.</small><div id="htRows"></div></div>
       <div class="field">Reparto de cada clase (minutos por cada hora)
-        <div class="row-wrap"><label class="pl-num">Inicio<input type="text" id="htS0" inputmode="numeric" value="${h.split[0]}"></label><label class="pl-num">Desarrollo<input type="text" id="htS1" inputmode="numeric" value="${h.split[1]}"></label><label class="pl-num">Cierre<input type="text" id="htS2" inputmode="numeric" value="${h.split[2]}"></label></div>
+        <div class="row-wrap"><label class="pl-num">Inicio<input type="text" id="htS0" inputmode="numeric" value="${g.split[0]}"></label><label class="pl-num">Desarrollo<input type="text" id="htS1" inputmode="numeric" value="${g.split[1]}"></label><label class="pl-num">Cierre<input type="text" id="htS2" inputmode="numeric" value="${g.split[2]}"></label></div>
         <small id="htSplitPrev"></small></div>`,
     actions: [{ label: 'Cancelar' }, {
       label: 'Guardar', cls: 'btn-primary', onClick: ov => {
-        const g = readTimes(ov);
+        const err = fromRows(ov); if (err) { toast(err, 'error'); return false; }
+        const keepRows = JSON.parse(JSON.stringify({ start: g.start, min: g.min, dur: g.dur, breaks: g.breaks }));
+        readTop(ov); Object.assign(g, keepRows);
         if (!g.days.length) { toast('Marca al menos un día.', 'error'); return false; }
-        const lost = Object.keys(h.cells).filter(k => { const [wd, n] = k.split('-').map(Number); return n > g.n || !g.days.includes(wd); }).length;
-        g.cells = h.cells; g.colors = h.colors;
+        const lost = Object.keys(h0.cells).filter(k => { const [wd, n] = k.split('-').map(Number); return n > g.n || !g.days.includes(wd); }).length;
+        g.cells = h0.cells; g.colors = h0.colors; g.at = Date.now();
         db.settings.horario = normHorario(g); horSyncWeekdays();
-        persist(); render(); toast(lost ? `Horas guardadas. ${lost} clases quedaron fuera de los días u horas nuevos.` : 'Horas pedagógicas guardadas.', lost ? 'warn' : 'ok', 4000);
+        persist(); render();
+        const sl = horSlots(); toast(lost ? `Horas guardadas. ${lost} clases quedaron fuera de los días u horas nuevos.` : `Horas guardadas: de ${m2h12(sl[0].start)} a ${m2h12(sl[sl.length - 1].end)}.`, lost ? 'warn' : 'ok', 4000);
       }
     }],
     onOpen: ov => {
-      const wire = () => { ov.querySelectorAll('[data-hbdel]').forEach(b => b.onclick = () => { b.closest('.ht-brk').remove(); draw(ov); }); ov.querySelectorAll('.ht-brk input, .ht-brk select').forEach(i => i.onchange = () => draw(ov)); };
-      ov.querySelector('#htAddB').onclick = () => { ov.querySelector('#htBrks').insertAdjacentHTML('beforeend', brkRow({ after: 1, name: 'Receso', min: 15 }, parseInt(ov.querySelector('#htN').value, 10) || h.n)); wire(); draw(ov); };
-      ['#htStart', '#htN', '#htMin', '#htS0', '#htS1', '#htS2'].forEach(s => ov.querySelector(s).addEventListener('change', () => {
-        if (s === '#htN') { const n = parseInt(ov.querySelector('#htN').value, 10) || h.n; ov.querySelectorAll('[data-hb=after]').forEach(sel => { const v = sel.value; sel.innerHTML = Array.from({ length: Math.max(1, n - 1) }, (_, i) => `<option ${+v === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join(''); }); }
+      ['#htStart', '#htN', '#htMin'].forEach(sel => ov.querySelector(sel).addEventListener('change', () => {
+        if (sel === '#htStart') { const d = hm2m(ov.querySelector('#htStart').value) - hm2m(g.start); g.start = ov.querySelector('#htStart').value || g.start; if (!d) return; }
+        else { const n = parseInt(ov.querySelector('#htN').value, 10), min = parseInt(ov.querySelector('#htMin').value, 10);
+          if (n >= 1 && n <= 14) g.n = n; if (min >= 10 && min <= 180 && min !== g.min) { g.min = min; g.dur = []; } g = normHorario(g); }
         draw(ov);
       }));
-      wire(); draw(ov);
+      ['#htS0', '#htS1', '#htS2'].forEach(sel => ov.querySelector(sel).addEventListener('change', () => { g.split = ['#htS0', '#htS1', '#htS2'].map(s => parseInt(ov.querySelector(s).value, 10) || 0); g = normHorario(g); draw(ov); }));
+      ov.querySelector('#htMine').onclick = () => { Object.assign(g, HOR_SCHOOL); g = normHorario(g); ov.querySelector('#htN').value = g.n; draw(ov); toast('Listo: 8:15 a 3:45, recreo de 10:30 a 11:00 y almuerzo de 1:15 a 2:15.', 'ok', 3000); };
+      draw(ov);
     }
   });
 }
@@ -6452,7 +6519,7 @@ function horColorsDialog() {
     body: `<div class="menu-list">${db.modules.map(m => `<div class="hor-colrow"><b>${esc(modShort(m))} ${esc(m.course || '')}</b><div class="row">${HOR_PAL.map(c => `<button type="button" class="hor-sw cat-${c}${horColor(m, h) === c ? ' on' : ''}" data-mid="${m.id}" data-c="${c}" title="${COLOR_NAMES[c] || c}"></button>`).join('')}</div></div>`).join('')}</div>`,
     actions: [{ label: 'Listo', cls: 'btn-primary' }],
     onOpen: ov => ov.querySelectorAll('.hor-sw').forEach(b => b.onclick = () => {
-      horMut().colors[b.dataset.mid] = b.dataset.c; persist(); render();
+      const hh = horMut(); hh.colors[b.dataset.mid] = b.dataset.c; hh.at = Date.now(); persist(); render();
       ov.querySelectorAll(`.hor-sw[data-mid="${b.dataset.mid}"]`).forEach(x => x.classList.toggle('on', x === b));
     })
   });
@@ -6472,11 +6539,11 @@ function horPreset() {
   const miss = Object.keys(HOR_PRESET_COL).filter(k => !by[k.toLowerCase()]);
   const go = () => {
     snapshot('Antes de cargar el horario 2026-2027');
-    const h = horMut(); h.cells = {}; h.n = Math.max(h.n, 8);
+    const h = horMut(); h.cells = {}; Object.assign(h, JSON.parse(JSON.stringify(HOR_SCHOOL))); h.at = Date.now();
     Object.entries(HOR_PRESET).forEach(([wd, row]) => row.forEach((ab, i) => { const m = ab && by[ab.toLowerCase()]; if (m) h.cells[`${wd}-${i + 1}`] = { m: m.id }; }));
     Object.entries(HOR_PRESET_COL).forEach(([ab, c]) => { const m = by[ab.toLowerCase()]; if (m) h.colors[m.id] = c; });
     db.settings.horario = normHorario(h); horSyncWeekdays();
-    persist(); render(); toast(`Horario cargado: ${db.modules.reduce((a, m) => a + horModWeek(m), 0)} horas a la semana. Revisa la hora de entrada y los recesos en «Horas pedagógicas».`, 'ok', 5000);
+    persist(); render(); toast(`Horario cargado: ${db.modules.reduce((a, m) => a + horModWeek(m), 0)} horas a la semana. De 8:15 a 3:45, con recreo y almuerzo; cámbialo en «Horas pedagógicas» si hace falta.`, 'ok', 5000);
   };
   if (miss.length) confirmBox('Faltan módulos', `No encontré estos módulos por su abreviatura: ${miss.join(', ')}. Se cargarán solo los que sí están. ¿Continuar?`, 'Cargar', go, { danger: false });
   else go();
@@ -6513,6 +6580,7 @@ Object.assign(ACTIONS, {
     const val = !b ? null : b.startsWith('t:') ? { t: b.slice(2) } : { m: b };
     const same = cur && val && ((val.m && cur.m === val.m) || (val.t && cur.t === val.t));
     if (!val || same) delete h.cells[k]; else h.cells[k] = val;
+    h.at = Date.now();
     horSyncWeekdays(); persist(); render();
   },
   'hor-open': el => {
@@ -6526,7 +6594,7 @@ Object.assign(ACTIONS, {
   'hor-colors': () => horColorsDialog(),
   'hor-print': () => printHorario(),
   'hor-preset': () => horPreset(),
-  'hor-clear-all': () => confirmBox('Vaciar horario', 'Se quitan todas las clases del horario (las horas pedagógicas se mantienen). Puedes deshacerlo desde Respaldo › Puntos de restauración.', 'Vaciar', () => { snapshot('Antes de vaciar el horario'); horMut().cells = {}; persist(); render(); toast('Horario vacío.', 'ok'); })
+  'hor-clear-all': () => confirmBox('Vaciar horario', 'Se quitan todas las clases del horario (las horas pedagógicas se mantienen). Puedes deshacerlo desde Respaldo › Puntos de restauración.', 'Vaciar', () => { snapshot('Antes de vaciar el horario'); const hh = horMut(); hh.cells = {}; hh.at = Date.now(); persist(); render(); toast('Horario vacío.', 'ok'); })
 });
 
 /* =========================================================
@@ -7153,10 +7221,13 @@ function applyCloud(meta, mods, full) {
     version: (M && M.v) || db.version, settings: M ? M.settings : db.settings, agenda: M ? M.agenda : db.agenda, cal: M ? M.cal : db.cal,
     modules: [...order.filter(id => byId[id]).map(id => byId[id]), ...Object.keys(byId).filter(id => !order.includes(id)).map(id => byId[id])]
   };
+  const keepH = M && typeof horNewer === 'function' ? horNewer(db.settings && db.settings.horario, M.settings && M.settings.horario) : null;
+  if (keepH) next.settings = Object.assign({}, next.settings, { horario: keepH });
   db = normalizeDB(next);
   db.modules.forEach(m => { Cloud.sent['m:' + m.id] = JSON.stringify(m); }); Cloud.sent.meta = cloudMeta();
   if (typeof calRev !== 'undefined') calRev++;
   saveLocalOnly(); render();
+  if (keepH) { Cloud.sent.meta = ''; setTimeout(() => cloudPush(false), 500); }
 }
 function saveLocalOnly() { Cloud._quiet = true; try { saveNow(); } finally { Cloud._quiet = false; } }
 
@@ -7170,7 +7241,9 @@ function cloudListen() {
     if (dirty || cloudMeta() !== Cloud.sent.meta) return; // hay cambios propios sin subir: ganan los nuestros
     try {
       const M = JSON.parse(d.meta); Cloud.sent.meta = d.meta;
-      db.settings = Object.assign(db.settings, M.settings); db.agenda = M.agenda || []; db.cal = M.cal; db = normalizeDB(db); Cloud.sent.meta = cloudMeta();
+      const keepH = typeof horNewer === 'function' ? horNewer(db.settings.horario, M.settings && M.settings.horario) : null;
+      db.settings = Object.assign(db.settings, M.settings); if (keepH) db.settings.horario = keepH; db.agenda = M.agenda || []; db.cal = M.cal; db = normalizeDB(db); Cloud.sent.meta = keepH ? '' : cloudMeta();
+      if (keepH) setTimeout(() => cloudPush(false), 300);
       if (Array.isArray(M.order)) db.modules.sort((a, b) => M.order.indexOf(a.id) - M.order.indexOf(b.id));
       if (typeof calRev !== 'undefined') calRev++;
       saveLocalOnly(); render(); toast('Se actualizaron tus datos desde otro equipo.', 'ok');
@@ -7412,6 +7485,7 @@ function boot() {
 function afterLoad(st) {
   render();
   notifStart();
+  try { if (sessionStorage.getItem('praxisUpdated')) { sessionStorage.removeItem('praxisUpdated'); setTimeout(() => toast(`✨ Praxis Pro se actualizó a la versión ${AppConfig.version}.`, 'ok', 4000), 900); } } catch (e) { }
   try { const g = decodeURIComponent((location.hash.match(/go=([^&]+)/) || [])[1] || ''); if (g) { history.replaceState(null, '', location.pathname); notifGo(g); } } catch (e) { }
   if (st === 'migrated') toast(`Tus datos de la versión anterior se pasaron al nuevo formato (${summarize(db)}).`, 'ok', 5000);
   else if (st === 'corrupt') toast('Los datos guardados estaban dañados. Se apartó una copia; restaura tu último respaldo.', 'error', 8000);
