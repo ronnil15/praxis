@@ -9,8 +9,9 @@
 <title>Aula · Praxis Pro</title>
 <link rel="icon" href="icon-192.png">
 <style>
-:root{--bg:#eef1f8;--card:#fff;--ink:#0f172a;--ink2:#334155;--mut:#64748b;--line:#e2e8f0;--pri:#4f46e5;--pri-d:#3730a3;--pri2:#eef2ff;--ring:#c7d2fe;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--warn:#b45309;--warnb:#fef3c7;--r:18px;--sh:0 1px 2px rgba(15,23,42,.05),0 8px 24px -12px rgba(15,23,42,.18)}
-@media (prefers-color-scheme:dark){:root{--bg:#0b1020;--card:#131a2c;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#243049;--pri:#818cf8;--pri-d:#a5b4fc;--pri2:#1e1b4b;--ring:#3730a3;--okb:#052e16;--badb:#450a0a;--warnb:#451a03;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -12px rgba(0,0,0,.6)}}
+:root{--btn:#4f46e5;--bg:#eef1f8;--card:#fff;--ink:#0f172a;--ink2:#334155;--mut:#64748b;--line:#e2e8f0;--pri:#4f46e5;--pri-d:#3730a3;--pri2:#eef2ff;--ring:#c7d2fe;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--warn:#b45309;--warnb:#fef3c7;--r:18px;--sh:0 1px 2px rgba(15,23,42,.05),0 8px 24px -12px rgba(15,23,42,.18)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--btn:#6366f1;--bg:#0b1020;--card:#131a2c;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#243049;--pri:#818cf8;--pri-d:#a5b4fc;--pri2:#1e1b4b;--ring:#3730a3;--okb:#052e16;--badb:#450a0a;--warnb:#451a03;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -12px rgba(0,0,0,.6)}}
+:root[data-theme=dark]{--btn:#6366f1;--bg:#0b1020;--card:#131a2c;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#243049;--pri:#818cf8;--pri-d:#a5b4fc;--pri2:#1e1b4b;--ring:#3730a3;--okb:#052e16;--badb:#450a0a;--warnb:#451a03;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -12px rgba(0,0,0,.6)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
 .hero{background:linear-gradient(135deg,#312e81 0%,#4f46e5 55%,#7c3aed 100%);color:#fff;padding:18px 16px 64px;position:relative;overflow:hidden}
@@ -32,7 +33,7 @@ input:focus,textarea:focus{border-color:var(--pri);background:var(--card);box-sh
 .pin-in{letter-spacing:.5em;font-weight:800;font-size:22px;text-align:center}
 .row{display:grid;grid-template-columns:104px 1fr;gap:10px}
 button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 18px;font-weight:700;-webkit-tap-highlight-color:transparent}
-.btn{background:var(--pri);color:#fff;width:100%;font-size:17px;margin-top:18px;box-shadow:0 8px 18px -8px var(--pri);transition:transform .1s}
+.btn{background:var(--btn);color:#fff;width:100%;font-size:17px;margin-top:18px;box-shadow:0 8px 18px -8px var(--btn);transition:transform .1s}
 .btn:active{transform:scale(.98)}
 .btn:disabled{opacity:.6}
 .btn2{background:transparent;color:var(--pri);padding:10px 0;font-weight:700;width:100%}
@@ -77,8 +78,12 @@ button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 18px
 .gray{background:var(--line);color:var(--ink)}
 .spin{display:inline-block;width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-3px}
 @keyframes s{to{transform:rotate(360deg)}}
+.thm{position:absolute;top:14px;right:16px;z-index:3;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;display:inline-flex;gap:6px;align-items:center}
+.bar .thm{position:static;background:var(--bg);border-color:var(--line);color:var(--ink);padding:7px 10px}
+html{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<script>(function(){try{var t=localStorage.getItem('praxisAulaTheme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
@@ -110,7 +115,14 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function toks(name) { var o = []; fold(name).split(' ').forEach(function (w) { if (w.length >= 2 && STOP.indexOf(w) < 0 && o.indexOf(w) < 0) o.push(w); }); return o; }
   function hash(s, bits) { var h = 0x811c9dc5; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return bits === 32 ? h.toString(16).padStart(8, '0') : (((h >>> 16) ^ (h & 0xffff)) >>> 0).toString(16).padStart(4, '0'); }
   function meta() { return META || (S && S.meta) || {}; }
-  function hero(sub) { var m = meta(); top.innerHTML = '<div class="hero"><div class="in"><div class="brand">🏫 <b>Aula</b> · Praxis Pro</div>' + (m.title ? '<span class="kind">' + (KINDS[m.kind] || '📝') + ' ' + esc(m.kind || 'Examen') + '</span><h1>' + esc(m.title) + '</h1><p>' + esc(sub || [m.mod, m.course].filter(Boolean).join(' · ')) + '</p>' : '<h1>Aula</h1>') + '</div></div>'; document.body.classList.remove('exam'); top.removeAttribute('style'); }
+  function isDark() { var t = document.documentElement.getAttribute('data-theme'); return t ? t === 'dark' : !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
+  function thmBtn() { return '<button type="button" class="thm" data-thm>' + (isDark() ? '☀️ Día' : '🌙 Noche') + '</button>'; }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-thm]'); if (!b) return;
+    var t = isDark() ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); lsSet('praxisAulaTheme', t);
+    document.querySelectorAll('[data-thm]').forEach(function (x) { x.textContent = isDark() ? '☀️ Día' : '🌙 Noche'; });
+  });
+  function hero(sub) { var m = meta(); top.innerHTML = '<div class="hero">' + thmBtn() + '<div class="in"><div class="brand">🏫 <b>Aula</b> · Praxis Pro</div>' + (m.title ? '<span class="kind">' + (KINDS[m.kind] || '📝') + ' ' + esc(m.kind || 'Examen') + '</span><h1>' + esc(m.title) + '</h1><p>' + esc(sub || [m.mod, m.course].filter(Boolean).join(' · ')) + '</p>' : '<h1>Aula</h1>') + '</div></div>'; document.body.classList.remove('exam'); top.removeAttribute('style'); }
   function screen(html) { app.innerHTML = html; window.scrollTo(0, 0); }
   function fail(t, d) { hero(); screen('<div class="card center"><div class="big">' + (d || '⚠️') + '</div><p>' + t + '</p><button class="btn" onclick="location.reload()">Intentar otra vez</button></div>'); }
   function seedRand(seed) { var x = 0; for (var i = 0; i < seed.length; i++) x = (x * 31 + seed.charCodeAt(i)) >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
@@ -202,7 +214,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function answered() { var n = 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
   function exam() {
     document.body.classList.add('exam');
-    top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div><div class="timer" id="tm">' + (deadline() < Infinity ? '--:--' : '⏱') + '</div></div></div><div class="prog"><div id="pg"></div></div>';
+    top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div>' + thmBtn() + '<div class="timer" id="tm">' + (deadline() < Infinity ? '--:--' : '⏱') + '</div></div></div><div class="prog"><div id="pg"></div></div>';
     top.style.position = 'sticky'; top.style.top = '0'; top.style.zIndex = '5';
     var h = '<div id="wb"></div>';
     if (S.instr) h += '<div class="card"><p class="small" style="margin:0;white-space:pre-wrap">📌 ' + esc(S.instr) + '</p></div>';

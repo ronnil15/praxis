@@ -1601,7 +1601,82 @@ tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7re
 .rx-pin-n { font-weight: 700; margin: 3px 0; }
 .rx-pin-k b { font-family: ui-monospace, monospace; font-size: 20px; letter-spacing: .25em; }
 .rx-pin-f { font-size: 8.5px; color: #666; margin-top: 3px; }
+.ac-date { display: block; font-weight: 500; color: var(--muted); font-size: .78rem; margin-top: .15rem; }
+.ax-when { font-size: .8rem; color: var(--ink-2); margin-top: .35rem; font-weight: 600; }
+.ar-btns { display: flex; gap: .3rem; align-items: center; }
+.aq-dist { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; background: var(--surface-2); border: 1px dashed var(--border-2); border-radius: 12px; padding: .55rem .7rem; margin-bottom: .8rem; font-size: .86rem; font-weight: 700; color: var(--ink-2); }
+.aq-dist input { width: 80px; }
+.aq-dist small { flex-basis: 100%; font-weight: 500; }
+/* Entregas (dona) */
+.aula-kpis { grid-template-columns: minmax(280px, 1.6fr) repeat(3, minmax(130px, 1fr)); }
+.kpi-donut { flex-direction: row; align-items: center; gap: 1.1rem; padding: .7rem 1rem; }
+.donut { width: 112px; height: 112px; flex: none; }
+.donut circle { transition: stroke-dasharray .6s var(--ease, ease); }
+.donut .d-big { font-size: 19px; font-weight: 800; fill: var(--ink); }
+.donut .d-sm { font-size: 8.5px; font-weight: 700; fill: var(--muted); }
+.d-leg { display: flex; flex-direction: column; gap: .3rem; font-size: .84rem; min-width: 0; }
+.d-leg > b { font-size: .68rem; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+.d-leg span { display: flex; align-items: center; gap: .45rem; color: var(--ink-2); }
+.d-leg i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.d-leg em { font-style: normal; font-weight: 800; color: var(--ink); margin-left: auto; padding-left: .8rem; }
+/* Bandeja de archivados */
+.aula-tray { display: flex; flex-direction: column; gap: .6rem; }
+.tray-item { display: grid; grid-template-columns: 64px 1fr auto auto; gap: 1rem; align-items: center; padding: .8rem 1rem; cursor: pointer; position: relative; overflow: hidden; transition: transform .15s, box-shadow .15s; }
+.tray-item::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--kc); }
+.tray-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.tray-item h3 { font-size: 1rem; margin: .2rem 0; }
+.ti-date { text-align: center; background: var(--kc-bg); color: var(--kc); border-radius: 12px; padding: .4rem .2rem; }
+.ti-date b { display: block; font-size: 1.45rem; line-height: 1; }
+.ti-date span { font-size: .68rem; font-weight: 800; text-transform: uppercase; }
+.ti-num { text-align: center; min-width: 74px; }
+.ti-num b { display: block; font-size: 1.15rem; }
+.ti-num span { font-size: .66rem; font-weight: 800; text-transform: uppercase; color: var(--muted); letter-spacing: .4px; }
+.aula-tray-empty { text-align: center; padding: 2rem 1rem; }
+.arch-info { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .5rem; }
+.arch-info div { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: .45rem .65rem; }
+.arch-info span { display: block; font-size: .7rem; color: var(--muted); font-weight: 700; }
+.arch-info b { font-size: .86rem; word-break: break-word; }
+.arch-kpis { display: flex; gap: .6rem; margin: .8rem 0; }
+.arch-kpis div { flex: 1; text-align: center; background: var(--primary-light); border-radius: 12px; padding: .5rem; }
+.arch-kpis b { display: block; font-size: 1.3rem; color: var(--primary); }
+.arch-kpis span { font-size: .68rem; font-weight: 800; text-transform: uppercase; color: var(--muted); }
+.arch-tbl { max-height: 42vh; border: 1px solid var(--border); border-radius: 12px; }
+/* Reportes del Aula (impresión) */
+.rx-big { font-size: 17px; margin: 8px 0; }
+.rx-info { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px 10px; font-size: 10.5px; margin-bottom: 8px; }
+.rx-info div { border-bottom: 1px solid #ddd; padding: 2px 0; }
+.rx-info span { display: block; color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: .3px; }
+.rx-kpis { display: flex; gap: 6px; margin: 6px 0 10px; }
+.rx-kpis div { flex: 1; border: 1px solid #ccc; border-radius: 8px; text-align: center; padding: 5px; }
+.rx-kpis b { display: block; font-size: 15px; } .rx-kpis span { font-size: 9px; color: #555; text-transform: uppercase; }
+.rx-res td, .rx-res th { font-size: 10.5px; text-align: center; padding: 3px 5px; }
+.rx-res .l { text-align: left; }
+.rx-res tr.rx-none td { color: #888; }
+.rx-c { font-size: 9px; font-weight: 800; text-transform: uppercase; padding: 1px 6px; border-radius: 99px; }
+.rx-c.ok { background: #dcfce7; color: #15803d; } .rx-c.mid { background: #fef3c7; color: #b45309; } .rx-c.bad { background: #fee2e2; color: #b91c1c; } .rx-c.none { color: #888; }
+.rx-qbars { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; font-size: 10px; }
+.rx-qbars div { display: grid; grid-template-columns: 26px 70px 30px 1fr; gap: 5px; align-items: center; }
+.rx-qbars i { height: 7px; background: #e5e7eb; border-radius: 9px; overflow: hidden; display: block; }
+.rx-qbars em { display: block; height: 100%; }
+.rx-qbars small { color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rx-stu { display: grid; grid-template-columns: 1.3fr 1.5fr auto auto; gap: 8px; align-items: stretch; margin: 8px 0 12px; }
+.rx-stu > div { border: 1px solid #ccc; border-radius: 8px; padding: 6px 9px; }
+.rx-stu span { display: block; font-size: 9px; text-transform: uppercase; color: #666; letter-spacing: .3px; }
+.rx-stu b { font-size: 13px; } .rx-stu small { display: block; font-size: 9.5px; color: #555; }
+.rx-score2 { text-align: center; } .rx-score2 b { font-size: 16px; }
+.rx-score2.main { border: 2px solid #111 !important; }
+.rx-got { font-size: 10.5px; font-weight: 800; white-space: nowrap; padding: 1px 7px; border-radius: 99px; background: #f3f4f6; }
+.rx-q-ok .rx-got { background: #dcfce7; color: #15803d; } .rx-q-bad .rx-got { background: #fee2e2; color: #b91c1c; } .rx-q-half .rx-got { background: #fef3c7; color: #b45309; }
+.rx-q-ok .rx-num { background: #15803d; } .rx-q-bad .rx-num { background: #b91c1c; } .rx-q-half .rx-num { background: #d97706; }
+.rx-opts1 { grid-template-columns: 1fr; }
+.rx-opts li em { font-style: normal; font-size: 10px; color: #4f46e5; font-weight: 700; }
+.rx-wrong { color: #b91c1c; text-decoration: line-through; text-decoration-color: rgba(185,28,28,.5); }
+.rx-wrong em { text-decoration: none; display: inline-block; }
+.rx-ans { margin: 4px 0 0 28px; font-size: 11.5px; }
+.rx-open { margin: 4px 0 0 28px; font-size: 11.5px; border: 1px solid #ccc; border-radius: 6px; padding: 6px 8px; white-space: pre-wrap; min-height: 40px; }
+@media (max-width: 900px) { .aula-kpis { grid-template-columns: 1fr 1fr; } .kpi-donut { grid-column: 1 / -1; } }
 @media (max-width: 640px) {
+  .tray-item { grid-template-columns: 54px 1fr; } .ti-num { display: none; }
   .aula-hero { padding: 1.15rem 1.1rem; border-radius: 16px; }
   .aula-hero h2 { font-size: 1.4rem; }
   .ah-acts { width: 100%; min-width: 0; }
@@ -1837,6 +1912,7 @@ function normalizeModule(m) {
   nm.plan = nm.plan ? normPlan(nm.plan) : null;
   nm.aula = typeof normAulaList === 'function' ? normAulaList(nm.aula) : (Array.isArray(nm.aula) ? nm.aula : []);
   nm.aulaPins = typeof normAulaPins === 'function' ? normAulaPins(nm.aulaPins) : (nm.aulaPins || {});
+  nm.aulaArch = typeof normAulaArch === 'function' ? normAulaArch(nm.aulaArch) : (Array.isArray(nm.aulaArch) ? nm.aulaArch : []);
   nm.ras = (Array.isArray(nm.ras) ? nm.ras : []).map((r, i) => {
     const nr = Object.assign({ id: uid(), name: `RA ${i + 1}`, w: 0, cats: [] }, r);
     nr.id = String(nr.id);
@@ -7880,7 +7956,7 @@ function normAula(e) {
     dur: Math.max(0, Math.min(600, parseInt(e.dur, 10) || 0)), shuffle: e.shuffle !== false, withCode: !!e.withCode,
     to: normAulaTo(e.to), oneDev: e.oneDev !== false, pin: !!e.pin, unlock: String(e.unlock || ''),
     status: ['draft', 'open', 'closed'].includes(e.status) ? e.status : 'draft', code: String(e.code || ''), pub: String(e.pub || ''), until: String(e.until || ''),
-    kdocs: Array.isArray(e.kdocs) ? e.kdocs.map(String) : [],
+    kdocs: Array.isArray(e.kdocs) ? e.kdocs.map(String) : [], openedAt: String(e.openedAt || ''), lastOpen: String(e.lastOpen || ''), closedAt: String(e.closedAt || ''),
     auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
     resp: {}, marks: {}, applied: {}, map: {}
   };
@@ -7891,6 +7967,7 @@ function normAula(e) {
   return ne;
 }
 function normAulaList(a) { return (Array.isArray(a) ? a : []).map(normAula).filter(Boolean); }
+function normAulaArch(a) { return (Array.isArray(a) ? a : []).filter(x => x && typeof x === 'object' && x.id && x.title).slice(-300); }
 function normAulaPins(p) { const o = {}; if (p && typeof p === 'object') Object.entries(p).forEach(([k, v]) => { if (/^\d{4}$/.test(String(v))) o[k] = String(v); }); return o; }
 
 /* ---------- Utilidades ---------- */
@@ -8034,6 +8111,7 @@ async function aulaPublish(m, ex) {
   const until = ex.until ? new Date(ex.until) : new Date(Date.now() + 3 * 3600e3);
   await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, v: 2, upd: FV.serverTimestamp() }), 15000);
   const ros = {}; list.forEach(s => { ros[s.num] = aulaToks(s.name).map(t => aulaHash(ex.pub + ':' + t)); });
+  const oldCode = ex._old; delete ex._old;
   await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })) }), 15000);
   // Permisos para entregar: uno por estudiante asignado (con su clave si se pide)
   const want = list.map(s => `${s.num}-${ex.pin ? m.aulaPins[s.id] : ''}`);
@@ -8042,11 +8120,13 @@ async function aulaPublish(m, ex) {
   ex.kdocs.filter(k => !want.includes(k)).forEach(k => { b.delete(ref.collection('k').doc(k)); n++; });
   if (n) await withTimeout(b.commit(), 20000);
   ex.kdocs = want;
+  // Código nuevo en cada apertura: el código y el QR viejos (una foto, por ejemplo) dejan de servir
+  if (oldCode && oldCode !== ex.code) await ref.collection('q').doc(oldCode).delete().catch(() => { });
 }
 async function aulaSetStatus(m, ex, status, until) {
-  const prev = [ex.status, ex.until];
+  const prev = [ex.status, ex.until, ex.code, ex.unlock, ex.openedAt, ex.lastOpen, ex.closedAt];
   ex.status = status; if (until) ex.until = until;
-  try { await aulaPublish(m, ex); } catch (e) { [ex.status, ex.until] = prev; throw e; }
+  try { await aulaPublish(m, ex); } catch (e) { [ex.status, ex.until, ex.code, ex.unlock, ex.openedAt, ex.lastOpen, ex.closedAt] = prev; throw e; }
 }
 async function aulaDeleteCloud(ex) {
   if (!aulaCloudOK() || !ex.pub) return;
@@ -8100,12 +8180,13 @@ function renderAula(m) {
   if (ex) return renderAulaExam(m, ex);
   state.aulaSel = null;
   const all = (m.aula || []).slice().sort((a, b) => (b.created || '').localeCompare(a.created || ''));
-  const cnt = { all: all.length, open: 0, draft: 0, closed: 0 }; all.forEach(e => { cnt[aulaState(e)]++; });
+  const arch = (m.aulaArch || []).slice().sort((a, b) => (b.archivedAt || '').localeCompare(a.archivedAt || ''));
+  const cnt = { all: all.length, open: 0, draft: 0, closed: 0, arch: arch.length }; all.forEach(e => { cnt[aulaState(e)]++; });
   const f = cnt[state.aulaF] !== undefined ? state.aulaF || 'all' : 'all';
-  const list = f === 'all' ? all : all.filter(e => aulaState(e) === f);
+  const list = f === 'all' ? all : f === 'arch' ? [] : all.filter(e => aulaState(e) === f);
   const pend = all.reduce((a, e) => a + Object.keys(e.resp).filter(k => aulaScore(e, k).pending).length, 0);
   const cloud = aulaCloudOK();
-  const chips = [['all', 'Todos'], ['open', 'Abiertos'], ['draft', 'Borradores'], ['closed', 'Cerrados']].map(([k, l]) => `<button class="aula-chip ${f === k ? 'on' : ''}" data-act="aula-filter" data-id="${k}">${l} <span>${cnt[k]}</span></button>`).join('');
+  const chips = [['all', 'Todos'], ['open', 'Abiertos'], ['draft', 'Borradores'], ['closed', 'Cerrados'], ['arch', '🗄️ Archivados']].map(([k, l]) => `<button class="aula-chip ${f === k ? 'on' : ''}" data-act="aula-filter" data-id="${k}">${l} <span>${cnt[k]}</span></button>`).join('');
   return `<div class="aula">
     <section class="aula-hero">
       <div class="ah-txt">
@@ -8121,8 +8202,8 @@ function renderAula(m) {
       </div>
     </section>
     ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Aquí puedes preparar, importar e imprimir exámenes; para abrirlos a los estudiantes entra en la versión web con internet.</div></div>`}
-    ${all.length ? `<div class="aula-chips">${chips}</div>` : ''}
-    ${list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : all.length ? `<p class="muted aula-none">No hay exámenes en «${esc({ open: 'Abiertos', draft: 'Borradores', closed: 'Cerrados' }[f])}».</p>` : `<div class="aula-empty card">
+    ${all.length || arch.length ? `<div class="aula-chips">${chips}</div>` : ''}
+    ${f === 'arch' ? aulaTrayHTML(m, arch) : list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : all.length ? `<p class="muted aula-none">No hay exámenes en «${esc({ open: 'Abiertos', draft: 'Borradores', closed: 'Cerrados' }[f])}».</p>` : `<div class="aula-empty card">
       <div class="ae-art">📝</div>
       <h3>Tu aula está lista para el primer examen</h3>
       <ol class="aula-steps">
@@ -8142,7 +8223,7 @@ function aulaCard(m, e) {
     <div class="ac-top"><span class="ac-kind">${AULA_KINDS[e.kind]} ${esc(e.kind)}</span><span class="ac-st st-${st.dot}"><i></i>${esc(st.label)}</span></div>
     <h3>${esc(e.title)}</h3>
     <div class="ac-meta"><span>${e.qs.length} preg.</span><span>${fmtN(aulaTotal(e))} pts</span>${e.dur ? `<span>${e.dur} min</span>` : ''}${e.pin ? '<span title="Pide clave personal">🔑</span>' : ''}</div>
-    <div class="ac-to">${esc(aulaToLabel(m, e))}</div>
+    <div class="ac-to">${esc(aulaToLabel(m, e))}${e.openedAt ? `<span class="ac-date">📅 ${esc(aulaWhen(e.openedAt))}</span>` : ''}</div>
     <div class="ac-dest">${t ? `➜ ${esc(aulaTargetLabel(m, t))}` : '<span class="muted">Sin casilla del registro</span>'}</div>
     <div class="ac-foot"><div class="ac-bar"><div style="width:${p}%"></div></div><span><b>${n}</b>/${tot}</span>${pend ? `<span class="badge warn">${pend} por corregir</span>` : ''}</div>
   </article>`;
@@ -8176,6 +8257,7 @@ function renderAulaExam(m, ex) {
         <div class="ax-row"><span class="ac-kind">${AULA_KINDS[ex.kind]} ${esc(ex.kind)}</span><span class="ac-st st-${st.dot}"><i></i>${esc(st.label)}</span></div>
         <h2>${esc(ex.title)}</h2>
         <div class="ac-meta"><span>${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'}</span><span>${fmtN(aulaTotal(ex))} pts</span><span>${ex.dur ? ex.dur + ' min por estudiante' : 'sin límite de tiempo'}</span><span>${esc(aulaToLabel(m, ex))}</span>${ex.pin ? '<span>🔑 con clave</span>' : ''}${ex.oneDev ? '<span>📱 un celular, una entrega</span>' : ''}</div>
+        ${ex.openedAt ? `<div class="ax-when">📅 Aplicado ${esc(aulaWhen(ex.openedAt))}${ex.closedAt || (ex.status !== 'draft' && !open && ex.until) ? ' · cerró ' + esc(aulaHM(ex.closedAt || ex.until)) : ''}</div>` : ''}
       </div>
       ${ex.code && ex.status !== 'draft' ? `<div class="ax-code"><span>Código</span><b>${esc(ex.code)}</b>${ex.oneDev && open ? `<small title="Escríbelo tú en el celular que comparten dos estudiantes">Celular compartido: <b>${esc(ex.unlock)}</b></small>` : ''}</div>` : ''}
     </section>
@@ -8187,6 +8269,8 @@ function renderAulaExam(m, ex) {
       <details class="aula-menu"><summary class="btn btn-secondary">⬇ Exportar</summary><div class="am-pop">
         <button data-act="aula-pdf" data-id="${ex.id}">📄 PDF para los estudiantes<small>Para imprimir o guardar como PDF</small></button>
         <button data-act="aula-pdf-key" data-id="${ex.id}">🔑 PDF con respuestas<small>Clave de corrección para ti</small></button>
+        <button data-act="aula-report" data-id="${ex.id}">📊 Reporte de calificaciones<small>Nota de cada estudiante y estadísticas (PDF)</small></button>
+        <button data-act="aula-stu-pdf-all" data-id="${ex.id}">🧾 Detalle de cada estudiante<small>Una hoja por estudiante con sus respuestas (PDF)</small></button>
         <button data-act="aula-txt-copy" data-id="${ex.id}">🤖 Copiar para la IA<small>Texto con preguntas y respuestas</small></button>
         <button data-act="aula-txt-dl" data-id="${ex.id}">💾 Descargar texto (.txt)<small>Se puede volver a importar</small></button>
       </div></details>
@@ -8199,7 +8283,7 @@ function renderAulaExam(m, ex) {
     ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para abrirlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo, exportarlo e imprimirlo.</div></div>`}
     ${AulaLive.err && AulaLive.xid === ex.id ? `<div class="alert alert-bad"><div><strong>No se pudieron leer las entregas.</strong> ${AulaLive.err.includes('permission') ? 'Falta activar las reglas del Aula en Firebase.' : 'Revisa tu conexión.'} <small class="muted">(${esc(AulaLive.err)})</small></div></div>` : ''}
     <div class="aula-kpis">
-      <div class="kpi kpi-ring"><div class="ring" style="--p:${pct}"><b>${nums.length}</b><small>/${asg.length}</small></div><span>entregaron</span></div>
+      ${aulaDonutKPI(nums.length - pend, pend, asg.length)}
       <div class="kpi"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
       <div class="kpi"><b style="color:var(--${pend ? 'gold' : 'ok'})">${pend}</b><span>Por corregir</span></div>
       <div class="kpi"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0)}</b><span>Salidas de la página</span></div>
@@ -8229,7 +8313,7 @@ function aulaRow(m, ex, s, num, sc, known) {
     <td>${nota}</td>
     <td>${r.blurs ? `<span class="badge ${r.blurs > 2 ? 'bad' : 'warn'}">${r.blurs}</span>` : '0'}</td>
     <td class="small">${r.sentAt ? new Date(r.sentAt).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : '—'}${usedMin !== null ? `<div class="muted">${usedMin} min</div>` : ''}</td>
-    <td><button class="btn btn-sm ${sc.pending ? 'btn-primary' : 'btn-secondary'}" data-act="aula-review" data-id="${ex.id}" data-num="${num}">${sc.pending ? 'Corregir' : 'Ver'}</button></td>
+    <td><div class="ar-btns"><button class="btn btn-sm ${sc.pending ? 'btn-primary' : 'btn-secondary'}" data-act="aula-review" data-id="${ex.id}" data-num="${num}">${sc.pending ? 'Corregir' : 'Ver'}</button>${sc.pending ? '' : `<button class="btn btn-sm btn-ghost" data-act="aula-stu-pdf" data-id="${ex.id}" data-num="${num}" title="PDF con el examen de este estudiante">📄 PDF</button>`}</div></td>
   </tr>`;
 }
 
@@ -8296,6 +8380,7 @@ function aulaEditor(id, preset) {
         <label class="check"><input type="checkbox" id="aePin" ${ex.pin ? 'checked' : ''}> Pedir la clave personal de 4 números <span class="muted small">(nadie puede entrar con el número de otro)</span></label>
         <p class="muted small">Siempre: el nombre debe corresponder al número de la lista y cada número entrega una sola vez.</p></div>
       <div class="ae-sec"><div class="aq-head"><h4>4 · Preguntas</h4><span class="muted small" id="aqTotal"></span></div>
+      <div class="aq-dist"><span>⚖️ Repartir</span><input type="number" id="aeVal" min="1" max="500" step="1" inputmode="numeric" data-noenter><span>puntos</span><button type="button" class="btn btn-sm btn-secondary" data-dist="eq">Igual para todas</button><button type="button" class="btn btn-sm btn-secondary" data-dist="type">Según el tipo</button><small class="muted">«Según el tipo»: desarrollo vale el triple y respuesta corta 1½ veces una de selección.</small></div>
       <div id="aqList" class="aq-list"></div>
       <div class="row-wrap aq-add">${Object.entries(AQ_TYPES).map(([k, l]) => `<button type="button" class="btn btn-sm btn-secondary" data-aqadd="${k}">${ICON.plus} ${l}</button>`).join('')}</div></div>`,
     actions: [{ label: 'Cancelar' }, {
@@ -8328,6 +8413,13 @@ function aulaEditor(id, preset) {
     }],
     onOpen: ov => {
       draw(ov); drawTo(ov);
+      { const t0 = aulaTarget(m, ex); ov.querySelector('#aeVal').value = t0 ? t0.c.max : (aulaTotal(ex) || 10); }
+      ov.querySelectorAll('[data-dist]').forEach(b => b.onclick = () => {
+        const V = parseNum(ov.querySelector('#aeVal').value);
+        if (!isNum(V) || V <= 0) return toast('Escribe el valor total del examen.', 'error');
+        if (!ex.qs.length) return toast('Agrega preguntas primero.', 'error');
+        aulaDistribute(ex.qs, V, b.dataset.dist); draw(ov); toast(`Listo: ${ex.qs.length} preguntas suman ${fmtN(aulaTotal(ex))} puntos.`, 'ok');
+      });
       ov.querySelectorAll('[data-tomode]').forEach(b => b.onclick = () => { ex.to.mode = b.dataset.tomode; if (ex.to.mode === 'group' && !ex.to.gs && groups.length) { const [gs, gi] = groups[0].v.split('|'); ex.to.gs = gs; ex.to.gi = +gi; } drawTo(ov); });
       const kindSel = ov.querySelector('#aeKind'), act = ov.querySelector('#aeAct');
       // Sugerencia: la primera casilla libre del mismo tipo (Examen → Examen 1, 2…), sin pisar lo que elijas tú
@@ -8336,7 +8428,8 @@ function aulaEditor(id, preset) {
       const suggest = () => { const x = actSlots(m).find(z => z.type === typeOf() && !usedK.has(z.key)); return x ? x.key : ''; };
       let manual = !!ex.actKey;
       if (!manual) { const k = suggest(); if (k) act.value = k; }
-      act.addEventListener('change', () => { manual = true; });
+      { const t1 = act.value && resolveAct(act.value); if (t1 && !ex.qs.some(q => q._touched)) ov.querySelector('#aeVal').value = t1.c.max; }
+      act.addEventListener('change', () => { manual = true; const t1 = act.value && resolveAct(act.value); if (t1) ov.querySelector('#aeVal').value = t1.c.max; });
       kindSel.onchange = () => { const cur = act.value; act.innerHTML = actOptionsHTML(m, { type: typeOf(), selected: cur, empty: 'Ninguna (solo ver resultados)' }); if (!manual) act.value = suggest(); };
       const list = ov.querySelector('#aqList');
       list.addEventListener('input', e => {
@@ -8385,7 +8478,7 @@ function aulaStartDialog(id, extend = false) {
     sub: `${ex.title} · ${modShort(m)}${m.course ? ' · ' + m.course : ''} · ${aulaToLabel(m, ex)}`,
     body: `<label class="field">Recibe entregas hasta<input type="datetime-local" id="asUntil" value="${dtLocal(def)}"></label>
       <div class="row-wrap">${(extend ? [5, 10, 15, 30] : [30, 45, 60, 90, 120]).map(x => `<button type="button" class="btn btn-sm btn-ghost" data-plus="${x}">${extend ? '+' : ''}${x} min</button>`).join('')}</div>
-      ${extend ? '' : `<label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del QR (no tendrán que escribirlo)</label>
+      ${extend ? '' : `<p class="muted small">🔒 Se crea un <b>código y un QR nuevos</b> cada vez que lo abres: los de antes (o una foto) ya no sirven.</p><label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del QR (no tendrán que escribirlo)</label>
       <p class="muted small">Si no lo marcas, les dices el código en voz alta o lo escribes en la pizarra: así nadie de fuera puede entrar solo con el enlace.</p>
       ${ex.pin ? '<p class="muted small">🔑 Pedirá la clave personal: entrégales sus tarjetas (Aula › Claves de estudiantes).</p>' : ''}`}
       ${ex.dur ? `<p class="muted small">Cada estudiante tendrá ${ex.dur} minutos desde que empiece.</p>` : ''}`,
@@ -8393,7 +8486,12 @@ function aulaStartDialog(id, extend = false) {
       label: extend ? 'Extender' : '🚀 Abrir ahora', cls: 'btn-primary', onClick: (ov, close) => {
         const v = ov.querySelector('#asUntil').value; const d = v ? new Date(v) : null;
         if (!d || isNaN(d) || d <= new Date()) { toast('Elige una hora que todavía no haya pasado.', 'error'); return false; }
-        if (!extend) ex.withCode = ov.querySelector('#asCode').checked;
+        if (!extend) {
+          ex.withCode = ov.querySelector('#asCode').checked;
+          if (ex.code) ex._old = ex.code;
+          ex.code = aulaCode(); ex.unlock = aulaRand(4); // código y QR nuevos en cada apertura
+          const now = new Date().toISOString(); if (!ex.openedAt) ex.openedAt = now; ex.lastOpen = now; ex.closedAt = '';
+        }
         const btn = ov.querySelector('.modal-foot .btn-primary'); btn.disabled = true; btn.textContent = 'Publicando…';
         aulaSetStatus(m, ex, 'open', d.toISOString()).then(() => {
           persist(); close(); render(); toast(extend ? 'Tiempo extendido.' : '¡Abierto! Muestra el QR a tus estudiantes.', 'ok', 3200);
@@ -8417,7 +8515,8 @@ function aulaErr(e) {
 function aulaClose(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
   confirmBox('¿Cerrar ahora?', 'Nadie más podrá entregar. Quien esté respondiendo y no haya entregado no podrá enviar (puedes volver a abrirlo).', 'Cerrar', () => {
-    aulaSetStatus(m, ex, 'closed').then(() => { persist(); render(); toast('Cerrado.', 'ok'); }).catch(e => toast(aulaErr(e), 'error', 5000));
+    const was = ex.closedAt; ex.closedAt = new Date().toISOString();
+    aulaSetStatus(m, ex, 'closed').then(() => { persist(); render(); toast('Cerrado.', 'ok'); }).catch(e => { ex.closedAt = was; throw e; }).catch(e => toast(aulaErr(e), 'error', 5000));
   });
 }
 let _qrLoad = null;
@@ -8488,6 +8587,7 @@ function aulaReview(id, num) {
       <p class="muted small">${t ? `La nota se calcula sobre ${fmtN(t.c.max)} y pasa a ${esc(aulaTargetLabel(m, t))}.` : 'Este examen no está vinculado a una casilla del registro.'}</p>`,
     actions: [
       { label: '↺ Permitir otro intento', cls: 'btn-ghost', onClick: () => { aulaRetake(ex, num); } },
+      { label: '📄 PDF', cls: 'btn-ghost', onClick: () => { if (aulaScore(ex, num).pending) { toast('Primero termina de corregir y guarda.', 'warn'); return false; } aulaStudentPDF(m, ex, [num]); } },
       { label: 'Cancelar' },
       {
         label: 'Guardar', cls: 'btn-primary', onClick: ov => {
@@ -8784,10 +8884,11 @@ function aulaReadImport(txt) {
 function aulaArchive(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
   const n = Object.keys(ex.resp).length;
-  confirmBox('¿Archivar este examen?', `Se descarga un archivo con las preguntas, respuestas correctas${n ? ', las ' + n + ' entregas' : ''} y notas, y se quita del Aula${ex.pub ? ' (y de la nube)' : ''} para liberar espacio. Las notas del registro se quedan. Guarda bien el archivo: con él lo puedes restaurar en «Crear con IA / Importar».`, 'Archivar', () => {
+  confirmBox('¿Archivar este examen?', `Se descarga un archivo con las preguntas, respuestas correctas${n ? ', las ' + n + ' entregas' : ''} y notas, y se quita del Aula${ex.pub ? ' (y de la nube)' : ''} para liberar espacio. En la bandeja «Archivados» quedan la fecha, la hora, la casilla y la nota de cada estudiante. Las notas del registro se quedan. Guarda bien el archivo: con él lo puedes restaurar completo.`, 'Archivar', () => {
+    const file = `Aula_${aulaFileName(modShort(m))}_${aulaFileName(ex.title)}_${isoLocal(new Date())}.json`;
     const data = { app: 'Praxis Pro', kind: 'aula-exam', v: 1, exported: new Date().toISOString(), module: { id: m.id, name: m.name, abbr: modShort(m), course: m.course || '' }, exam: JSON.parse(JSON.stringify(ex)) };
-    downloadFile(`Aula_${aulaFileName(modShort(m))}_${aulaFileName(ex.title)}_${isoLocal(new Date())}.json`, JSON.stringify(data), 'application/json');
-    const go = () => { m.aula = m.aula.filter(x => x.id !== ex.id); state.aulaSel = null; aulaUnwatch(); persist(); render(); toast('Archivado. Revisa tus Descargas.', 'ok', 3500); };
+    downloadFile(file, JSON.stringify(data), 'application/json');
+    const go = () => { m.aulaArch = (m.aulaArch || []).filter(x => x.id !== ex.id).concat([(sm => Object.assign(sm, { archivedAt: new Date().toISOString(), file, closedAt: sm.closedAt || (sm.openedAt ? new Date().toISOString() : '') }))(aulaSummary(m, ex))]); m.aula = m.aula.filter(x => x.id !== ex.id); state.aulaSel = null; aulaUnwatch(); persist(); render(); toast('Archivado: queda en la bandeja «Archivados» y el archivo en tus Descargas.', 'ok', 4500); };
     if (ex.pub && aulaCloudOK()) aulaDeleteCloud(ex).then(go).catch(() => { go(); toast('Archivado, pero no se pudo borrar de la nube ahora (sin conexión).', 'warn', 4500); });
     else go();
   }, { danger: false });
@@ -8796,7 +8897,7 @@ function aulaRestore(m, a) {
   const e = normAula(a.exam); if (!e) return toast('Ese archivo no es un examen del Aula.', 'error');
   if ((m.aula || []).some(x => x.id === e.id)) e.id = uid();
   e.status = e.status === 'draft' ? 'draft' : 'closed'; e.pub = ''; e.code = ''; e.kdocs = []; e.until = '';
-  m.aula = m.aula || []; m.aula.push(e); state.aulaSel = e.id; persist(); render();
+  m.aula = m.aula || []; m.aula.push(e); m.aulaArch = (m.aulaArch || []).filter(x => x.id !== a.exam.id); state.aulaF = 'all'; state.aulaSel = e.id; persist(); render();
   toast(`Restaurado${a.module && a.module.id !== m.id ? ' (venía de ' + (a.module.abbr || 'otro módulo') + ')' : ''}: ${e.title}.`, 'ok', 3500);
 }
 
@@ -8819,6 +8920,10 @@ Object.assign(ACTIONS, {
   'aula-pdf-key': el => { aulaCloseMenus(); aulaPrint(el.dataset.id, true); },
   'aula-txt-copy': el => { aulaCloseMenus(); const ex = aulaFind(curMod(), el.dataset.id); if (ex) aulaCopy(aulaToText(ex, true), 'Examen copiado con sus respuestas. Pégalo en la IA.'); },
   'aula-txt-dl': el => { aulaCloseMenus(); const m = curMod(), ex = aulaFind(m, el.dataset.id); if (ex) downloadFile(`${aulaFileName(ex.title)}.txt`, aulaToText(ex, true), 'text/plain;charset=utf-8'); },
+  'aula-report': el => { aulaCloseMenus(); const m = curMod(), ex = aulaFind(m, el.dataset.id); if (ex) aulaReportPDF(m, aulaSummary(m, ex)); },
+  'aula-stu-pdf': el => { const m = curMod(), ex = aulaFind(m, el.dataset.id); if (ex) aulaStudentPDF(m, ex, [el.dataset.num]); },
+  'aula-stu-pdf-all': el => { aulaCloseMenus(); const m = curMod(), ex = aulaFind(m, el.dataset.id); if (!ex) return; const nums = Object.keys(ex.resp).filter(k => !aulaScore(ex, k).pending).sort((a, b) => ((aulaStudent(m, ex, a) || {}).num || +a) - ((aulaStudent(m, ex, b) || {}).num || +b)); if (!nums.length) return toast('Todavía no hay entregas corregidas.', 'info'); aulaStudentPDF(m, ex, nums); },
+  'aula-arch-open': el => aulaArchDialog(el.dataset.id),
   'aula-archive': el => { aulaCloseMenus(); aulaArchive(el.dataset.id); },
   'aula-dup': el => {
     aulaCloseMenus();
@@ -8846,6 +8951,148 @@ document.addEventListener('change', e => {
   const r = ex.auto ? aulaApply(m, ex) : { n: 0 };
   persist(); render(); toast(ex.auto ? (r.n ? `Activado · ${r.n} notas pasadas al registro.` : 'Activado: las notas pasarán solas al registro.') : 'Desactivado: usa «Pasar notas ahora» cuando quieras.', 'ok', 3200);
 });
+
+/* ---------- Fechas legibles ---------- */
+function aulaWhen(iso) {
+  const d = new Date(iso); if (isNaN(d)) return '';
+  const wd = d.toLocaleDateString('es-DO', { weekday: 'short' }).replace('.', '');
+  return `${wd} ${fmtDateY(isoLocal(d))} · ${d.toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' })}`;
+}
+
+/* ---------- Repartir puntos ---------- */
+function aulaDistribute(qs, V, mode) {
+  const W = { mc: 1, tf: 1, short: 1.5, open: 3 };
+  const w = qs.map(q => mode === 'type' ? W[q.t] : 1), sw = w.reduce((a, b) => a + b, 0);
+  qs.forEach((q, i) => { q.pts = Math.max(0.25, Math.round(V * w[i] / sw * 4) / 4); });
+  let diff = Math.round((V - qs.reduce((a, q) => a + q.pts, 0)) * 4) / 4;
+  // Ajuste fino para que la suma sea exacta (de a 0.25 en las de más peso)
+  const order = qs.map((q, i) => i).sort((a, b) => w[b] - w[a]);
+  for (let k = 0; Math.abs(diff) >= 0.25 && k < 400; k++) { const q = qs[order[k % order.length]]; const step = diff > 0 ? 0.25 : -0.25; if (q.pts + step >= 0.25) { q.pts = r2(q.pts + step); diff = r2(diff - step); } }
+}
+
+/* ---------- Resumen del examen (para reportes y la bandeja) ---------- */
+function aulaCond(pct) { return pct >= 70 ? { cls: 'ok', label: 'Logrado' } : pct >= 60 ? { cls: 'mid', label: 'En proceso' } : { cls: 'bad', label: 'No logrado' }; }
+function aulaSummary(m, ex) {
+  const t = aulaTarget(m, ex), asg = aulaAssigned(m, ex), seen = new Set();
+  const nums = Object.keys(ex.resp);
+  const row = (s, num) => {
+    const r = num !== undefined ? ex.resp[num] : null;
+    if (!r) return { num: s.num, name: s.name, sent: false };
+    const sc = aulaScore(ex, num), pct = sc.total ? r2(sc.got / sc.total * 100) : 0;
+    return { num: s ? s.num : +num, name: s ? s.name : r.name, typed: r.name, sent: true, got: sc.got, total: sc.total, pending: sc.pending, pct, grade: !sc.pending && t ? aulaScaled(m, ex, sc) : null, blurs: r.blurs || 0, min: r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null, at: r.sentAt || 0 };
+  };
+  const rows = asg.map(s => { const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; }); if (num !== undefined) seen.add(num); return row(s, num); });
+  nums.filter(k => !seen.has(k)).forEach(k => rows.push(row(aulaStudent(m, ex, k), k)));
+  const done = rows.filter(r => r.sent && !r.pending);
+  const avg = done.length ? r2(done.reduce((a, r) => a + r.pct, 0) / done.length) : null;
+  const qstats = ex.qs.map((q, i) => {
+    if (q.t === 'open' || !nums.length) return { n: i + 1, text: q.text, t: q.t, pct: null };
+    const ok = nums.filter(k => { const p = aulaScore(ex, k).per[q.id]; return p && p.pts >= q.pts; }).length;
+    return { n: i + 1, text: q.text, t: q.t, pct: Math.round(ok / nums.length * 100) };
+  });
+  return {
+    id: ex.id, title: ex.title, kind: ex.kind, mod: modShort(m), modName: modFull(m), course: m.course || '', to: aulaToLabel(m, ex),
+    target: t ? aulaTargetLabel(m, t) : '', max: t ? t.c.max : null, openedAt: ex.openedAt || '', closedAt: ex.closedAt || (ex.status !== 'draft' && !aulaIsOpen(ex) ? ex.until : ''),
+    nq: ex.qs.length, pts: aulaTotal(ex), dur: ex.dur, assigned: asg.length, delivered: nums.length, graded: done.length, avg,
+    best: done.length ? Math.max(...done.map(r => r.pct)) : null, worst: done.length ? Math.min(...done.map(r => r.pct)) : null,
+    ok: done.filter(r => r.pct >= 70).length, rows: rows.map(r => r.sent ? r : { num: r.num, name: r.name, sent: false }), qstats
+  };
+}
+
+/* ---------- Reporte de calificaciones (PDF) ---------- */
+function aulaReportPDF(m, S) {
+  const cnd = r => r.sent ? (r.pending ? '<span class="rx-c mid">Por corregir</span>' : `<span class="rx-c ${aulaCond(r.pct).cls}">${aulaCond(r.pct).label}</span>`) : '<span class="rx-c none">No entregó</span>';
+  const rows = S.rows.slice().sort((a, b) => a.num - b.num).map(r => `<tr${r.sent ? '' : ' class="rx-none"'}><td>${r.num}</td><td class="l">${esc(r.name)}</td><td>${r.sent ? `${fmtN(r.got)} / ${fmtN(r.total)}` : '—'}</td><td>${r.sent && !r.pending ? Math.round(r.pct) + '%' : '—'}</td>${S.max ? `<td><b>${r.sent && isNum(r.grade) ? fmtN(r.grade) : '—'}</b></td>` : ''}<td>${cnd(r)}</td><td>${r.sent ? r.blurs : ''}</td><td>${r.sent && r.min !== null ? r.min + ' min' : ''}</td></tr>`).join('');
+  const qs = S.qstats.filter(q => q.pct !== null);
+  const info = [['Módulo', `${S.mod} · ${S.modName}`], ['Curso', S.course || '—'], ['Tipo', S.kind], ['Aplicado', S.openedAt ? aulaWhen(S.openedAt) : 'Sin aplicar'], ['Cerró', S.closedAt ? aulaWhen(S.closedAt) : (S.openedAt ? 'Abierto' : '—')], ['Casilla del registro', S.target ? `${S.target} (sobre ${fmtN(S.max)})` : 'Sin vincular'], ['Preguntas', `${S.nq} · ${fmtN(S.pts)} puntos${S.dur ? ' · ' + S.dur + ' min' : ''}`], ['Asignado a', S.to]];
+  printHTML(`<section class="rp-page rx">${reportHead(m, 'Reporte de calificaciones')}
+    <h2 class="rx-big">${AULA_KINDS[S.kind] || ''} ${esc(S.title)}</h2>
+    <div class="rx-info">${info.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join('')}</div>
+    <div class="rx-kpis"><div><b>${S.delivered}/${S.assigned}</b><span>Entregaron</span></div><div><b>${S.avg === null ? '—' : Math.round(S.avg) + '%'}</b><span>Promedio</span></div><div><b>${S.ok}</b><span>Logrados (≥ 70 %)</span></div><div><b>${S.best === null ? '—' : Math.round(S.best) + '%'}</b><span>Más alto</span></div><div><b>${S.worst === null ? '—' : Math.round(S.worst) + '%'}</b><span>Más bajo</span></div></div>
+    <table class="rp-table rx-res"><thead><tr><th>Nº</th><th class="l">Estudiante</th><th>Puntos</th><th>%</th>${S.max ? `<th>Nota /${fmtN(S.max)}</th>` : ''}<th>Condición</th><th>Salidas</th><th>Tiempo</th></tr></thead><tbody>${rows}</tbody></table>
+    ${qs.length ? `<h3 class="rp-h3">Aciertos por pregunta</h3><div class="rx-qbars">${qs.map(q => `<div><span>P${q.n}</span><i><em style="width:${q.pct}%;background:${q.pct >= 70 ? '#15803d' : q.pct >= 50 ? '#d97706' : '#b91c1c'}"></em></i><b>${q.pct}%</b><small>${esc(q.text.slice(0, 70))}</small></div>`).join('')}</div>` : ''}
+    ${signLine()}</section>`, 'portrait');
+}
+
+/* ---------- Examen detallado de cada estudiante (PDF) ---------- */
+function aulaStudentPDF(m, ex, nums) {
+  const t = aulaTarget(m, ex), L = 'ABCDEFGH';
+  const pages = nums.map(num => {
+    const r = ex.resp[num]; if (!r) return '';
+    const s = aulaStudent(m, ex, num), sc = aulaScore(ex, num), pct = sc.total ? sc.got / sc.total * 100 : 0, c = aulaCond(pct);
+    const v = t && !sc.pending ? aulaScaled(m, ex, sc) : null;
+    const qs = ex.qs.map((q, i) => {
+      const a = (r.answers || {})[q.id], p = sc.per[q.id] || {}, empty = a === undefined || a === null || a === '';
+      const st = p.pts === null ? 'pend' : p.pts >= q.pts ? 'ok' : p.pts > 0 ? 'half' : 'bad';
+      let body = '';
+      if (q.t === 'mc') body = `<ol class="rx-opts rx-opts1">${q.opts.map((o, j) => `<li class="${j === q.ok ? 'rx-ok' : ''} ${!empty && +a === j && j !== q.ok ? 'rx-wrong' : ''}"><span class="rx-b">${L[j].toLowerCase()}</span>${esc(o)}${!empty && +a === j ? ' <em>← su respuesta</em>' : ''}${j === q.ok ? ' ✓' : ''}</li>`).join('')}</ol>`;
+      else if (q.t === 'tf') body = `<div class="rx-ans">Respondió: <b>${empty ? '(sin responder)' : (a === true || a === 'true') ? 'Verdadero' : 'Falso'}</b> · Correcta: <b>${q.ok ? 'Verdadero' : 'Falso'}</b></div>`;
+      else if (q.t === 'short') body = `<div class="rx-ans">Respondió: <b>${empty ? '(sin responder)' : esc(a)}</b>${q.acc.length ? ` · Aceptadas: ${esc(q.acc.join(' · '))}` : ''}</div>`;
+      else body = `<div class="rx-open">${empty ? '<i>(sin responder)</i>' : esc(a)}</div>`;
+      return `<div class="rx-q rx-q-${st}"><div class="rx-qh"><span class="rx-num">${i + 1}</span><div class="rx-txt">${esc(q.text)}</div><span class="rx-got">${p.pts === null ? '?' : fmtN(p.pts)} / ${fmtN(q.pts)}</span></div>${body}</div>`;
+    }).join('');
+    return `<section class="rp-page rx">${reportHead(m, 'Examen del estudiante')}
+      <div class="rx-stu"><div><span>Estudiante</span><b>${s ? s.num + '. ' + esc(s.name) : esc(r.name)}</b>${s && !aulaNameOk(s, r) ? `<small>Escribió: ${esc(r.name)}</small>` : ''}</div>
+        <div><span>${esc(ex.kind)}</span><b>${esc(ex.title)}</b><small>${r.sentAt ? 'Entregado ' + esc(aulaWhen(new Date(r.sentAt).toISOString())) : ''}${r.sentAt && r.startedAt ? ' · ' + Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) + ' min' : ''}${r.blurs ? ' · salió ' + r.blurs + ' ' + (r.blurs === 1 ? 'vez' : 'veces') : ''}</small></div>
+        <div class="rx-score2"><span>Puntos</span><b>${fmtN(sc.got)} / ${fmtN(sc.total)}</b><small>${Math.round(pct)}% · ${c.label}</small></div>
+        ${t ? `<div class="rx-score2 main"><span>Nota · ${esc(aulaTargetLabel(m, t))}</span><b>${v === null ? '—' : fmtN(v)} / ${fmtN(t.c.max)}</b></div>` : ''}</div>
+      <div class="rx-qs">${qs}</div>
+      <div class="rp-sign"><div>Firma del docente</div><div>Firma del estudiante</div></div></section>`;
+  }).join('');
+  printHTML(pages, 'portrait');
+  toast('En la ventana de impresión elige «Guardar como PDF» si lo quieres en PDF.', 'info', 4500);
+}
+
+/* ---------- Gráfico de entregas ---------- */
+function aulaDonutKPI(done, pend, total) {
+  const R = 40, C = 2 * Math.PI * R, rest = Math.max(0, total - done - pend);
+  const seg = (n, off, col) => n > 0 && total ? `<circle r="${R}" cx="50" cy="50" fill="none" stroke="${col}" stroke-width="13" stroke-linecap="${n === total ? 'butt' : 'round'}" stroke-dasharray="${Math.max(0, n / total * C - (n === total ? 0 : 2)).toFixed(2)} ${C.toFixed(2)}" stroke-dashoffset="${(-off / total * C).toFixed(2)}" transform="rotate(-90 50 50)"/>` : '';
+  const pct = total ? Math.round((done + pend) / total * 100) : 0;
+  return `<div class="kpi kpi-donut">
+    <svg viewBox="0 0 100 100" class="donut" role="img" aria-label="${done + pend} de ${total} entregaron"><circle r="${R}" cx="50" cy="50" fill="none" stroke="var(--track)" stroke-width="13"/>${seg(done, 0, 'var(--ok)')}${seg(pend, done, 'var(--gold)')}
+      <text x="50" y="49" text-anchor="middle" class="d-big">${pct}%</text><text x="50" y="63" text-anchor="middle" class="d-sm">${done + pend} de ${total}</text></svg>
+    <div class="d-leg"><b>Entregas</b>
+      <span><i style="background:var(--ok)"></i>Corregidas <em>${done}</em></span>
+      <span><i style="background:var(--gold)"></i>Por corregir <em>${pend}</em></span>
+      <span><i style="background:var(--track)"></i>Sin entregar <em>${rest}</em></span></div>
+  </div>`;
+}
+
+/* ---------- Bandeja de archivados ---------- */
+function aulaTrayHTML(m, arch) {
+  if (!arch.length) return `<div class="aula-tray-empty card"><div class="ae-art">🗄️</div><p><strong>La bandeja está vacía.</strong></p><p class="muted small">Cuando archives un examen (⋯ Más › Archivar) quedará aquí con su fecha, hora, casilla del registro y la nota de cada estudiante.</p></div>`;
+  return `<div class="aula-tray">${arch.map(a => `<article class="tray-item card ${AULA_KCLS[a.kind] || 'k-exam'}" data-act="aula-arch-open" data-id="${esc(a.id)}" role="button" tabindex="0">
+      <div class="ti-date">${a.openedAt ? `<b>${new Date(a.openedAt).getDate()}</b><span>${new Date(a.openedAt).toLocaleDateString('es-DO', { month: 'short' }).replace('.', '')} ${new Date(a.openedAt).getFullYear()}</span>` : '<b>—</b><span>sin aplicar</span>'}</div>
+      <div class="ti-main"><div class="ac-top"><span class="ac-kind">${AULA_KINDS[a.kind] || '📝'} ${esc(a.kind)}</span><span class="muted small">Archivado ${esc(fmtDateY(isoLocal(new Date(a.archivedAt))))}</span></div>
+        <h3>${esc(a.title)}</h3>
+        <div class="ac-meta">${a.openedAt ? `<span>🕒 ${esc(new Date(a.openedAt).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }))}</span>` : ''}<span>${esc(a.target || 'Sin casilla del registro')}</span><span>${esc(a.to || '')}</span></div></div>
+      <div class="ti-num"><b>${a.delivered}/${a.assigned}</b><span>entregaron</span></div>
+      <div class="ti-num"><b>${a.avg === null || a.avg === undefined ? '—' : Math.round(a.avg) + '%'}</b><span>promedio</span></div>
+    </article>`).join('')}</div>`;
+}
+function aulaArchDialog(id) {
+  const m = curMod(), a = (m.aulaArch || []).find(x => x.id === id); if (!a) return;
+  const rows = (a.rows || []).slice().sort((x, y) => x.num - y.num).map(r => `<tr${r.sent ? '' : ' class="ar-none"'}><td>${r.num}</td><td>${esc(r.name)}</td><td>${r.sent ? fmtN(r.got) + '/' + fmtN(r.total) : '—'}</td><td>${r.sent && !r.pending ? Math.round(r.pct) + '%' : '—'}</td>${a.max ? `<td>${r.sent && isNum(r.grade) ? `<b>${fmtN(r.grade)}</b>` : '—'}</td>` : ''}<td>${r.sent ? (r.pending ? '<span class="badge warn">Por corregir</span>' : `<span class="badge ${aulaCond(r.pct).cls === 'mid' ? 'warn' : aulaCond(r.pct).cls}">${aulaCond(r.pct).label}</span>`) : '<span class="badge neutral">No entregó</span>'}</td></tr>`).join('');
+  const info = [['📅 Aplicado', a.openedAt ? aulaWhen(a.openedAt) : 'Sin aplicar'], ['⏹ Cerró', a.closedAt ? aulaWhen(a.closedAt) : '—'], ['🗄️ Archivado', a.archivedAt ? aulaWhen(a.archivedAt) : '—'], ['📘 Módulo', `${a.mod} · ${a.course}`], ['↧ Casilla', a.target ? `${a.target} (sobre ${fmtN(a.max)})` : 'Sin vincular'], ['❓ Preguntas', `${a.nq} · ${fmtN(a.pts)} pts${a.dur ? ' · ' + a.dur + ' min' : ''}`], ['👥 Asignado a', a.to || '—'], ['💾 Archivo', a.file || '—']];
+  openModal({
+    title: a.title, icon: '🗄️', wide: true, sub: `${a.kind} archivado · ${a.mod}${a.course ? ' · ' + a.course : ''}`,
+    body: `<div class="arch-info">${info.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join('')}</div>
+      <div class="arch-kpis"><div><b>${a.delivered}/${a.assigned}</b><span>entregaron</span></div><div><b>${a.avg === null ? '—' : Math.round(a.avg) + '%'}</b><span>promedio</span></div><div><b>${a.ok}</b><span>logrados</span></div></div>
+      <div class="table-wrap arch-tbl"><table class="tbl"><thead><tr><th>Nº</th><th>Estudiante</th><th>Puntos</th><th>%</th>${a.max ? `<th>Nota /${fmtN(a.max)}</th>` : ''}<th>Condición</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="muted small">Para volver a tener el examen completo (preguntas y respuestas de cada estudiante) en el Aula, restáuralo con su archivo .json.</p>
+      <input type="file" id="arFile" accept=".json,application/json" hidden>`,
+    actions: [
+      { label: 'Quitar de la bandeja', cls: 'btn-ghost', onClick: (ov, close) => { confirmBox('¿Quitar de la bandeja?', 'Solo se borra este resumen. El archivo .json que descargaste sigue en tu equipo.', 'Quitar', () => { m.aulaArch = m.aulaArch.filter(x => x.id !== a.id); persist(); close(); render(); toast('Quitado de la bandeja.', 'ok'); }); return false; } },
+      { label: '♻️ Restaurar (.json)', cls: 'btn-secondary', onClick: ov => { ov.querySelector('#arFile').click(); return false; } },
+      { label: '📊 Reporte PDF', cls: 'btn-primary', onClick: () => { aulaReportPDF(m, a); return false; } }],
+    onOpen: (ov, close) => {
+      ov.querySelector('#arFile').onchange = e => {
+        const f = e.target.files[0]; if (!f) return;
+        const rd = new FileReader(); rd.onload = () => { const r = aulaReadImport(String(rd.result || '')); if (!r.archive) return toast('Ese archivo no es un examen archivado.', 'error'); close(); aulaRestore(m, r.archive); }; rd.readAsText(f);
+      };
+    }
+  });
+}
 
 /* =========================================================
    Reportes imprimibles (PDF sin internet) y exportación CSV
