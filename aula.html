@@ -3,89 +3,121 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#312e81">
 <meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
 <title>Aula · Praxis Pro</title>
 <link rel="icon" href="icon-192.png">
 <style>
-:root{--bg:#f1f5f9;--card:#fff;--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--pri:#4f46e5;--pri2:#eef2ff;--ok:#16a34a;--okb:#dcfce7;--bad:#dc2626;--badb:#fee2e2;--warn:#d97706;--warnb:#fef3c7;--r:14px}
-@media (prefers-color-scheme:dark){:root{--bg:#0b1120;--card:#111827;--ink:#e5e7eb;--mut:#94a3b8;--line:#1f2937;--pri:#818cf8;--pri2:#1e1b4b;--okb:#052e16;--badb:#450a0a;--warnb:#451a03}}
+:root{--bg:#eef1f8;--card:#fff;--ink:#0f172a;--ink2:#334155;--mut:#64748b;--line:#e2e8f0;--pri:#4f46e5;--pri-d:#3730a3;--pri2:#eef2ff;--ring:#c7d2fe;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--warn:#b45309;--warnb:#fef3c7;--r:18px;--sh:0 1px 2px rgba(15,23,42,.05),0 8px 24px -12px rgba(15,23,42,.18)}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1020;--card:#131a2c;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#243049;--pri:#818cf8;--pri-d:#a5b4fc;--pri2:#1e1b4b;--ring:#3730a3;--okb:#052e16;--badb:#450a0a;--warnb:#451a03;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -12px rgba(0,0,0,.6)}}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
-main{max-width:720px;margin:0 auto;padding:16px 16px 120px}
-.brand{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:13px;margin:4px 0 12px}
-.brand b{color:var(--ink)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:0 0 14px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-h1{font-size:22px;line-height:1.25;margin:0 0 4px}
+.hero{background:linear-gradient(135deg,#312e81 0%,#4f46e5 55%,#7c3aed 100%);color:#fff;padding:18px 16px 64px;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero .in{max-width:680px;margin:0 auto;position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;margin-bottom:14px}
+.brand b{font-weight:800;letter-spacing:.3px}
+.kind{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:99px}
+.hero h1{font-size:26px;line-height:1.2;margin:10px 0 4px;letter-spacing:-.3px}
+.hero p{margin:0;opacity:.85;font-size:14px}
+main{max-width:680px;margin:-44px auto 0;padding:0 16px 130px;position:relative;z-index:2}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 14px;box-shadow:var(--sh)}
+h2{font-size:19px;margin:0 0 4px}
 .sub{color:var(--mut);font-size:14px;margin:0}
-label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
-input[type=text],input[type=number],textarea{width:100%;font:inherit;color:inherit;background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;outline:none}
-input:focus,textarea:focus{border-color:var(--pri);background:var(--card)}
-#code{text-transform:uppercase;letter-spacing:.25em;font-weight:700;font-size:20px;text-align:center}
-.row{display:grid;grid-template-columns:110px 1fr;gap:10px}
-button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:13px 18px;font-weight:600}
-.btn{background:var(--pri);color:#fff;width:100%;font-size:17px;margin-top:18px}
+label.f{display:block;font-weight:700;font-size:13px;margin:16px 0 6px;color:var(--ink2)}
+input[type=text],input[type=number],input[type=password],textarea{width:100%;font:inherit;color:inherit;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus{border-color:var(--pri);background:var(--card);box-shadow:0 0 0 4px var(--pri2)}
+.code-in{text-transform:uppercase;letter-spacing:.3em;font-weight:800;font-size:22px;text-align:center}
+.pin-in{letter-spacing:.5em;font-weight:800;font-size:22px;text-align:center}
+.row{display:grid;grid-template-columns:104px 1fr;gap:10px}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 18px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.btn{background:var(--pri);color:#fff;width:100%;font-size:17px;margin-top:18px;box-shadow:0 8px 18px -8px var(--pri);transition:transform .1s}
+.btn:active{transform:scale(.98)}
 .btn:disabled{opacity:.6}
-.btn2{background:transparent;color:var(--pri);padding:8px 0;font-weight:600}
-.msg{padding:12px 14px;border-radius:10px;margin:12px 0 0;font-size:15px}
+.btn2{background:transparent;color:var(--pri);padding:10px 0;font-weight:700;width:100%}
+.msg{padding:12px 14px;border-radius:12px;margin:12px 0 0;font-size:15px}
 .msg.bad{background:var(--badb);color:var(--bad)}.msg.ok{background:var(--okb);color:var(--ok)}.msg.warn{background:var(--warnb);color:var(--warn)}
-.bar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);margin:-16px -16px 14px;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.tips{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none;font-size:14px;color:var(--mut)}
+.tips li{display:flex;gap:10px;align-items:flex-start}
+.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 16px}
+.bar .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
 .bar .t{flex:1;min-width:0}.bar .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}.bar .t span{font-size:12px;color:var(--mut)}
-.timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:18px;padding:6px 10px;border-radius:10px;background:var(--pri2);color:var(--pri)}
-.timer.low{background:var(--badb);color:var(--bad)}
-.prog{height:4px;background:var(--line);margin:-14px -16px 14px;position:sticky;top:57px;z-index:5}.prog div{height:100%;background:var(--pri);transition:width .3s}
-.q .n{font-size:13px;color:var(--mut);font-weight:600;display:flex;justify-content:space-between}
-.q .tx{font-size:17px;font-weight:600;margin:6px 0 12px;white-space:pre-wrap}
-.op{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;margin:8px 0;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.op input{margin:3px 0 0;width:20px;height:20px;accent-color:var(--pri);flex:none}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:18px;padding:7px 12px;border-radius:12px;background:var(--pri2);color:var(--pri)}
+.timer.low{background:var(--badb);color:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.6}}
+.prog{height:4px;background:var(--line)}.prog div{height:100%;background:linear-gradient(90deg,var(--pri),#7c3aed);transition:width .3s}
+.exam main{margin-top:14px}
+.q .n{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut);font-weight:700}
+.q .n i{font-style:normal;width:30px;height:30px;border-radius:10px;background:var(--pri2);color:var(--pri);display:grid;place-items:center;font-size:14px}
+.q.done .n i{background:var(--pri);color:#fff}
+.q .n span{margin-left:auto;background:var(--bg);padding:2px 9px;border-radius:99px;font-size:12px}
+.q .tx{font-size:17px;font-weight:650;margin:12px 0 14px;white-space:pre-wrap}
+.op{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;margin:8px 0;cursor:pointer;transition:border-color .15s,background .15s}
+.op input{position:absolute;opacity:0;pointer-events:none}
+.op .l{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--mut);transition:all .15s}
 .op.on{border-color:var(--pri);background:var(--pri2)}
-.op .l{font-weight:700;color:var(--mut)}
-.tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tf .op{justify-content:center;font-weight:600}
-.cnt{font-size:12px;color:var(--mut);text-align:right}
-.foot{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
-.foot .in{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px}.foot .btn{margin:0;width:auto;flex:1}
-.saved{font-size:12px;color:var(--mut);min-width:90px}
-.warnb{position:sticky;top:62px;z-index:4}
-.big{font-size:56px;text-align:center;margin:8px 0}
+.op.on .l{background:var(--pri);border-color:var(--pri);color:#fff}
+.op span.t{padding-top:2px}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tf .op{justify-content:center;align-items:center;font-weight:700;margin:0}
+.cnt{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.foot .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}.foot .btn{margin:0;width:auto;flex:1}
+.saved{font-size:12px;color:var(--mut);min-width:96px;line-height:1.3}
+#wb:empty{display:none}
 .center{text-align:center}
+.big{font-size:54px;line-height:1;margin:6px 0 12px}
+.done-ic{width:84px;height:84px;border-radius:50%;background:var(--okb);color:var(--ok);display:grid;place-items:center;font-size:44px;margin:4px auto 14px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
 .small{font-size:13px;color:var(--mut)}
 .ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px}
-.ov .card{width:100%;max-width:480px;margin:0}
+.ov .card{width:100%;max-width:480px;margin:0;animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(30px);opacity:0}}
 .ov .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ov .two button{margin-top:16px}
 .gray{background:var(--line);color:var(--ink)}
 .spin{display:inline-block;width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-3px}
 @keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 
 </head>
 <body>
+<div id="top"></div>
 <main id="app"><div class="card center"><span class="spin"></span> Cargando…</div></main>
 <script>
 var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDomain":"praxis-pro-a65b2.firebaseapp.com","projectId":"praxis-pro-a65b2","storageBucket":"praxis-pro-a65b2.firebasestorage.app","messagingSenderId":"788262926679","appId":"1:788262926679:web:61d814e54cb27c825da612"};
 (function () {
   'use strict';
   var $ = function (s) { return document.querySelector(s); };
-  var app = $('#app');
+  var app = $('#app'), top = $('#top');
   var P = new URLSearchParams(location.search);
   var EID = (P.get('e') || '').replace(/[^A-Za-z0-9]/g, '');
-  var KEY = 'praxisAula:' + EID;
+  var KEY = 'praxisAula:' + EID, DEV = 'praxisAulaDev:' + EID;
+  var STOP = ['de', 'del', 'la', 'las', 'los', 'el', 'y', 'da', 'do', 'dos', 'das', 'san', 'mc'];
+  var KINDS = { 'Examen': '📝', 'Práctica': '🛠️', 'Quiz': '⚡', 'Tarea': '📚' };
   var S = load();
   var META = null, db = null, tick = null, sending = null, retry = null;
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
   function save() { try { if (S) { S.savedAt = Date.now(); localStorage.setItem(KEY, JSON.stringify(S)); } } catch (e) { } }
-  function brand() { return '<div class="brand">🏫 <b>Aula</b> · Praxis Pro</div>'; }
-  function head() { var m = META || (S && S.meta) || {}; return '<div class="card"><h1>' + esc(m.title || 'Examen') + '</h1><p class="sub">' + esc([m.kind, m.mod, m.course].filter(Boolean).join(' · ')) + '</p></div>'; }
-  function screen(html) { app.innerHTML = brand() + html; window.scrollTo(0, 0); }
-  function fail(t, d) { screen(head() + '<div class="card center"><div class="big">' + (d || '⚠️') + '</div><p>' + t + '</p><button class="btn" onclick="location.reload()">Intentar otra vez</button></div>'); }
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  // Igual que en Praxis Pro: palabras del nombre y huella corta
+  function fold(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+  function toks(name) { var o = []; fold(name).split(' ').forEach(function (w) { if (w.length >= 2 && STOP.indexOf(w) < 0 && o.indexOf(w) < 0) o.push(w); }); return o; }
+  function hash(s, bits) { var h = 0x811c9dc5; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return bits === 32 ? h.toString(16).padStart(8, '0') : (((h >>> 16) ^ (h & 0xffff)) >>> 0).toString(16).padStart(4, '0'); }
+  function meta() { return META || (S && S.meta) || {}; }
+  function hero(sub) { var m = meta(); top.innerHTML = '<div class="hero"><div class="in"><div class="brand">🏫 <b>Aula</b> · Praxis Pro</div>' + (m.title ? '<span class="kind">' + (KINDS[m.kind] || '📝') + ' ' + esc(m.kind || 'Examen') + '</span><h1>' + esc(m.title) + '</h1><p>' + esc(sub || [m.mod, m.course].filter(Boolean).join(' · ')) + '</p>' : '<h1>Aula</h1>') + '</div></div>'; document.body.classList.remove('exam'); top.removeAttribute('style'); }
+  function screen(html) { app.innerHTML = html; window.scrollTo(0, 0); }
+  function fail(t, d) { hero(); screen('<div class="card center"><div class="big">' + (d || '⚠️') + '</div><p>' + t + '</p><button class="btn" onclick="location.reload()">Intentar otra vez</button></div>'); }
   function seedRand(seed) { var x = 0; for (var i = 0; i < seed.length; i++) x = (x * 31 + seed.charCodeAt(i)) >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
   function shuffle(a, rnd) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function deadline() { var d = Infinity; if (S && S.dur) d = S.startedAt + S.dur * 60000; if (S && S.until) d = Math.min(d, S.until - 15000); return d; }
 
-  if (!EID) { screen('<div class="card center"><div class="big">🔗</div><p>El enlace está incompleto. Pídele a tu profesor el enlace o el QR otra vez.</p></div>'); return; }
+  if (!EID) { hero(); screen('<div class="card center"><div class="big">🔗</div><p>El enlace está incompleto. Pídele a tu profesor el enlace o el QR otra vez.</p></div>'); return; }
   try { firebase.initializeApp(CLOUD_CONFIG); db = firebase.firestore(); } catch (e) { fail('No se pudo cargar. Revisa tu internet.', '📶'); return; }
 
   // Si ya empezó en este teléfono, sigue donde se quedó (aunque no haya internet)
@@ -98,62 +130,92 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function refreshMeta() { db.collection('aula').doc(EID).get().then(function (d) { if (d.exists) { META = d.data(); if (S) { S.until = META.until && META.until.toMillis ? META.until.toMillis() : S.until; save(); } } }).catch(function () { }); }
 
   function start() {
+    hero();
     db.collection('aula').doc(EID).get().then(function (d) {
       if (!d.exists) { screen('<div class="card center"><div class="big">🗂️</div><p>Este examen no existe o tu profesor lo eliminó.</p></div>'); return; }
-      META = d.data();
+      META = d.data(); hero();
       var until = META.until && META.until.toMillis ? META.until.toMillis() : 0;
-      if (META.status !== 'open' || (until && until < Date.now())) { screen(head() + '<div class="card center"><div class="big">🔒</div><p><b>' + (META.status === 'draft' ? 'Todavía no está abierto.' : 'Ya está cerrado.') + '</b></p><p class="small">Espera a que tu profesor lo abra y vuelve a intentar.</p><button class="btn" onclick="location.reload()">Volver a intentar</button></div>'); return; }
+      if (META.status !== 'open' || (until && until < Date.now())) { screen('<div class="card center"><div class="big">🔒</div><h2>' + (META.status === 'draft' ? 'Todavía no está abierto' : 'Ya está cerrado') + '</h2><p class="small">Espera a que tu profesor lo abra y vuelve a intentar.</p><button class="btn" onclick="location.reload()">Volver a intentar</button></div>'); return; }
       join(until);
     }).catch(function (e) { fail(String(e && e.code || '').indexOf('unavailable') >= 0 || !navigator.onLine ? 'Sin conexión a internet. Conéctate y vuelve a intentar.' : 'No se pudo abrir el examen (' + esc(e && e.code || e) + ').', '📶'); });
   }
 
   function join(until) {
     var pc = (P.get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-    var last = {}; try { last = JSON.parse(localStorage.getItem('praxisAulaMe') || '{}'); } catch (e) { }
-    screen(head() + '<form class="card" id="jf" autocomplete="off">' +
-      (pc ? '<input type="hidden" id="code" value="' + esc(pc) + '">' : '<label class="f" for="code">Código del examen</label><input type="text" id="code" maxlength="8" placeholder="ABC123" autocapitalize="characters" spellcheck="false">') +
+    var last = {}; try { last = JSON.parse(lsGet('praxisAulaMe') || '{}'); } catch (e) { }
+    screen('<form class="card" id="jf" autocomplete="off" novalidate><h2>Antes de empezar</h2><p class="sub">Escribe tus datos tal como están en la lista del curso.</p>' +
+      (pc ? '<input type="hidden" id="code" value="' + esc(pc) + '">' : '<label class="f" for="code">Código del examen</label><input type="text" id="code" class="code-in" maxlength="8" placeholder="······" autocapitalize="characters" spellcheck="false">') +
       '<div class="row"><div><label class="f" for="num">Nº de lista</label><input type="number" id="num" min="1" max="199" inputmode="numeric" value="' + esc(last.num || '') + '"></div>' +
       '<div><label class="f" for="nm">Nombre y apellido</label><input type="text" id="nm" maxlength="80" autocomplete="name" value="' + esc(last.name || '') + '"></div></div>' +
-      (META.dur ? '<p class="small">⏱️ Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</p>' : '') +
-      '<p class="small">👀 No salgas de esta página mientras respondas: tu profesor verá cuántas veces saliste.</p>' +
+      (META.pin ? '<label class="f" for="pin">Tu clave personal</label><input type="password" id="pin" class="pin-in" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="····" autocomplete="off">' : '') +
+      '<ul class="tips">' + (META.dur ? '<li>⏱️ <span>Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</span></li>' : '') + '<li>👀 <span>No salgas de esta página: tu profesor verá cuántas veces saliste.</span></li><li>💾 <span>Tus respuestas se guardan en el teléfono mientras respondes.</span></li></ul>' +
       '<div id="jm"></div><button class="btn" id="jb">Comenzar</button></form>');
     $('#jf').onsubmit = function (ev) {
       ev.preventDefault();
       var code = ($('#code').value || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), num = parseInt($('#num').value, 10), name = $('#nm').value.trim().replace(/\s+/g, ' ');
+      var pin = META.pin ? ($('#pin').value || '').replace(/\D/g, '') : '';
       var msg = function (t) { $('#jm').innerHTML = '<div class="msg bad">' + t + '</div>'; };
       if (!code) return msg('Escribe el código que te dio tu profesor.');
       if (!(num >= 1 && num <= 199)) return msg('Escribe tu número de lista.');
       if (name.split(' ').length < 2) return msg('Escribe tu nombre y tu apellido.');
-      var b = $('#jb'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Abriendo…';
+      if (META.pin && pin.length !== 4) return msg('Escribe tu clave personal de 4 números.');
+      var b = $('#jb'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Comprobando…';
+      var reset = function () { b.disabled = false; b.textContent = 'Comenzar'; };
       db.collection('aula').doc(EID).collection('q').doc(code).get().then(function (d) {
         if (!d.exists) throw { code: 'permission-denied' };
-        var X = d.data(), rnd = seedRand(EID + ':' + num);
-        var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, rnd) : o }; });
-        if (X.shuffle) qs = shuffle(qs, rnd);
-        S = { num: num, name: name, code: code, qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course } };
-        try { localStorage.setItem('praxisAulaMe', JSON.stringify({ num: num, name: name })); } catch (e) { }
-        save(); exam();
+        var X = d.data(), ros = X.ros || {};
+        // ¿Está asignado y el nombre corresponde a ese número?
+        if (!ros[num]) { reset(); return msg('El número ' + num + ' no está en la lista de este examen. Revisa tu número.'); }
+        var L = ros[num], T = toks(name).map(function (t) { return hash(EID + ':' + t); });
+        var hit = T.filter(function (h) { return L.indexOf(h) >= 0; }).length;
+        if (hit < Math.min(2, L.length)) { reset(); return msg('Ese nombre no corresponde al número ' + num + ' de la lista. Escribe tu nombre y apellido como están en la lista, o revisa tu número.'); }
+        // Un celular, una entrega
+        var prev = lsGet(DEV);
+        if (X.one && prev && prev !== String(num)) { reset(); return blocked(X, prev, function () { go(X, code, num, name, pin, until); }); }
+        var check = X.pin ? db.collection('aula').doc(EID).collection('k').doc(num + '-' + pin).get() : Promise.resolve({ exists: true });
+        return check.then(function (k) { if (!k.exists) { reset(); return msg('Clave incorrecta. Revísala con tu profesor.'); } go(X, code, num, name, pin, until); });
       }).catch(function (e) {
-        b.disabled = false; b.textContent = 'Comenzar';
+        reset();
         var c = String(e && e.code || e);
         msg(c.indexOf('permission') >= 0 ? 'Código incorrecto, o el examen ya cerró. Revísalo con tu profesor.' : 'Sin conexión. Revisa tu internet e inténtalo otra vez.');
       });
     };
   }
+  function blocked(X, prev, onOk) {
+    screen('<div class="card center"><div class="big">📱</div><h2>Este celular ya se usó</h2><p class="sub">Aquí ya entró el número ' + esc(prev) + ' en este examen. Cada celular es para una sola entrega.</p><p class="small">Si comparten celular, pídele a tu profesor que escriba aquí su código de desbloqueo.</p><input type="text" id="ul" class="code-in" maxlength="6" placeholder="····" autocapitalize="characters"><div id="um"></div><button class="btn" id="ub">Desbloquear</button><button class="btn2" onclick="location.reload()">Volver</button></div>');
+    $('#ub').onclick = function () {
+      var v = ($('#ul').value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (v && hash(EID + ':' + v, 32) === X.ulk) { lsSet(DEV, ''); onOk(); }
+      else $('#um').innerHTML = '<div class="msg bad">Código incorrecto.</div>';
+    };
+  }
+  function go(X, code, num, name, pin, until) {
+    var rnd = seedRand(EID + ':' + num);
+    var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, rnd) : o }; });
+    if (X.shuffle) qs = shuffle(qs, rnd);
+    S = { num: num, name: name, code: code, pin: pin, qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course } };
+    lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name }));
+    lsSet(DEV, String(num));
+    save(); exam();
+  }
 
   function answered() { var n = 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
   function exam() {
-    var h = '<div class="bar"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div><div class="timer" id="tm">' + (deadline() < Infinity ? '--:--' : '⏱') + '</div></div><div class="prog"><div id="pg"></div></div><div id="wb" class="warnb"></div>';
+    document.body.classList.add('exam');
+    top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div><div class="timer" id="tm">' + (deadline() < Infinity ? '--:--' : '⏱') + '</div></div></div><div class="prog"><div id="pg"></div></div>';
+    top.style.position = 'sticky'; top.style.top = '0'; top.style.zIndex = '5';
+    var h = '<div id="wb"></div>';
     if (S.instr) h += '<div class="card"><p class="small" style="margin:0;white-space:pre-wrap">📌 ' + esc(S.instr) + '</p></div>';
     S.qs.forEach(function (q, i) {
       var a = S.answers[q.id], body = '';
-      if (q.t === 'mc') body = q.opts.map(function (o, j) { var on = a === o.i; return '<label class="op' + (on ? ' on' : '') + '"><input type="radio" name="' + q.id + '" value="' + o.i + '"' + (on ? ' checked' : '') + '><span><span class="l">' + 'ABCDEFGH'[j] + ')</span> ' + esc(o.t) + '</span></label>'; }).join('');
-      else if (q.t === 'tf') body = '<div class="tf">' + [[true, 'Verdadero'], [false, 'Falso']].map(function (x) { var on = a === x[0]; return '<label class="op' + (on ? ' on' : '') + '"><input type="radio" name="' + q.id + '" value="' + x[0] + '"' + (on ? ' checked' : '') + '>' + x[1] + '</label>'; }).join('') + '</div>';
+      if (q.t === 'mc') body = q.opts.map(function (o, j) { var on = a === o.i; return '<label class="op' + (on ? ' on' : '') + '"><input type="radio" name="' + q.id + '" value="' + o.i + '"' + (on ? ' checked' : '') + '><span class="l">' + 'ABCDEFGH'[j] + '</span><span class="t">' + esc(o.t) + '</span></label>'; }).join('');
+      else if (q.t === 'tf') body = '<div class="tf">' + [[true, 'Verdadero', 'V'], [false, 'Falso', 'F']].map(function (x) { var on = a === x[0]; return '<label class="op' + (on ? ' on' : '') + '"><input type="radio" name="' + q.id + '" value="' + x[0] + '"' + (on ? ' checked' : '') + '><span class="l">' + x[2] + '</span>' + x[1] + '</label>'; }).join('') + '</div>';
       else if (q.t === 'short') body = '<input type="text" data-q="' + q.id + '" maxlength="200" value="' + esc(a || '') + '" placeholder="Tu respuesta" autocomplete="off">';
       else body = '<textarea data-q="' + q.id + '" rows="5" maxlength="1500" placeholder="Escribe tu respuesta…">' + esc(a || '') + '</textarea><div class="cnt" id="c' + q.id + '">' + String(a || '').length + '/1500</div>';
-      h += '<div class="card q" data-qid="' + q.id + '"><div class="n"><span>Pregunta ' + (i + 1) + ' de ' + S.qs.length + '</span><span>' + q.pts + ' pt' + (q.pts == 1 ? '' : 's') + '</span></div><div class="tx">' + esc(q.text) + '</div>' + body + '</div>';
+      var isDone = a !== undefined && a !== '' && a !== null;
+      h += '<div class="card q' + (isDone ? ' done' : '') + '" data-qid="' + q.id + '"><div class="n"><i>' + (i + 1) + '</i>de ' + S.qs.length + '<span>' + q.pts + ' pt' + (q.pts == 1 ? '' : 's') + '</span></div><div class="tx">' + esc(q.text) + '</div>' + body + '</div>';
     });
-    h += '<div class="foot"><div class="in"><span class="saved" id="sv">Guardado en este teléfono</span><button class="btn" id="send">Entregar</button></div></div>';
+    h += '<div class="foot"><div class="in"><span class="saved" id="sv">💾 Guardado en este teléfono</span><button class="btn" id="send">Entregar</button></div></div>';
     screen(h);
     app.onchange = onAns; app.oninput = onAns;
     $('#send').onclick = function () { confirmSend(); };
@@ -167,6 +229,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       S.answers[id] = qq.t === 'tf' ? t.value === 'true' : parseInt(t.value, 10);
       q.querySelectorAll('.op').forEach(function (l) { l.classList.toggle('on', l.querySelector('input').checked); });
     } else if (t.getAttribute('data-q')) { S.answers[id] = t.value; var c = document.getElementById('c' + id); if (c) c.textContent = t.value.length + '/1500'; }
+    var a = S.answers[id]; q.classList.toggle('done', a !== undefined && a !== '' && a !== null);
     save(); progress(); var sv = $('#sv'); if (sv) sv.textContent = '✓ Guardado ' + new Date().toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   }
   function progress() { var p = $('#pg'); if (p) p.style.width = (answered() / S.qs.length * 100) + '%'; }
@@ -178,7 +241,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     tm.classList.toggle('low', left <= 120);
     if (left <= 0 && !sending) { clearInterval(tick); send(true); }
   }
-  function warnBlur() { var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn">⚠️ Saliste de la página del examen ' + S.blurs + ' ' + (S.blurs === 1 ? 'vez' : 'veces') + '. Tu profesor lo verá.</div>'; }
+  function warnBlur() { var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">⚠️ Saliste de la página del examen ' + S.blurs + ' ' + (S.blurs === 1 ? 'vez' : 'veces') + '. Tu profesor lo verá.</div>'; }
   document.addEventListener('visibilitychange', function () {
     if (!S || !S.qs || S.sent) return;
     if (document.hidden) { S.blurs = (S.blurs || 0) + 1; save(); } else warnBlur();
@@ -186,7 +249,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function confirmSend() {
     var miss = S.qs.length - answered();
     var ov = document.createElement('div'); ov.className = 'ov';
-    ov.innerHTML = '<div class="card"><h1>¿Entregar ahora?</h1><p>' + (miss ? '<b>Te faltan ' + miss + ' pregunta' + (miss > 1 ? 's' : '') + ' por responder.</b> ' : 'Respondiste todas las preguntas. ') + 'Después de entregar no podrás cambiar nada.</p><div class="two"><button class="gray" id="no">Seguir respondiendo</button><button class="btn" id="yes">Entregar</button></div></div>';
+    ov.innerHTML = '<div class="card"><h2>¿Entregar ahora?</h2><p>' + (miss ? '<b>Te faltan ' + miss + ' pregunta' + (miss > 1 ? 's' : '') + ' por responder.</b> ' : '✓ Respondiste todas las preguntas. ') + 'Después de entregar no podrás cambiar nada.</p><div class="two"><button class="gray" id="no">Seguir respondiendo</button><button class="btn" id="yes">Entregar</button></div></div>';
     document.body.appendChild(ov);
     ov.querySelector('#no').onclick = function () { ov.remove(); };
     ov.querySelector('#yes').onclick = function () { ov.remove(); send(false); };
@@ -196,22 +259,22 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     clearInterval(tick);
     var b = $('#send'); if (b) { b.disabled = true; b.innerHTML = '<span class="spin"></span> Enviando…'; }
     var ans = {}; Object.keys(S.answers).forEach(function (k) { var v = S.answers[k]; if (typeof v === 'string') v = v.slice(0, 1500); if (v !== '' && v !== undefined && v !== null) ans[k] = v; });
-    var doc = { num: S.num, name: S.name, code: S.code, answers: ans, startedAt: S.startedAt, sentAt: firebase.firestore.FieldValue.serverTimestamp(), blurs: S.blurs || 0, ua: String(navigator.userAgent || '').slice(0, 150) };
+    var doc = { num: S.num, name: S.name, code: S.code, pin: S.pin || '', answers: ans, startedAt: S.startedAt, sentAt: firebase.firestore.FieldValue.serverTimestamp(), blurs: S.blurs || 0, ua: String(navigator.userAgent || '').slice(0, 150) };
     S.sending = Date.now(); save();
-    var w = $('#wb'); if (w && auto) w.innerHTML = '<div class="msg warn">⏱️ Se acabó el tiempo. Entregando tus respuestas…</div>';
+    var w = $('#wb'); if (w && auto) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">⏱️ Se acabó el tiempo. Entregando tus respuestas…</div>';
     sending = db.collection('aula').doc(EID).collection('resp').doc(String(S.num)).set(doc);
-    var slow = setTimeout(function () { var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn">📶 Sin conexión. Tus respuestas están guardadas en este teléfono y se enviarán solas cuando vuelva el internet. <b>No cierres esta página.</b></div>'; }, 6000);
+    var slow = setTimeout(function () { var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">📶 Sin conexión. Tus respuestas están guardadas en este teléfono y se enviarán solas cuando vuelva el internet. <b>No cierres esta página.</b></div>'; }, 6000);
     sending.then(function () { clearTimeout(slow); S.sent = Date.now(); save(); done(); })
       .catch(function (e) {
         clearTimeout(slow); sending = null;
         var c = String(e && e.code || e);
         if (c.indexOf('permission') >= 0) {
-          S.rejected = 1; save();
-          screen(head() + '<div class="card center"><div class="big">🚫</div><p><b>No se pudo entregar.</b></p><p>El examen ya cerró, o ya hay una entrega con el número ' + S.num + '. Muéstrale esta pantalla a tu profesor: tus respuestas siguen guardadas en este teléfono.</p><button class="btn" id="again">Intentar enviar otra vez</button><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button></div>');
+          S.rejected = 1; save(); hero();
+          screen('<div class="card center"><div class="big">🚫</div><h2>No se pudo entregar</h2><p>El examen ya cerró, o ya hay una entrega con el número ' + S.num + '. Muéstrale esta pantalla a tu profesor: tus respuestas siguen guardadas en este teléfono.</p><button class="btn" id="again">Intentar enviar otra vez</button><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button></div>');
           $('#again').onclick = function () { exam(); send(false); };
           $('#reset').onclick = reset;
         } else {
-          var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn">📶 No se pudo enviar. Reintentando… No cierres esta página.</div>';
+          var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">📶 No se pudo enviar. Reintentando… No cierres esta página.</div>';
           clearTimeout(retry); retry = setTimeout(function () { send(auto); }, 8000);
         }
       });
@@ -219,8 +282,8 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   window.addEventListener('online', function () { if (S && S.sending && !S.sent && !sending) send(false); });
   function reset() { if (!confirm('¿Borrar tus respuestas de este teléfono y empezar otra vez?')) return; try { localStorage.removeItem(KEY); } catch (e) { } location.reload(); }
   function done() {
-    clearInterval(tick);
-    screen(head() + '<div class="card center"><div class="big">✅</div><h1>¡Entregado!</h1><p>Nº ' + S.num + ' · ' + esc(S.name) + '</p><p class="small">' + (S.sent ? 'Enviado a las ' + new Date(S.sent).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) + '. ' : '') + 'Tu profesor ya recibió tus respuestas. Puedes cerrar esta página.</p><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button></div>');
+    clearInterval(tick); hero('Nº ' + S.num + ' · ' + S.name);
+    screen('<div class="card center"><div class="done-ic">✓</div><h2>¡Entregado!</h2><p>Nº ' + S.num + ' · ' + esc(S.name) + '</p><p class="small">' + (S.sent ? 'Enviado a las ' + new Date(S.sent).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) + '. ' : '') + 'Tu profesor ya recibió tus respuestas. Puedes cerrar esta página.</p><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button></div>');
     $('#reset').onclick = reset;
   }
   // Si el examen quedó a medio enviar (se cerró la página), reintenta al abrir

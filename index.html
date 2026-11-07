@@ -1392,60 +1392,173 @@ tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7re
 /* ---------- Aula ---------- */
 .aula { display: flex; flex-direction: column; gap: 1rem; }
 .aula > .alert { margin: 0; }
-.aula-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.25rem; }
-.aula-top h2, .aula-exam-head h2 { font-size: 1.2rem; margin: 0; }
-.aula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .9rem; }
-.aula-card { padding: 1rem 1.1rem; cursor: pointer; display: flex; flex-direction: column; gap: .35rem; transition: transform .15s, box-shadow .15s, border-color .15s; }
-.aula-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--primary-ring); }
-.aula-card h3 { font-size: 1.02rem; margin: .1rem 0 0; }
+.k-exam { --kc: #4f46e5; --kc-bg: rgba(79,70,229,.1); }
+.k-prac { --kc: #0d9488; --kc-bg: rgba(13,148,136,.1); }
+.k-quiz { --kc: #d97706; --kc-bg: rgba(217,119,6,.12); }
+.k-task { --kc: #db2777; --kc-bg: rgba(219,39,119,.1); }
+.aula-hero { position: relative; overflow: hidden; display: flex; gap: 1.2rem; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; padding: 1.4rem 1.5rem; border-radius: 20px; color: #fff; background: linear-gradient(135deg, #312e81 0%, #4f46e5 55%, #7c3aed 100%); box-shadow: 0 18px 40px -22px rgba(79,70,229,.8); }
+.aula-hero::before, .aula-hero::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255,255,255,.08); pointer-events: none; }
+.aula-hero::before { width: 260px; height: 260px; right: -70px; top: -110px; }
+.aula-hero::after { width: 140px; height: 140px; right: 180px; bottom: -90px; }
+.ah-txt { position: relative; z-index: 1; min-width: 240px; flex: 1; }
+.ah-eyebrow { font-size: .72rem; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; opacity: .85; }
+.aula-hero h2 { font-size: 1.7rem; margin: .2rem 0 .25rem; letter-spacing: -.3px; color: #fff; }
+.aula-hero h2 span { font-size: 1rem; font-weight: 600; opacity: .75; margin-left: .3rem; }
+.aula-hero p { margin: 0; opacity: .85; font-size: .9rem; max-width: 520px; }
+.ah-stats { display: flex; gap: 1.6rem; margin-top: 1rem; }
+.ah-stats b { display: block; font-size: 1.5rem; line-height: 1; }
+.ah-stats span { font-size: .7rem; text-transform: uppercase; letter-spacing: .5px; opacity: .8; font-weight: 700; }
+.ah-acts { position: relative; z-index: 1; display: flex; flex-direction: column; gap: .5rem; min-width: 220px; }
+.ah-acts .btn { justify-content: center; }
+.ah-main { background: #fff; color: #3730a3; font-weight: 800; box-shadow: 0 8px 18px -10px rgba(0,0,0,.5); }
+.ah-main:hover { background: #eef2ff; }
+.ah-sec { background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.25); }
+.ah-sec:hover { background: rgba(255,255,255,.24); }
+.aula-chips { display: flex; gap: .4rem; flex-wrap: wrap; }
+.aula-chip { border: 1px solid var(--border); background: var(--surface); color: var(--ink-2); border-radius: 99px; padding: .4rem .85rem; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: .4rem; transition: all .15s; }
+.aula-chip span { background: var(--track); color: var(--muted); border-radius: 99px; padding: 0 .45rem; font-size: .72rem; }
+.aula-chip:hover { border-color: var(--primary-ring); }
+.aula-chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.aula-chip.on span { background: rgba(255,255,255,.22); color: #fff; }
+.aula-none { padding: 1rem .2rem; }
+.aula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.aula-card { position: relative; padding: 1.05rem 1.15rem 1rem 1.3rem; cursor: pointer; display: flex; flex-direction: column; gap: .4rem; overflow: hidden; transition: transform .18s, box-shadow .18s, border-color .18s; }
+.aula-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--kc, var(--primary)); }
+.aula-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--kc, var(--primary-ring)); }
+.aula-card h3 { font-size: 1.05rem; margin: .1rem 0 0; line-height: 1.3; }
 .ac-top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
-.ac-kind { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--primary); }
-.ac-foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: .5rem; border-top: 1px solid var(--border); font-size: .85rem; }
-.aula-steps { text-align: left; max-width: 520px; margin: .8rem auto 1.2rem; line-height: 1.7; color: var(--ink-2); }
-.aula-exam-head { display: flex; align-items: center; gap: .9rem; padding: 1rem 1.2rem; flex-wrap: wrap; }
-.aeh-t { flex: 1; min-width: 200px; }
-.aula-code-sm { font-family: ui-monospace, monospace; letter-spacing: .12em; color: var(--primary); }
-.aula-actions .btn-ghost.aula-del { color: var(--bad); }
-.aula-stats { margin: 0; }
-.aula-target { padding: .8rem 1.1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: space-between; font-size: .9rem; }
+.ac-kind { font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--kc, var(--primary)); background: var(--kc-bg, var(--primary-light)); padding: .2rem .55rem; border-radius: 99px; }
+.ac-st { display: inline-flex; align-items: center; gap: .35rem; font-size: .72rem; font-weight: 800; color: var(--muted); }
+.ac-st i { width: 8px; height: 8px; border-radius: 50%; background: var(--border-2); }
+.ac-st.st-open { color: var(--ok); } .ac-st.st-open i { background: var(--ok); box-shadow: 0 0 0 0 rgba(21,128,61,.5); animation: aulaPulse 1.8s infinite; }
+.ac-st.st-closed { color: var(--bad); } .ac-st.st-closed i { background: var(--bad); }
+@keyframes aulaPulse { 70% { box-shadow: 0 0 0 7px rgba(21,128,61,0); } 100% { box-shadow: 0 0 0 0 rgba(21,128,61,0); } }
+.ac-meta { display: flex; flex-wrap: wrap; gap: .3rem .5rem; font-size: .8rem; color: var(--muted); }
+.ac-meta span + span::before { content: "·"; margin-right: .5rem; color: var(--border-2); }
+.ac-to { font-size: .82rem; font-weight: 600; color: var(--ink-2); }
+.ac-dest { font-size: .82rem; color: var(--ink-2); }
+.ac-foot { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding-top: .6rem; border-top: 1px solid var(--border); font-size: .82rem; }
+.ac-bar { flex: 1; height: 6px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.ac-bar div { height: 100%; background: var(--kc, var(--primary)); border-radius: 99px; }
+.aula-empty { text-align: center; padding: 2rem 1.2rem; }
+.ae-art { font-size: 2.6rem; width: 84px; height: 84px; display: grid; place-items: center; margin: 0 auto .6rem; border-radius: 24px; background: var(--primary-light); }
+.aula-empty h3 { margin: 0 0 1rem; }
+.aula-steps { list-style: none; padding: 0; margin: 0 auto 1.3rem; max-width: 560px; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .6rem; text-align: left; }
+.aula-steps li { display: flex; gap: .7rem; align-items: flex-start; background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: .7rem .8rem; font-size: .88rem; color: var(--ink-2); }
+.aula-steps li > span { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .8rem; }
+/* Examen */
+.aula-xhead { position: relative; display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; flex-wrap: wrap; }
+.aula-xhead::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 6px; background: var(--kc); }
+.aula-xhead::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, var(--kc-bg), transparent 55%); pointer-events: none; }
+.aula-xhead > * { position: relative; z-index: 1; }
+.ax-back { background: var(--surface); border: 1px solid var(--border); }
+.ax-t { flex: 1; min-width: 220px; }
+.ax-row { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.aula-xhead h2 { font-size: 1.35rem; margin: .3rem 0 .2rem; }
+.ax-code { text-align: center; background: var(--surface); border: 1px dashed var(--kc); border-radius: 14px; padding: .5rem .9rem; }
+.ax-code > span { display: block; font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+.ax-code > b { font-family: ui-monospace, Menlo, monospace; font-size: 1.5rem; letter-spacing: .14em; color: var(--kc); }
+.ax-code small { display: block; font-size: .7rem; color: var(--muted); margin-top: .1rem; }
+.ax-code small b { font-family: ui-monospace, monospace; color: var(--ink); letter-spacing: .08em; }
+.aula-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.aula-menu { position: relative; }
+.aula-menu > summary { list-style: none; cursor: pointer; }
+.aula-menu > summary::-webkit-details-marker { display: none; }
+.am-pop { position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; min-width: 270px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); padding: .35rem; display: flex; flex-direction: column; }
+.am-pop button { all: unset; box-sizing: border-box; cursor: pointer; padding: .55rem .7rem; border-radius: 10px; font-size: .9rem; font-weight: 600; color: var(--ink); display: flex; flex-direction: column; }
+.am-pop button small { font-weight: 500; color: var(--muted); font-size: .75rem; }
+.am-pop button:hover, .am-pop button:focus-visible { background: var(--surface-2); }
+.am-pop .am-danger { color: var(--bad); flex-direction: row; gap: .4rem; align-items: center; }
+.aula-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .8rem; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: .85rem 1rem; box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: center; }
+.kpi b { font-size: 1.6rem; line-height: 1.1; }
+.kpi > span { font-size: .68rem; text-transform: uppercase; font-weight: 800; color: var(--muted); letter-spacing: .5px; }
+.kpi-ring { flex-direction: row; align-items: center; gap: .8rem; }
+.ring { --p: 0; width: 58px; height: 58px; border-radius: 50%; flex: none; display: grid; place-items: center; background: radial-gradient(closest-side, var(--surface) 76%, transparent 78%), conic-gradient(var(--primary) calc(var(--p) * 1%), var(--track) 0); }
+.ring b { font-size: 1.05rem; } .ring small { font-size: .7rem; color: var(--muted); margin-left: -1px; }
+.ring { grid-auto-flow: column; }
+.aula-target { padding: .85rem 1.1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: space-between; font-size: .9rem; }
+.at-l { display: flex; align-items: center; gap: .7rem; }
+.at-ic { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--ok-bg); color: var(--ok); font-weight: 900; flex: none; }
+.at-ic.warn { background: var(--risk-bg); color: var(--risk); }
 .aula-qstats { padding: .8rem 1.1rem; }
 .aula-qstats summary { cursor: pointer; }
 .aq-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .4rem 1.2rem; margin-top: .7rem; }
 .aq-stat { display: grid; grid-template-columns: 34px 1fr 40px; align-items: center; gap: .5rem; font-size: .82rem; }
 .aq-stat b { text-align: right; }
 .aula-tbl td .small { white-space: normal; }
+.aula-tbl tr.ar-none td { color: var(--muted); }
+.ar-grade { display: inline-block; min-width: 2.2rem; text-align: center; padding: .1rem .45rem; border-radius: 8px; }
+.ar-grade.g-ok { background: var(--ok-bg); color: var(--ok); } .ar-grade.g-mid { background: var(--risk-bg); color: var(--risk); } .ar-grade.g-bad { background: var(--bad-bg); color: var(--bad); }
 .warn-t { color: var(--risk); }
 /* Editor */
-.aq-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 1rem; }
+.ae-sec { border: 1px solid var(--border); border-radius: 14px; padding: .9rem 1rem 1rem; margin-top: .9rem; background: var(--surface); }
+.ae-sec > h4, .ae-sec .aq-head h4 { margin: 0 0 .6rem; font-size: .78rem; text-transform: uppercase; letter-spacing: .6px; color: var(--primary); }
+.ae-sec .check { margin-top: .45rem; }
+.seg { display: inline-flex; background: var(--track); border-radius: 12px; padding: 3px; gap: 2px; flex-wrap: wrap; }
+.seg button { all: unset; cursor: pointer; padding: .45rem .8rem; border-radius: 9px; font-size: .86rem; font-weight: 700; color: var(--ink-2); }
+.seg button.on { background: var(--surface); color: var(--primary); box-shadow: var(--shadow); }
+.ae-tobox { margin-top: .7rem; }
+.ae-stus-h { display: flex; align-items: center; gap: .3rem; margin-bottom: .4rem; }
+.ae-stus-h span { margin-right: auto; }
+.ae-stus { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .3rem; max-height: 240px; overflow: auto; padding: .1rem; }
+.ae-stu { display: flex; align-items: center; gap: .45rem; padding: .35rem .55rem; border: 1px solid var(--border); border-radius: 10px; font-size: .85rem; cursor: pointer; }
+.ae-stu input { accent-color: var(--primary); }
+.ae-stu span { font-weight: 800; color: var(--muted); min-width: 1.3rem; }
+.ae-stu.on { border-color: var(--primary-ring); background: var(--primary-light); }
+.aq-head { display: flex; justify-content: space-between; align-items: baseline; }
 .aq-list { display: flex; flex-direction: column; gap: .8rem; }
-.aq { border: 1px solid var(--border); border-radius: 12px; padding: .8rem; background: var(--surface-2); display: flex; flex-direction: column; gap: .55rem; }
+.aq { border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 12px; padding: .8rem; background: var(--surface-2); display: flex; flex-direction: column; gap: .55rem; }
+.aq.aq-tf { border-left-color: #0d9488; } .aq.aq-short { border-left-color: #d97706; } .aq.aq-open { border-left-color: #db2777; }
 .aq-h { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
-.aq-h select { width: auto; flex: 1; min-width: 160px; }
-.aq-n { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .85rem; flex: none; }
+.aq-h select { width: auto; flex: 1; min-width: 170px; }
+.aq-n { width: 28px; height: 28px; border-radius: 9px; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .85rem; flex: none; }
 .aq-pts { display: flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--muted); font-weight: 700; }
 .aq-pts input { width: 74px; }
 .aq-tools { display: flex; gap: .1rem; margin-left: auto; }
 .aq textarea { min-height: 54px; }
 .aq-opts, .aq-tf { display: flex; flex-direction: column; gap: .35rem; }
 .aq-tf { flex-direction: row; flex-wrap: wrap; align-items: center; }
-.aq-opt { display: flex; align-items: center; gap: .45rem; border: 1.5px solid var(--border); border-radius: 10px; padding: .25rem .4rem; background: var(--surface); }
+.aq-foot { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.aq-opt { display: flex; align-items: center; gap: .45rem; border: 1.5px solid var(--border); border-radius: 10px; padding: .25rem .4rem; background: var(--surface); transition: border-color .15s, background .15s; }
 .aq-opt.ok { border-color: var(--ok); background: var(--ok-bg); }
 .aq-opt input[type=radio] { width: 18px; height: 18px; accent-color: var(--ok); flex: none; }
 .aq-opt input[type=text] { flex: 1; border: 0; background: transparent; padding: .35rem .2rem; box-shadow: none; }
 .aq-tf .aq-opt { padding: .45rem .8rem; font-weight: 700; cursor: pointer; }
 .aq-l { font-weight: 800; color: var(--muted); width: 1.1rem; }
 .aq-add { margin-top: .8rem; }
+/* Importar */
+.imp-steps { display: flex; flex-direction: column; gap: 1rem; }
+.imp-step { display: flex; gap: .9rem; }
+.imp-n { flex: none; width: 34px; height: 34px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; display: grid; place-items: center; font-weight: 800; }
+.imp-b { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 14px; padding: .9rem 1rem; background: var(--surface); display: flex; flex-direction: column; gap: .6rem; }
+.imp-b h4 { margin: 0; }
+.imp-b p { margin: 0; }
+.imp-mix { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: .5rem; }
+.imp-mix label { display: flex; flex-direction: column; gap: .2rem; font-size: .75rem; font-weight: 700; color: var(--muted); }
+.imp-b > .btn { align-self: flex-start; }
+.imp-b textarea { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .82rem; min-height: 170px; }
+.imp-file { cursor: pointer; }
+.imp-ok { background: var(--ok-bg); color: var(--ok); border-radius: 10px; padding: .55rem .75rem; font-size: .88rem; }
+.imp-warn { margin: .5rem 0 0; padding-left: 1.1rem; color: var(--risk); font-size: .84rem; }
+/* Claves */
+.pin-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .35rem; max-height: 55vh; overflow: auto; }
+.pin-row { display: flex; align-items: center; gap: .5rem; padding: .4rem .6rem; border: 1px solid var(--border); border-radius: 10px; font-size: .88rem; }
+.pin-n { font-weight: 800; color: var(--muted); min-width: 1.4rem; }
+.pin-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pin-v { font-family: ui-monospace, monospace; letter-spacing: .15em; color: var(--primary); }
 /* Compartir */
 .aula-share { display: grid; grid-template-columns: 220px 1fr; gap: 1.2rem; align-items: center; }
-.aula-share.big { grid-template-columns: minmax(260px, 1.2fr) 1fr; }
-.qr-box { background: #fff; border-radius: 12px; padding: .4rem; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid var(--border); }
+.aula-share.big { grid-template-columns: minmax(280px, 1.25fr) 1fr; }
+.qr-box { background: #fff; border-radius: 16px; padding: .5rem; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid var(--border); }
 .qr-box svg { width: 100%; height: 100%; display: block; }
 .code-lbl { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
 .aula-code { font-family: ui-monospace, Menlo, monospace; font-size: 2.2rem; font-weight: 800; letter-spacing: .18em; color: var(--primary); margin: .1rem 0 .6rem; }
-.aula-share.big .aula-code { font-size: 3.6rem; }
-.share-url { font-size: 1.05rem; font-weight: 700; word-break: break-all; }
-.share-side .field { margin: .5rem 0; }
+.aula-share.big .aula-code { font-size: 4rem; }
+.share-steps { margin: .6rem 0; padding-left: 1.2rem; font-size: 1.1rem; line-height: 1.8; font-weight: 600; }
 /* Revisión */
+.ar-sum { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: .6rem .9rem; margin-bottom: .6rem; }
+.ar-sum b { font-size: 1.2rem; }
 .ar-list { display: flex; flex-direction: column; gap: .6rem; margin-top: .4rem; }
 .ar-q { border: 1px solid var(--border); border-left: 4px solid var(--border-2); border-radius: 10px; padding: .65rem .8rem; display: flex; flex-direction: column; gap: .3rem; }
 .ar-q.ok { border-left-color: var(--ok); } .ar-q.bad { border-left-color: var(--bad); } .ar-q.half { border-left-color: var(--gold); } .ar-q.pend { border-left-color: var(--primary); background: var(--primary-light); }
@@ -1454,13 +1567,73 @@ tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7re
 .ar-p input { width: 80px; }
 .ar-p input.err { border-color: var(--bad); }
 .ar-conf { margin: .4rem 0 0 1.2rem; line-height: 1.7; }
+/* Impresión del examen */
+.rx-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; border-bottom: 2px solid #111; padding-bottom: 6px; margin: 6px 0 8px; }
+.rx-ttl span { font-size: 10px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: #4f46e5; }
+.rx-ttl h2 { margin: 2px 0 0; font-size: 18px; }
+.rx-score { text-align: center; border: 1.5px solid #111; border-radius: 8px; padding: 4px 10px; font-size: 10px; }
+.rx-score b { font-size: 14px; }
+.rx-fields { display: flex; gap: 14px; margin: 8px 0; font-size: 12px; }
+.rx-fields div { flex: 3; display: flex; gap: 6px; } .rx-fields div.sm { flex: 1; }
+.rx-fields span { flex: 1; border-bottom: 1px solid #555; }
+.rx-instr { font-size: 11.5px; background: #f3f4f6; border-radius: 6px; padding: 6px 8px; margin-bottom: 8px; }
+.rx-qs { columns: 1; }
+.rx-q { break-inside: avoid; margin: 0 0 10px; font-size: 12.5px; }
+.rx-qh { display: flex; gap: 8px; align-items: flex-start; }
+.rx-num { flex: none; width: 20px; height: 20px; border-radius: 50%; background: #111; color: #fff; display: grid; place-items: center; font-size: 10.5px; font-weight: 800; }
+.rx-txt { flex: 1; white-space: pre-wrap; font-weight: 600; }
+.rx-pts { font-size: 10px; color: #555; white-space: nowrap; }
+.rx-opts { list-style: none; margin: 4px 0 0 28px; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3px 16px; }
+.rx-opts li { display: flex; gap: 6px; align-items: flex-start; }
+.rx-b { flex: none; width: 15px; height: 15px; border: 1.2px solid #333; border-radius: 50%; display: grid; place-items: center; font-size: 9px; font-weight: 700; }
+.rx-ok { font-weight: 800; color: #15803d; } .rx-ok .rx-b { background: #15803d; border-color: #15803d; color: #fff; }
+.rx-tf { margin: 4px 0 0 28px; display: flex; gap: 24px; }
+.rx-tf i { display: inline-block; width: 13px; height: 13px; border: 1.2px solid #333; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
+.rx-tf .rx-ok i { background: #15803d; border-color: #15803d; }
+.rx-line { margin: 14px 0 0 28px; border-bottom: 1px solid #777; width: 60%; }
+.rx-box { margin: 6px 0 0 28px; border: 1px solid #999; border-radius: 6px; height: 90px; }
+.rx-key { margin: 4px 0 0 28px; font-size: 11.5px; }
+.rx-sheet { margin: 4px 0 12px; font-size: 11px; }
+.rx-sheet td, .rx-sheet th { text-align: center; }
+.rx-pins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.rx-pin { border: 1px dashed #888; padding: 10px 12px; break-inside: avoid; font-size: 11px; }
+.rx-pin-h { font-size: 9px; text-transform: uppercase; letter-spacing: .5px; color: #4f46e5; font-weight: 800; }
+.rx-pin-n { font-weight: 700; margin: 3px 0; }
+.rx-pin-k b { font-family: ui-monospace, monospace; font-size: 20px; letter-spacing: .25em; }
+.rx-pin-f { font-size: 8.5px; color: #666; margin-top: 3px; }
 @media (max-width: 640px) {
+  .aula-hero { padding: 1.15rem 1.1rem; border-radius: 16px; }
+  .aula-hero h2 { font-size: 1.4rem; }
+  .ah-acts { width: 100%; min-width: 0; }
   .aula-share, .aula-share.big { grid-template-columns: 1fr; }
   .qr-box { max-width: 260px; margin: 0 auto; width: 100%; }
   .aula-share .share-side { text-align: center; }
   .aula-share .row-wrap { justify-content: center; }
+  .ax-code { width: 100%; }
+  .am-pop { min-width: 240px; }
+  .imp-step { gap: .5rem; } .imp-n { width: 28px; height: 28px; }
 }
 #stNfVol { height: 28px; }
+
+/* ---------- Pulido general (9.4) ---------- */
+body { background: radial-gradient(1100px 420px at 0% -8%, rgba(99,102,241,.08), transparent 70%), radial-gradient(900px 380px at 100% 0%, rgba(124,58,237,.06), transparent 70%), var(--bg); background-attachment: fixed; }
+h1, h2, h3 { letter-spacing: -.01em; }
+.nav-btn { white-space: nowrap; }
+@media (min-width: 641px) and (max-width: 1420px) { .nav-btn { padding: .42rem .55rem; font-size: .79rem; gap: .3rem; } }
+.tabs { gap: .15rem; }
+.tab { padding: .55rem .6rem; font-size: .86rem; }
+.tab.active { background: var(--primary-light); }
+.mod-head h1 { letter-spacing: -.02em; }
+.card:hover { border-color: var(--border-2); }
+.stat, .metric { border-radius: 14px; }
+.modal { border-radius: 20px; }
+.modal-head { background: linear-gradient(180deg, var(--surface-2), transparent); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--muted); }
+::-webkit-scrollbar-track { background: transparent; }
+::selection { background: var(--primary-ring); }
+@media print { body { background: #fff !important; } }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -1663,6 +1836,7 @@ function normalizeModule(m) {
   nm.anec = (Array.isArray(nm.anec) ? nm.anec : []).map(normAnec).filter(Boolean);
   nm.plan = nm.plan ? normPlan(nm.plan) : null;
   nm.aula = typeof normAulaList === 'function' ? normAulaList(nm.aula) : (Array.isArray(nm.aula) ? nm.aula : []);
+  nm.aulaPins = typeof normAulaPins === 'function' ? normAulaPins(nm.aulaPins) : (nm.aulaPins || {});
   nm.ras = (Array.isArray(nm.ras) ? nm.ras : []).map((r, i) => {
     const nr = Object.assign({ id: uid(), name: `RA ${i + 1}`, w: 0, cats: [] }, r);
     nr.id = String(nr.id);
@@ -7664,18 +7838,23 @@ Object.assign(ACTIONS, { 'cloud-logout': () => cloudLogout(), 'pl-lib-import': (
 /* =========================================================
    Aula virtual (como Classroom): cada módulo tiene su propia aula.
    - El docente crea exámenes y prácticas (selección múltiple, V/F,
-     respuesta corta y desarrollo) dentro del módulo.
-   - Los estudiantes entran con un enlace (o QR) + código, sin cuenta:
-     escriben su número de lista y su nombre.
-   - Las preguntas cerradas se corrigen solas y la nota pasa a la
-     casilla del registro que elijas. El desarrollo lo corriges tú.
-   Datos privados (respuestas correctas, entregas, notas): dentro del módulo.
-   En la nube pública solo queda: aula/{id} (título y estado) y
-   aula/{id}/q/{código} (las preguntas SIN respuestas). Las entregas
-   (aula/{id}/resp/{nº}) solo las puede leer el docente dueño.
+     respuesta corta y desarrollo), a mano o importados (IA, texto, archivo).
+   - Se asignan a todos, a un grupo o a algunos estudiantes.
+   - Los estudiantes entran con enlace (o QR) + código, sin cuenta:
+     número de lista + nombre (debe coincidir con la lista) + clave opcional.
+   - Las cerradas se corrigen solas y la nota pasa a la casilla elegida.
+   Datos privados (respuestas correctas, entregas, notas, claves): en el módulo.
+   Nube pública (protegida por reglas):
+     aula/{id}            título, módulo, curso, estado, hora de cierre
+     aula/{id}/q/{código} preguntas SIN respuestas + huellas de los nombres
+     aula/{id}/k/{nº-clave} permiso para entregar (asignados; con clave si se pide)
+     aula/{id}/resp/{nº}  entregas (solo las lee el docente)
    ========================================================= */
 const AULA_KINDS = { 'Examen': '📝', 'Práctica': '🛠️', 'Quiz': '⚡', 'Tarea': '📚' };
+const AULA_KCLS = { 'Examen': 'k-exam', 'Práctica': 'k-prac', 'Quiz': 'k-quiz', 'Tarea': 'k-task' };
 const AQ_TYPES = { mc: 'Selección múltiple', tf: 'Verdadero / Falso', short: 'Respuesta corta', open: 'Desarrollo' };
+const AQ_ICON = { mc: '◉', tf: '⊘', short: '✎', open: '¶' };
+const AULA_STOP = ['de', 'del', 'la', 'las', 'los', 'el', 'y', 'da', 'do', 'dos', 'das', 'san', 'mc'];
 const AulaLive = { eid: '', mid: '', xid: '', unsub: null, err: '' };
 
 /* ---------- Normalización ---------- */
@@ -7688,13 +7867,20 @@ function normAulaQ(q) {
   if (t === 'short') nq.acc = (Array.isArray(q.acc) ? q.acc : String(q.acc || '').split('|')).map(a => String(a).trim().slice(0, 200)).filter(Boolean).slice(0, 12);
   return nq;
 }
+function normAulaTo(to) {
+  const o = to && typeof to === 'object' ? to : {};
+  const mode = ['all', 'group', 'some'].includes(o.mode) ? o.mode : 'all';
+  return { mode, gs: String(o.gs || ''), gi: Math.max(0, parseInt(o.gi, 10) || 0), ids: Array.isArray(o.ids) ? o.ids.map(String) : [] };
+}
 function normAula(e) {
   if (!e || typeof e !== 'object') return null;
   const ne = {
     id: String(e.id || uid()), title: String(e.title || 'Examen').slice(0, 120), kind: AULA_KINDS[e.kind] ? e.kind : 'Examen',
     actKey: String(e.actKey || ''), instr: String(e.instr || '').slice(0, 2000), qs: (Array.isArray(e.qs) ? e.qs : []).map(normAulaQ).filter(Boolean),
     dur: Math.max(0, Math.min(600, parseInt(e.dur, 10) || 0)), shuffle: e.shuffle !== false, withCode: !!e.withCode,
+    to: normAulaTo(e.to), oneDev: e.oneDev !== false, pin: !!e.pin, unlock: String(e.unlock || ''),
     status: ['draft', 'open', 'closed'].includes(e.status) ? e.status : 'draft', code: String(e.code || ''), pub: String(e.pub || ''), until: String(e.until || ''),
+    kdocs: Array.isArray(e.kdocs) ? e.kdocs.map(String) : [],
     auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
     resp: {}, marks: {}, applied: {}, map: {}
   };
@@ -7705,36 +7891,80 @@ function normAula(e) {
   return ne;
 }
 function normAulaList(a) { return (Array.isArray(a) ? a : []).map(normAula).filter(Boolean); }
+function normAulaPins(p) { const o = {}; if (p && typeof p === 'object') Object.entries(p).forEach(([k, v]) => { if (/^\d{4}$/.test(String(v))) o[k] = String(v); }); return o; }
 
 /* ---------- Utilidades ---------- */
 function aulaCloudOK() { return typeof Cloud === 'object' && Cloud.on && !!Cloud.user && !!Cloud.fs; }
 function aulaRef(ex) { return Cloud.fs.collection('aula').doc(ex.pub); }
-function aulaCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; const r = new Uint32Array(6); (self.crypto || window.crypto).getRandomValues(r); r.forEach(x => { s += A[x % A.length]; }); return s; }
+function aulaRand(n, A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789') { let s = ''; const r = new Uint32Array(n); (self.crypto || window.crypto).getRandomValues(r); r.forEach(x => { s += A[x % A.length]; }); return s; }
+function aulaCode() { return aulaRand(6); }
 function aulaFold(s) { return String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+/** Palabras de un nombre (sin tildes ni mayúsculas). Igual en la página del estudiante. */
+function aulaToks(name) { return [...new Set(aulaFold(name).split(' ').filter(w => w.length >= 2 && !AULA_STOP.includes(w)))]; }
+/** Huella corta (FNV-1a). 16 bits para nombres: sirve para comprobar, no para adivinar. */
+function aulaHash(s, bits = 16) { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return bits === 16 ? (((h >>> 16) ^ (h & 0xffff)) >>> 0).toString(16).padStart(4, '0') : h.toString(16).padStart(8, '0'); }
 function aulaTotal(ex) { return r2(ex.qs.reduce((a, q) => a + q.pts, 0)); }
 function aulaLink(ex) { const u = new URL('aula.html', location.href); u.search = ''; u.hash = ''; u.searchParams.set('e', ex.pub); if (ex.withCode && ex.code) u.searchParams.set('c', ex.code); return u.toString(); }
 function aulaFind(m, id) { return m && (m.aula || []).find(x => x.id === id); }
 function aulaIsOpen(ex) { return ex.status === 'open' && (!ex.until || new Date(ex.until) > new Date()); }
+function aulaState(ex) { return ex.status === 'draft' ? 'draft' : aulaIsOpen(ex) ? 'open' : 'closed'; }
 function aulaStatus(ex) {
-  if (ex.status === 'draft') return { cls: 'neutral', label: 'Borrador' };
-  if (aulaIsOpen(ex)) return { cls: 'ok', label: 'Abierto' + (ex.until ? ' hasta ' + aulaHM(ex.until) : '') };
-  return { cls: 'bad', label: 'Cerrado' };
+  const s = aulaState(ex);
+  if (s === 'draft') return { cls: 'neutral', label: 'Borrador', dot: 'draft' };
+  if (s === 'open') return { cls: 'ok', label: 'Abierto' + (ex.until ? ' hasta ' + aulaHM(ex.until) : ''), dot: 'open' };
+  return { cls: 'bad', label: 'Cerrado', dot: 'closed' };
 }
 function aulaHM(iso) {
   const d = new Date(iso); if (isNaN(d)) return '';
   const hm = d.toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' });
-  return d.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10) ? hm : `${fmtDateY(isoLocal(d))} ${hm}`;
+  return isoLocal(d) === isoLocal(new Date()) ? hm : `${fmtDateY(isoLocal(d))} ${hm}`;
 }
 function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function dtLocal(d) { return `${isoLocal(d)}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; }
 function withTimeout(p, ms, msg = 'Sin respuesta del servidor') { return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))]); }
+function aulaFileName(s) { return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9 ._-]+/g, '').trim().replace(/\s+/g, '_').slice(0, 60) || 'examen'; }
+function aulaCopy(text, okMsg) {
+  const done = () => toast(okMsg, 'ok', 3200);
+  const fallback = () => { const t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(); } catch (e) { toast('No se pudo copiar. Usa «Descargar».', 'error'); } t.remove(); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done).catch(fallback); else fallback();
+}
+
+/* ---------- ¿Quién lo toma? ---------- */
+function aulaAssigned(m, ex) {
+  const by = s => s.slice().sort((a, b) => a.num - b.num);
+  const to = ex.to || { mode: 'all' };
+  if (to.mode === 'group') {
+    const gs = (m.groups || []).find(x => x.id === to.gs), g = gs && gs.groups[to.gi];
+    return g ? by(g.members.map(id => findStu(m, id)).filter(Boolean)) : [];
+  }
+  if (to.mode === 'some') return by(to.ids.map(id => findStu(m, id)).filter(Boolean));
+  return by(m.students);
+}
+function aulaToLabel(m, ex) {
+  const to = ex.to || { mode: 'all' };
+  if (to.mode === 'group') { const gs = (m.groups || []).find(x => x.id === to.gs), g = gs && gs.groups[to.gi]; return g ? `👥 ${g.name} · ${gs.name}` : '👥 Grupo (ya no existe)'; }
+  if (to.mode === 'some') { const n = aulaAssigned(m, ex).length; return `👤 ${n} estudiante${n === 1 ? '' : 's'}`; }
+  return '🎓 Todo el curso';
+}
+
+/* ---------- Claves personales (4 números, una por estudiante y módulo) ---------- */
+function aulaEnsurePins(m, list) {
+  m.aulaPins = m.aulaPins || {};
+  const used = new Set(Object.values(m.aulaPins)); let n = 0;
+  (list || m.students).forEach(s => {
+    if (m.aulaPins[s.id]) return;
+    let p; do { p = aulaRand(4, '0123456789'); } while (used.has(p) || /^(\d)\1{3}$/.test(p) || p === '1234');
+    m.aulaPins[s.id] = p; used.add(p); n++;
+  });
+  return n;
+}
 
 /* ---------- Corrección ---------- */
 /** Puntos automáticos de una pregunta (null = la corrige el docente). */
 function aulaAuto(q, ans) {
   const empty = ans === undefined || ans === null || ans === '';
   if (q.t === 'mc') return !empty && +ans === q.ok ? q.pts : 0;
-  if (q.t === 'tf') return !empty && (ans === true || ans === 'true') === q.ok && q.ok !== null ? q.pts : 0;
+  if (q.t === 'tf') return !empty && q.ok !== null && (ans === true || ans === 'true') === q.ok ? q.pts : 0;
   if (q.t === 'short') {
     if (empty) return 0;
     if (!q.acc.length) return null;
@@ -7760,13 +7990,18 @@ function aulaScore(ex, num) {
 }
 /** Casilla del registro a la que va la nota. */
 function aulaTarget(m, ex) { const a = ex.actKey && resolveAct(ex.actKey); return a && a.m === m ? a : null; }
+function aulaTargetLabel(m, t) { return `RA ${m.ras.indexOf(t.ra) + 1} · ${t.c.count > 1 ? t.c.label + ' ' + (t.i + 1) : t.c.label}`; }
 function aulaScaled(m, ex, sc) { const t = aulaTarget(m, ex); if (!sc.total) return null; return t ? r2(sc.got / sc.total * t.c.max) : null; }
 /** Estudiante del módulo que corresponde a una entrega. */
 function aulaStudent(m, ex, num) {
   const sid = ex.map[num]; if (sid) { const s = findStu(m, sid); if (s) return s; }
   return m.students.find(s => s.num === +num) || null;
 }
-function aulaNameOk(s, r) { if (!s || !r) return false; const a = personKey(s.name), b = personKey(r.name || ''); return !!b && (samePerson(a, b) || b.split(' ').filter(w => w.length > 2 && a.split(' ').includes(w)).length >= 2); }
+function aulaNameOk(s, r) {
+  if (!s || !r) return false;
+  const L = aulaToks(s.name), T = aulaToks(r.name || '');
+  return T.filter(w => L.includes(w)).length >= Math.min(2, L.length);
+}
 /** Pasa las notas listas a la casilla vinculada. No pisa notas que escribiste tú, salvo force. */
 function aulaApply(m, ex, { force = false } = {}) {
   const t = aulaTarget(m, ex); const res = { n: 0, conflicts: [], pending: 0 };
@@ -7791,24 +8026,38 @@ async function aulaPublish(m, ex) {
   const FV = firebase.firestore.FieldValue, TS = firebase.firestore.Timestamp;
   if (!ex.pub) ex.pub = Cloud.fs.collection('aula').doc().id;
   if (!ex.code) ex.code = aulaCode();
+  if (!ex.unlock) ex.unlock = aulaRand(4);
+  const list = aulaAssigned(m, ex);
+  if (!list.length) throw new Error('No hay estudiantes asignados a este examen.');
+  if (ex.pin && aulaEnsurePins(m, list)) persist();
   const ref = aulaRef(ex);
   const until = ex.until ? new Date(ex.until) : new Date(Date.now() + 3 * 3600e3);
-  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), v: 1, upd: FV.serverTimestamp() }), 15000);
-  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })) }), 15000);
+  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, v: 2, upd: FV.serverTimestamp() }), 15000);
+  const ros = {}; list.forEach(s => { ros[s.num] = aulaToks(s.name).map(t => aulaHash(ex.pub + ':' + t)); });
+  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })) }), 15000);
+  // Permisos para entregar: uno por estudiante asignado (con su clave si se pide)
+  const want = list.map(s => `${s.num}-${ex.pin ? m.aulaPins[s.id] : ''}`);
+  const b = Cloud.fs.batch(); let n = 0;
+  want.filter(k => !ex.kdocs.includes(k)).forEach(k => { b.set(ref.collection('k').doc(k), { ok: 1 }); n++; });
+  ex.kdocs.filter(k => !want.includes(k)).forEach(k => { b.delete(ref.collection('k').doc(k)); n++; });
+  if (n) await withTimeout(b.commit(), 20000);
+  ex.kdocs = want;
 }
 async function aulaSetStatus(m, ex, status, until) {
+  const prev = [ex.status, ex.until];
   ex.status = status; if (until) ex.until = until;
-  await aulaPublish(m, ex);
+  try { await aulaPublish(m, ex); } catch (e) { [ex.status, ex.until] = prev; throw e; }
 }
 async function aulaDeleteCloud(ex) {
   if (!aulaCloudOK() || !ex.pub) return;
   const ref = aulaRef(ex);
   const rs = await withTimeout(ref.collection('resp').get(), 15000);
   await Promise.all(rs.docs.map(d => d.ref.delete()));
+  await Promise.all(ex.kdocs.map(k => ref.collection('k').doc(k).delete().catch(() => { })));
   if (ex.code) await ref.collection('q').doc(ex.code).delete().catch(() => { });
   await ref.delete();
 }
-function aulaUnwatch() { if (AulaLive.unsub) { try { AulaLive.unsub(); } catch (e) { } } Object.assign(AulaLive, { eid: '', mid: '', xid: '', unsub: null, err: '' }); }
+function aulaUnwatch() { if (AulaLive.unsub) { try { AulaLive.unsub(); } catch (e) { } } Object.assign(AulaLive, { eid: '', mid: '', xid: '', unsub: null, err: '', ready: false }); }
 function aulaWatch(m, ex) {
   if (!aulaCloudOK() || !ex.pub) { aulaUnwatch(); return; }
   if (AulaLive.eid === ex.pub && AulaLive.unsub) return;
@@ -7816,20 +8065,20 @@ function aulaWatch(m, ex) {
   Object.assign(AulaLive, { eid: ex.pub, mid: m.id, xid: ex.id });
   AulaLive.unsub = aulaRef(ex).collection('resp').onSnapshot(snap => {
     const mm = findMod(AulaLive.mid), e = aulaFind(mm, AulaLive.xid); if (!e) return;
-    let changed = 0, fresh = [];
+    let changed = 0; const fresh = [];
     snap.docs.forEach(d => {
       const x = d.data(), num = String(parseInt(x.num, 10) || d.id);
       const r = { num: +num, name: String(x.name || '').slice(0, 80), answers: x.answers || {}, startedAt: +x.startedAt || 0, sentAt: x.sentAt && x.sentAt.toMillis ? x.sentAt.toMillis() : (+x.sentAt || 0), blurs: parseInt(x.blurs, 10) || 0 };
       if (JSON.stringify(e.resp[num]) !== JSON.stringify(r)) { if (!e.resp[num]) fresh.push(r); e.resp[num] = r; changed++; }
     });
-    if (!changed) return;
+    if (!changed) { AulaLive.ready = true; return; }
     let applied = 0;
     if (e.auto) applied = aulaApply(mm, e).n;
     persist();
     if (fresh.length && AulaLive.ready) toast(`📥 ${fresh.length === 1 ? 'Entregó ' + (aulaStudent(mm, e, fresh[0].num) || fresh[0]).name : fresh.length + ' entregas nuevas'}${applied ? ' · nota pasada al registro' : ''}`, 'ok', 3200);
     AulaLive.ready = true;
     aulaRenderSoon();
-  }, err => { AulaLive.err = String(err && err.code || err); console.warn('Aula', err); });
+  }, err => { AulaLive.err = String(err && err.code || err); console.warn('Aula', err); aulaRenderSoon(); });
 }
 /** Redibuja el Aula cuando no haya una ventana abierta (para no cerrarle nada al docente). */
 let _aulaRS = null;
@@ -7850,176 +8099,241 @@ function renderAula(m) {
   const ex = state.aulaSel && aulaFind(m, state.aulaSel);
   if (ex) return renderAulaExam(m, ex);
   state.aulaSel = null;
-  const list = (m.aula || []).slice().sort((a, b) => (b.created || '').localeCompare(a.created || ''));
+  const all = (m.aula || []).slice().sort((a, b) => (b.created || '').localeCompare(a.created || ''));
+  const cnt = { all: all.length, open: 0, draft: 0, closed: 0 }; all.forEach(e => { cnt[aulaState(e)]++; });
+  const f = cnt[state.aulaF] !== undefined ? state.aulaF || 'all' : 'all';
+  const list = f === 'all' ? all : all.filter(e => aulaState(e) === f);
+  const pend = all.reduce((a, e) => a + Object.keys(e.resp).filter(k => aulaScore(e, k).pending).length, 0);
   const cloud = aulaCloudOK();
+  const chips = [['all', 'Todos'], ['open', 'Abiertos'], ['draft', 'Borradores'], ['closed', 'Cerrados']].map(([k, l]) => `<button class="aula-chip ${f === k ? 'on' : ''}" data-act="aula-filter" data-id="${k}">${l} <span>${cnt[k]}</span></button>`).join('');
   return `<div class="aula">
-    <div class="aula-top card">
-      <div><h2>🏫 Aula de ${esc(modShort(m))}</h2><p class="muted small">Solo para los ${m.students.length} estudiantes de ${esc(m.course || 'este módulo')}. Cada módulo tiene su propia aula: nada se mezcla.</p></div>
-      <button class="btn btn-primary" data-act="aula-new">${ICON.plus} Nuevo examen o práctica</button>
-    </div>
-    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Puedes preparar exámenes aquí, pero para abrirlos a los estudiantes entra en la versión web con internet.</div></div>`}
-    ${list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : `<div class="empty card"><div class="big">🏫</div>
-      <p><strong>Tu aula está vacía.</strong></p>
-      <ol class="aula-steps"><li><b>Crea</b> un examen o práctica con preguntas de selección, V/F, respuesta corta o desarrollo.</li><li><b>Ábrelo</b> y muestra el QR o el enlace con el código.</li><li>Los estudiantes <b>responden desde su celular</b> con su número de lista.</li><li>Las cerradas se <b>corrigen solas</b> y la nota pasa al registro.</li></ol>
-      <button class="btn btn-primary" data-act="aula-new">${ICON.plus} Crear el primero</button></div>`}
+    <section class="aula-hero">
+      <div class="ah-txt">
+        <span class="ah-eyebrow">🏫 Aula virtual</span>
+        <h2>${esc(modShort(m))} <span>${esc(m.course || '')}</span></h2>
+        <p>Exámenes y prácticas en línea para los ${m.students.length} estudiantes de este módulo. Cada módulo tiene su propia aula.</p>
+        <div class="ah-stats"><div><b>${cnt.all}</b><span>creados</span></div><div><b>${cnt.open}</b><span>abiertos</span></div><div><b>${pend}</b><span>por corregir</span></div></div>
+      </div>
+      <div class="ah-acts">
+        <button class="btn ah-main" data-act="aula-new">${ICON.plus} Nuevo examen</button>
+        <button class="btn ah-sec" data-act="aula-import">🤖 Crear con IA / Importar</button>
+        <button class="btn ah-sec" data-act="aula-pins">🔑 Claves de estudiantes</button>
+      </div>
+    </section>
+    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Aquí puedes preparar, importar e imprimir exámenes; para abrirlos a los estudiantes entra en la versión web con internet.</div></div>`}
+    ${all.length ? `<div class="aula-chips">${chips}</div>` : ''}
+    ${list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : all.length ? `<p class="muted aula-none">No hay exámenes en «${esc({ open: 'Abiertos', draft: 'Borradores', closed: 'Cerrados' }[f])}».</p>` : `<div class="aula-empty card">
+      <div class="ae-art">📝</div>
+      <h3>Tu aula está lista para el primer examen</h3>
+      <ol class="aula-steps">
+        <li><span>1</span><div><b>Créalo</b> a mano o pídeselo a la IA y pégalo aquí.</div></li>
+        <li><span>2</span><div><b>Asígnalo</b> a todo el curso, a un grupo o a algunos estudiantes.</div></li>
+        <li><span>3</span><div><b>Ábrelo</b> y proyecta el QR con el código.</div></li>
+        <li><span>4</span><div>Las cerradas <b>se corrigen solas</b> y la nota pasa al registro.</div></li>
+      </ol>
+      <div class="row-wrap" style="justify-content:center"><button class="btn btn-primary" data-act="aula-new">${ICON.plus} Crear a mano</button><button class="btn btn-secondary" data-act="aula-import">🤖 Crear con IA / Importar</button></div></div>`}
   </div>`;
 }
 function aulaCard(m, e) {
-  const st = aulaStatus(e), n = Object.keys(e.resp).length, t = aulaTarget(m, e);
+  const st = aulaStatus(e), n = Object.keys(e.resp).length, t = aulaTarget(m, e), tot = aulaAssigned(m, e).length;
   const pend = Object.keys(e.resp).filter(k => aulaScore(e, k).pending).length;
-  return `<article class="aula-card card" data-act="aula-open" data-id="${e.id}" tabindex="0" role="button">
-    <div class="ac-top"><span class="ac-kind">${AULA_KINDS[e.kind]} ${esc(e.kind)}</span><span class="badge ${st.cls}">${esc(st.label)}</span></div>
+  const p = tot ? Math.min(100, Math.round(n / tot * 100)) : 0;
+  return `<article class="aula-card card ${AULA_KCLS[e.kind]}" data-act="aula-open" data-id="${e.id}" tabindex="0" role="button">
+    <div class="ac-top"><span class="ac-kind">${AULA_KINDS[e.kind]} ${esc(e.kind)}</span><span class="ac-st st-${st.dot}"><i></i>${esc(st.label)}</span></div>
     <h3>${esc(e.title)}</h3>
-    <p class="muted small">${e.qs.length} pregunta${e.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(e))} pts${e.dur ? ' · ' + e.dur + ' min' : ''}</p>
-    <p class="small">${t ? `➜ RA ${m.ras.indexOf(t.ra) + 1} · ${esc(t.c.count > 1 ? t.c.label + ' ' + (t.i + 1) : t.c.label)}` : '<span class="muted">Sin casilla del registro</span>'}</p>
-    <div class="ac-foot"><span><b>${n}</b>/${m.students.length} entregas</span>${pend ? `<span class="badge warn">${pend} por corregir</span>` : ''}</div>
+    <div class="ac-meta"><span>${e.qs.length} preg.</span><span>${fmtN(aulaTotal(e))} pts</span>${e.dur ? `<span>${e.dur} min</span>` : ''}${e.pin ? '<span title="Pide clave personal">🔑</span>' : ''}</div>
+    <div class="ac-to">${esc(aulaToLabel(m, e))}</div>
+    <div class="ac-dest">${t ? `➜ ${esc(aulaTargetLabel(m, t))}` : '<span class="muted">Sin casilla del registro</span>'}</div>
+    <div class="ac-foot"><div class="ac-bar"><div style="width:${p}%"></div></div><span><b>${n}</b>/${tot}</span>${pend ? `<span class="badge warn">${pend} por corregir</span>` : ''}</div>
   </article>`;
 }
 function renderAulaExam(m, ex) {
-  const st = aulaStatus(ex), t = aulaTarget(m, ex), cloud = aulaCloudOK();
+  const st = aulaStatus(ex), t = aulaTarget(m, ex), cloud = aulaCloudOK(), open = aulaIsOpen(ex);
+  const asg = aulaAssigned(m, ex), asgIds = new Set(asg.map(s => s.id));
   const nums = Object.keys(ex.resp).map(Number);
   const scores = {}; nums.forEach(k => { scores[k] = aulaScore(ex, k); });
   const done = nums.filter(k => !scores[k].pending);
-  const avg = done.length ? r2(done.reduce((a, k) => a + scores[k].got / (scores[k].total || 1), 0) / done.length * 100) : null;
+  const avg = done.length ? done.reduce((a, k) => a + scores[k].got / (scores[k].total || 1), 0) / done.length * 100 : null;
   const pend = nums.filter(k => scores[k].pending).length;
   const used = new Set();
-  const rows = m.students.slice().sort((a, b) => a.num - b.num).map(s => {
+  const rows = asg.map(s => {
     const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; });
     if (num !== undefined) used.add(num);
     return aulaRow(m, ex, s, num, num !== undefined ? scores[num] : null);
   });
-  const extra = nums.filter(k => !used.has(k)).map(k => aulaRow(m, ex, null, k, scores[k]));
-  const stats = ex.qs.filter(q => q.t !== 'open').map((q, i) => {
-    const n = nums.length; if (!n) return '';
+  const extra = nums.filter(k => !used.has(k)).map(k => { const s = aulaStudent(m, ex, k); return aulaRow(m, ex, s && !asgIds.has(s.id) ? s : null, k, scores[k], !!s); });
+  const stats = ex.qs.map((q, i) => {
+    const n = nums.length; if (!n || q.t === 'open') return '';
     const ok = nums.filter(k => scores[k].per[q.id] && scores[k].per[q.id].pts >= q.pts).length;
     const p = Math.round(ok / n * 100);
-    return `<div class="aq-stat" title="${esc(q.text)}"><span>P${ex.qs.indexOf(q) + 1}</span><div class="progress"><div style="width:${p}%;background:var(--${p >= 70 ? 'ok' : p >= 50 ? 'warn' : 'bad'})"></div></div><b>${p}%</b></div>`;
+    return `<div class="aq-stat" title="${esc(q.text)}"><span>P${i + 1}</span><div class="progress"><div style="width:${p}%;background:var(--${p >= 70 ? 'ok' : p >= 50 ? 'gold' : 'bad'})"></div></div><b>${p}%</b></div>`;
   }).join('');
-  const link = ex.pub ? aulaLink(ex) : '';
+  const pct = asg.length ? Math.min(100, Math.round(nums.length / asg.length * 100)) : 0;
   return `<div class="aula">
-    <div class="aula-exam-head card">
-      <button class="btn btn-secondary btn-icon" data-act="aula-back" title="Volver al Aula">${ICON.back}</button>
-      <div class="aeh-t"><span class="ac-kind">${AULA_KINDS[ex.kind]} ${esc(ex.kind)}</span><h2>${esc(ex.title)}</h2>
-        <p class="muted small">${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(ex))} pts${ex.dur ? ' · ' + ex.dur + ' min por estudiante' : ' · sin límite de tiempo'}${ex.code && ex.status !== 'draft' ? ` · Código <b class="aula-code-sm">${esc(ex.code)}</b>` : ''}</p></div>
-      <span class="badge ${st.cls}">${esc(st.label)}</span>
-    </div>
-    <div class="row-wrap aula-actions">
-      ${aulaIsOpen(ex)
+    <section class="aula-xhead ${AULA_KCLS[ex.kind]}">
+      <button class="btn btn-icon ax-back" data-act="aula-back" title="Volver al Aula">${ICON.back}</button>
+      <div class="ax-t">
+        <div class="ax-row"><span class="ac-kind">${AULA_KINDS[ex.kind]} ${esc(ex.kind)}</span><span class="ac-st st-${st.dot}"><i></i>${esc(st.label)}</span></div>
+        <h2>${esc(ex.title)}</h2>
+        <div class="ac-meta"><span>${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'}</span><span>${fmtN(aulaTotal(ex))} pts</span><span>${ex.dur ? ex.dur + ' min por estudiante' : 'sin límite de tiempo'}</span><span>${esc(aulaToLabel(m, ex))}</span>${ex.pin ? '<span>🔑 con clave</span>' : ''}${ex.oneDev ? '<span>📱 un celular, una entrega</span>' : ''}</div>
+      </div>
+      ${ex.code && ex.status !== 'draft' ? `<div class="ax-code"><span>Código</span><b>${esc(ex.code)}</b>${ex.oneDev && open ? `<small title="Escríbelo tú en el celular que comparten dos estudiantes">Celular compartido: <b>${esc(ex.unlock)}</b></small>` : ''}</div>` : ''}
+    </section>
+    <div class="aula-actions">
+      ${open
       ? `<button class="btn btn-primary" data-act="aula-share" data-id="${ex.id}">📱 Mostrar QR y código</button><button class="btn btn-secondary" data-act="aula-extend" data-id="${ex.id}">⏱️ Extender</button><button class="btn btn-danger" data-act="aula-close" data-id="${ex.id}">⏹ Cerrar ahora</button>`
       : `<button class="btn btn-primary" data-act="aula-start" data-id="${ex.id}" ${cloud ? '' : 'disabled title="Necesitas la versión web con tu cuenta"'}>🚀 ${ex.status === 'draft' ? 'Abrir a los estudiantes' : 'Volver a abrir'}</button>`}
-      <button class="btn btn-secondary" data-act="aula-edit" data-id="${ex.id}">✏️ Editar preguntas</button>
-      <button class="btn btn-ghost" data-act="aula-dup" data-id="${ex.id}">⧉ Duplicar</button>
-      <button class="btn btn-ghost" data-act="aula-print" data-id="${ex.id}">🖨️ Imprimir</button>
-      <button class="btn btn-ghost aula-del" data-act="aula-del" data-id="${ex.id}">${ICON.trash} Eliminar</button>
+      <button class="btn btn-secondary" data-act="aula-edit" data-id="${ex.id}">✏️ Editar</button>
+      <details class="aula-menu"><summary class="btn btn-secondary">⬇ Exportar</summary><div class="am-pop">
+        <button data-act="aula-pdf" data-id="${ex.id}">📄 PDF para los estudiantes<small>Para imprimir o guardar como PDF</small></button>
+        <button data-act="aula-pdf-key" data-id="${ex.id}">🔑 PDF con respuestas<small>Clave de corrección para ti</small></button>
+        <button data-act="aula-txt-copy" data-id="${ex.id}">🤖 Copiar para la IA<small>Texto con preguntas y respuestas</small></button>
+        <button data-act="aula-txt-dl" data-id="${ex.id}">💾 Descargar texto (.txt)<small>Se puede volver a importar</small></button>
+      </div></details>
+      <details class="aula-menu"><summary class="btn btn-ghost">⋯ Más</summary><div class="am-pop">
+        <button data-act="aula-dup" data-id="${ex.id}">⧉ Duplicar<small>Copia sin entregas (otra sección, recuperación…)</small></button>
+        <button data-act="aula-archive" data-id="${ex.id}">🗄️ Archivar<small>Guarda un archivo con todo y lo quita del Aula</small></button>
+        <button data-act="aula-del" data-id="${ex.id}" class="am-danger">${ICON.trash} Eliminar</button>
+      </div></details>
     </div>
-    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para abrirlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo e imprimirlo.</div></div>`}
+    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para abrirlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo, exportarlo e imprimirlo.</div></div>`}
     ${AulaLive.err && AulaLive.xid === ex.id ? `<div class="alert alert-bad"><div><strong>No se pudieron leer las entregas.</strong> ${AulaLive.err.includes('permission') ? 'Falta activar las reglas del Aula en Firebase.' : 'Revisa tu conexión.'} <small class="muted">(${esc(AulaLive.err)})</small></div></div>` : ''}
-    <div class="stats aula-stats">
-      <div class="stat"><b>${nums.length}</b><span>de ${m.students.length} entregaron</span></div>
-      <div class="stat"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
-      <div class="stat"><b style="color:var(--${pend ? 'warn' : 'ok'})">${pend}</b><span>Por corregir</span></div>
-      <div class="stat"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0)}</b><span>Salidas de la página</span></div>
+    <div class="aula-kpis">
+      <div class="kpi kpi-ring"><div class="ring" style="--p:${pct}"><b>${nums.length}</b><small>/${asg.length}</small></div><span>entregaron</span></div>
+      <div class="kpi"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
+      <div class="kpi"><b style="color:var(--${pend ? 'gold' : 'ok'})">${pend}</b><span>Por corregir</span></div>
+      <div class="kpi"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0)}</b><span>Salidas de la página</span></div>
     </div>
     <div class="card aula-target">${t
-      ? `<div><strong>Las notas van a:</strong> RA ${m.ras.indexOf(t.ra) + 1} · ${esc(t.c.count > 1 ? t.c.label + ' ' + (t.i + 1) : t.c.label)} <span class="muted">(máximo ${fmtN(t.c.max)})</span></div>
-         <label class="check"><input type="checkbox" id="aulaAuto" ${ex.auto ? 'checked' : ''}> Pasar las notas solas al registro</label>
-         <button class="btn btn-sm btn-secondary" data-act="aula-apply" data-id="${ex.id}">↧ Pasar notas ahora</button>`
-      : `<div><strong>Sin casilla del registro.</strong> <span class="muted">Elige en «Editar preguntas» a qué actividad va la nota para que pase sola.</span></div>`}</div>
+      ? `<div class="at-l"><span class="at-ic">↧</span><div><strong>Las notas van a ${esc(aulaTargetLabel(m, t))}</strong><div class="muted small">Se calculan sobre ${fmtN(t.c.max)} puntos</div></div></div>
+         <label class="check"><input type="checkbox" id="aulaAuto" ${ex.auto ? 'checked' : ''}> Pasarlas solas al registro</label>
+         <button class="btn btn-sm btn-secondary" data-act="aula-apply" data-id="${ex.id}">Pasar notas ahora</button>`
+      : `<div class="at-l"><span class="at-ic warn">!</span><div><strong>Sin casilla del registro.</strong><div class="muted small">Elige en «Editar» a qué actividad va la nota para que pase sola.</div></div></div>`}</div>
     ${stats ? `<details class="card aula-qstats"><summary><strong>Aciertos por pregunta</strong> <span class="muted small">(para saber qué repasar)</span></summary><div class="aq-stats">${stats}</div></details>` : ''}
     <div class="card table-card"><div class="table-wrap"><table class="tbl aula-tbl">
       <thead><tr><th>Nº</th><th>Estudiante</th><th>Estado</th><th>Puntos</th><th>Nota${t ? ' /' + fmtN(t.c.max) : ''}</th><th title="Veces que salió de la página del examen">Salidas</th><th>Entregó</th><th></th></tr></thead>
       <tbody>${rows.join('')}${extra.join('')}</tbody></table></div></div>
-    ${ex.status !== 'draft' && link ? `<p class="muted small">Enlace para los estudiantes: <a href="${esc(link)}" target="_blank" rel="noopener">${esc(link)}</a></p>` : ''}
   </div>`;
 }
-function aulaRow(m, ex, s, num, sc) {
+function aulaRow(m, ex, s, num, sc, known) {
   const r = num !== undefined ? ex.resp[num] : null;
-  if (!r) return `<tr class="muted"><td>${s.num}</td><td>${esc(s.name)}</td><td><span class="badge neutral">No ha entregado</span></td><td>—</td><td>—</td><td></td><td></td><td></td></tr>`;
+  if (!r) return `<tr class="ar-none"><td>${s.num}</td><td>${esc(s.name)}</td><td><span class="badge neutral">Pendiente</span></td><td>—</td><td>—</td><td></td><td></td><td></td></tr>`;
   const v = aulaScaled(m, ex, sc), warnName = s && !aulaNameOk(s, r);
-  const used = r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null;
+  const usedMin = r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null;
+  const nota = isNum(v) && !sc.pending ? `<b class="ar-grade g-${sc.got / (sc.total || 1) >= .7 ? 'ok' : sc.got / (sc.total || 1) >= .6 ? 'mid' : 'bad'}">${fmtN(v)}</b>` : '—';
   return `<tr>
-    <td>${s ? s.num : `<span class="badge bad" title="Ese número no está en la lista">${num}?</span>`}</td>
-    <td>${s ? esc(s.name) : '<span class="muted">—</span>'}${warnName || !s ? `<div class="small ${s ? 'warn-t' : 'muted'}" title="Nombre escrito por el estudiante">✍ ${esc(r.name)}</div>` : ''}</td>
+    <td>${s ? s.num : `<span class="badge ${known ? 'warn' : 'bad'}" title="${known ? 'No estaba asignado' : 'Ese número no está en la lista'}">${num}${known ? '' : '?'}</span>`}</td>
+    <td>${s ? esc(s.name) : known ? esc((aulaStudent(m, ex, num) || {}).name || '') : '<span class="muted">—</span>'}${warnName || !s ? `<div class="small ${s ? 'warn-t' : 'muted'}" title="Nombre escrito por el estudiante">✍ ${esc(r.name)}</div>` : ''}</td>
     <td>${sc.pending ? `<span class="badge warn">${sc.pending} por corregir</span>` : '<span class="badge ok">Corregido</span>'}</td>
     <td><b>${fmtN(sc.got)}</b>/${fmtN(sc.total)}</td>
-    <td>${isNum(v) && !sc.pending ? `<b>${fmtN(v)}</b>` : '—'}</td>
+    <td>${nota}</td>
     <td>${r.blurs ? `<span class="badge ${r.blurs > 2 ? 'bad' : 'warn'}">${r.blurs}</span>` : '0'}</td>
-    <td class="small">${r.sentAt ? new Date(r.sentAt).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : '—'}${used !== null ? `<div class="muted">${used} min</div>` : ''}</td>
+    <td class="small">${r.sentAt ? new Date(r.sentAt).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : '—'}${usedMin !== null ? `<div class="muted">${usedMin} min</div>` : ''}</td>
     <td><button class="btn btn-sm ${sc.pending ? 'btn-primary' : 'btn-secondary'}" data-act="aula-review" data-id="${ex.id}" data-num="${num}">${sc.pending ? 'Corregir' : 'Ver'}</button></td>
   </tr>`;
 }
 
 /* ---------- Editor de examen ---------- */
 function aulaBlankQ(t) { return normAulaQ({ t, pts: 1, opts: t === 'mc' ? ['', '', '', ''] : [], ok: null }); }
-function aulaEditor(id) {
+function aulaEditor(id, preset) {
   const m = curMod(); if (!m) return;
   const orig = id ? aulaFind(m, id) : null;
-  const ex = orig ? JSON.parse(JSON.stringify(orig)) : normAula({ title: '', kind: 'Examen', dur: 30, qs: [aulaBlankQ('mc')] });
+  const ex = orig ? JSON.parse(JSON.stringify(orig)) : normAula(Object.assign({ title: '', kind: 'Examen', dur: 30, qs: [aulaBlankQ('mc')] }, preset || {}));
   const hasResp = orig && Object.keys(orig.resp).length;
+  const studs = m.students.slice().sort((a, b) => a.num - b.num);
+  const groups = []; (m.groups || []).forEach(gs => gs.groups.forEach((g, gi) => groups.push({ v: `${gs.id}|${gi}`, l: `${g.name} · ${gs.name} (${g.members.length})` })));
   const draw = ov => {
     const box = ov.querySelector('#aqList');
-    box.innerHTML = ex.qs.map((q, i) => `<div class="aq" data-qi="${i}">
+    box.innerHTML = ex.qs.map((q, i) => `<div class="aq aq-${q.t}" data-qi="${i}">
       <div class="aq-h"><span class="aq-n">${i + 1}</span>
-        <select data-aq="t">${Object.entries(AQ_TYPES).map(([k, l]) => `<option value="${k}" ${q.t === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        <select data-aq="t">${Object.entries(AQ_TYPES).map(([k, l]) => `<option value="${k}" ${q.t === k ? 'selected' : ''}>${AQ_ICON[k]} ${l}</option>`).join('')}</select>
         <label class="aq-pts">Puntos <input type="number" data-aq="pts" min="0.25" step="0.25" value="${q.pts}" inputmode="decimal"></label>
         <span class="aq-tools"><button type="button" class="btn btn-ghost btn-icon" data-aqm="-1" title="Subir" ${i ? '' : 'disabled'}>↑</button><button type="button" class="btn btn-ghost btn-icon" data-aqm="1" title="Bajar" ${i < ex.qs.length - 1 ? '' : 'disabled'}>↓</button><button type="button" class="btn btn-ghost btn-icon" data-aqd title="Quitar pregunta">${ICON.trash}</button></span></div>
       <textarea data-aq="text" rows="2" maxlength="2000" placeholder="Escribe la pregunta…">${esc(q.text)}</textarea>
       ${q.t === 'mc' ? `<div class="aq-opts">${q.opts.map((o, j) => `<label class="aq-opt ${q.ok === j ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqok="${j}" ${q.ok === j ? 'checked' : ''} title="Marca la correcta"><span class="aq-l">${'ABCDEFGH'[j]}</span><input type="text" data-aqo="${j}" data-noenter value="${esc(o)}" maxlength="400" placeholder="Opción ${'ABCDEFGH'[j]}"><button type="button" class="btn btn-ghost btn-icon" data-aqod="${j}" title="Quitar opción" ${q.opts.length > 2 ? '' : 'disabled'}>✕</button></label>`).join('')}
-        ${q.opts.length < 8 ? `<button type="button" class="btn btn-sm btn-ghost" data-aqoa>${ICON.plus} Opción</button>` : ''}<span class="muted small">Marca el círculo de la respuesta correcta.</span></div>` : ''}
-      ${q.t === 'tf' ? `<div class="aq-tf"><label class="aq-opt ${q.ok === true ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqtf="1" ${q.ok === true ? 'checked' : ''}> Verdadero</label><label class="aq-opt ${q.ok === false ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqtf="0" ${q.ok === false ? 'checked' : ''}> Falso</label><span class="muted small">Marca la correcta.</span></div>` : ''}
+        <div class="aq-foot">${q.opts.length < 8 ? `<button type="button" class="btn btn-sm btn-ghost" data-aqoa>${ICON.plus} Opción</button>` : ''}<span class="muted small">${q.ok === null ? '⚠ Marca el círculo de la respuesta correcta.' : '✓ Respuesta correcta: ' + 'ABCDEFGH'[q.ok]}</span></div></div>` : ''}
+      ${q.t === 'tf' ? `<div class="aq-tf"><label class="aq-opt ${q.ok === true ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqtf="1" ${q.ok === true ? 'checked' : ''}> Verdadero</label><label class="aq-opt ${q.ok === false ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqtf="0" ${q.ok === false ? 'checked' : ''}> Falso</label>${q.ok === null ? '<span class="muted small">⚠ Marca la correcta.</span>' : ''}</div>` : ''}
       ${q.t === 'short' ? `<label class="field small">Respuestas aceptadas <span class="muted">(sepáralas con | · no importan mayúsculas ni tildes)</span><input type="text" data-aq="acc" data-noenter value="${esc(q.acc.join(' | '))}" placeholder="Ej.: router | enrutador"></label>` : ''}
       ${q.t === 'open' ? `<p class="muted small">✍ El estudiante escribe su respuesta y tú la corriges al revisar las entregas.</p>` : ''}
     </div>`).join('') || '<p class="muted">Agrega la primera pregunta.</p>';
     ov.querySelector('#aqTotal').textContent = `${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(ex))} puntos en total`;
   };
+  const drawTo = ov => {
+    const box = ov.querySelector('#aeToBox'), mode = ex.to.mode;
+    ov.querySelectorAll('[data-tomode]').forEach(b => b.classList.toggle('on', b.dataset.tomode === mode));
+    if (mode === 'all') box.innerHTML = `<p class="muted small">Los ${studs.length} estudiantes del módulo.</p>`;
+    else if (mode === 'group') box.innerHTML = groups.length ? `<select id="aeGroup">${groups.map(g => `<option value="${esc(g.v)}" ${g.v === `${ex.to.gs}|${ex.to.gi}` ? 'selected' : ''}>${esc(g.l)}</option>`).join('')}</select>` : '<p class="muted small">No tienes grupos guardados. Créalos en Herramientas › Grupos.</p>';
+    else box.innerHTML = `<div class="ae-stus-h"><span class="muted small" id="aeSomeN"></span><button type="button" class="btn btn-sm btn-ghost" data-some="all">Todos</button><button type="button" class="btn btn-sm btn-ghost" data-some="none">Ninguno</button></div>
+      <div class="ae-stus">${studs.map(s => `<label class="ae-stu ${ex.to.ids.includes(s.id) ? 'on' : ''}"><input type="checkbox" value="${s.id}" ${ex.to.ids.includes(s.id) ? 'checked' : ''}><span>${s.num}</span>${esc(s.name)}</label>`).join('')}</div>`;
+    if (mode === 'group' && groups.length) { const sel = ov.querySelector('#aeGroup'); const set = () => { const [gs, gi] = sel.value.split('|'); ex.to.gs = gs; ex.to.gi = +gi; }; set(); sel.onchange = set; }
+    if (mode === 'some') {
+      const cnt = () => { ov.querySelector('#aeSomeN').textContent = `${ex.to.ids.length} elegido${ex.to.ids.length === 1 ? '' : 's'}`; };
+      cnt();
+      box.querySelectorAll('.ae-stu input').forEach(c => c.onchange = () => { ex.to.ids = ex.to.ids.filter(x => x !== c.value); if (c.checked) ex.to.ids.push(c.value); c.parentElement.classList.toggle('on', c.checked); cnt(); });
+      box.querySelectorAll('[data-some]').forEach(b => b.onclick = () => { ex.to.ids = b.dataset.some === 'all' ? studs.map(s => s.id) : []; drawTo(ov); });
+    }
+  };
   const qOf = el => ex.qs[+el.closest('[data-qi]').dataset.qi];
   openModal({
-    title: orig ? 'Editar examen o práctica' : 'Nuevo examen o práctica', icon: '📝', wide: true,
-    sub: `Aula de ${modShort(m)} · solo lo verán los estudiantes de este módulo`,
+    title: orig ? 'Editar examen o práctica' : preset ? 'Revisa el examen importado' : 'Nuevo examen o práctica', icon: preset ? '🤖' : '📝', wide: true,
+    sub: `Aula de ${modShort(m)}${m.course ? ' · ' + m.course : ''}`,
     body: `${hasResp ? '<div class="alert alert-warn"><div>Ya hay entregas. Si cambias las respuestas correctas o los puntos, las notas se recalculan.</div></div>' : ''}
+      ${preset ? '<div class="alert alert-info"><div>Revisa las preguntas y las respuestas correctas antes de guardar. Puedes cambiar cualquier cosa.</div></div>' : ''}
+      <div class="ae-sec"><h4>1 · Datos</h4>
       <div class="form-grid">
         <label class="field">Título<input type="text" id="aeTitle" maxlength="120" value="${esc(ex.title)}" placeholder="Ej.: Examen de redes 1"></label>
         <label class="field">Tipo<select id="aeKind">${Object.keys(AULA_KINDS).map(k => `<option ${ex.kind === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
         <label class="field">Tiempo por estudiante<select id="aeDur">${[0, 10, 15, 20, 30, 40, 45, 60, 90, 120].map(d => `<option value="${d}" ${ex.dur === d ? 'selected' : ''}>${d ? d + ' minutos' : 'Sin límite'}</option>`).join('')}${[0, 10, 15, 20, 30, 40, 45, 60, 90, 120].includes(ex.dur) ? '' : `<option value="${ex.dur}" selected>${ex.dur} minutos</option>`}</select></label>
       </div>
       <label class="field">¿A qué casilla del registro va la nota?<select id="aeAct">${actOptionsHTML(m, { type: ex.kind === 'Quiz' ? 'Examen' : ex.kind, selected: ex.actKey, empty: 'Ninguna (solo ver resultados)' })}</select></label>
-      <label class="field">Instrucciones <span class="muted">(opcional)</span><textarea id="aeInstr" rows="2" maxlength="2000" placeholder="Ej.: Lee bien cada pregunta. No salgas de la página.">${esc(ex.instr)}</textarea></label>
-      <label class="check"><input type="checkbox" id="aeShuf" ${ex.shuffle ? 'checked' : ''}> Mezclar el orden de las preguntas y opciones para cada estudiante</label>
-      <div class="aq-head"><h4 class="side-h">Preguntas</h4><span class="muted small" id="aqTotal"></span></div>
+      <label class="field">Instrucciones <span class="muted">(opcional)</span><textarea id="aeInstr" rows="2" maxlength="2000" placeholder="Ej.: Lee bien cada pregunta. No salgas de la página.">${esc(ex.instr)}</textarea></label></div>
+      <div class="ae-sec"><h4>2 · ¿Quién lo toma?</h4>
+        <div class="seg">${[['all', '🎓 Todo el curso'], ['group', '👥 Un grupo'], ['some', '👤 Elegir estudiantes']].map(([k, l]) => `<button type="button" data-tomode="${k}">${l}</button>`).join('')}</div>
+        <div id="aeToBox" class="ae-tobox"></div></div>
+      <div class="ae-sec"><h4>3 · Seguridad</h4>
+        <label class="check"><input type="checkbox" id="aeShuf" ${ex.shuffle ? 'checked' : ''}> Mezclar el orden de las preguntas y opciones para cada estudiante</label>
+        <label class="check"><input type="checkbox" id="aeOne" ${ex.oneDev ? 'checked' : ''}> Un celular, una entrega <span class="muted small">(si dos comparten celular, tú lo desbloqueas con un código)</span></label>
+        <label class="check"><input type="checkbox" id="aePin" ${ex.pin ? 'checked' : ''}> Pedir la clave personal de 4 números <span class="muted small">(nadie puede entrar con el número de otro)</span></label>
+        <p class="muted small">Siempre: el nombre debe corresponder al número de la lista y cada número entrega una sola vez.</p></div>
+      <div class="ae-sec"><div class="aq-head"><h4>4 · Preguntas</h4><span class="muted small" id="aqTotal"></span></div>
       <div id="aqList" class="aq-list"></div>
-      <div class="row-wrap aq-add">${Object.entries(AQ_TYPES).map(([k, l]) => `<button type="button" class="btn btn-sm btn-secondary" data-aqadd="${k}">${ICON.plus} ${l}</button>`).join('')}</div>`,
+      <div class="row-wrap aq-add">${Object.entries(AQ_TYPES).map(([k, l]) => `<button type="button" class="btn btn-sm btn-secondary" data-aqadd="${k}">${ICON.plus} ${l}</button>`).join('')}</div></div>`,
     actions: [{ label: 'Cancelar' }, {
-      label: orig ? 'Guardar cambios' : 'Crear', cls: 'btn-primary', onClick: ov => {
+      label: orig ? 'Guardar cambios' : 'Guardar examen', cls: 'btn-primary', onClick: ov => {
         ex.title = ov.querySelector('#aeTitle').value.trim(); ex.kind = ov.querySelector('#aeKind').value; ex.dur = +ov.querySelector('#aeDur').value;
         ex.actKey = ov.querySelector('#aeAct').value; ex.instr = ov.querySelector('#aeInstr').value.trim(); ex.shuffle = ov.querySelector('#aeShuf').checked;
+        ex.oneDev = ov.querySelector('#aeOne').checked; ex.pin = ov.querySelector('#aePin').checked;
         const errs = [];
         if (!ex.title) errs.push('Escribe el título.');
+        if (ex.to.mode === 'group' && !groups.length) errs.push('No hay grupos: elige «Todo el curso» o «Elegir estudiantes».');
+        if (ex.to.mode === 'some' && !ex.to.ids.length) errs.push('Elige al menos un estudiante.');
         if (!ex.qs.length) errs.push('Agrega al menos una pregunta.');
         ex.qs.forEach((q, i) => {
           if (!q.text.trim()) errs.push(`Pregunta ${i + 1}: falta el texto.`);
           if (q.t === 'mc') { q.opts = q.opts.map(o => o.trim()); if (q.opts.filter(Boolean).length < 2) errs.push(`Pregunta ${i + 1}: necesita al menos 2 opciones.`); else if (q.ok === null || !q.opts[q.ok]) errs.push(`Pregunta ${i + 1}: marca la opción correcta.`); }
           if (q.t === 'tf' && q.ok === null) errs.push(`Pregunta ${i + 1}: marca si es verdadero o falso.`);
         });
-        if (errs.length) { toast(errs[0] + (errs.length > 1 ? ` (y ${errs.length - 1} más)` : ''), 'error', 4000); const bad = ov.querySelector('.modal-body'); if (bad) bad.scrollTop = 0; return false; }
-        // Quitar opciones vacías sin perder cuál es la correcta
+        if (errs.length) { toast(errs[0] + (errs.length > 1 ? ` (y ${errs.length - 1} más)` : ''), 'error', 4500); return false; }
         ex.qs.forEach(q => { if (q.t !== 'mc') return; const okTxt = q.opts[q.ok]; const keep = q.opts.filter(Boolean); q.ok = keep.indexOf(okTxt); q.opts = keep; });
         const ne = normAula(ex);
         m.aula = m.aula || [];
         const k = m.aula.findIndex(x => x.id === ne.id);
         if (k >= 0) m.aula[k] = ne; else m.aula.push(ne);
+        if (ne.pin) aulaEnsurePins(m, aulaAssigned(m, ne));
         if (ne.auto) aulaApply(m, ne);
         persist(); state.aulaSel = ne.id; render();
-        if (ne.status === 'open' && ne.pub) aulaPublish(m, ne).then(() => toast('Cambios guardados y publicados.', 'ok')).catch(e => toast('Guardado aquí, pero no se pudo publicar: ' + e.message, 'warn', 4500));
-        else toast(orig ? 'Cambios guardados.' : 'Listo. Cuando quieras, ábrelo a los estudiantes.', 'ok', 3200);
+        if (ne.status === 'open' && ne.pub) aulaPublish(m, ne).then(() => { persist(); toast('Cambios guardados y publicados.', 'ok'); }).catch(e => toast('Guardado aquí, pero no se pudo publicar: ' + aulaErr(e), 'warn', 5000));
+        else toast(orig ? 'Cambios guardados.' : 'Examen guardado. Cuando quieras, ábrelo a los estudiantes.', 'ok', 3200);
       }
     }],
     onOpen: ov => {
-      draw(ov);
+      draw(ov); drawTo(ov);
+      ov.querySelectorAll('[data-tomode]').forEach(b => b.onclick = () => { ex.to.mode = b.dataset.tomode; if (ex.to.mode === 'group' && !ex.to.gs && groups.length) { const [gs, gi] = groups[0].v.split('|'); ex.to.gs = gs; ex.to.gi = +gi; } drawTo(ov); });
       const kindSel = ov.querySelector('#aeKind'), act = ov.querySelector('#aeAct');
       // Sugerencia: la primera casilla libre del mismo tipo (Examen → Examen 1, 2…), sin pisar lo que elijas tú
       const typeOf = () => kindSel.value === 'Quiz' ? 'Examen' : kindSel.value;
-      const used = new Set((m.aula || []).filter(x => x.id !== ex.id).map(x => x.actKey).filter(Boolean));
-      const suggest = () => { const x = actSlots(m).find(z => z.type === typeOf() && !used.has(z.key)); return x ? x.key : ''; };
+      const usedK = new Set((m.aula || []).filter(x => x.id !== ex.id).map(x => x.actKey).filter(Boolean));
+      const suggest = () => { const x = actSlots(m).find(z => z.type === typeOf() && !usedK.has(z.key)); return x ? x.key : ''; };
       let manual = !!ex.actKey;
       if (!manual) { const k = suggest(); if (k) act.value = k; }
       act.addEventListener('change', () => { manual = true; });
@@ -8062,16 +8376,18 @@ function aulaStartDialog(id, extend = false) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
   if (!aulaCloudOK()) return toast('Entra en la versión web con tu cuenta para abrir el Aula.', 'error', 4000);
   if (!ex.qs.length) return toast('Agrega preguntas primero.', 'error');
+  if (!aulaAssigned(m, ex).length) return toast('No hay estudiantes asignados. Revísalo en «Editar».', 'error', 4000);
   const base = extend && ex.until && new Date(ex.until) > new Date() ? new Date(ex.until) : new Date();
   const def = new Date(base.getTime() + (extend ? 15 : Math.max(ex.dur || 45, 20) + 15) * 60000);
   def.setSeconds(0, 0);
   openModal({
     title: extend ? 'Extender el tiempo' : 'Abrir a los estudiantes', icon: '🚀',
-    sub: `${ex.title} · ${modShort(m)}${m.course ? ' · ' + m.course : ''}`,
+    sub: `${ex.title} · ${modShort(m)}${m.course ? ' · ' + m.course : ''} · ${aulaToLabel(m, ex)}`,
     body: `<label class="field">Recibe entregas hasta<input type="datetime-local" id="asUntil" value="${dtLocal(def)}"></label>
       <div class="row-wrap">${(extend ? [5, 10, 15, 30] : [30, 45, 60, 90, 120]).map(x => `<button type="button" class="btn btn-sm btn-ghost" data-plus="${x}">${extend ? '+' : ''}${x} min</button>`).join('')}</div>
-      ${extend ? '' : `<label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del enlace y del QR (no tendrán que escribirlo)</label>
-      <p class="muted small">Si no lo marcas, les dices el código en voz alta o lo escribes en la pizarra: así nadie de fuera puede entrar con el enlace.</p>`}
+      ${extend ? '' : `<label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del QR (no tendrán que escribirlo)</label>
+      <p class="muted small">Si no lo marcas, les dices el código en voz alta o lo escribes en la pizarra: así nadie de fuera puede entrar solo con el enlace.</p>
+      ${ex.pin ? '<p class="muted small">🔑 Pedirá la clave personal: entrégales sus tarjetas (Aula › Claves de estudiantes).</p>' : ''}`}
       ${ex.dur ? `<p class="muted small">Cada estudiante tendrá ${ex.dur} minutos desde que empiece.</p>` : ''}`,
     actions: [{ label: 'Cancelar' }, {
       label: extend ? 'Extender' : '🚀 Abrir ahora', cls: 'btn-primary', onClick: (ov, close) => {
@@ -8081,7 +8397,7 @@ function aulaStartDialog(id, extend = false) {
         const btn = ov.querySelector('.modal-foot .btn-primary'); btn.disabled = true; btn.textContent = 'Publicando…';
         aulaSetStatus(m, ex, 'open', d.toISOString()).then(() => {
           persist(); close(); render(); toast(extend ? 'Tiempo extendido.' : '¡Abierto! Muestra el QR a tus estudiantes.', 'ok', 3200);
-          if (!extend) aulaShare(ex.id);
+          if (!extend) setTimeout(() => aulaShare(ex.id), 250);
         }).catch(e => { btn.disabled = false; btn.textContent = extend ? 'Extender' : '🚀 Abrir ahora'; toast(aulaErr(e), 'error', 6000); });
         return false;
       }
@@ -8094,14 +8410,14 @@ function aulaStartDialog(id, extend = false) {
 }
 function aulaErr(e) {
   const c = String(e && (e.code || e.message) || e);
-  if (c.includes('permission')) return 'Firebase no dio permiso. Falta activar las reglas del Aula (pídeselo a Claude).';
+  if (c.includes('permission')) return 'Firebase no dio permiso. Falta activar las reglas nuevas del Aula (pídeselo a Claude).';
   if (c.includes('internet') || c.includes('unavailable') || c.includes('Sin respuesta')) return 'Sin conexión con la nube. Revisa el internet e inténtalo otra vez.';
-  return 'No se pudo publicar: ' + c;
+  return c.length < 140 ? c : 'No se pudo publicar.';
 }
 function aulaClose(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  confirmBox('¿Cerrar ahora?', 'Nadie más podrá entregar. Quien esté respondiendo y no haya entregado perderá la entrega (podrás volver a abrirlo).', 'Cerrar', () => {
-    aulaSetStatus(m, ex, 'closed').then(() => { persist(); render(); toast('Cerrado.', 'ok'); }).catch(e => { ex.status = 'open'; toast(aulaErr(e), 'error', 5000); });
+  confirmBox('¿Cerrar ahora?', 'Nadie más podrá entregar. Quien esté respondiendo y no haya entregado no podrá enviar (puedes volver a abrirlo).', 'Cerrar', () => {
+    aulaSetStatus(m, ex, 'closed').then(() => { persist(); render(); toast('Cerrado.', 'ok'); }).catch(e => toast(aulaErr(e), 'error', 5000));
   });
 }
 let _qrLoad = null;
@@ -8116,20 +8432,20 @@ function aulaShare(id, big = false) {
   const link = aulaLink(ex);
   openModal({
     title: big ? ex.title : 'Compartir con los estudiantes', icon: '📱', wide: big,
-    sub: big ? `${modShort(m)}${m.course ? ' · ' + m.course : ''}` : 'Escanean el QR o abren el enlace, escriben el código, su número de lista y su nombre.',
+    sub: big ? `${modShort(m)}${m.course ? ' · ' + m.course : ''}` : 'Escanean el QR, escriben el código, su número de lista y su nombre.',
     body: `<div class="aula-share ${big ? 'big' : ''}">
       <div class="qr-box" id="qrBox"><span class="muted small">Cargando QR…</span></div>
       <div class="share-side">
-        <div class="code-lbl">Código</div><div class="aula-code">${esc(ex.code)}</div>
+        <div class="code-lbl">Código del examen</div><div class="aula-code">${esc(ex.code)}</div>
         ${ex.withCode ? '<p class="muted small">El QR ya incluye el código.</p>' : ''}
-        ${big ? `<p class="share-url">${esc(link.replace(/^https?:\/\//, ''))}</p>` : `<label class="field small">Enlace<input type="text" readonly value="${esc(link)}" id="shLink"></label>
-        <div class="row-wrap"><button type="button" class="btn btn-sm btn-secondary" id="shCopy">📋 Copiar enlace</button>${navigator.share ? '<button type="button" class="btn btn-sm btn-secondary" id="shShare">📤 Enviar…</button>' : ''}<button type="button" class="btn btn-sm btn-ghost" id="shBig">⛶ Proyectar</button></div>`}
-        <p class="muted small">${aulaStatus(ex).label}</p>
+        ${big ? `<ol class="share-steps"><li>Escanea el QR con la cámara</li><li>Escribe el código${ex.pin ? ' y tu clave' : ''}</li><li>Pon tu número de lista y tu nombre</li></ol>` : `<div class="row-wrap"><button type="button" class="btn btn-sm btn-secondary" id="shCopy">📋 Copiar enlace</button>${navigator.share ? '<button type="button" class="btn btn-sm btn-secondary" id="shShare">📤 Enviar…</button>' : ''}<button type="button" class="btn btn-sm btn-primary" id="shBig">⛶ Proyectar en grande</button></div>
+        <p class="muted small">Al proyectar se ve solo el QR y el código, sin la dirección.</p>`}
+        <p class="muted small">${esc(aulaStatus(ex).label)}</p>
       </div></div>`,
     actions: [{ label: 'Listo', cls: 'btn-primary' }],
     onOpen: (ov, close) => {
-      aulaLoadQR().then(() => { const b = ov.querySelector('#qrBox'); if (b) b.innerHTML = aulaQRsvg(link); }).catch(() => { const b = ov.querySelector('#qrBox'); if (b) b.innerHTML = '<span class="muted small">No se pudo cargar el QR (sin internet). Usa el enlace.</span>'; });
-      const c = ov.querySelector('#shCopy'); if (c) c.onclick = () => { const i = ov.querySelector('#shLink'); i.select(); (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => toast('Enlace copiado.', 'ok')).catch(() => { document.execCommand('copy'); toast('Enlace copiado.', 'ok'); }); };
+      aulaLoadQR().then(() => { const b = ov.querySelector('#qrBox'); if (b) b.innerHTML = aulaQRsvg(link); }).catch(() => { const b = ov.querySelector('#qrBox'); if (b) b.innerHTML = '<span class="muted small">No se pudo cargar el QR (sin internet). Usa «Copiar enlace».</span>'; });
+      const c = ov.querySelector('#shCopy'); if (c) c.onclick = () => aulaCopy(link, 'Enlace copiado.');
       const s = ov.querySelector('#shShare'); if (s) s.onclick = () => navigator.share({ title: ex.title, text: `${ex.title} (${modShort(m)})${ex.withCode ? '' : ' · Código: ' + ex.code}`, url: link }).catch(() => { });
       const g = ov.querySelector('#shBig'); if (g) g.onclick = () => { close(); setTimeout(() => aulaShare(id, true), 200); };
     }
@@ -8160,6 +8476,7 @@ function aulaReview(id, num) {
     sub: `${ex.title} · escribió «${r.name}»${used !== null ? ' · ' + used + ' min' : ''}${r.blurs ? ' · salió ' + r.blurs + ' ' + (r.blurs === 1 ? 'vez' : 'veces') + ' de la página' : ''}`,
     body: `${!s || !aulaNameOk(s, r) ? `<div class="alert alert-warn"><div>${s ? `El nombre escrito no coincide bien con el nº ${s.num} de tu lista.` : `El número ${num} no está en tu lista.`} ¿De quién es esta entrega?</div>
         <select id="arWho"><option value="">${s ? 'Dejar con ' + esc(s.name) : '— Elegir estudiante —'}</option>${m.students.slice().sort((a, b) => a.num - b.num).map(x => `<option value="${x.id}">${x.num}. ${esc(x.name)}</option>`).join('')}</select></div>` : ''}
+      <div class="ar-sum"><div><b>${fmtN(sc.got)}</b>/${fmtN(sc.total)} pts</div>${t && !sc.pending ? `<div>Nota: <b>${fmtN(aulaScaled(m, ex, sc))}</b>/${fmtN(t.c.max)}</div>` : ''}${sc.pending ? `<div class="warn-t">${sc.pending} por corregir</div>` : ''}</div>
       <div class="ar-list">${ex.qs.map((q, i) => {
         const p = sc.per[q.id] || {}; const a = (r.answers || {})[q.id];
         const okCls = p.pts === null ? 'pend' : p.pts >= q.pts ? 'ok' : p.pts > 0 ? 'half' : 'bad';
@@ -8168,7 +8485,7 @@ function aulaReview(id, num) {
           ${q.t !== 'open' ? `<div class="ar-c small"><span class="muted">Correcta:</span> ${aulaOkHTML(q)}</div>` : ''}
           <label class="ar-p">Puntos <input type="number" data-arq="${q.id}" min="0" max="${q.pts}" step="0.25" inputmode="decimal" value="${p.pts === null ? '' : p.pts}" placeholder="?"> / ${fmtN(q.pts)}${p.mark !== null && p.auto !== null && p.mark !== p.auto ? ' <span class="badge neutral" title="Cambiado por ti">editado</span>' : ''}</label></div>`;
       }).join('')}</div>
-      <p class="muted small">${t ? `La nota se calcula sobre ${fmtN(t.c.max)} y pasa a RA ${m.ras.indexOf(t.ra) + 1} · ${esc(t.c.label)}.` : 'Este examen no está vinculado a una casilla del registro.'}</p>`,
+      <p class="muted small">${t ? `La nota se calcula sobre ${fmtN(t.c.max)} y pasa a ${esc(aulaTargetLabel(m, t))}.` : 'Este examen no está vinculado a una casilla del registro.'}</p>`,
     actions: [
       { label: '↺ Permitir otro intento', cls: 'btn-ghost', onClick: () => { aulaRetake(ex, num); } },
       { label: 'Cancelar' },
@@ -8202,7 +8519,7 @@ function aulaRetake(ex, num) {
 }
 function aulaApplyNow(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  const t = aulaTarget(m, ex); if (!t) return toast('Primero elige la casilla del registro en «Editar preguntas».', 'error');
+  const t = aulaTarget(m, ex); if (!t) return toast('Primero elige la casilla del registro en «Editar».', 'error');
   const probe = aulaApply(m, ex); // pasa las que no chocan con notas escritas por ti
   if (!probe.conflicts.length) { persist(); render(); return toast(probe.n ? `${probe.n} notas pasadas al registro.` : probe.pending ? `Nada nuevo. Faltan ${probe.pending} entregas por corregir.` : 'Las notas ya estaban en el registro.', probe.n ? 'ok' : 'info', 3500); }
   const list = probe.conflicts.map(c => `<li>${c.s.num}. ${esc(c.s.name)}: registro <b>${fmtN(c.cur)}</b> → Aula <b>${fmtN(c.v)}</b></li>`).join('');
@@ -8214,23 +8531,273 @@ function aulaApplyNow(id) {
   });
 }
 
-/* ---------- Imprimir (para quien no tenga celular) ---------- */
-function aulaPrint(id) {
+/* ---------- Claves personales ---------- */
+function aulaPinsDialog() {
+  const m = curMod(); if (!m) return;
+  const studs = m.students.slice().sort((a, b) => a.num - b.num);
+  const draw = ov => {
+    const P = m.aulaPins || {};
+    ov.querySelector('#pinList').innerHTML = studs.map(s => `<div class="pin-row"><span class="pin-n">${s.num}</span><span class="pin-name">${esc(s.name)}</span><b class="pin-v">${P[s.id] ? esc(P[s.id]) : '<span class="muted">—</span>'}</b></div>`).join('');
+    ov.querySelector('#pinCount').textContent = `${studs.filter(s => P[s.id]).length} de ${studs.length} tienen clave`;
+  };
+  openModal({
+    title: 'Claves de los estudiantes', icon: '🔑', wide: true, sub: `${modShort(m)}${m.course ? ' · ' + m.course : ''} · una clave de 4 números por estudiante, para todos los exámenes de este módulo`,
+    body: `<p class="muted small">Se usan solo en los exámenes donde marques «Pedir la clave personal». Imprime las tarjetas, recórtalas y dale a cada uno la suya. Es privada: no la compartan.</p>
+      <div class="row-wrap" style="margin:.6rem 0"><button type="button" class="btn btn-sm btn-primary" id="pinGen">✨ Crear las que faltan</button><button type="button" class="btn btn-sm btn-secondary" id="pinPrint">🖨️ Imprimir tarjetas</button><button type="button" class="btn btn-sm btn-ghost" id="pinNew">↻ Cambiar todas</button><span class="muted small" id="pinCount"></span></div>
+      <div id="pinList" class="pin-list"></div>`,
+    actions: [{ label: 'Cerrar', cls: 'btn-primary' }],
+    onOpen: ov => {
+      draw(ov);
+      ov.querySelector('#pinGen').onclick = () => { const n = aulaEnsurePins(m); persist(); draw(ov); toast(n ? `${n} claves creadas.` : 'Todos ya tienen clave.', 'ok'); };
+      ov.querySelector('#pinNew').onclick = () => confirmBox('¿Cambiar todas las claves?', 'Las claves que ya entregaste dejarán de servir. Los exámenes abiertos con clave deben volver a abrirse.', 'Cambiar todas', () => { m.aulaPins = {}; aulaEnsurePins(m); persist(); draw(ov); toast('Claves nuevas creadas. Imprime las tarjetas otra vez.', 'ok', 3500); });
+      ov.querySelector('#pinPrint').onclick = () => { if (aulaEnsurePins(m)) { persist(); draw(ov); } aulaPrintPins(m); };
+    }
+  });
+}
+function aulaPrintPins(m) {
+  const studs = m.students.slice().sort((a, b) => a.num - b.num);
+  const cards = studs.map(s => `<div class="rx-pin"><div class="rx-pin-h">${esc(modShort(m))}${m.course ? ' · ' + esc(m.course) : ''} · Aula</div><div class="rx-pin-n">Nº ${s.num} · ${esc(s.name)}</div><div class="rx-pin-k">Mi clave: <b>${esc(m.aulaPins[s.id] || '')}</b></div><div class="rx-pin-f">No la compartas. Te la pedirán en los exámenes en línea.</div></div>`).join('');
+  printHTML(`<section class="rp-page">${reportHead(m, 'Claves del Aula')}<div class="rx-pins">${cards}</div></section>`, 'portrait');
+}
+
+/* ---------- Exportar: PDF y texto ---------- */
+function aulaPrint(id, key = false) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  const w = window.open('', '_blank'); if (!w) return toast('Permite las ventanas emergentes para imprimir.', 'error');
-  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc(ex.title)}</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:24px;color:#111}h1{font-size:20px;margin:0}.meta{margin:6px 0 16px;color:#444}.line{border-bottom:1px solid #999;display:inline-block;min-width:240px}.q{margin:0 0 14px;break-inside:avoid}.o{margin:3px 0 3px 18px}.box{border:1px solid #bbb;height:90px;margin-top:6px}</style></head><body>
-    <h1>${esc(ex.title)}</h1><div class="meta">${esc(modFull(m))}${m.course ? ' · ' + esc(m.course) : ''} · ${fmtN(aulaTotal(ex))} puntos</div>
-    <p>Nombre: <span class="line"></span> &nbsp; Nº: <span class="line" style="min-width:50px"></span> &nbsp; Fecha: <span class="line" style="min-width:90px"></span></p>
-    ${ex.instr ? `<p><i>${esc(ex.instr)}</i></p>` : ''}
-    ${ex.qs.map((q, i) => `<div class="q"><b>${i + 1}.</b> ${esc(q.text)} <small>(${fmtN(q.pts)} pts)</small>
-      ${q.t === 'mc' ? q.opts.map((o, j) => `<div class="o">${'abcdefgh'[j]}) ${esc(o)}</div>`).join('') : q.t === 'tf' ? '<div class="o">V ☐ &nbsp;&nbsp; F ☐</div>' : q.t === 'short' ? '<div class="o"><span class="line" style="min-width:320px"></span></div>' : '<div class="box"></div>'}</div>`).join('')}
-    <script>onload=function(){print()}<\/script></body></html>`);
-  w.document.close();
+  const L = 'abcdefgh';
+  const qs = ex.qs.map((q, i) => {
+    let body = '';
+    if (q.t === 'mc') body = `<ol class="rx-opts">${q.opts.map((o, j) => `<li class="${key && q.ok === j ? 'rx-ok' : ''}"><span class="rx-b">${L[j]}</span>${esc(o)}${key && q.ok === j ? ' ✓' : ''}</li>`).join('')}</ol>`;
+    else if (q.t === 'tf') body = `<div class="rx-tf"><span class="${key && q.ok === true ? 'rx-ok' : ''}"><i></i> Verdadero</span><span class="${key && q.ok === false ? 'rx-ok' : ''}"><i></i> Falso</span></div>`;
+    else if (q.t === 'short') body = key ? `<div class="rx-key">Respuesta: <b>${esc(q.acc.join(' · ') || '—')}</b></div>` : '<div class="rx-line"></div>';
+    else body = key ? '<div class="rx-key muted">Pregunta de desarrollo: corrige con tu criterio.</div>' : '<div class="rx-box"></div>';
+    return `<div class="rx-q"><div class="rx-qh"><span class="rx-num">${i + 1}</span><div class="rx-txt">${esc(q.text)}</div><span class="rx-pts">${fmtN(q.pts)} pt${q.pts === 1 ? '' : 's'}</span></div>${body}</div>`;
+  }).join('');
+  const sheet = key ? `<table class="rp-table rx-sheet"><thead><tr><th style="width:90px">Pregunta</th>${ex.qs.map((q, i) => `<th>${i + 1}</th>`).join('')}</tr></thead><tbody><tr><td>Respuesta</td>${ex.qs.map(q => `<td>${q.t === 'mc' ? (q.ok !== null ? L[q.ok].toUpperCase() : '—') : q.t === 'tf' ? (q.ok ? 'V' : 'F') : q.t === 'short' ? '✎' : '¶'}</td>`).join('')}</tr></tbody></table>` : '';
+  const head = `<div class="rx-head"><div class="rx-ttl"><span>${AULA_KINDS[ex.kind]} ${esc(ex.kind)}${key ? ' · CLAVE DE RESPUESTAS' : ''}</span><h2>${esc(ex.title)}</h2></div><div class="rx-score">Puntos<br><b>____ / ${fmtN(aulaTotal(ex))}</b></div></div>
+    ${key ? '' : `<div class="rx-fields"><div>Nombre: <span></span></div><div class="sm">Nº: <span></span></div><div class="sm">Fecha: <span></span></div></div>`}
+    ${ex.instr ? `<div class="rx-instr"><b>Instrucciones:</b> ${esc(ex.instr)}</div>` : ''}`;
+  printHTML(`<section class="rp-page rx">${reportHead(m, key ? 'Clave de respuestas' : ex.kind)}${head}${sheet}<div class="rx-qs">${qs}</div></section>`, 'portrait');
+  toast('En la ventana de impresión elige «Guardar como PDF» si lo quieres en PDF.', 'info', 4500);
+}
+/** Texto simple que entienden las personas y la IA (y se puede volver a importar). */
+function aulaToText(ex, withAnswers = true) {
+  const L = 'abcdefgh', out = [`TÍTULO: ${ex.title}`, `TIPO: ${ex.kind}`, `TIEMPO: ${ex.dur || 0}`];
+  if (ex.instr) out.push(`INSTRUCCIONES: ${ex.instr.replace(/\n+/g, ' ')}`);
+  out.push('');
+  ex.qs.forEach((q, i) => {
+    const tag = { mc: '', tf: '[V/F] ', short: '[CORTA] ', open: '[DESARROLLO] ' }[q.t];
+    out.push(`${i + 1}. ${tag}${q.text.replace(/\n+/g, ' ')} (${fmtN(q.pts)} pt${q.pts === 1 ? '' : 's'})`);
+    if (q.t === 'mc') q.opts.forEach((o, j) => out.push(`${withAnswers && q.ok === j ? '*' : ''}${L[j]}) ${o}`));
+    if (withAnswers && q.t === 'tf' && q.ok !== null) out.push(`RESPUESTA: ${q.ok ? 'Verdadero' : 'Falso'}`);
+    if (withAnswers && q.t === 'short' && q.acc.length) out.push(`RESPUESTA: ${q.acc.join(' | ')}`);
+    out.push('');
+  });
+  return out.join('\n').trim() + '\n';
+}
+/** Lee un examen escrito en texto (por la IA o a mano). Devuelve { ex, warns }. */
+function aulaParseText(txt) {
+  const warns = [], ex = { title: '', kind: 'Examen', dur: 30, instr: '', qs: [] };
+  const raw = String(txt || '').replace(/\r/g, '').replace(/ /g, ' ');
+  const lines = raw.split('\n').map(l => l.replace(/^\s*[#>]+\s*/, '').replace(/\*\*(.+?)\*\*/g, '$1').replace(/__(.+?)__/g, '$1').trim());
+  let q = null;
+  const tfVal = s => { const f = aulaFold(s); if (/^(v|verdadero|true|cierto|correcto)\b/.test(f)) return true; if (/^(f|falso|false|incorrecto)\b/.test(f)) return false; return null; };
+  const push = () => { if (q) ex.qs.push(q); q = null; };
+  for (const line of lines) {
+    if (!line) continue;
+    let mt;
+    if (!ex.qs.length && !q && (mt = line.match(/^(t[ií]tulo|title|nombre del examen)\s*:\s*(.+)$/i))) { ex.title = mt[2].trim(); continue; }
+    if (!q && (mt = line.match(/^(tipo|kind)\s*:\s*(.+)$/i))) { const k = Object.keys(AULA_KINDS).find(x => aulaFold(x) === aulaFold(mt[2]).split(' ')[0] || aulaFold(mt[2]).startsWith(aulaFold(x))); if (k) ex.kind = k; continue; }
+    if (!q && (mt = line.match(/^(tiempo|duraci[oó]n)\s*:\s*(\d+)/i))) { ex.dur = Math.min(600, +mt[2]); continue; }
+    if (!q && (mt = line.match(/^instrucciones?\s*:\s*(.+)$/i))) { ex.instr = mt[1].trim(); continue; }
+    mt = line.match(/^(?:pregunta\s*)?(\d{1,3})\s*[.):\-–]\s*(.+)$/i);
+    if (mt && !(q && q.t === 'mc' && /^[a-h]$/i.test(mt[1]))) {
+      push();
+      let text = mt[2].trim(), t = '', pts = 1;
+      const tag = text.match(/^\[\s*([^\]]+)\]\s*/);
+      if (tag) { const f = aulaFold(tag[1]); t = /v ?f|verdadero/.test(f) ? 'tf' : /corta|completar/.test(f) ? 'short' : /desarrollo|abierta|ensayo/.test(f) ? 'open' : /seleccion|multiple/.test(f) ? 'mc' : ''; text = text.slice(tag[0].length); }
+      const pm = text.match(/\(\s*(\d+(?:[.,]\d+)?)\s*(?:pts?|puntos?|ptos?)\.?\s*\)\s*$/i);
+      if (pm) { pts = parseFloat(pm[1].replace(',', '.')); text = text.slice(0, pm.index).trim(); }
+      q = { t, text, pts, opts: [], ok: null, acc: [], _okLetter: '' };
+      continue;
+    }
+    if (!q) { if (!ex.title && !ex.qs.length) ex.title = line.slice(0, 120); continue; }
+    mt = line.match(/^[-•]?\s*([*✓✔]\s*)?\(?([a-h])\s*[).]\s*(.+?)\s*$/i);
+    if (mt && (q.t === '' || q.t === 'mc') && !/^respuesta/i.test(line)) {
+      let o = mt[3], ok = !!mt[1];
+      if (/\s*(\*|✓|✔|\((correcta|correct)\))\s*$/i.test(o)) { ok = true; o = o.replace(/\s*(\*|✓|✔|\((correcta|correct)\))\s*$/i, ''); }
+      q.t = 'mc'; q.opts.push(o.trim()); if (ok) q.ok = q.opts.length - 1;
+      continue;
+    }
+    mt = line.match(/^(respuestas?(?:\s+correctas?)?|clave|answer|soluci[oó]n)\s*:\s*(.+)$/i);
+    if (mt) {
+      const v = mt[2].trim();
+      if (q.t === 'mc' || (q.t === '' && q.opts.length)) { const l = v.match(/^\(?([a-h])\b/i); if (l) q._okLetter = l[1].toLowerCase(); }
+      else if (q.t === 'tf' || (q.t === '' && tfVal(v) !== null)) { q.t = 'tf'; q.ok = tfVal(v); }
+      else { if (!q.t) q.t = 'short'; q.acc = v.split(/\s*[|;]\s*|\s+o\s+/).map(x => x.replace(/^["“']|["”']$/g, '').trim()).filter(Boolean); }
+      continue;
+    }
+    const pl = line.match(/^\(\s*(\d+(?:[.,]\d+)?)\s*(?:pts?|puntos?|ptos?)\.?\s*\)$/i);
+    if (pl) { q.pts = parseFloat(pl[1].replace(',', '.')); continue; }
+    q.text += (q.text ? '\n' : '') + line; // continúa el enunciado
+  }
+  push();
+  ex.qs = ex.qs.map((x, i) => {
+    if (!x.t) x.t = 'open';
+    if (x.t === 'mc' && x._okLetter) x.ok = 'abcdefgh'.indexOf(x._okLetter);
+    if (x.t === 'mc' && (x.ok === null || x.ok < 0 || x.ok >= x.opts.length)) { x.ok = null; warns.push(`Pregunta ${i + 1}: no trae la respuesta correcta marcada.`); }
+    if (x.t === 'mc' && x.opts.length < 2) warns.push(`Pregunta ${i + 1}: tiene menos de 2 opciones.`);
+    if (x.t === 'tf' && x.ok === null) warns.push(`Pregunta ${i + 1}: falta si es Verdadero o Falso.`);
+    if (x.t === 'short' && !x.acc.length) warns.push(`Pregunta ${i + 1}: falta la respuesta aceptada.`);
+    delete x._okLetter; return normAulaQ(x);
+  }).filter(Boolean);
+  if (!ex.title) ex.title = 'Examen importado';
+  return { ex, warns };
+}
+/** Instrucciones para pedirle el examen a una IA (ChatGPT, Claude, Gemini…). */
+function aulaAIPrompt(m, o) {
+  const ra = o.ra !== '' && m.ras[o.ra] ? m.ras[o.ra] : null;
+  const mix = [o.mc && `${o.mc} de selección múltiple`, o.tf && `${o.tf} de verdadero o falso`, o.sh && `${o.sh} de respuesta corta`, o.op && `${o.op} de desarrollo`].filter(Boolean).join(', ');
+  return `Eres un docente de educación técnico-profesional en República Dominicana. Crea un ${o.kind.toLowerCase()} para el módulo «${modFull(m)}»${m.course ? ` de ${m.course}` : ''}.
+Tema: ${o.topic || '(el tema del RA indicado)'}${ra ? `\nResultado de aprendizaje: RA ${o.ra + 1}${ra.desc ? ' — ' + ra.desc : ''}` : ''}
+Preguntas: ${mix}. Dificultad: ${o.level}. Lenguaje claro para estudiantes de ese curso.
+
+Responde SOLO con el examen en este formato exacto, sin explicaciones antes ni después, sin tablas y sin negritas:
+
+TÍTULO: (título corto)
+TIPO: ${o.kind}
+TIEMPO: ${o.dur}
+INSTRUCCIONES: (una o dos oraciones)
+
+1. Pregunta de selección múltiple (1 pt)
+a) opción
+*b) opción correcta
+c) opción
+d) opción
+
+2. [V/F] Afirmación para verdadero o falso (1 pt)
+RESPUESTA: Verdadero
+
+3. [CORTA] Pregunta de respuesta corta (1 pt)
+RESPUESTA: respuesta | otra forma aceptada
+
+4. [DESARROLLO] Pregunta abierta (2 pts)
+
+Reglas:
+- Marca la opción correcta con * al inicio. Una sola correcta y 4 opciones por pregunta; cambia la letra de la correcta entre preguntas.
+- Respuestas cortas de 1 a 3 palabras; pon con | las otras formas válidas (siglas, sinónimos).
+- Pon los puntos de cada pregunta entre paréntesis al final, como (1 pt) o (2 pts).
+- Las preguntas de desarrollo no llevan RESPUESTA.
+- Numera las preguntas 1, 2, 3… en orden, mezclando los tipos.`;
+}
+function aulaImportDialog() {
+  const m = curMod(); if (!m) return;
+  const opt = { topic: '', kind: 'Examen', ra: '', mc: 8, tf: 4, sh: 2, op: 1, level: 'media', dur: 30 };
+  openModal({
+    title: 'Crear con IA o importar', icon: '🤖', wide: true, sub: `Aula de ${modShort(m)} · pega el examen que te dé la IA, o carga un archivo`,
+    body: `<div class="imp-steps">
+      <div class="imp-step"><div class="imp-n">1</div><div class="imp-b">
+        <h4>Pídele el examen a la IA</h4><p class="muted small">Llena esto, copia las instrucciones y pégalas en ChatGPT, Claude, Gemini o la que uses.</p>
+        <div class="form-grid">
+          <label class="field">Tema<input type="text" id="imTopic" maxlength="200" placeholder="Ej.: Modelo OSI y TCP/IP"></label>
+          <label class="field">RA (opcional)<select id="imRa"><option value="">—</option>${m.ras.map((r, i) => `<option value="${i}">RA ${i + 1}${r.desc ? ' · ' + esc(r.desc.slice(0, 50)) : ''}</option>`).join('')}</select></label>
+          <label class="field">Tipo<select id="imKind">${Object.keys(AULA_KINDS).map(k => `<option>${k}</option>`).join('')}</select></label>
+        </div>
+        <div class="imp-mix">
+          <label>Selección múltiple<input type="number" id="imMc" min="0" max="40" value="${opt.mc}"></label>
+          <label>Verdadero/Falso<input type="number" id="imTf" min="0" max="40" value="${opt.tf}"></label>
+          <label>Respuesta corta<input type="number" id="imSh" min="0" max="40" value="${opt.sh}"></label>
+          <label>Desarrollo<input type="number" id="imOp" min="0" max="10" value="${opt.op}"></label>
+          <label>Dificultad<select id="imLv"><option value="básica">Básica</option><option value="media" selected>Media</option><option value="alta">Alta</option></select></label>
+          <label>Minutos<input type="number" id="imDur" min="0" max="240" value="${opt.dur}"></label>
+        </div>
+        <button type="button" class="btn btn-secondary" id="imCopy">📋 Copiar instrucciones para la IA</button>
+      </div></div>
+      <div class="imp-step"><div class="imp-n">2</div><div class="imp-b">
+        <h4>Pega aquí lo que te respondió</h4>
+        <textarea id="imText" rows="9" placeholder="TÍTULO: …&#10;&#10;1. ¿Pregunta? (1 pt)&#10;a) …&#10;*b) …"></textarea>
+        <div class="row-wrap"><label class="btn btn-sm btn-ghost imp-file">📂 O cargar un archivo (.txt o .json)<input type="file" id="imFile" accept=".txt,.json,.md,text/plain,application/json" hidden></label><span class="muted small" id="imInfo"></span></div>
+        <div id="imPrev" class="imp-prev"></div>
+      </div></div></div>`,
+    actions: [{ label: 'Cancelar' }, {
+      label: 'Revisar y guardar', cls: 'btn-primary', onClick: (ov, close) => {
+        const txt = ov.querySelector('#imText').value.trim();
+        if (!txt) { toast('Pega el examen o carga un archivo.', 'error'); return false; }
+        const r = aulaReadImport(txt);
+        if (r.archive) { aulaRestore(m, r.archive); return; }
+        if (!r.ex || !r.ex.qs.length) { toast('No encontré preguntas. Revisa que estén numeradas (1., 2., …).', 'error', 4500); return false; }
+        close(); setTimeout(() => aulaEditor(null, r.ex), 200);
+        return false;
+      }
+    }],
+    onOpen: ov => {
+      const val = () => ({ topic: ov.querySelector('#imTopic').value.trim(), ra: ov.querySelector('#imRa').value === '' ? '' : +ov.querySelector('#imRa').value, kind: ov.querySelector('#imKind').value, mc: +ov.querySelector('#imMc').value || 0, tf: +ov.querySelector('#imTf').value || 0, sh: +ov.querySelector('#imSh').value || 0, op: +ov.querySelector('#imOp').value || 0, level: ov.querySelector('#imLv').value, dur: +ov.querySelector('#imDur').value || 0 });
+      ov.querySelector('#imCopy').onclick = () => { const o = val(); if (!o.topic && o.ra === '') return toast('Escribe el tema o elige un RA.', 'error'); if (!(o.mc + o.tf + o.sh + o.op)) return toast('Indica cuántas preguntas quieres.', 'error'); aulaCopy(aulaAIPrompt(m, o), 'Instrucciones copiadas. Pégalas en la IA y luego pega aquí su respuesta.'); };
+      const ta = ov.querySelector('#imText'), prev = ov.querySelector('#imPrev');
+      const preview = () => {
+        const t = ta.value.trim(); if (!t) { prev.innerHTML = ''; return; }
+        const r = aulaReadImport(t);
+        if (r.archive) { prev.innerHTML = `<div class="alert alert-info"><div>🗄️ Examen archivado: <b>${esc(r.archive.exam.title)}</b> · ${Object.keys(r.archive.exam.resp || {}).length} entregas. Al guardar se restaura en esta aula.</div></div>`; return; }
+        if (!r.ex || !r.ex.qs.length) { prev.innerHTML = '<p class="muted small">Aún no encuentro preguntas numeradas.</p>'; return; }
+        const c = {}; r.ex.qs.forEach(q => { c[q.t] = (c[q.t] || 0) + 1; });
+        prev.innerHTML = `<div class="imp-ok">✓ <b>${esc(r.ex.title)}</b> · ${r.ex.qs.length} preguntas (${Object.entries(c).map(([k, n]) => `${n} ${AQ_TYPES[k].toLowerCase()}`).join(', ')}) · ${fmtN(r.ex.qs.reduce((a, q) => a + q.pts, 0))} pts</div>${r.warns.length ? `<ul class="imp-warn">${r.warns.slice(0, 6).map(w => `<li>⚠ ${esc(w)}</li>`).join('')}${r.warns.length > 6 ? `<li>…y ${r.warns.length - 6} más</li>` : ''}</ul><p class="muted small">Podrás corregirlo en el siguiente paso.</p>` : ''}`;
+      };
+      let tm = null; ta.addEventListener('input', () => { clearTimeout(tm); tm = setTimeout(preview, 250); });
+      ov.querySelector('#imFile').onchange = e => {
+        const f = e.target.files[0]; if (!f) return;
+        if (f.size > 3e6) return toast('El archivo es muy grande.', 'error');
+        const rd = new FileReader(); rd.onload = () => { ta.value = String(rd.result || ''); ov.querySelector('#imInfo').textContent = f.name; preview(); }; rd.readAsText(f);
+      };
+    }
+  });
+}
+/** Texto o JSON → { ex, warns } o { archive } */
+function aulaReadImport(txt) {
+  const t = txt.trim();
+  if (/^[{[]/.test(t)) {
+    try {
+      const j = JSON.parse(t);
+      if (j && j.kind === 'aula-exam' && j.exam) return { archive: j };
+      const src = Array.isArray(j) ? { qs: j } : j.exam || j;
+      const qs = (src.qs || src.questions || src.preguntas || []).map(q => {
+        const tp = q.t || ({ multiple: 'mc', seleccion: 'mc', mc: 'mc', vf: 'tf', tf: 'tf', truefalse: 'tf', corta: 'short', short: 'short', desarrollo: 'open', open: 'open' })[aulaFold(q.type || q.tipo || '').replace(/ /g, '')] || (q.opts || q.options || q.opciones ? 'mc' : 'open');
+        const opts = q.opts || q.options || q.opciones || [];
+        let ok = q.ok ?? q.correct ?? q.correcta ?? q.answer ?? q.respuesta;
+        if (tp === 'mc' && typeof ok === 'string') ok = /^[a-h]$/i.test(ok) ? 'abcdefgh'.indexOf(ok.toLowerCase()) : opts.indexOf(ok);
+        if (tp === 'tf' && typeof ok === 'string') ok = /^(v|verdadero|true)/i.test(ok);
+        return normAulaQ({ t: tp, text: q.text || q.texto || q.pregunta || q.question, pts: q.pts || q.puntos || q.points || 1, opts, ok, acc: q.acc || (tp === 'short' ? [].concat(ok || []) : []) });
+      }).filter(Boolean);
+      return { ex: { title: src.title || src.titulo || 'Examen importado', kind: AULA_KINDS[src.kind] ? src.kind : 'Examen', dur: src.dur || src.tiempo || 30, instr: src.instr || src.instrucciones || '', qs }, warns: [] };
+    } catch (e) { /* no era JSON: se lee como texto */ }
+  }
+  return aulaParseText(t);
+}
+
+/* ---------- Archivar y restaurar ---------- */
+function aulaArchive(id) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const n = Object.keys(ex.resp).length;
+  confirmBox('¿Archivar este examen?', `Se descarga un archivo con las preguntas, respuestas correctas${n ? ', las ' + n + ' entregas' : ''} y notas, y se quita del Aula${ex.pub ? ' (y de la nube)' : ''} para liberar espacio. Las notas del registro se quedan. Guarda bien el archivo: con él lo puedes restaurar en «Crear con IA / Importar».`, 'Archivar', () => {
+    const data = { app: 'Praxis Pro', kind: 'aula-exam', v: 1, exported: new Date().toISOString(), module: { id: m.id, name: m.name, abbr: modShort(m), course: m.course || '' }, exam: JSON.parse(JSON.stringify(ex)) };
+    downloadFile(`Aula_${aulaFileName(modShort(m))}_${aulaFileName(ex.title)}_${isoLocal(new Date())}.json`, JSON.stringify(data), 'application/json');
+    const go = () => { m.aula = m.aula.filter(x => x.id !== ex.id); state.aulaSel = null; aulaUnwatch(); persist(); render(); toast('Archivado. Revisa tus Descargas.', 'ok', 3500); };
+    if (ex.pub && aulaCloudOK()) aulaDeleteCloud(ex).then(go).catch(() => { go(); toast('Archivado, pero no se pudo borrar de la nube ahora (sin conexión).', 'warn', 4500); });
+    else go();
+  }, { danger: false });
+}
+function aulaRestore(m, a) {
+  const e = normAula(a.exam); if (!e) return toast('Ese archivo no es un examen del Aula.', 'error');
+  if ((m.aula || []).some(x => x.id === e.id)) e.id = uid();
+  e.status = e.status === 'draft' ? 'draft' : 'closed'; e.pub = ''; e.code = ''; e.kdocs = []; e.until = '';
+  m.aula = m.aula || []; m.aula.push(e); state.aulaSel = e.id; persist(); render();
+  toast(`Restaurado${a.module && a.module.id !== m.id ? ' (venía de ' + (a.module.abbr || 'otro módulo') + ')' : ''}: ${e.title}.`, 'ok', 3500);
 }
 
 /* ---------- Acciones ---------- */
 Object.assign(ACTIONS, {
   'aula-new': () => aulaEditor(null),
+  'aula-import': () => aulaImportDialog(),
+  'aula-pins': () => aulaPinsDialog(),
+  'aula-filter': el => { state.aulaF = el.dataset.id; render(); },
   'aula-open': el => { state.aulaSel = el.dataset.id; render(); window.scrollTo(0, 0); },
   'aula-back': () => { state.aulaSel = null; render(); },
   'aula-edit': el => aulaEditor(el.dataset.id),
@@ -8240,22 +8807,30 @@ Object.assign(ACTIONS, {
   'aula-share': el => aulaShare(el.dataset.id),
   'aula-review': el => aulaReview(el.dataset.id, el.dataset.num),
   'aula-apply': el => aulaApplyNow(el.dataset.id),
-  'aula-print': el => aulaPrint(el.dataset.id),
+  'aula-pdf': el => { aulaCloseMenus(); aulaPrint(el.dataset.id, false); },
+  'aula-pdf-key': el => { aulaCloseMenus(); aulaPrint(el.dataset.id, true); },
+  'aula-txt-copy': el => { aulaCloseMenus(); const ex = aulaFind(curMod(), el.dataset.id); if (ex) aulaCopy(aulaToText(ex, true), 'Examen copiado con sus respuestas. Pégalo en la IA.'); },
+  'aula-txt-dl': el => { aulaCloseMenus(); const m = curMod(), ex = aulaFind(m, el.dataset.id); if (ex) downloadFile(`${aulaFileName(ex.title)}.txt`, aulaToText(ex, true), 'text/plain;charset=utf-8'); },
+  'aula-archive': el => { aulaCloseMenus(); aulaArchive(el.dataset.id); },
   'aula-dup': el => {
+    aulaCloseMenus();
     const m = curMod(), ex = aulaFind(m, el.dataset.id); if (!ex) return;
-    const c = normAula({ ...JSON.parse(JSON.stringify(ex)), id: uid(), title: ex.title + ' (copia)', status: 'draft', pub: '', code: '', until: '', resp: {}, marks: {}, applied: {}, map: {}, actKey: '', created: new Date().toISOString() });
+    const c = normAula({ ...JSON.parse(JSON.stringify(ex)), id: uid(), title: ex.title + ' (copia)', status: 'draft', pub: '', code: '', until: '', unlock: '', kdocs: [], resp: {}, marks: {}, applied: {}, map: {}, actKey: '', created: new Date().toISOString() });
     m.aula.push(c); state.aulaSel = c.id; persist(); render(); toast('Copia creada (sin entregas). Elige su casilla del registro al editarla.', 'ok', 3500);
   },
   'aula-del': el => {
+    aulaCloseMenus();
     const m = curMod(), ex = aulaFind(m, el.dataset.id); if (!ex) return;
     const n = Object.keys(ex.resp).length;
-    confirmBox('¿Eliminar este examen?', `Se borran las preguntas${n ? ' y las ' + n + ' entregas' : ''} del Aula (también de la nube). Las notas que ya pasaron al registro se quedan.`, 'Eliminar', () => {
+    confirmBox('¿Eliminar este examen?', `Se borran las preguntas${n ? ' y las ' + n + ' entregas' : ''} del Aula (también de la nube). Las notas que ya pasaron al registro se quedan. Si quieres conservarlo, usa «Archivar».`, 'Eliminar', () => {
       const go = () => { m.aula = m.aula.filter(x => x.id !== ex.id); state.aulaSel = null; aulaUnwatch(); persist(); render(); toast('Eliminado.', 'ok'); };
       if (ex.pub && aulaCloudOK()) aulaDeleteCloud(ex).then(go).catch(e => { toast('No se pudo borrar de la nube (' + aulaErr(e) + ').', 'error', 5000); });
       else go();
     });
   }
 });
+function aulaCloseMenus() { document.querySelectorAll('details.aula-menu[open]').forEach(d => d.removeAttribute('open')); }
+document.addEventListener('click', e => { if (!e.target.closest('details.aula-menu')) aulaCloseMenus(); else { const d = e.target.closest('details.aula-menu'); document.querySelectorAll('details.aula-menu[open]').forEach(x => { if (x !== d) x.removeAttribute('open'); }); } });
 document.addEventListener('change', e => {
   if (e.target.id !== 'aulaAuto') return;
   const m = curMod(), ex = aulaFind(m, state.aulaSel); if (!ex) return;
