@@ -277,11 +277,20 @@ th.cat-h, th.item-h { background: var(--cb) !important; color: var(--c) !importa
 .ra-weight { background: var(--surface); border: 1px solid var(--primary-ring); color: var(--primary-dark); font-weight: 800; font-size: .78rem; padding: .2rem .55rem; border-radius: 7px; }
 .ra-res { font-weight: 800; color: var(--primary-dark); font-variant-numeric: tabular-nums; }
 .ra-body { padding: .8rem 1rem; display: flex; flex-direction: column; gap: .6rem; }
-.cat-row { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
-.cat-row .cat-tag { min-width: 130px; }
-.cat-items { display: flex; gap: .3rem; flex-wrap: wrap; }
-.cat-items label { display: flex; flex-direction: column; align-items: center; font-size: .6rem; font-weight: 700; color: var(--muted); gap: 2px; }
-.cat-sum { margin-left: auto; font-size: .78rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* Fila de cada criterio: etiqueta (ancho fijo) · casillas · total. Todas las casillas quedan a la misma altura. */
+.cat-row { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; align-items: end; gap: .3rem .8rem; }
+.cat-row .cat-tag { justify-self: start; max-width: 100%; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cat-items { display: flex; gap: .35rem; flex-wrap: wrap; }
+.cat-items .ci { display: flex; flex-direction: column; align-items: stretch; gap: 3px; }
+.ci-h { height: 14px; line-height: 14px; display: flex; justify-content: center; gap: 4px; font-size: .62rem; font-weight: 700; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.ci-h em { font-style: normal; color: var(--primary-dark); font-weight: 800; }
+.cat-sum { font-size: .78rem; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 11px; white-space: nowrap; text-align: right; min-width: 64px; }
+@media (max-width: 640px) {
+  .cat-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .cat-row .cat-tag { grid-column: 1; margin-bottom: 0; align-self: center; }
+  .cat-row .cat-sum { grid-column: 2; grid-row: 1; align-self: center; margin-bottom: 0; }
+  .cat-row .cat-items { grid-column: 1 / -1; }
+}
 
 .final-card { background: linear-gradient(145deg, #1e293b, #0f172a); color: #fff; border: 0; padding: 1rem 1.2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .final-card .tag { background: var(--gold); color: #0f172a; border-radius: 6px; padding: 2px 8px; font-weight: 800; font-size: .8rem; }
@@ -1357,6 +1366,16 @@ tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7re
   .nav-btn .i { width: 17px; height: 17px; }
   .logo { width: 30px; height: 30px; font-size: 1.1rem; }
 }
+/* Revisión de estudiantes por curso */
+.hero-click { cursor: pointer; border-radius: 12px; transition: background .15s; }
+.hero-click:hover { background: rgba(255,255,255,.08); }
+.sc-group { border: 1px solid var(--border); border-radius: 12px; padding: .7rem .85rem; margin-bottom: .6rem; }
+.sc-head { display: flex; flex-wrap: wrap; gap: .4rem .6rem; align-items: center; margin-bottom: .35rem; }
+.sc-sub { font-size: .78rem; font-weight: 700; color: var(--ink-2); margin: .45rem 0 .2rem; }
+.sc-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem .6rem; align-items: center; padding: .3rem 0; border-top: 1px dashed var(--border); font-size: .86rem; }
+.sc-row code { background: var(--surface-2); border-radius: 5px; padding: 0 .3rem; font-family: inherit; }
+/* En celular la ficha del estudiante no se queda fija arriba (tapaba las notas) */
+@media (max-width: 760px) { .stu-head { position: static; } }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -1407,7 +1426,7 @@ const PLAN_LIB = {"app": "Praxis Pro", "kind": "planificacion", "version": 1, "c
    ========================================================= */
 const AppConfig = {
   appName: 'Praxis Pro',
-  version: '9.2',
+  version: '9.3',
   author: 'Ronnil Javier Miranda Fernández',
   logo: 'P'
 };
@@ -1921,11 +1940,38 @@ const groupKey = m => m.course ? 'c:' + norm(m.course) : 'm:' + m.id;
 function personKey(name) {
   return norm(name).replace(/[.,;:'"()\-_/]+/g, ' ').split(' ').filter(Boolean).sort().join(' ');
 }
-function uniqueStudentCount() {
-  const set = new Set();
-  db.modules.forEach(m => m.students.forEach(s => set.add(groupKey(m) + '|' + personKey(s.name))));
-  return set.size;
+/** Distancia de edición (para detectar el mismo nombre escrito un poco distinto). */
+function editDist(a, b) {
+  if (a === b) return 0; if (Math.abs(a.length - b.length) > 3) return 9;
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) { const cur = [i]; for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; }
+  return prev[b.length];
 }
+/** ¿Dos nombres del mismo curso son la misma persona? (mismo nombre, uno incluye al otro, o difiere en 1–2 letras) */
+function samePerson(k1, k2) {
+  if (k1 === k2) return true;
+  const a = k1.split(' '), b = k2.split(' ');
+  const [sm, lg] = a.length <= b.length ? [a, b] : [b, a];
+  if (sm.length >= 2 && sm.every(w => lg.includes(w))) return true;
+  return k1.length >= 8 && editDist(k1, k2) <= Math.min(2, Math.floor(Math.min(k1.length, k2.length) / 8));
+}
+/** Personas distintas por curso: [{ g, name, items: [{ m, s }] }] */
+let _upCache = { sig: '', val: [] };
+function uniquePeople() {
+  const sig = db.modules.map(m => m.id + ':' + m.course + ':' + m.students.map(s => s.name).join(',')).join('|');
+  if (_upCache.sig === sig) return _upCache.val;
+  const people = [];
+  db.modules.forEach(m => m.students.forEach(s => {
+    const g = groupKey(m), k = personKey(s.name);
+    let p = people.find(x => x.g === g && x.keys.some(y => y === k));
+    if (!p) p = people.find(x => x.g === g && !x.mods.has(m.id) && x.keys.some(y => samePerson(y, k)));
+    if (!p) { p = { g, course: m.course || modShort(m), name: s.name, keys: [], mods: new Set(), items: [] }; people.push(p); }
+    if (!p.keys.includes(k)) p.keys.push(k);
+    p.mods.add(m.id); p.items.push({ m, s });
+  }));
+  _upCache = { sig, val: people }; return people;
+}
+function uniqueStudentCount() { return uniquePeople().length; }
 function groupCount() { return new Set(db.modules.filter(m => m.students.length).map(groupKey)).size; }
 function enrollmentCount() { return db.modules.reduce((a, m) => a + m.students.length, 0); }
 
@@ -2174,6 +2220,33 @@ if (window.matchMedia) {
   try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (getThemePref() === 'auto') { applyTheme(); if (typeof render === 'function') render(); } }); } catch (e) { }
 }
 
+/* ---------- Revisión de estudiantes por curso ---------- */
+function studentCheckDialog() {
+  const people = uniquePeople(), groups = {};
+  people.forEach(p => { (groups[p.g] = groups[p.g] || { course: p.course, people: [] }).people.push(p); });
+  const modsOf = g => db.modules.filter(m => groupKey(m) === g);
+  const html = Object.entries(groups).map(([g, G]) => {
+    const ms = modsOf(g), variants = G.people.filter(p => new Set(p.items.map(x => x.s.name.trim())).size > 1), partial = ms.length > 1 ? G.people.filter(p => p.mods.size < ms.length) : [];
+    return `<section class="sc-group"><div class="sc-head"><b>${esc(G.course)}</b><span class="badge info">${G.people.length} estudiantes</span><span class="small muted">${ms.map(m => `${esc(modShort(m))} (${m.students.length})`).join(' · ')}</span></div>
+      ${variants.length ? `<div class="sc-sub">✏️ Mismo estudiante escrito distinto (se cuenta una vez):</div>${variants.map(p => { const names = [...new Set(p.items.map(x => x.s.name.trim()))]; return `<div class="sc-row"><span>${names.map(n => `<code>${esc(n)}</code>`).join(' ≈ ')}</span><span class="row">${names.map(n => `<button class="btn btn-sm btn-ghost" data-sc-uni="${esc(p.g)}" data-sc-name="${esc(n)}" data-sc-i="${people.indexOf(p)}" title="Usar este nombre en todos sus módulos">Usar «${esc(n.split(' ')[0])}…»</button>`).join('')}</span></div>`; }).join('')}` : ''}
+      ${partial.length ? `<div class="sc-sub">👤 Solo en algunos módulos del curso:</div>${partial.map(p => `<div class="sc-row"><span>${esc(p.name)}</span><span class="small muted">en ${[...p.mods].map(id => esc(modShort(findMod(id)))).join(', ')} · falta en ${ms.filter(m => !p.mods.has(m.id)).map(m => esc(modShort(m))).join(', ')}</span></div>`).join('')}` : ''}
+      ${!variants.length && !partial.length ? '<p class="small muted">✓ Todo coincide entre los módulos de este curso.</p>' : ''}
+    </section>`;
+  }).join('');
+  openModal({
+    title: 'Estudiantes por curso', icon: '👥', wide: true,
+    sub: `${people.length} estudiantes distintos · ${enrollmentCount()} inscripciones en ${db.modules.length} módulos. Los módulos del mismo curso comparten estudiantes y cada uno se cuenta una vez.`,
+    body: html || '<p class="muted">Todavía no hay estudiantes.</p>',
+    actions: [{ label: 'Listo', cls: 'btn-primary' }],
+    onOpen: (ov, close) => ov.querySelectorAll('[data-sc-uni]').forEach(b => b.onclick = () => {
+      const p = people[+b.dataset.scI], name = b.dataset.scName; if (!p) return;
+      snapshot('Antes de unificar un nombre');
+      p.items.forEach(x => { x.s.name = name; });
+      persist(); render(); toast(`Nombre unificado: ${name}`, 'ok'); close(); setTimeout(studentCheckDialog, 250);
+    })
+  });
+}
+
 /* =========================================================
    Interfaz: iconos, avisos, ventanas y vistas
    ========================================================= */
@@ -2320,10 +2393,10 @@ function renderHome() {
     <div class="hero-stats">
       <div><b>${mods.length}</b><span>Módulos</span></div>
       <div title="Cursos o secciones distintos"><b>${groups}</b><span>Grupos</span></div>
-      <div title="${enr !== totalStu ? `${enr} inscripciones en módulos: los estudiantes de un mismo curso que toman varios módulos se cuentan una sola vez` : 'Estudiantes distintos'}"><b>${totalStu}</b><span>Estudiantes</span></div>
+      <div class="hero-click" data-act="stu-check" role="button" tabindex="0" title="${enr !== totalStu ? `${enr} inscripciones en módulos: los estudiantes de un mismo curso que toman varios módulos se cuentan una sola vez. Toca para revisar.` : 'Estudiantes distintos. Toca para revisar.'}"><b>${totalStu}</b><span>Estudiantes</span></div>
     </div>
   </section>
-  ${needBackup ? `<div class="alert alert-warn"><div><strong>Respaldo pendiente.</strong> ${s.lastBackup ? 'Tu último respaldo fue hace ' + daysAgo(s.lastBackup) + '.' : 'Todavía no has descargado ningún respaldo.'} Las notas solo están guardadas en este navegador.</div><button class="btn btn-sm btn-warn" data-act="backup-download">Descargar respaldo</button></div>` : ''}
+  ${needBackup ? `<div class="alert alert-warn"><div><strong>Respaldo pendiente.</strong> ${s.lastBackup ? 'Tu último respaldo fue hace ' + daysAgo(s.lastBackup) + '.' : 'Todavía no has descargado ningún respaldo.'} ${typeof Cloud === 'object' && Cloud.user ? 'Tus datos están en la nube; el respaldo es una copia extra en tu equipo.' : 'Las notas solo están guardadas en este navegador.'}</div><button class="btn btn-sm btn-warn" data-act="backup-download">Descargar respaldo</button></div>` : ''}
   ${notifHomeBanner()}
   ${!s.school ? `<div class="alert alert-info"><div>Completa el nombre del centro y el año escolar en <strong>Ajustes</strong> para que salgan en los reportes.</div><button class="btn btn-sm btn-secondary" data-act="settings">Abrir ajustes</button></div>` : ''}
   ${renderHomeHorario()}
@@ -2563,7 +2636,8 @@ function renderEstudiante(m) {
       const cs = calcCat(s, ra, cat);
       const items = Array.from({ length: cat.count }, (_, k) => {
         const v = getGrade(s, ra.id, cat.id, k), key = `${s.id}|${ra.id}|${cat.id}|${k}`;
-        return `<label title="${esc(actFull(cat, k))}">${cat.count > 1 ? k + 1 : '&nbsp;'}${actOf(cat, k).d ? `<span class="act-d">${fmtDate(actOf(cat, k).d)}</span>` : ''}<input class="cell${v !== '' ? ' filled' : ''}" data-g="${key}" data-key="${key}" value="${fmtN(v)}" inputmode="decimal" autocomplete="off" title="${esc(actFull(cat, k))} (máx. ${fmtN(cat.max)})"></label>`;
+        const ad = actOf(cat, k).d;
+        return `<label class="ci" title="${esc(actFull(cat, k))}"><span class="ci-h">${cat.count > 1 ? `<b>${k + 1}</b>` : ''}${ad ? `<em>${fmtDate(ad)}</em>` : ''}</span><input class="cell${v !== '' ? ' filled' : ''}" data-g="${key}" data-key="${key}" value="${fmtN(v)}" inputmode="decimal" autocomplete="off" title="${esc(actFull(cat, k))} (máx. ${fmtN(cat.max)})"></label>`;
       }).join('');
       return `<div class="cat-row cat-${cat.color}"><span class="cat-tag"><span class="cat-dot"></span>${esc(cat.label)} <span style="font-weight:600;opacity:.8">/${fmtN(cat.max)}</span></span>
         <div class="cat-items">${items}</div><span class="cat-sum" data-out="cat:${s.id}:${ra.id}:${cat.id}">${fmtN(cs.obt)} / ${fmtN(cs.max)}</span></div>`;
@@ -4745,6 +4819,7 @@ const ACTIONS = {
   'grp-print': el => { const m = curMod(), gs = el.dataset.id ? m.groups.find(x => x.id === el.dataset.id) : toolState(m).preview; if (gs) printGroups(m, gs, `Grupos de ${(gs.type || toolState(m).opts.type).toLowerCase()}${gs.name ? ' · ' + gs.name : ''}`); },
   'grp-grade': el => gradeGroupsDialog(el.dataset.id),
   'grp-topics': el => groupTopicsDialog(el.dataset.id),
+  'stu-check': () => studentCheckDialog(),
   'grp-save-topics': () => saveGroupsQuick(),
   'grp-del': el => {
     const m = curMod(), gs = m.groups.find(x => x.id === el.dataset.id); if (!gs) return;
@@ -6831,6 +6906,7 @@ function countUp(root) {
 /** Se llama al final de cada render(). */
 function afterRender() {
   applyMotionPref();
+  try { navSync(); } catch (e) { console.error(e); }
   const app = document.getElementById('app'); if (!app) return;
   const screen = `${state.view}|${state.view === 'module' ? state.modId : ''}`;
   const pl = state.pl || {};
@@ -6860,6 +6936,80 @@ function withViewTransition(fn) {
   if (motionOn() && document.startViewTransition) { try { document.startViewTransition(fn); return; } catch (e) { } }
   fn();
 }
+
+/* =========================================================
+   Navegación con el botón Atrás (navegador, celular y app instalada)
+   Cada pantalla tiene su dirección: #/ · #/m/<módulo>/<pestaña> · #/calendario · #/horario · #/semana
+   - Entrar a un módulo y pulsar Atrás vuelve a «Mis módulos» (donde estabas).
+   - Cambiar de pestaña dentro del módulo no llena el historial.
+   - Si hay una ventana abierta, Atrás la cierra primero.
+   ========================================================= */
+const Nav = { ready: false, popping: false, last: '', depth: 0, scroll: {} };
+const NAV_VIEWS = { calendar: 'calendario', horario: 'horario', semana: 'semana' };
+function routeOf() {
+  if (state.view === 'module' && state.modId) return `#/m/${state.modId}/${state.tab || 'resumen'}`;
+  return NAV_VIEWS[state.view] ? '#/' + NAV_VIEWS[state.view] : '#/';
+}
+function applyRoute(h) {
+  const p = String(h || '').replace(/^#\/?/, '').split('/');
+  const back = Object.entries(NAV_VIEWS).find(([, v]) => v === p[0]);
+  if (p[0] === 'm' && p[1] && findMod(p[1])) {
+    if (state.modId !== p[1]) { state.raId = null; state.stuId = null; }
+    state.view = 'module'; state.modId = p[1]; state.tab = p[2] || 'resumen';
+  } else if (back) { state.view = back[0]; state.modId = null; }
+  else { state.view = 'home'; state.modId = null; }
+  state.search = '';
+}
+function navSync() {
+  if (!window.history || !history.pushState) return;
+  const r = routeOf();
+  if (!Nav.ready) {
+    // Primera vez: si la dirección trae una pantalla (al recargar), se abre esa
+    const h = location.hash;
+    if (h.startsWith('#/') && h !== r && (!h.startsWith('#/m/') || findMod(h.split('/')[2]))) {
+      Nav.ready = true; applyRoute(h); Nav.last = routeOf(); history.replaceState({ r: Nav.last, d: 0 }, '', Nav.last); render(); return;
+    }
+    if (h.startsWith('#/m/') && !db.modules.length && document.body.classList.contains('auth-open')) return; // aún no llegan los módulos (nube)
+    Nav.ready = true; Nav.last = r;
+    try { history.replaceState({ r, d: 0 }, '', r); } catch (e) { }
+    return;
+  }
+  if (r === Nav.last) return;
+  if (Nav.popping) { Nav.popping = false; Nav.last = r; return; }
+  Nav.scroll[Nav.last] = window.scrollY;
+  const sameMod = Nav.last.startsWith('#/m/') && r.startsWith('#/m/') && Nav.last.split('/')[2] === r.split('/')[2];
+  try {
+    if (sameMod) history.replaceState({ r, d: Nav.depth }, '', r);
+    else { Nav.depth++; history.pushState({ r, d: Nav.depth }, '', r); }
+  } catch (e) { }
+  Nav.last = r;
+}
+window.addEventListener('popstate', e => {
+  // Una ventana abierta se cierra con Atrás y la pantalla se queda donde está
+  const ovs = [...document.querySelectorAll('.modal-overlay')];
+  if (ovs.length) {
+    const x = ovs[ovs.length - 1].querySelector('[data-close]'); if (x) x.click();
+    try { history.pushState({ r: Nav.last, d: Nav.depth }, '', Nav.last); } catch (_) { }
+    return;
+  }
+  if (document.body.classList.contains('auth-open')) return;
+  Nav.scroll[Nav.last] = window.scrollY;
+  Nav.depth = e.state && typeof e.state.d === 'number' ? e.state.d : Math.max(0, Nav.depth - 1);
+  Nav.popping = true;
+  applyRoute(location.hash);
+  render();
+  Nav.popping = false; Nav.last = routeOf();
+  const y = Nav.scroll[Nav.last] || 0;
+  requestAnimationFrame(() => window.scrollTo(0, y));
+});
+/** La flecha ← de cada pantalla: si vienes de otra pantalla, vuelve atrás (como el botón del celular). */
+(function () {
+  const go = ACTIONS['go-home'];
+  ACTIONS['go-home'] = el => {
+    if (el && el.classList && el.classList.contains('btn-icon') && Nav.depth > 0 && state.view !== 'home') { history.back(); return; }
+    go(el);
+  };
+})();
 
 /* =========================================================
    Avisos (notificaciones del sistema)
@@ -7055,7 +7205,7 @@ const AU_IC = {
   ok: '<svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>'
 };
 function auGreeting() { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; }
-function auSignupOpen() { return (typeof CLOUD_SIGNUP !== 'undefined' && CLOUD_SIGNUP) || /registro/i.test(location.hash); }
+function auSignupOpen() { return (typeof CLOUD_SIGNUP !== 'undefined' && CLOUD_SIGNUP) || /^#registro$/i.test(location.hash); }
 function authScreen(mode = 'login', msg = '') {
   let ov = document.getElementById('authScreen'), first = false;
   if (!ov) {
@@ -7500,7 +7650,13 @@ window.addEventListener('error', e => {
   try { if (dirty) saveNow(); } catch (_) { }
 });
 window.addEventListener('unhandledrejection', e => { console.error(e.reason); });
-document.addEventListener('visibilitychange', () => { if (document.hidden && dirty) saveNow(); });
+/* Al minimizar, cambiar de app o cerrar: se guarda en el equipo y se sube a la nube sin esperar. */
+function flushAll() {
+  try { if (dirty) saveNow(); } catch (_) { }
+  try { if (typeof Cloud === 'object' && Cloud.on && Cloud.user && Cloud.timer) { clearTimeout(Cloud.timer); Cloud.timer = null; cloudPush(false); } } catch (_) { }
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) flushAll(); });
+window.addEventListener('pagehide', flushAll);
 boot();
 
 </script>
