@@ -1376,6 +1376,91 @@ tr.today .hor-day::after { content: ' · hoy'; font-weight: 600; font-size: .7re
 .sc-row code { background: var(--surface-2); border-radius: 5px; padding: 0 .3rem; font-family: inherit; }
 /* En celular la ficha del estudiante no se queda fija arriba (tapaba las notas) */
 @media (max-width: 760px) { .stu-head { position: static; } }
+/* Editar grupos */
+.ge-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 1rem; margin-top: .6rem; }
+.ge-groups, .ge-stus { display: flex; flex-direction: column; gap: .35rem; max-height: 52vh; overflow: auto; padding-right: .2rem; }
+.ge-g { display: grid; grid-template-columns: 26px 1fr auto auto; gap: .4rem; align-items: center; }
+.ge-n { width: 24px; height: 24px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-weight: 800; font-size: .75rem; display: grid; place-items: center; }
+.ge-s { display: grid; grid-template-columns: 30px 1fr 150px; gap: .4rem; align-items: center; padding: .25rem .35rem; border-radius: 8px; }
+.ge-s:nth-child(odd) { background: var(--surface-2); }
+.ge-s.none { background: var(--risk-bg); }
+.ge-num { color: var(--muted); font-weight: 700; font-size: .8rem; text-align: right; }
+.ge-name { font-size: .86rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 640px) { .ge-cols { grid-template-columns: 1fr; } .ge-s { grid-template-columns: 26px 1fr 120px; } }
+.opt-match { font-weight: 700; }
+
+/* ---------- Aula ---------- */
+.aula { display: flex; flex-direction: column; gap: 1rem; }
+.aula > .alert { margin: 0; }
+.aula-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.1rem 1.25rem; }
+.aula-top h2, .aula-exam-head h2 { font-size: 1.2rem; margin: 0; }
+.aula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .9rem; }
+.aula-card { padding: 1rem 1.1rem; cursor: pointer; display: flex; flex-direction: column; gap: .35rem; transition: transform .15s, box-shadow .15s, border-color .15s; }
+.aula-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: var(--primary-ring); }
+.aula-card h3 { font-size: 1.02rem; margin: .1rem 0 0; }
+.ac-top { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+.ac-kind { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--primary); }
+.ac-foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: .5rem; border-top: 1px solid var(--border); font-size: .85rem; }
+.aula-steps { text-align: left; max-width: 520px; margin: .8rem auto 1.2rem; line-height: 1.7; color: var(--ink-2); }
+.aula-exam-head { display: flex; align-items: center; gap: .9rem; padding: 1rem 1.2rem; flex-wrap: wrap; }
+.aeh-t { flex: 1; min-width: 200px; }
+.aula-code-sm { font-family: ui-monospace, monospace; letter-spacing: .12em; color: var(--primary); }
+.aula-actions .btn-ghost.aula-del { color: var(--bad); }
+.aula-stats { margin: 0; }
+.aula-target { padding: .8rem 1.1rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: space-between; font-size: .9rem; }
+.aula-qstats { padding: .8rem 1.1rem; }
+.aula-qstats summary { cursor: pointer; }
+.aq-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: .4rem 1.2rem; margin-top: .7rem; }
+.aq-stat { display: grid; grid-template-columns: 34px 1fr 40px; align-items: center; gap: .5rem; font-size: .82rem; }
+.aq-stat b { text-align: right; }
+.aula-tbl td .small { white-space: normal; }
+.warn-t { color: var(--risk); }
+/* Editor */
+.aq-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 1rem; }
+.aq-list { display: flex; flex-direction: column; gap: .8rem; }
+.aq { border: 1px solid var(--border); border-radius: 12px; padding: .8rem; background: var(--surface-2); display: flex; flex-direction: column; gap: .55rem; }
+.aq-h { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.aq-h select { width: auto; flex: 1; min-width: 160px; }
+.aq-n { width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .85rem; flex: none; }
+.aq-pts { display: flex; align-items: center; gap: .35rem; font-size: .8rem; color: var(--muted); font-weight: 700; }
+.aq-pts input { width: 74px; }
+.aq-tools { display: flex; gap: .1rem; margin-left: auto; }
+.aq textarea { min-height: 54px; }
+.aq-opts, .aq-tf { display: flex; flex-direction: column; gap: .35rem; }
+.aq-tf { flex-direction: row; flex-wrap: wrap; align-items: center; }
+.aq-opt { display: flex; align-items: center; gap: .45rem; border: 1.5px solid var(--border); border-radius: 10px; padding: .25rem .4rem; background: var(--surface); }
+.aq-opt.ok { border-color: var(--ok); background: var(--ok-bg); }
+.aq-opt input[type=radio] { width: 18px; height: 18px; accent-color: var(--ok); flex: none; }
+.aq-opt input[type=text] { flex: 1; border: 0; background: transparent; padding: .35rem .2rem; box-shadow: none; }
+.aq-tf .aq-opt { padding: .45rem .8rem; font-weight: 700; cursor: pointer; }
+.aq-l { font-weight: 800; color: var(--muted); width: 1.1rem; }
+.aq-add { margin-top: .8rem; }
+/* Compartir */
+.aula-share { display: grid; grid-template-columns: 220px 1fr; gap: 1.2rem; align-items: center; }
+.aula-share.big { grid-template-columns: minmax(260px, 1.2fr) 1fr; }
+.qr-box { background: #fff; border-radius: 12px; padding: .4rem; aspect-ratio: 1; display: grid; place-items: center; border: 1px solid var(--border); }
+.qr-box svg { width: 100%; height: 100%; display: block; }
+.code-lbl { font-size: .72rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+.aula-code { font-family: ui-monospace, Menlo, monospace; font-size: 2.2rem; font-weight: 800; letter-spacing: .18em; color: var(--primary); margin: .1rem 0 .6rem; }
+.aula-share.big .aula-code { font-size: 3.6rem; }
+.share-url { font-size: 1.05rem; font-weight: 700; word-break: break-all; }
+.share-side .field { margin: .5rem 0; }
+/* Revisión */
+.ar-list { display: flex; flex-direction: column; gap: .6rem; margin-top: .4rem; }
+.ar-q { border: 1px solid var(--border); border-left: 4px solid var(--border-2); border-radius: 10px; padding: .65rem .8rem; display: flex; flex-direction: column; gap: .3rem; }
+.ar-q.ok { border-left-color: var(--ok); } .ar-q.bad { border-left-color: var(--bad); } .ar-q.half { border-left-color: var(--gold); } .ar-q.pend { border-left-color: var(--primary); background: var(--primary-light); }
+.ar-a .pre { white-space: pre-wrap; }
+.ar-p { display: flex; align-items: center; gap: .4rem; font-size: .82rem; font-weight: 700; color: var(--muted); }
+.ar-p input { width: 80px; }
+.ar-p input.err { border-color: var(--bad); }
+.ar-conf { margin: .4rem 0 0 1.2rem; line-height: 1.7; }
+@media (max-width: 640px) {
+  .aula-share, .aula-share.big { grid-template-columns: 1fr; }
+  .qr-box { max-width: 260px; margin: 0 auto; width: 100%; }
+  .aula-share .share-side { text-align: center; }
+  .aula-share .row-wrap { justify-content: center; }
+}
+#stNfVol { height: 28px; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -1426,7 +1511,7 @@ const PLAN_LIB = {"app": "Praxis Pro", "kind": "planificacion", "version": 1, "c
    ========================================================= */
 const AppConfig = {
   appName: 'Praxis Pro',
-  version: '9.3',
+  version: '9.4',
   author: 'Ronnil Javier Miranda Fernández',
   logo: 'P'
 };
@@ -1481,6 +1566,8 @@ const dateTime = t => new Date(t).toLocaleString('es-DO', { day: '2-digit', mont
 const isoTime = t => /^\d{2}:\d{2}$/.test(String(t || '')) ? String(t) : '';
 const isoDate = d => /^\d{4}-\d{2}-\d{2}$/.test(String(d || '')) ? String(d) : '';
 const fmtDate = d => d ? `${d.slice(8, 10)}/${d.slice(5, 7)}` : '';
+/** Fecha completa con año: 03/11/2026 */
+const fmtDateY = d => d ? `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}` : '';
 /** Nombre y fecha de cada actividad de un criterio (una entrada por actividad). */
 function normActs(acts, count) {
   const a = Array.isArray(acts) ? acts : [];
@@ -1575,6 +1662,7 @@ function normalizeModule(m) {
   nm.classDays = normClassDays(nm.classDays);
   nm.anec = (Array.isArray(nm.anec) ? nm.anec : []).map(normAnec).filter(Boolean);
   nm.plan = nm.plan ? normPlan(nm.plan) : null;
+  nm.aula = typeof normAulaList === 'function' ? normAulaList(nm.aula) : (Array.isArray(nm.aula) ? nm.aula : []);
   nm.ras = (Array.isArray(nm.ras) ? nm.ras : []).map((r, i) => {
     const nr = Object.assign({ id: uid(), name: `RA ${i + 1}`, w: 0, cats: [] }, r);
     nr.id = String(nr.id);
@@ -2345,7 +2433,7 @@ function promptBox(title, label, value, onOk, { icon = '✎', placeholder = '', 
 }
 
 /* ---------- Estado de navegación ---------- */
-const state = { view: 'home', modId: null, tab: 'resumen', raId: null, stuId: null, search: '', sort: 'num', calYM: null, calMod: '', attYM: null, anec: { sid: '', kind: '', cat: '', q: '' }, recMode: 'pend', recRa: '', tool: null };
+const state = { view: 'home', modId: null, tab: 'resumen', raId: null, stuId: null, search: '', sort: 'num', calYM: null, calMod: '', attYM: null, anec: { sid: '', kind: '', cat: '', q: '' }, recMode: 'pend', recRa: '', tool: null, aulaSel: null };
 const curMod = () => findMod(state.modId);
 
 function render() {
@@ -2371,6 +2459,7 @@ function render() {
 
   const sc = $('.grid-wrap'); if (sc && gScroll) { sc.scrollLeft = gScroll[0]; sc.scrollTop = gScroll[1]; }
   try { afterRender(); } catch (e) { console.error(e); }
+  try { if (typeof aulaAfterRender === 'function') aulaAfterRender(); } catch (e) { console.error(e); }
   if (key) {
     const el = document.querySelector(`[data-key="${CSS.escape(key)}"]`);
     if (el) { el.focus({ preventScroll: true }); try { if (s0 !== null) el.setSelectionRange(s0, s1); } catch (e) { } }
@@ -2436,9 +2525,9 @@ function modCard(m) {
 }
 
 /* ---------- Módulo ---------- */
-const TABS = [['resumen', 'Resumen'], ['panel', 'Panel 📊'], ['registro', 'Registro por RA'], ['estudiante', 'Por estudiante'], ['recuperacion', 'Recuperación'], ['asistencia', 'Asistencia'], ['anecdotario', 'Anecdotario'], ['herramientas', 'Herramientas 🎲'], ['planificacion', 'Planificación 📘'], ['config', 'Configuración'], ['reportes', 'Reportes']];
+const TABS = [['resumen', 'Resumen'], ['panel', 'Panel 📊'], ['registro', 'Registro por RA'], ['estudiante', 'Por estudiante'], ['recuperacion', 'Recuperación'], ['asistencia', 'Asistencia'], ['anecdotario', 'Anecdotario'], ['aula', 'Aula 🏫'], ['herramientas', 'Herramientas 🎲'], ['planificacion', 'Planificación 📘'], ['config', 'Configuración'], ['reportes', 'Reportes']];
 function renderModule(m) {
-  const body = { resumen: renderResumen, panel: renderPanel, registro: renderRegistro, estudiante: renderEstudiante, recuperacion: renderRecuperacion, asistencia: renderAsistencia, anecdotario: renderAnecdotario, herramientas: renderHerramientas, planificacion: renderPlanificacion, config: renderConfig, reportes: renderReportes }[state.tab] || renderResumen;
+  const body = { resumen: renderResumen, panel: renderPanel, registro: renderRegistro, estudiante: renderEstudiante, recuperacion: renderRecuperacion, asistencia: renderAsistencia, anecdotario: renderAnecdotario, aula: renderAula, herramientas: renderHerramientas, planificacion: renderPlanificacion, config: renderConfig, reportes: renderReportes }[state.tab] || renderResumen;
   return `
   <div class="mod-head">
     <button class="btn btn-secondary btn-icon" data-act="go-home" title="Volver al panel">${ICON.back}</button>
@@ -3220,10 +3309,23 @@ function actSlots(m) {
   m.ras.forEach((ra, ri) => ra.cats.forEach(c => {
     for (let i = 0; i < c.count; i++) {
       const a = actOf(c, i);
-      out.push({ key: `${m.id}|${ra.id}|${c.id}|${i}`, label: `RA ${ri + 1} · ${c.count > 1 ? c.label + ' ' + (i + 1) : c.label}${a.n ? ' – ' + a.n : ''}${a.d ? ' (' + fmtDate(a.d) + ')' : ''}`, type: typeFromCat(c.label), taken: !!a.d });
+      const short = `${c.count > 1 ? c.label + ' ' + (i + 1) : c.label}${a.n ? ' – ' + a.n : ''}`;
+      out.push({ key: `${m.id}|${ra.id}|${c.id}|${i}`, ri, short, d: a.d, label: `RA ${ri + 1} · ${short}${a.d ? ' (' + fmtDateY(a.d) + ')' : ''}`, type: typeFromCat(c.label), taken: !!a.d });
     }
   }));
   return out;
+}
+/** Opciones del selector de actividades, ordenadas y agrupadas por RA (segmentos). */
+function actOptionsHTML(m, { type = '', selected = '', empty = 'No vincular (solo agenda)' } = {}) {
+  const slots = actSlots(m);
+  const first = type ? (slots.find(x => x.type === type && !x.taken) || {}).key : '';
+  const sel = selected || '';
+  return `<option value="">${esc(empty)}</option>` + m.ras.map((ra, ri) => {
+    const xs = slots.filter(x => x.ri === ri);
+    if (!xs.length) return '';
+    let txt = (ra.name || '').trim(); if (!txt || /^RA\s*[\d.]+$/i.test(txt)) txt = (ra.desc || '').trim();
+    return `<optgroup label="RA ${ri + 1}${txt ? ' · ' + esc(txt.length > 60 ? txt.slice(0, 58) + '…' : txt) : ''}">${xs.map(x => `<option value="${esc(x.key)}"${x.key === sel ? ' selected' : ''}${type && x.type === type && !x.taken ? ' class="opt-match"' : ''}>${esc(x.short)}${x.taken ? ' · ya tiene fecha ' + esc(fmtDateY(x.d)) : ''}</option>`).join('')}</optgroup>`;
+  }).join('');
 }
 function resolveAct(key) {
   const [mid, rid, cid, i] = String(key).split('|');
@@ -3305,9 +3407,7 @@ function eventDialog({ date, src, key, sid } = {}) {
         const m = findMod(modSel.value);
         ov.querySelector('#evLinkWrap').style.display = m && m.ras.length ? '' : 'none';
         if (!m) { link.innerHTML = '<option value="">No vincular</option>'; return; }
-        const slots = actSlots(m), t = typeSel.value;
-        const sorted = [...slots.filter(x => x.type === t && !x.taken), ...slots.filter(x => !(x.type === t && !x.taken))];
-        link.innerHTML = `<option value="">No vincular (solo agenda)</option>` + sorted.map(x => `<option value="${esc(x.key)}">${esc(x.label)}${x.taken ? ' · ya tiene fecha' : ''}</option>`).join('');
+        link.innerHTML = actOptionsHTML(m, { type: typeSel.value });
       };
       const toggleNotes = () => { ov.querySelector('#evNotesWrap').style.display = link.value ? 'none' : ''; };
       modSel.addEventListener('change', () => { fill(); toggleNotes(); });
@@ -4203,11 +4303,11 @@ function saveGroupsDialog() {
   const slots = actSlots(m).filter(x => x.type === t.opts.type || t.opts.type === 'Otro' || t.opts.type === 'Proyecto');
   openModal({
     title: 'Guardar grupos', icon: '👥',
-    body: `<label class="field">Nombre<input type="text" id="gsName" maxlength="80" value="${esc(t.opts.type + ' · ' + fmtDate(todayISO()))}"></label>
+    body: `<label class="field">Nombre<input type="text" id="gsName" maxlength="80" value="${esc(t.opts.type + ' · ' + fmtDateY(todayISO()))}"></label>
       <label class="field">Tema central (opcional)<input type="text" id="gsTopic" maxlength="160" value="${esc(t.opts.topic || '')}" placeholder="Ej.: Lenguajes de programación web"></label>
       <label class="check"><input type="checkbox" id="gsNext" checked> Después de guardar, asignar los temas y las fechas de cada grupo</label>
       <label class="field">Vincular con una actividad del registro (opcional)
-        <select id="gsAct"><option value="">Sin vincular</option>${slots.map(x => `<option value="${esc(x.key)}">${esc(x.label)}</option>`).join('')}</select>
+        <select id="gsAct">${actOptionsHTML(m, { type: t.opts.type, empty: 'Sin vincular' })}</select>
         <small>Si la vinculas, podrás calificar a cada grupo con una sola nota y se anota a todos sus integrantes.</small></label>`,
     actions: [{ label: 'Cancelar' }, {
       label: 'Guardar', cls: 'btn-primary', onClick: ov => {
@@ -4228,12 +4328,14 @@ function renderSavedGroups(m, t) {
     const r = gs.actKey ? resolveAct(gs.actKey) : null;
     const withT = gs.groups.filter(g => g.tema).length, withD = gs.groups.filter(g => g.date).length, onCal = gs.groups.filter(g => g.evId && db.agenda.some(e => e.id === g.evId)).length;
     const next = gs.groups.filter(g => g.date && g.date >= todayISO()).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
-    return `<div class="card rep-card grp-saved"><h3>👥 ${esc(gs.name)}</h3>
-      <p>${gs.topic ? `<b class="grp-topic">${esc(gs.topic)}</b><br>` : ''}${gs.groups.length} grupos · ${gs.groups.reduce((a, g) => a + g.members.length, 0)} estudiantes · ${fmtDate(gs.date)}${r ? `<br>Vinculado a: <b>RA ${m.ras.indexOf(r.ra) + 1} · ${esc(r.c.count > 1 ? r.c.label + ' ' + (r.i + 1) : r.c.label)}</b>` : ''}</p>
+    const title = gs.name.replace(/(\b\d{2}\/\d{2})$/, `$1/${gs.date.slice(0, 4)}`);
+    return `<div class="card rep-card grp-saved"><h3>👥 ${esc(title)}</h3>
+      <p>${gs.topic ? `<b class="grp-topic">${esc(gs.topic)}</b><br>` : ''}${gs.groups.length} grupos · ${gs.groups.reduce((a, g) => a + g.members.length, 0)} estudiantes · ${fmtDateY(gs.date)}${r ? `<br>Vinculado a: <b>RA ${m.ras.indexOf(r.ra) + 1} · ${esc(r.c.count > 1 ? r.c.label + ' ' + (r.i + 1) : r.c.label)}</b>` : ''}</p>
       <div class="grp-stats"><span class="badge ${withT === gs.groups.length ? 'ok' : withT ? 'info' : ''}">📝 ${withT}/${gs.groups.length} con tema</span><span class="badge ${withD === gs.groups.length ? 'ok' : withD ? 'info' : ''}">📆 ${withD}/${gs.groups.length} con fecha</span>${onCal ? `<span class="badge ok">🔔 ${onCal} en el calendario</span>` : ''}</div>
       ${next ? `<p class="small">Próximo: <b>${esc(next.name)}</b> · ${esc(cap(longDate(next.date)))}${next.time ? ' · ' + fmtTime12(next.time) : ''}${next.tema ? ' · ' + esc(next.tema) : ''}</p>` : ''}
       <div class="row-wrap">
         <button class="btn btn-sm btn-primary" data-act="grp-topics" data-id="${gs.id}">📝 Temas y fechas</button>
+        <button class="btn btn-sm btn-secondary" data-act="grp-edit" data-id="${gs.id}">✏️ Editar grupos</button>
         <button class="btn btn-sm btn-secondary" data-act="grp-grade" data-id="${gs.id}">Calificar por grupo</button>
         <button class="btn btn-sm btn-secondary" data-act="grp-copy" data-id="${gs.id}">${ICON.copy} Copiar</button>
         <button class="btn btn-sm btn-secondary" data-act="grp-print" data-id="${gs.id}">Imprimir</button>
@@ -4383,9 +4485,55 @@ function groupTopicsDialog(id) {
 /** Guarda los grupos de la vista previa y abre directamente «Temas y fechas». */
 function saveGroupsQuick() {
   const m = curMod(), t = toolState(m); if (!t.preview) return;
-  const gs = normGroupSet({ id: uid(), name: `${t.opts.type} · ${fmtDate(todayISO())}`, type: t.opts.type, date: todayISO(), topic: t.opts.topic || '', groups: t.preview.groups });
+  const gs = normGroupSet({ id: uid(), name: `${t.opts.type} · ${fmtDateY(todayISO())}`, type: t.opts.type, date: todayISO(), topic: t.opts.topic || '', groups: t.preview.groups });
   m.groups.unshift(gs); t.preview = null; t.swap = ''; t.savedOpen = true;
   persist(); render(); setTimeout(() => groupTopicsDialog(gs.id), 200);
+}
+
+/* ---------- Editar un conjunto de grupos guardado ---------- */
+function groupEditDialog(id) {
+  const m = curMod(), gs0 = m && m.groups.find(x => x.id === id); if (!gs0) return;
+  const gs = JSON.parse(JSON.stringify(gs0));
+  const studs = m.students.slice().sort((a, b) => a.num - b.num);
+  const where = sid => gs.groups.findIndex(g => g.members.includes(sid));
+  const draw = ov => {
+    ov.querySelector('#geGroups').innerHTML = gs.groups.map((g, i) => `<div class="ge-g"><span class="ge-n">${i + 1}</span><input type="text" data-gn="${i}" maxlength="40" value="${esc(g.name)}"><span class="badge">${g.members.length}</span>${g.members.length ? '' : `<button type="button" class="btn btn-ghost btn-icon" data-gdel="${i}" title="Quitar grupo vacío">${ICON.trash}</button>`}</div>`).join('');
+    const opts = sel => `<option value="-1"${sel < 0 ? ' selected' : ''}>— Sin grupo —</option>` + gs.groups.map((g, i) => `<option value="${i}"${sel === i ? ' selected' : ''}>${esc(g.name)}</option>`).join('');
+    ov.querySelector('#geStus').innerHTML = studs.map(st => { const w = where(st.id); return `<div class="ge-s${w < 0 ? ' none' : ''}"><span class="ge-num">${st.num}</span><span class="ge-name">${esc(st.name)}</span><select data-sid="${st.id}">${opts(w)}</select></div>`; }).join('');
+    ov.querySelectorAll('[data-gn]').forEach(i => i.oninput = () => { gs.groups[+i.dataset.gn].name = i.value; });
+    ov.querySelectorAll('[data-gn]').forEach(i => i.onchange = () => draw(ov));
+    ov.querySelectorAll('[data-gdel]').forEach(b => b.onclick = () => { const g = gs.groups.splice(+b.dataset.gdel, 1)[0]; if (g && g.evId) gs._drop = (gs._drop || []).concat(g.evId); draw(ov); });
+    ov.querySelectorAll('[data-sid]').forEach(sel => sel.onchange = () => {
+      const sid = sel.dataset.sid, to = +sel.value;
+      gs.groups.forEach(g => { g.members = g.members.filter(x => x !== sid); });
+      if (to >= 0) gs.groups[to].members.push(sid);
+      draw(ov);
+    });
+    ov.querySelector('#geCount').textContent = `${gs.groups.reduce((a, g) => a + g.members.length, 0)} de ${studs.length} estudiantes en grupos`;
+  };
+  openModal({
+    title: 'Editar grupos', icon: '✏️', wide: true, sub: 'Cambia el nombre, mueve estudiantes de un grupo a otro, agrega o quita grupos. Los temas, fechas y notas se conservan.',
+    body: `<div class="form-grid"><label class="field">Nombre<input type="text" id="geName" maxlength="80" value="${esc(gs.name)}"></label>
+        <label class="field">Tipo<select id="geType">${['Exposición', 'Práctica', 'Proyecto', 'Debate', 'Investigación', 'Otro'].map(x => `<option ${gs.type === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+        <label class="field">Fecha<input type="date" id="geDate" value="${gs.date}"></label></div>
+      <div class="ge-cols">
+        <div><h4 class="side-h">Grupos</h4><div id="geGroups" class="ge-groups"></div><button type="button" class="btn btn-sm btn-ghost" id="geAdd">${ICON.plus} Agregar grupo</button></div>
+        <div><h4 class="side-h">Estudiantes <small class="muted" id="geCount"></small></h4><div id="geStus" class="ge-stus"></div></div>
+      </div>`,
+    actions: [{ label: 'Cancelar' }, {
+      label: 'Guardar cambios', cls: 'btn-primary', onClick: ov => {
+        gs.name = ov.querySelector('#geName').value.trim() || gs.name; gs.type = ov.querySelector('#geType').value; gs.date = ov.querySelector('#geDate').value || gs.date;
+        gs.groups = gs.groups.filter(g => g.members.length || g.tema || g.date);
+        if (!gs.groups.length) { toast('Debe quedar al menos un grupo con estudiantes.', 'error'); return false; }
+        gs.groups.forEach((g, i) => { if (!g.name.trim()) g.name = `Grupo ${i + 1}`; });
+        const i = m.groups.findIndex(x => x.id === id); if (i < 0) return;
+        if (gs._drop) db.agenda = db.agenda.filter(e => !gs._drop.includes(e.id));
+        const ng = normGroupSet(gs); syncGroupEvents(m, ng); m.groups[i] = ng;
+        persist(); render(); toast('Grupos actualizados.', 'ok');
+      }
+    }],
+    onOpen: ov => { ov.querySelector('#geAdd').onclick = () => { gs.groups.push({ name: `Grupo ${gs.groups.length + 1}`, members: [], tema: '', subs: [], date: '', time: '', evId: '' }); draw(ov); }; draw(ov); }
+  });
 }
 
 /* =========================================================
@@ -4819,6 +4967,7 @@ const ACTIONS = {
   'grp-print': el => { const m = curMod(), gs = el.dataset.id ? m.groups.find(x => x.id === el.dataset.id) : toolState(m).preview; if (gs) printGroups(m, gs, `Grupos de ${(gs.type || toolState(m).opts.type).toLowerCase()}${gs.name ? ' · ' + gs.name : ''}`); },
   'grp-grade': el => gradeGroupsDialog(el.dataset.id),
   'grp-topics': el => groupTopicsDialog(el.dataset.id),
+  'grp-edit': el => groupEditDialog(el.dataset.id),
   'stu-check': () => studentCheckDialog(),
   'grp-save-topics': () => saveGroupsQuick(),
   'grp-del': el => {
@@ -7019,7 +7168,7 @@ window.addEventListener('popstate', e => {
    Funcionan mientras Praxis Pro está abierto (aunque esté minimizado o en otra pestaña).
    ========================================================= */
 const NOTIF_LOG = 'praxisNotifLog';
-function notifPrefs() { const n = db.settings.notif; return Object.assign({ agenda: true, alerts: true, before: 30, classes: true }, n && typeof n === 'object' ? n : {}); }
+function notifPrefs() { const n = db.settings.notif; return Object.assign({ agenda: true, alerts: true, before: 30, classes: true, sound: 'campana', vol: 70 }, n && typeof n === 'object' ? n : {}); }
 function notifSupported() { return 'Notification' in window; }
 function notifGranted() { return notifSupported() && Notification.permission === 'granted'; }
 function notifLog() { try { const o = JSON.parse(localStorage.getItem(NOTIF_LOG) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
@@ -7029,8 +7178,32 @@ function notifMark(keys) {
   Object.keys(o).forEach(k => { if (o[k] < lim) delete o[k]; });
   try { localStorage.setItem(NOTIF_LOG, JSON.stringify(o)); } catch (e) { }
 }
+/* ---------- Sonido de los avisos (se genera en el momento, sin archivos) ---------- */
+const NOTIF_SOUNDS = { none: 'Sin sonido', campana: 'Campana', suave: 'Suave (dos tonos)', timbre: 'Timbre escolar', alerta: 'Alerta (tres pitidos)', burbuja: 'Burbuja' };
+let _actx = null;
+function playNotifSound(name, vol) {
+  const P = notifPrefs(); name = name || P.sound; vol = (vol == null ? P.vol : vol) / 100;
+  if (!name || name === 'none' || vol <= 0) return;
+  try {
+    _actx = _actx || new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = _actx; if (ctx.state === 'suspended') ctx.resume();
+    const t0 = ctx.currentTime + .02, out = ctx.createGain(); out.gain.value = vol * .5; out.connect(ctx.destination);
+    const tone = (f, at, dur, type = 'sine', g = 1, slide) => {
+      const o = ctx.createOscillator(), e = ctx.createGain(); o.type = type; o.frequency.setValueAtTime(f, t0 + at);
+      if (slide) o.frequency.exponentialRampToValueAtTime(slide, t0 + at + dur);
+      e.gain.setValueAtTime(0.0001, t0 + at); e.gain.exponentialRampToValueAtTime(g, t0 + at + .015); e.gain.exponentialRampToValueAtTime(0.0001, t0 + at + dur);
+      o.connect(e); e.connect(out); o.start(t0 + at); o.stop(t0 + at + dur + .05);
+    };
+    if (name === 'campana') { tone(880, 0, 1.4, 'sine', 1); tone(1760, 0, .8, 'sine', .35); tone(2640, 0, .4, 'sine', .15); }
+    else if (name === 'suave') { tone(660, 0, .45, 'sine', .9); tone(990, .22, .7, 'sine', .8); }
+    else if (name === 'timbre') { for (let i = 0; i < 6; i++) tone(i % 2 ? 784 : 988, i * .12, .14, 'triangle', .7); }
+    else if (name === 'alerta') { [0, .22, .44].forEach(a => tone(1046, a, .16, 'square', .35)); }
+    else if (name === 'burbuja') { tone(400, 0, .18, 'sine', 1, 900); tone(600, .16, .2, 'sine', .8, 1300); }
+  } catch (e) { }
+}
 /** Muestra un aviso del sistema. go = a dónde lleva al tocarlo ('calendar', 'home', 'mod:ID:tab'). */
 async function showNotif(title, body, tag, go) {
+  if (tag !== 'test-silent') playNotifSound();
   if (!notifGranted()) return false;
   const opt = { body, tag, icon: 'icon-192.png', badge: 'icon-192.png', data: { go }, renotify: true };
   try {
@@ -7151,15 +7324,24 @@ function notifSettingsHTML() {
     <label class="field" style="max-width:320px">Recordarme antes de las actividades con hora<select id="stNfBefore">${[[0, 'A la hora exacta'], [10, '10 minutos antes'], [15, '15 minutos antes'], [30, '30 minutos antes'], [60, '1 hora antes'], [120, '2 horas antes']].map(([v, l]) => `<option value="${v}" ${+P.before === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
     <label class="check"><input type="checkbox" id="stNfClasses" ${P.classes ? 'checked' : ''}> Avisarme antes de cada clase de mi horario (${typeof hor === 'function' ? hor().lead : 10} min antes · cámbialo en Horario › Horas pedagógicas)</label>
     <label class="check"><input type="checkbox" id="stNfAlerts" ${P.alerts ? 'checked' : ''}> Alertas tempranas de estudiantes (faltas seguidas, no entregó, bajó su rendimiento)</label>
+    <div class="row-wrap" style="align-items:flex-end">
+      <label class="field" style="max-width:220px">🔊 Sonido del aviso<select id="stNfSound">${Object.entries(NOTIF_SOUNDS).map(([k, v]) => `<option value="${k}" ${P.sound === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+      <label class="field" style="max-width:200px">Volumen <span id="stNfVolV">${P.vol}%</span><input type="range" id="stNfVol" min="0" max="100" step="5" value="${P.vol}"></label>
+      <button type="button" class="btn btn-sm btn-secondary" id="stNfPlay">▶ Escuchar</button>
+    </div>
     <p class="small muted">Los avisos llegan mientras Praxis Pro está abierto, aunque esté minimizado. Instálalo como aplicación y déjalo abierto en tu jornada.</p>
   </div>`;
 }
 function notifSettingsWire(ov) {
   const a = ov.querySelector('#stNotifAsk'); if (a) a.onclick = () => notifAsk(() => { const b = ov.querySelector('.notif-box'); if (b) { b.outerHTML = notifSettingsHTML(); notifSettingsWire(ov); } });
-  const t = ov.querySelector('#stNotifTest'); if (t) t.onclick = () => showNotif('Praxis Pro · Prueba', 'Los avisos funcionan en este equipo. ✔', 'test', 'home');
+  const t = ov.querySelector('#stNotifTest'); if (t) t.onclick = () => { _soundOverride(ov); showNotif('Praxis Pro · Prueba', 'Los avisos funcionan en este equipo. ✔', 'test', 'home'); };
+  const pl = ov.querySelector('#stNfPlay'); if (pl) pl.onclick = () => playNotifSound(ov.querySelector('#stNfSound').value, +ov.querySelector('#stNfVol').value);
+  const vo = ov.querySelector('#stNfVol'); if (vo) vo.oninput = () => { ov.querySelector('#stNfVolV').textContent = vo.value + '%'; };
+  const so = ov.querySelector('#stNfSound'); if (so) so.onchange = () => playNotifSound(so.value, +ov.querySelector('#stNfVol').value);
 }
+function _soundOverride(ov) { const n = db.settings.notif = Object.assign({}, notifPrefs()); n.sound = ov.querySelector('#stNfSound').value; n.vol = +ov.querySelector('#stNfVol').value; }
 function notifSettingsRead(ov) {
-  return { agenda: ov.querySelector('#stNfAgenda').checked, alerts: ov.querySelector('#stNfAlerts').checked, classes: ov.querySelector('#stNfClasses').checked, before: +ov.querySelector('#stNfBefore').value };
+  return { sound: ov.querySelector('#stNfSound').value, vol: +ov.querySelector('#stNfVol').value, agenda: ov.querySelector('#stNfAgenda').checked, alerts: ov.querySelector('#stNfAlerts').checked, classes: ov.querySelector('#stNfClasses').checked, before: +ov.querySelector('#stNfBefore').value };
 }
 /** Aviso en el inicio para activar los avisos. */
 function notifHomeBanner() {
@@ -7478,6 +7660,609 @@ function libImport() {
   inp.click();
 }
 Object.assign(ACTIONS, { 'cloud-logout': () => cloudLogout(), 'pl-lib-import': () => libImport() });
+
+/* =========================================================
+   Aula virtual (como Classroom): cada módulo tiene su propia aula.
+   - El docente crea exámenes y prácticas (selección múltiple, V/F,
+     respuesta corta y desarrollo) dentro del módulo.
+   - Los estudiantes entran con un enlace (o QR) + código, sin cuenta:
+     escriben su número de lista y su nombre.
+   - Las preguntas cerradas se corrigen solas y la nota pasa a la
+     casilla del registro que elijas. El desarrollo lo corriges tú.
+   Datos privados (respuestas correctas, entregas, notas): dentro del módulo.
+   En la nube pública solo queda: aula/{id} (título y estado) y
+   aula/{id}/q/{código} (las preguntas SIN respuestas). Las entregas
+   (aula/{id}/resp/{nº}) solo las puede leer el docente dueño.
+   ========================================================= */
+const AULA_KINDS = { 'Examen': '📝', 'Práctica': '🛠️', 'Quiz': '⚡', 'Tarea': '📚' };
+const AQ_TYPES = { mc: 'Selección múltiple', tf: 'Verdadero / Falso', short: 'Respuesta corta', open: 'Desarrollo' };
+const AulaLive = { eid: '', mid: '', xid: '', unsub: null, err: '' };
+
+/* ---------- Normalización ---------- */
+function normAulaQ(q) {
+  if (!q || typeof q !== 'object') return null;
+  const t = AQ_TYPES[q.t] ? q.t : 'mc';
+  const nq = { id: String(q.id || uid()), t, text: String(q.text || '').slice(0, 2000), pts: Math.max(0.25, Math.min(100, parseFloat(q.pts) || 1)), opts: [], ok: null, acc: [] };
+  if (t === 'mc') { nq.opts = (Array.isArray(q.opts) ? q.opts : []).map(o => String(o ?? '').slice(0, 400)).slice(0, 8); nq.ok = Number.isInteger(q.ok) && q.ok >= 0 && q.ok < nq.opts.length ? q.ok : null; }
+  if (t === 'tf') nq.ok = typeof q.ok === 'boolean' ? q.ok : null;
+  if (t === 'short') nq.acc = (Array.isArray(q.acc) ? q.acc : String(q.acc || '').split('|')).map(a => String(a).trim().slice(0, 200)).filter(Boolean).slice(0, 12);
+  return nq;
+}
+function normAula(e) {
+  if (!e || typeof e !== 'object') return null;
+  const ne = {
+    id: String(e.id || uid()), title: String(e.title || 'Examen').slice(0, 120), kind: AULA_KINDS[e.kind] ? e.kind : 'Examen',
+    actKey: String(e.actKey || ''), instr: String(e.instr || '').slice(0, 2000), qs: (Array.isArray(e.qs) ? e.qs : []).map(normAulaQ).filter(Boolean),
+    dur: Math.max(0, Math.min(600, parseInt(e.dur, 10) || 0)), shuffle: e.shuffle !== false, withCode: !!e.withCode,
+    status: ['draft', 'open', 'closed'].includes(e.status) ? e.status : 'draft', code: String(e.code || ''), pub: String(e.pub || ''), until: String(e.until || ''),
+    auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
+    resp: {}, marks: {}, applied: {}, map: {}
+  };
+  if (e.resp && typeof e.resp === 'object') Object.entries(e.resp).forEach(([k, r]) => { if (r && typeof r === 'object' && +k > 0) ne.resp[k] = r; });
+  if (e.marks && typeof e.marks === 'object') ne.marks = e.marks;
+  if (e.applied && typeof e.applied === 'object') ne.applied = e.applied;
+  if (e.map && typeof e.map === 'object') ne.map = e.map;
+  return ne;
+}
+function normAulaList(a) { return (Array.isArray(a) ? a : []).map(normAula).filter(Boolean); }
+
+/* ---------- Utilidades ---------- */
+function aulaCloudOK() { return typeof Cloud === 'object' && Cloud.on && !!Cloud.user && !!Cloud.fs; }
+function aulaRef(ex) { return Cloud.fs.collection('aula').doc(ex.pub); }
+function aulaCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; const r = new Uint32Array(6); (self.crypto || window.crypto).getRandomValues(r); r.forEach(x => { s += A[x % A.length]; }); return s; }
+function aulaFold(s) { return String(s ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+function aulaTotal(ex) { return r2(ex.qs.reduce((a, q) => a + q.pts, 0)); }
+function aulaLink(ex) { const u = new URL('aula.html', location.href); u.search = ''; u.hash = ''; u.searchParams.set('e', ex.pub); if (ex.withCode && ex.code) u.searchParams.set('c', ex.code); return u.toString(); }
+function aulaFind(m, id) { return m && (m.aula || []).find(x => x.id === id); }
+function aulaIsOpen(ex) { return ex.status === 'open' && (!ex.until || new Date(ex.until) > new Date()); }
+function aulaStatus(ex) {
+  if (ex.status === 'draft') return { cls: 'neutral', label: 'Borrador' };
+  if (aulaIsOpen(ex)) return { cls: 'ok', label: 'Abierto' + (ex.until ? ' hasta ' + aulaHM(ex.until) : '') };
+  return { cls: 'bad', label: 'Cerrado' };
+}
+function aulaHM(iso) {
+  const d = new Date(iso); if (isNaN(d)) return '';
+  const hm = d.toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' });
+  return d.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10) ? hm : `${fmtDateY(isoLocal(d))} ${hm}`;
+}
+function isoLocal(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function dtLocal(d) { return `${isoLocal(d)}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; }
+function withTimeout(p, ms, msg = 'Sin respuesta del servidor') { return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(msg)), ms))]); }
+
+/* ---------- Corrección ---------- */
+/** Puntos automáticos de una pregunta (null = la corrige el docente). */
+function aulaAuto(q, ans) {
+  const empty = ans === undefined || ans === null || ans === '';
+  if (q.t === 'mc') return !empty && +ans === q.ok ? q.pts : 0;
+  if (q.t === 'tf') return !empty && (ans === true || ans === 'true') === q.ok && q.ok !== null ? q.pts : 0;
+  if (q.t === 'short') {
+    if (empty) return 0;
+    if (!q.acc.length) return null;
+    const a = aulaFold(ans);
+    return q.acc.some(x => { const b = aulaFold(x); return a === b || (b.length >= 5 && editDist(a, b) <= 1); }) ? q.pts : 0;
+  }
+  return empty || !String(ans).trim() ? 0 : null; // desarrollo
+}
+/** { got, total, pending, per: {qid: {auto, mark, pts}} } */
+function aulaScore(ex, num) {
+  const r = ex.resp[num]; const mk = ex.marks[num] || {};
+  const out = { got: 0, total: aulaTotal(ex), pending: 0, per: {} };
+  if (!r) return out;
+  ex.qs.forEach(q => {
+    const auto = aulaAuto(q, (r.answers || {})[q.id]);
+    const mark = isNum(mk[q.id]) ? Math.min(q.pts, Math.max(0, mk[q.id])) : null;
+    const pts = mark !== null ? mark : auto;
+    if (pts === null) out.pending++; else out.got += pts;
+    out.per[q.id] = { auto, mark, pts };
+  });
+  out.got = r2(out.got);
+  return out;
+}
+/** Casilla del registro a la que va la nota. */
+function aulaTarget(m, ex) { const a = ex.actKey && resolveAct(ex.actKey); return a && a.m === m ? a : null; }
+function aulaScaled(m, ex, sc) { const t = aulaTarget(m, ex); if (!sc.total) return null; return t ? r2(sc.got / sc.total * t.c.max) : null; }
+/** Estudiante del módulo que corresponde a una entrega. */
+function aulaStudent(m, ex, num) {
+  const sid = ex.map[num]; if (sid) { const s = findStu(m, sid); if (s) return s; }
+  return m.students.find(s => s.num === +num) || null;
+}
+function aulaNameOk(s, r) { if (!s || !r) return false; const a = personKey(s.name), b = personKey(r.name || ''); return !!b && (samePerson(a, b) || b.split(' ').filter(w => w.length > 2 && a.split(' ').includes(w)).length >= 2); }
+/** Pasa las notas listas a la casilla vinculada. No pisa notas que escribiste tú, salvo force. */
+function aulaApply(m, ex, { force = false } = {}) {
+  const t = aulaTarget(m, ex); const res = { n: 0, conflicts: [], pending: 0 };
+  if (!t) return res;
+  Object.keys(ex.resp).forEach(num => {
+    const s = aulaStudent(m, ex, num); if (!s) return;
+    const sc = aulaScore(ex, num); if (sc.pending) { res.pending++; return; }
+    const v = aulaScaled(m, ex, sc); if (!isNum(v)) return;
+    const cur = getGrade(s, t.ra.id, t.c.id, t.i), prev = ex.applied[s.id];
+    if (cur === '' || cur === prev || force) {
+      if (cur !== v) { setGrade(s, t.ra.id, t.c.id, t.i, v); res.n++; }
+      ex.applied[s.id] = v;
+    } else res.conflicts.push({ s, cur, v });
+  });
+  return res;
+}
+
+/* ---------- Nube ---------- */
+async function aulaPublish(m, ex) {
+  if (!aulaCloudOK()) throw new Error('Inicia sesión en la versión web para usar el Aula.');
+  if (!navigator.onLine) throw new Error('Necesitas internet para publicar.');
+  const FV = firebase.firestore.FieldValue, TS = firebase.firestore.Timestamp;
+  if (!ex.pub) ex.pub = Cloud.fs.collection('aula').doc().id;
+  if (!ex.code) ex.code = aulaCode();
+  const ref = aulaRef(ex);
+  const until = ex.until ? new Date(ex.until) : new Date(Date.now() + 3 * 3600e3);
+  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), v: 1, upd: FV.serverTimestamp() }), 15000);
+  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })) }), 15000);
+}
+async function aulaSetStatus(m, ex, status, until) {
+  ex.status = status; if (until) ex.until = until;
+  await aulaPublish(m, ex);
+}
+async function aulaDeleteCloud(ex) {
+  if (!aulaCloudOK() || !ex.pub) return;
+  const ref = aulaRef(ex);
+  const rs = await withTimeout(ref.collection('resp').get(), 15000);
+  await Promise.all(rs.docs.map(d => d.ref.delete()));
+  if (ex.code) await ref.collection('q').doc(ex.code).delete().catch(() => { });
+  await ref.delete();
+}
+function aulaUnwatch() { if (AulaLive.unsub) { try { AulaLive.unsub(); } catch (e) { } } Object.assign(AulaLive, { eid: '', mid: '', xid: '', unsub: null, err: '' }); }
+function aulaWatch(m, ex) {
+  if (!aulaCloudOK() || !ex.pub) { aulaUnwatch(); return; }
+  if (AulaLive.eid === ex.pub && AulaLive.unsub) return;
+  aulaUnwatch();
+  Object.assign(AulaLive, { eid: ex.pub, mid: m.id, xid: ex.id });
+  AulaLive.unsub = aulaRef(ex).collection('resp').onSnapshot(snap => {
+    const mm = findMod(AulaLive.mid), e = aulaFind(mm, AulaLive.xid); if (!e) return;
+    let changed = 0, fresh = [];
+    snap.docs.forEach(d => {
+      const x = d.data(), num = String(parseInt(x.num, 10) || d.id);
+      const r = { num: +num, name: String(x.name || '').slice(0, 80), answers: x.answers || {}, startedAt: +x.startedAt || 0, sentAt: x.sentAt && x.sentAt.toMillis ? x.sentAt.toMillis() : (+x.sentAt || 0), blurs: parseInt(x.blurs, 10) || 0 };
+      if (JSON.stringify(e.resp[num]) !== JSON.stringify(r)) { if (!e.resp[num]) fresh.push(r); e.resp[num] = r; changed++; }
+    });
+    if (!changed) return;
+    let applied = 0;
+    if (e.auto) applied = aulaApply(mm, e).n;
+    persist();
+    if (fresh.length && AulaLive.ready) toast(`📥 ${fresh.length === 1 ? 'Entregó ' + (aulaStudent(mm, e, fresh[0].num) || fresh[0]).name : fresh.length + ' entregas nuevas'}${applied ? ' · nota pasada al registro' : ''}`, 'ok', 3200);
+    AulaLive.ready = true;
+    aulaRenderSoon();
+  }, err => { AulaLive.err = String(err && err.code || err); console.warn('Aula', err); });
+}
+/** Redibuja el Aula cuando no haya una ventana abierta (para no cerrarle nada al docente). */
+let _aulaRS = null;
+function aulaRenderSoon() {
+  clearInterval(_aulaRS);
+  const go = () => { if (state.view !== 'module' || state.tab !== 'aula') { clearInterval(_aulaRS); return true; } if (document.querySelector('.modal-overlay') || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) return false; clearInterval(_aulaRS); render(); return true; };
+  if (!go()) _aulaRS = setInterval(go, 600);
+}
+/** Se llama después de cada dibujo: escucha las entregas solo del examen abierto en pantalla. */
+function aulaAfterRender() {
+  if (state.view !== 'module' || state.tab !== 'aula' || !state.aulaSel) { if (AulaLive.unsub) aulaUnwatch(); return; }
+  const m = curMod(), ex = aulaFind(m, state.aulaSel);
+  if (ex && ex.pub) aulaWatch(m, ex); else aulaUnwatch();
+}
+
+/* ---------- Pantalla del Aula ---------- */
+function renderAula(m) {
+  const ex = state.aulaSel && aulaFind(m, state.aulaSel);
+  if (ex) return renderAulaExam(m, ex);
+  state.aulaSel = null;
+  const list = (m.aula || []).slice().sort((a, b) => (b.created || '').localeCompare(a.created || ''));
+  const cloud = aulaCloudOK();
+  return `<div class="aula">
+    <div class="aula-top card">
+      <div><h2>🏫 Aula de ${esc(modShort(m))}</h2><p class="muted small">Solo para los ${m.students.length} estudiantes de ${esc(m.course || 'este módulo')}. Cada módulo tiene su propia aula: nada se mezcla.</p></div>
+      <button class="btn btn-primary" data-act="aula-new">${ICON.plus} Nuevo examen o práctica</button>
+    </div>
+    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Puedes preparar exámenes aquí, pero para abrirlos a los estudiantes entra en la versión web con internet.</div></div>`}
+    ${list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : `<div class="empty card"><div class="big">🏫</div>
+      <p><strong>Tu aula está vacía.</strong></p>
+      <ol class="aula-steps"><li><b>Crea</b> un examen o práctica con preguntas de selección, V/F, respuesta corta o desarrollo.</li><li><b>Ábrelo</b> y muestra el QR o el enlace con el código.</li><li>Los estudiantes <b>responden desde su celular</b> con su número de lista.</li><li>Las cerradas se <b>corrigen solas</b> y la nota pasa al registro.</li></ol>
+      <button class="btn btn-primary" data-act="aula-new">${ICON.plus} Crear el primero</button></div>`}
+  </div>`;
+}
+function aulaCard(m, e) {
+  const st = aulaStatus(e), n = Object.keys(e.resp).length, t = aulaTarget(m, e);
+  const pend = Object.keys(e.resp).filter(k => aulaScore(e, k).pending).length;
+  return `<article class="aula-card card" data-act="aula-open" data-id="${e.id}" tabindex="0" role="button">
+    <div class="ac-top"><span class="ac-kind">${AULA_KINDS[e.kind]} ${esc(e.kind)}</span><span class="badge ${st.cls}">${esc(st.label)}</span></div>
+    <h3>${esc(e.title)}</h3>
+    <p class="muted small">${e.qs.length} pregunta${e.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(e))} pts${e.dur ? ' · ' + e.dur + ' min' : ''}</p>
+    <p class="small">${t ? `➜ RA ${m.ras.indexOf(t.ra) + 1} · ${esc(t.c.count > 1 ? t.c.label + ' ' + (t.i + 1) : t.c.label)}` : '<span class="muted">Sin casilla del registro</span>'}</p>
+    <div class="ac-foot"><span><b>${n}</b>/${m.students.length} entregas</span>${pend ? `<span class="badge warn">${pend} por corregir</span>` : ''}</div>
+  </article>`;
+}
+function renderAulaExam(m, ex) {
+  const st = aulaStatus(ex), t = aulaTarget(m, ex), cloud = aulaCloudOK();
+  const nums = Object.keys(ex.resp).map(Number);
+  const scores = {}; nums.forEach(k => { scores[k] = aulaScore(ex, k); });
+  const done = nums.filter(k => !scores[k].pending);
+  const avg = done.length ? r2(done.reduce((a, k) => a + scores[k].got / (scores[k].total || 1), 0) / done.length * 100) : null;
+  const pend = nums.filter(k => scores[k].pending).length;
+  const used = new Set();
+  const rows = m.students.slice().sort((a, b) => a.num - b.num).map(s => {
+    const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; });
+    if (num !== undefined) used.add(num);
+    return aulaRow(m, ex, s, num, num !== undefined ? scores[num] : null);
+  });
+  const extra = nums.filter(k => !used.has(k)).map(k => aulaRow(m, ex, null, k, scores[k]));
+  const stats = ex.qs.filter(q => q.t !== 'open').map((q, i) => {
+    const n = nums.length; if (!n) return '';
+    const ok = nums.filter(k => scores[k].per[q.id] && scores[k].per[q.id].pts >= q.pts).length;
+    const p = Math.round(ok / n * 100);
+    return `<div class="aq-stat" title="${esc(q.text)}"><span>P${ex.qs.indexOf(q) + 1}</span><div class="progress"><div style="width:${p}%;background:var(--${p >= 70 ? 'ok' : p >= 50 ? 'warn' : 'bad'})"></div></div><b>${p}%</b></div>`;
+  }).join('');
+  const link = ex.pub ? aulaLink(ex) : '';
+  return `<div class="aula">
+    <div class="aula-exam-head card">
+      <button class="btn btn-secondary btn-icon" data-act="aula-back" title="Volver al Aula">${ICON.back}</button>
+      <div class="aeh-t"><span class="ac-kind">${AULA_KINDS[ex.kind]} ${esc(ex.kind)}</span><h2>${esc(ex.title)}</h2>
+        <p class="muted small">${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(ex))} pts${ex.dur ? ' · ' + ex.dur + ' min por estudiante' : ' · sin límite de tiempo'}${ex.code && ex.status !== 'draft' ? ` · Código <b class="aula-code-sm">${esc(ex.code)}</b>` : ''}</p></div>
+      <span class="badge ${st.cls}">${esc(st.label)}</span>
+    </div>
+    <div class="row-wrap aula-actions">
+      ${aulaIsOpen(ex)
+      ? `<button class="btn btn-primary" data-act="aula-share" data-id="${ex.id}">📱 Mostrar QR y código</button><button class="btn btn-secondary" data-act="aula-extend" data-id="${ex.id}">⏱️ Extender</button><button class="btn btn-danger" data-act="aula-close" data-id="${ex.id}">⏹ Cerrar ahora</button>`
+      : `<button class="btn btn-primary" data-act="aula-start" data-id="${ex.id}" ${cloud ? '' : 'disabled title="Necesitas la versión web con tu cuenta"'}>🚀 ${ex.status === 'draft' ? 'Abrir a los estudiantes' : 'Volver a abrir'}</button>`}
+      <button class="btn btn-secondary" data-act="aula-edit" data-id="${ex.id}">✏️ Editar preguntas</button>
+      <button class="btn btn-ghost" data-act="aula-dup" data-id="${ex.id}">⧉ Duplicar</button>
+      <button class="btn btn-ghost" data-act="aula-print" data-id="${ex.id}">🖨️ Imprimir</button>
+      <button class="btn btn-ghost aula-del" data-act="aula-del" data-id="${ex.id}">${ICON.trash} Eliminar</button>
+    </div>
+    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para abrirlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo e imprimirlo.</div></div>`}
+    ${AulaLive.err && AulaLive.xid === ex.id ? `<div class="alert alert-bad"><div><strong>No se pudieron leer las entregas.</strong> ${AulaLive.err.includes('permission') ? 'Falta activar las reglas del Aula en Firebase.' : 'Revisa tu conexión.'} <small class="muted">(${esc(AulaLive.err)})</small></div></div>` : ''}
+    <div class="stats aula-stats">
+      <div class="stat"><b>${nums.length}</b><span>de ${m.students.length} entregaron</span></div>
+      <div class="stat"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
+      <div class="stat"><b style="color:var(--${pend ? 'warn' : 'ok'})">${pend}</b><span>Por corregir</span></div>
+      <div class="stat"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0)}</b><span>Salidas de la página</span></div>
+    </div>
+    <div class="card aula-target">${t
+      ? `<div><strong>Las notas van a:</strong> RA ${m.ras.indexOf(t.ra) + 1} · ${esc(t.c.count > 1 ? t.c.label + ' ' + (t.i + 1) : t.c.label)} <span class="muted">(máximo ${fmtN(t.c.max)})</span></div>
+         <label class="check"><input type="checkbox" id="aulaAuto" ${ex.auto ? 'checked' : ''}> Pasar las notas solas al registro</label>
+         <button class="btn btn-sm btn-secondary" data-act="aula-apply" data-id="${ex.id}">↧ Pasar notas ahora</button>`
+      : `<div><strong>Sin casilla del registro.</strong> <span class="muted">Elige en «Editar preguntas» a qué actividad va la nota para que pase sola.</span></div>`}</div>
+    ${stats ? `<details class="card aula-qstats"><summary><strong>Aciertos por pregunta</strong> <span class="muted small">(para saber qué repasar)</span></summary><div class="aq-stats">${stats}</div></details>` : ''}
+    <div class="card table-card"><div class="table-wrap"><table class="tbl aula-tbl">
+      <thead><tr><th>Nº</th><th>Estudiante</th><th>Estado</th><th>Puntos</th><th>Nota${t ? ' /' + fmtN(t.c.max) : ''}</th><th title="Veces que salió de la página del examen">Salidas</th><th>Entregó</th><th></th></tr></thead>
+      <tbody>${rows.join('')}${extra.join('')}</tbody></table></div></div>
+    ${ex.status !== 'draft' && link ? `<p class="muted small">Enlace para los estudiantes: <a href="${esc(link)}" target="_blank" rel="noopener">${esc(link)}</a></p>` : ''}
+  </div>`;
+}
+function aulaRow(m, ex, s, num, sc) {
+  const r = num !== undefined ? ex.resp[num] : null;
+  if (!r) return `<tr class="muted"><td>${s.num}</td><td>${esc(s.name)}</td><td><span class="badge neutral">No ha entregado</span></td><td>—</td><td>—</td><td></td><td></td><td></td></tr>`;
+  const v = aulaScaled(m, ex, sc), warnName = s && !aulaNameOk(s, r);
+  const used = r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null;
+  return `<tr>
+    <td>${s ? s.num : `<span class="badge bad" title="Ese número no está en la lista">${num}?</span>`}</td>
+    <td>${s ? esc(s.name) : '<span class="muted">—</span>'}${warnName || !s ? `<div class="small ${s ? 'warn-t' : 'muted'}" title="Nombre escrito por el estudiante">✍ ${esc(r.name)}</div>` : ''}</td>
+    <td>${sc.pending ? `<span class="badge warn">${sc.pending} por corregir</span>` : '<span class="badge ok">Corregido</span>'}</td>
+    <td><b>${fmtN(sc.got)}</b>/${fmtN(sc.total)}</td>
+    <td>${isNum(v) && !sc.pending ? `<b>${fmtN(v)}</b>` : '—'}</td>
+    <td>${r.blurs ? `<span class="badge ${r.blurs > 2 ? 'bad' : 'warn'}">${r.blurs}</span>` : '0'}</td>
+    <td class="small">${r.sentAt ? new Date(r.sentAt).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : '—'}${used !== null ? `<div class="muted">${used} min</div>` : ''}</td>
+    <td><button class="btn btn-sm ${sc.pending ? 'btn-primary' : 'btn-secondary'}" data-act="aula-review" data-id="${ex.id}" data-num="${num}">${sc.pending ? 'Corregir' : 'Ver'}</button></td>
+  </tr>`;
+}
+
+/* ---------- Editor de examen ---------- */
+function aulaBlankQ(t) { return normAulaQ({ t, pts: 1, opts: t === 'mc' ? ['', '', '', ''] : [], ok: null }); }
+function aulaEditor(id) {
+  const m = curMod(); if (!m) return;
+  const orig = id ? aulaFind(m, id) : null;
+  const ex = orig ? JSON.parse(JSON.stringify(orig)) : normAula({ title: '', kind: 'Examen', dur: 30, qs: [aulaBlankQ('mc')] });
+  const hasResp = orig && Object.keys(orig.resp).length;
+  const draw = ov => {
+    const box = ov.querySelector('#aqList');
+    box.innerHTML = ex.qs.map((q, i) => `<div class="aq" data-qi="${i}">
+      <div class="aq-h"><span class="aq-n">${i + 1}</span>
+        <select data-aq="t">${Object.entries(AQ_TYPES).map(([k, l]) => `<option value="${k}" ${q.t === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
+        <label class="aq-pts">Puntos <input type="number" data-aq="pts" min="0.25" step="0.25" value="${q.pts}" inputmode="decimal"></label>
+        <span class="aq-tools"><button type="button" class="btn btn-ghost btn-icon" data-aqm="-1" title="Subir" ${i ? '' : 'disabled'}>↑</button><button type="button" class="btn btn-ghost btn-icon" data-aqm="1" title="Bajar" ${i < ex.qs.length - 1 ? '' : 'disabled'}>↓</button><button type="button" class="btn btn-ghost btn-icon" data-aqd title="Quitar pregunta">${ICON.trash}</button></span></div>
+      <textarea data-aq="text" rows="2" maxlength="2000" placeholder="Escribe la pregunta…">${esc(q.text)}</textarea>
+      ${q.t === 'mc' ? `<div class="aq-opts">${q.opts.map((o, j) => `<label class="aq-opt ${q.ok === j ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqok="${j}" ${q.ok === j ? 'checked' : ''} title="Marca la correcta"><span class="aq-l">${'ABCDEFGH'[j]}</span><input type="text" data-aqo="${j}" data-noenter value="${esc(o)}" maxlength="400" placeholder="Opción ${'ABCDEFGH'[j]}"><button type="button" class="btn btn-ghost btn-icon" data-aqod="${j}" title="Quitar opción" ${q.opts.length > 2 ? '' : 'disabled'}>✕</button></label>`).join('')}
+        ${q.opts.length < 8 ? `<button type="button" class="btn btn-sm btn-ghost" data-aqoa>${ICON.plus} Opción</button>` : ''}<span class="muted small">Marca el círculo de la respuesta correcta.</span></div>` : ''}
+      ${q.t === 'tf' ? `<div class="aq-tf"><label class="aq-opt ${q.ok === true ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqtf="1" ${q.ok === true ? 'checked' : ''}> Verdadero</label><label class="aq-opt ${q.ok === false ? 'ok' : ''}"><input type="radio" name="ok${q.id}" data-aqtf="0" ${q.ok === false ? 'checked' : ''}> Falso</label><span class="muted small">Marca la correcta.</span></div>` : ''}
+      ${q.t === 'short' ? `<label class="field small">Respuestas aceptadas <span class="muted">(sepáralas con | · no importan mayúsculas ni tildes)</span><input type="text" data-aq="acc" data-noenter value="${esc(q.acc.join(' | '))}" placeholder="Ej.: router | enrutador"></label>` : ''}
+      ${q.t === 'open' ? `<p class="muted small">✍ El estudiante escribe su respuesta y tú la corriges al revisar las entregas.</p>` : ''}
+    </div>`).join('') || '<p class="muted">Agrega la primera pregunta.</p>';
+    ov.querySelector('#aqTotal').textContent = `${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(ex))} puntos en total`;
+  };
+  const qOf = el => ex.qs[+el.closest('[data-qi]').dataset.qi];
+  openModal({
+    title: orig ? 'Editar examen o práctica' : 'Nuevo examen o práctica', icon: '📝', wide: true,
+    sub: `Aula de ${modShort(m)} · solo lo verán los estudiantes de este módulo`,
+    body: `${hasResp ? '<div class="alert alert-warn"><div>Ya hay entregas. Si cambias las respuestas correctas o los puntos, las notas se recalculan.</div></div>' : ''}
+      <div class="form-grid">
+        <label class="field">Título<input type="text" id="aeTitle" maxlength="120" value="${esc(ex.title)}" placeholder="Ej.: Examen de redes 1"></label>
+        <label class="field">Tipo<select id="aeKind">${Object.keys(AULA_KINDS).map(k => `<option ${ex.kind === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        <label class="field">Tiempo por estudiante<select id="aeDur">${[0, 10, 15, 20, 30, 40, 45, 60, 90, 120].map(d => `<option value="${d}" ${ex.dur === d ? 'selected' : ''}>${d ? d + ' minutos' : 'Sin límite'}</option>`).join('')}${[0, 10, 15, 20, 30, 40, 45, 60, 90, 120].includes(ex.dur) ? '' : `<option value="${ex.dur}" selected>${ex.dur} minutos</option>`}</select></label>
+      </div>
+      <label class="field">¿A qué casilla del registro va la nota?<select id="aeAct">${actOptionsHTML(m, { type: ex.kind === 'Quiz' ? 'Examen' : ex.kind, selected: ex.actKey, empty: 'Ninguna (solo ver resultados)' })}</select></label>
+      <label class="field">Instrucciones <span class="muted">(opcional)</span><textarea id="aeInstr" rows="2" maxlength="2000" placeholder="Ej.: Lee bien cada pregunta. No salgas de la página.">${esc(ex.instr)}</textarea></label>
+      <label class="check"><input type="checkbox" id="aeShuf" ${ex.shuffle ? 'checked' : ''}> Mezclar el orden de las preguntas y opciones para cada estudiante</label>
+      <div class="aq-head"><h4 class="side-h">Preguntas</h4><span class="muted small" id="aqTotal"></span></div>
+      <div id="aqList" class="aq-list"></div>
+      <div class="row-wrap aq-add">${Object.entries(AQ_TYPES).map(([k, l]) => `<button type="button" class="btn btn-sm btn-secondary" data-aqadd="${k}">${ICON.plus} ${l}</button>`).join('')}</div>`,
+    actions: [{ label: 'Cancelar' }, {
+      label: orig ? 'Guardar cambios' : 'Crear', cls: 'btn-primary', onClick: ov => {
+        ex.title = ov.querySelector('#aeTitle').value.trim(); ex.kind = ov.querySelector('#aeKind').value; ex.dur = +ov.querySelector('#aeDur').value;
+        ex.actKey = ov.querySelector('#aeAct').value; ex.instr = ov.querySelector('#aeInstr').value.trim(); ex.shuffle = ov.querySelector('#aeShuf').checked;
+        const errs = [];
+        if (!ex.title) errs.push('Escribe el título.');
+        if (!ex.qs.length) errs.push('Agrega al menos una pregunta.');
+        ex.qs.forEach((q, i) => {
+          if (!q.text.trim()) errs.push(`Pregunta ${i + 1}: falta el texto.`);
+          if (q.t === 'mc') { q.opts = q.opts.map(o => o.trim()); if (q.opts.filter(Boolean).length < 2) errs.push(`Pregunta ${i + 1}: necesita al menos 2 opciones.`); else if (q.ok === null || !q.opts[q.ok]) errs.push(`Pregunta ${i + 1}: marca la opción correcta.`); }
+          if (q.t === 'tf' && q.ok === null) errs.push(`Pregunta ${i + 1}: marca si es verdadero o falso.`);
+        });
+        if (errs.length) { toast(errs[0] + (errs.length > 1 ? ` (y ${errs.length - 1} más)` : ''), 'error', 4000); const bad = ov.querySelector('.modal-body'); if (bad) bad.scrollTop = 0; return false; }
+        // Quitar opciones vacías sin perder cuál es la correcta
+        ex.qs.forEach(q => { if (q.t !== 'mc') return; const okTxt = q.opts[q.ok]; const keep = q.opts.filter(Boolean); q.ok = keep.indexOf(okTxt); q.opts = keep; });
+        const ne = normAula(ex);
+        m.aula = m.aula || [];
+        const k = m.aula.findIndex(x => x.id === ne.id);
+        if (k >= 0) m.aula[k] = ne; else m.aula.push(ne);
+        if (ne.auto) aulaApply(m, ne);
+        persist(); state.aulaSel = ne.id; render();
+        if (ne.status === 'open' && ne.pub) aulaPublish(m, ne).then(() => toast('Cambios guardados y publicados.', 'ok')).catch(e => toast('Guardado aquí, pero no se pudo publicar: ' + e.message, 'warn', 4500));
+        else toast(orig ? 'Cambios guardados.' : 'Listo. Cuando quieras, ábrelo a los estudiantes.', 'ok', 3200);
+      }
+    }],
+    onOpen: ov => {
+      draw(ov);
+      const kindSel = ov.querySelector('#aeKind'), act = ov.querySelector('#aeAct');
+      // Sugerencia: la primera casilla libre del mismo tipo (Examen → Examen 1, 2…), sin pisar lo que elijas tú
+      const typeOf = () => kindSel.value === 'Quiz' ? 'Examen' : kindSel.value;
+      const used = new Set((m.aula || []).filter(x => x.id !== ex.id).map(x => x.actKey).filter(Boolean));
+      const suggest = () => { const x = actSlots(m).find(z => z.type === typeOf() && !used.has(z.key)); return x ? x.key : ''; };
+      let manual = !!ex.actKey;
+      if (!manual) { const k = suggest(); if (k) act.value = k; }
+      act.addEventListener('change', () => { manual = true; });
+      kindSel.onchange = () => { const cur = act.value; act.innerHTML = actOptionsHTML(m, { type: typeOf(), selected: cur, empty: 'Ninguna (solo ver resultados)' }); if (!manual) act.value = suggest(); };
+      const list = ov.querySelector('#aqList');
+      list.addEventListener('input', e => {
+        const t = e.target, q = t.closest('[data-qi]') && qOf(t); if (!q) return;
+        if (t.dataset.aq === 'text') q.text = t.value;
+        else if (t.dataset.aq === 'pts') { const v = parseNum(t.value); if (isNum(v) && v > 0) { q.pts = Math.min(100, v); ov.querySelector('#aqTotal').textContent = `${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'} · ${fmtN(aulaTotal(ex))} puntos en total`; } }
+        else if (t.dataset.aq === 'acc') q.acc = t.value.split('|').map(x => x.trim()).filter(Boolean);
+        else if (t.dataset.aqo !== undefined) q.opts[+t.dataset.aqo] = t.value;
+      });
+      list.addEventListener('change', e => {
+        const t = e.target, q = t.closest('[data-qi]') && qOf(t); if (!q) return;
+        if (t.dataset.aq === 't') { const nq = aulaBlankQ(t.value); nq.id = q.id; nq.text = q.text; nq.pts = q.pts; ex.qs[ex.qs.indexOf(q)] = nq; draw(ov); }
+        else if (t.dataset.aqok !== undefined) { q.ok = +t.dataset.aqok; draw(ov); }
+        else if (t.dataset.aqtf !== undefined) { q.ok = t.dataset.aqtf === '1'; draw(ov); }
+      });
+      list.addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b || !b.closest('[data-qi]')) return;
+        const q = qOf(b), i = ex.qs.indexOf(q);
+        if (b.dataset.aqm) { const j = i + +b.dataset.aqm; if (j < 0 || j >= ex.qs.length) return; ex.qs.splice(i, 1); ex.qs.splice(j, 0, q); draw(ov); }
+        else if (b.dataset.aqd !== undefined) { ex.qs.splice(i, 1); draw(ov); }
+        else if (b.dataset.aqoa !== undefined) { q.opts.push(''); draw(ov); const ins = ov.querySelectorAll(`[data-qi="${i}"] [data-aqo]`); if (ins.length) ins[ins.length - 1].focus(); }
+        else if (b.dataset.aqod !== undefined) { const j = +b.dataset.aqod; q.opts.splice(j, 1); if (q.ok === j) q.ok = null; else if (q.ok > j) q.ok--; draw(ov); }
+      });
+      ov.querySelectorAll('[data-aqadd]').forEach(b => b.onclick = () => {
+        const last = ex.qs[ex.qs.length - 1]; const nq = aulaBlankQ(b.dataset.aqadd); if (last) nq.pts = last.pts;
+        ex.qs.push(nq); draw(ov);
+        const ta = ov.querySelectorAll('#aqList textarea'); if (ta.length) { ta[ta.length - 1].focus(); ta[ta.length - 1].scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+      });
+    }
+  });
+}
+// En el editor, Enter dentro de una opción no guarda el examen
+window.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.closest && e.target.closest('[data-noenter]')) { e.stopPropagation(); e.preventDefault(); } }, true);
+
+/* ---------- Abrir, cerrar y compartir ---------- */
+function aulaStartDialog(id, extend = false) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  if (!aulaCloudOK()) return toast('Entra en la versión web con tu cuenta para abrir el Aula.', 'error', 4000);
+  if (!ex.qs.length) return toast('Agrega preguntas primero.', 'error');
+  const base = extend && ex.until && new Date(ex.until) > new Date() ? new Date(ex.until) : new Date();
+  const def = new Date(base.getTime() + (extend ? 15 : Math.max(ex.dur || 45, 20) + 15) * 60000);
+  def.setSeconds(0, 0);
+  openModal({
+    title: extend ? 'Extender el tiempo' : 'Abrir a los estudiantes', icon: '🚀',
+    sub: `${ex.title} · ${modShort(m)}${m.course ? ' · ' + m.course : ''}`,
+    body: `<label class="field">Recibe entregas hasta<input type="datetime-local" id="asUntil" value="${dtLocal(def)}"></label>
+      <div class="row-wrap">${(extend ? [5, 10, 15, 30] : [30, 45, 60, 90, 120]).map(x => `<button type="button" class="btn btn-sm btn-ghost" data-plus="${x}">${extend ? '+' : ''}${x} min</button>`).join('')}</div>
+      ${extend ? '' : `<label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del enlace y del QR (no tendrán que escribirlo)</label>
+      <p class="muted small">Si no lo marcas, les dices el código en voz alta o lo escribes en la pizarra: así nadie de fuera puede entrar con el enlace.</p>`}
+      ${ex.dur ? `<p class="muted small">Cada estudiante tendrá ${ex.dur} minutos desde que empiece.</p>` : ''}`,
+    actions: [{ label: 'Cancelar' }, {
+      label: extend ? 'Extender' : '🚀 Abrir ahora', cls: 'btn-primary', onClick: (ov, close) => {
+        const v = ov.querySelector('#asUntil').value; const d = v ? new Date(v) : null;
+        if (!d || isNaN(d) || d <= new Date()) { toast('Elige una hora que todavía no haya pasado.', 'error'); return false; }
+        if (!extend) ex.withCode = ov.querySelector('#asCode').checked;
+        const btn = ov.querySelector('.modal-foot .btn-primary'); btn.disabled = true; btn.textContent = 'Publicando…';
+        aulaSetStatus(m, ex, 'open', d.toISOString()).then(() => {
+          persist(); close(); render(); toast(extend ? 'Tiempo extendido.' : '¡Abierto! Muestra el QR a tus estudiantes.', 'ok', 3200);
+          if (!extend) aulaShare(ex.id);
+        }).catch(e => { btn.disabled = false; btn.textContent = extend ? 'Extender' : '🚀 Abrir ahora'; toast(aulaErr(e), 'error', 6000); });
+        return false;
+      }
+    }],
+    onOpen: ov => ov.querySelectorAll('[data-plus]').forEach(b => b.onclick = () => {
+      const now = extend ? base : new Date(); const d = new Date(now.getTime() + +b.dataset.plus * 60000); d.setSeconds(0, 0);
+      ov.querySelector('#asUntil').value = dtLocal(d);
+    })
+  });
+}
+function aulaErr(e) {
+  const c = String(e && (e.code || e.message) || e);
+  if (c.includes('permission')) return 'Firebase no dio permiso. Falta activar las reglas del Aula (pídeselo a Claude).';
+  if (c.includes('internet') || c.includes('unavailable') || c.includes('Sin respuesta')) return 'Sin conexión con la nube. Revisa el internet e inténtalo otra vez.';
+  return 'No se pudo publicar: ' + c;
+}
+function aulaClose(id) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  confirmBox('¿Cerrar ahora?', 'Nadie más podrá entregar. Quien esté respondiendo y no haya entregado perderá la entrega (podrás volver a abrirlo).', 'Cerrar', () => {
+    aulaSetStatus(m, ex, 'closed').then(() => { persist(); render(); toast('Cerrado.', 'ok'); }).catch(e => { ex.status = 'open'; toast(aulaErr(e), 'error', 5000); });
+  });
+}
+let _qrLoad = null;
+function aulaLoadQR() {
+  if (window.qrcode) return Promise.resolve();
+  if (!_qrLoad) _qrLoad = new Promise((ok, bad) => { const s = document.createElement('script'); s.src = 'qrcode.js'; s.onload = ok; s.onerror = () => { _qrLoad = null; bad(new Error('qr')); }; document.head.appendChild(s); });
+  return _qrLoad;
+}
+function aulaQRsvg(text) { const q = qrcode(0, 'M'); q.addData(text); q.make(); return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true, alt: 'Código QR del examen' }); }
+function aulaShare(id, big = false) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex || !ex.pub) return;
+  const link = aulaLink(ex);
+  openModal({
+    title: big ? ex.title : 'Compartir con los estudiantes', icon: '📱', wide: big,
+    sub: big ? `${modShort(m)}${m.course ? ' · ' + m.course : ''}` : 'Escanean el QR o abren el enlace, escriben el código, su número de lista y su nombre.',
+    body: `<div class="aula-share ${big ? 'big' : ''}">
+      <div class="qr-box" id="qrBox"><span class="muted small">Cargando QR…</span></div>
+      <div class="share-side">
+        <div class="code-lbl">Código</div><div class="aula-code">${esc(ex.code)}</div>
+        ${ex.withCode ? '<p class="muted small">El QR ya incluye el código.</p>' : ''}
+        ${big ? `<p class="share-url">${esc(link.replace(/^https?:\/\//, ''))}</p>` : `<label class="field small">Enlace<input type="text" readonly value="${esc(link)}" id="shLink"></label>
+        <div class="row-wrap"><button type="button" class="btn btn-sm btn-secondary" id="shCopy">📋 Copiar enlace</button>${navigator.share ? '<button type="button" class="btn btn-sm btn-secondary" id="shShare">📤 Enviar…</button>' : ''}<button type="button" class="btn btn-sm btn-ghost" id="shBig">⛶ Proyectar</button></div>`}
+        <p class="muted small">${aulaStatus(ex).label}</p>
+      </div></div>`,
+    actions: [{ label: 'Listo', cls: 'btn-primary' }],
+    onOpen: (ov, close) => {
+      aulaLoadQR().then(() => { const b = ov.querySelector('#qrBox'); if (b) b.innerHTML = aulaQRsvg(link); }).catch(() => { const b = ov.querySelector('#qrBox'); if (b) b.innerHTML = '<span class="muted small">No se pudo cargar el QR (sin internet). Usa el enlace.</span>'; });
+      const c = ov.querySelector('#shCopy'); if (c) c.onclick = () => { const i = ov.querySelector('#shLink'); i.select(); (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject()).then(() => toast('Enlace copiado.', 'ok')).catch(() => { document.execCommand('copy'); toast('Enlace copiado.', 'ok'); }); };
+      const s = ov.querySelector('#shShare'); if (s) s.onclick = () => navigator.share({ title: ex.title, text: `${ex.title} (${modShort(m)})${ex.withCode ? '' : ' · Código: ' + ex.code}`, url: link }).catch(() => { });
+      const g = ov.querySelector('#shBig'); if (g) g.onclick = () => { close(); setTimeout(() => aulaShare(id, true), 200); };
+    }
+  });
+}
+
+/* ---------- Revisar una entrega ---------- */
+function aulaAnsHTML(q, a) {
+  const empty = a === undefined || a === null || a === '';
+  if (empty) return '<span class="muted">(sin responder)</span>';
+  if (q.t === 'mc') return `${'ABCDEFGH'[+a] || '?'}) ${esc(q.opts[+a] ?? '')}`;
+  if (q.t === 'tf') return a === true || a === 'true' ? 'Verdadero' : 'Falso';
+  return `<span class="pre">${esc(a)}</span>`;
+}
+function aulaOkHTML(q) {
+  if (q.t === 'mc') return q.ok !== null ? `${'ABCDEFGH'[q.ok]}) ${esc(q.opts[q.ok])}` : '—';
+  if (q.t === 'tf') return q.ok === null ? '—' : q.ok ? 'Verdadero' : 'Falso';
+  if (q.t === 'short') return q.acc.length ? esc(q.acc.join(' · ')) : '<span class="muted">sin respuesta guardada: corrígela tú</span>';
+  return '<span class="muted">la corriges tú</span>';
+}
+function aulaReview(id, num) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex || !ex.resp[num]) return;
+  const r = ex.resp[num], s = aulaStudent(m, ex, num), sc = aulaScore(ex, num);
+  const used = r.sentAt && r.startedAt ? Math.round((r.sentAt - r.startedAt) / 60000) : null;
+  const t = aulaTarget(m, ex);
+  openModal({
+    title: s ? `${s.num}. ${s.name}` : `Entrega con el número ${num}`, icon: '🧾', wide: true,
+    sub: `${ex.title} · escribió «${r.name}»${used !== null ? ' · ' + used + ' min' : ''}${r.blurs ? ' · salió ' + r.blurs + ' ' + (r.blurs === 1 ? 'vez' : 'veces') + ' de la página' : ''}`,
+    body: `${!s || !aulaNameOk(s, r) ? `<div class="alert alert-warn"><div>${s ? `El nombre escrito no coincide bien con el nº ${s.num} de tu lista.` : `El número ${num} no está en tu lista.`} ¿De quién es esta entrega?</div>
+        <select id="arWho"><option value="">${s ? 'Dejar con ' + esc(s.name) : '— Elegir estudiante —'}</option>${m.students.slice().sort((a, b) => a.num - b.num).map(x => `<option value="${x.id}">${x.num}. ${esc(x.name)}</option>`).join('')}</select></div>` : ''}
+      <div class="ar-list">${ex.qs.map((q, i) => {
+        const p = sc.per[q.id] || {}; const a = (r.answers || {})[q.id];
+        const okCls = p.pts === null ? 'pend' : p.pts >= q.pts ? 'ok' : p.pts > 0 ? 'half' : 'bad';
+        return `<div class="ar-q ${okCls}"><div class="ar-h"><b>${i + 1}.</b> ${esc(q.text)} <span class="muted small">(${AQ_TYPES[q.t]})</span></div>
+          <div class="ar-a"><span class="muted small">Respondió:</span> ${aulaAnsHTML(q, a)}</div>
+          ${q.t !== 'open' ? `<div class="ar-c small"><span class="muted">Correcta:</span> ${aulaOkHTML(q)}</div>` : ''}
+          <label class="ar-p">Puntos <input type="number" data-arq="${q.id}" min="0" max="${q.pts}" step="0.25" inputmode="decimal" value="${p.pts === null ? '' : p.pts}" placeholder="?"> / ${fmtN(q.pts)}${p.mark !== null && p.auto !== null && p.mark !== p.auto ? ' <span class="badge neutral" title="Cambiado por ti">editado</span>' : ''}</label></div>`;
+      }).join('')}</div>
+      <p class="muted small">${t ? `La nota se calcula sobre ${fmtN(t.c.max)} y pasa a RA ${m.ras.indexOf(t.ra) + 1} · ${esc(t.c.label)}.` : 'Este examen no está vinculado a una casilla del registro.'}</p>`,
+    actions: [
+      { label: '↺ Permitir otro intento', cls: 'btn-ghost', onClick: () => { aulaRetake(ex, num); } },
+      { label: 'Cancelar' },
+      {
+        label: 'Guardar', cls: 'btn-primary', onClick: ov => {
+          const mk = {};
+          let bad = false;
+          ov.querySelectorAll('[data-arq]').forEach(i => {
+            const q = ex.qs.find(x => x.id === i.dataset.arq), v = parseNum(i.value), p = sc.per[q.id];
+            if (i.value.trim() === '') return;
+            if (!isNum(v) || v < 0 || v > q.pts) { bad = true; i.classList.add('err'); return; }
+            if (v !== p.auto) mk[q.id] = r2(v);
+          });
+          if (bad) { toast('Revisa los puntos: deben estar entre 0 y el valor de la pregunta.', 'error'); return false; }
+          ex.marks[num] = mk;
+          const w = ov.querySelector('#arWho'); if (w && w.value) { Object.keys(ex.map).forEach(k => { if (ex.map[k] === w.value) delete ex.map[k]; }); ex.map[num] = w.value; }
+          const res = ex.auto ? aulaApply(m, ex) : { n: 0, conflicts: [] };
+          persist(); render();
+          toast(res.n ? 'Guardado · nota pasada al registro.' : res.conflicts.length ? 'Guardado. Hay notas distintas en el registro: usa «Pasar notas ahora».' : 'Guardado.', 'ok', 3200);
+        }
+      }]
+  });
+}
+function aulaRetake(ex, num) {
+  const m = curMod(); const s = aulaStudent(m, ex, num);
+  confirmBox('¿Permitir otro intento?', `Se borra la entrega del número ${num}${s ? ' (' + s.name + ')' : ''} para que pueda volver a hacerlo. La nota del registro no se borra.`, 'Borrar entrega', () => {
+    const go = () => { delete ex.resp[num]; delete ex.marks[num]; delete ex.map[num]; persist(); render(); toast('Listo: puede volver a entrar (en su celular debe tocar «Empezar de nuevo»).', 'ok', 4500); };
+    if (aulaCloudOK() && ex.pub) withTimeout(aulaRef(ex).collection('resp').doc(String(num)).delete(), 12000).then(go).catch(e => toast(aulaErr(e), 'error', 5000));
+    else go();
+  });
+}
+function aulaApplyNow(id) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const t = aulaTarget(m, ex); if (!t) return toast('Primero elige la casilla del registro en «Editar preguntas».', 'error');
+  const probe = aulaApply(m, ex); // pasa las que no chocan con notas escritas por ti
+  if (!probe.conflicts.length) { persist(); render(); return toast(probe.n ? `${probe.n} notas pasadas al registro.` : probe.pending ? `Nada nuevo. Faltan ${probe.pending} entregas por corregir.` : 'Las notas ya estaban en el registro.', probe.n ? 'ok' : 'info', 3500); }
+  const list = probe.conflicts.map(c => `<li>${c.s.num}. ${esc(c.s.name)}: registro <b>${fmtN(c.cur)}</b> → Aula <b>${fmtN(c.v)}</b></li>`).join('');
+  persist();
+  openModal({
+    title: 'Notas distintas en el registro', icon: '⚠️',
+    body: `<p class="modal-msg">${probe.n ? probe.n + ' notas pasaron. ' : ''}Estas casillas ya tenían una nota escrita por ti:</p><ul class="ar-conf">${list}</ul>`,
+    actions: [{ label: 'Dejar las del registro', onClick: () => { render(); } }, { label: 'Usar las del Aula', cls: 'btn-danger', onClick: () => { snapshot('Notas del Aula: ' + ex.title); const r = aulaApply(m, ex, { force: true }); persist(); render(); toast(`${r.n} notas reemplazadas.`, 'ok'); } }]
+  });
+}
+
+/* ---------- Imprimir (para quien no tenga celular) ---------- */
+function aulaPrint(id) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const w = window.open('', '_blank'); if (!w) return toast('Permite las ventanas emergentes para imprimir.', 'error');
+  w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc(ex.title)}</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:24px;color:#111}h1{font-size:20px;margin:0}.meta{margin:6px 0 16px;color:#444}.line{border-bottom:1px solid #999;display:inline-block;min-width:240px}.q{margin:0 0 14px;break-inside:avoid}.o{margin:3px 0 3px 18px}.box{border:1px solid #bbb;height:90px;margin-top:6px}</style></head><body>
+    <h1>${esc(ex.title)}</h1><div class="meta">${esc(modFull(m))}${m.course ? ' · ' + esc(m.course) : ''} · ${fmtN(aulaTotal(ex))} puntos</div>
+    <p>Nombre: <span class="line"></span> &nbsp; Nº: <span class="line" style="min-width:50px"></span> &nbsp; Fecha: <span class="line" style="min-width:90px"></span></p>
+    ${ex.instr ? `<p><i>${esc(ex.instr)}</i></p>` : ''}
+    ${ex.qs.map((q, i) => `<div class="q"><b>${i + 1}.</b> ${esc(q.text)} <small>(${fmtN(q.pts)} pts)</small>
+      ${q.t === 'mc' ? q.opts.map((o, j) => `<div class="o">${'abcdefgh'[j]}) ${esc(o)}</div>`).join('') : q.t === 'tf' ? '<div class="o">V ☐ &nbsp;&nbsp; F ☐</div>' : q.t === 'short' ? '<div class="o"><span class="line" style="min-width:320px"></span></div>' : '<div class="box"></div>'}</div>`).join('')}
+    <script>onload=function(){print()}<\/script></body></html>`);
+  w.document.close();
+}
+
+/* ---------- Acciones ---------- */
+Object.assign(ACTIONS, {
+  'aula-new': () => aulaEditor(null),
+  'aula-open': el => { state.aulaSel = el.dataset.id; render(); window.scrollTo(0, 0); },
+  'aula-back': () => { state.aulaSel = null; render(); },
+  'aula-edit': el => aulaEditor(el.dataset.id),
+  'aula-start': el => aulaStartDialog(el.dataset.id),
+  'aula-extend': el => aulaStartDialog(el.dataset.id, true),
+  'aula-close': el => aulaClose(el.dataset.id),
+  'aula-share': el => aulaShare(el.dataset.id),
+  'aula-review': el => aulaReview(el.dataset.id, el.dataset.num),
+  'aula-apply': el => aulaApplyNow(el.dataset.id),
+  'aula-print': el => aulaPrint(el.dataset.id),
+  'aula-dup': el => {
+    const m = curMod(), ex = aulaFind(m, el.dataset.id); if (!ex) return;
+    const c = normAula({ ...JSON.parse(JSON.stringify(ex)), id: uid(), title: ex.title + ' (copia)', status: 'draft', pub: '', code: '', until: '', resp: {}, marks: {}, applied: {}, map: {}, actKey: '', created: new Date().toISOString() });
+    m.aula.push(c); state.aulaSel = c.id; persist(); render(); toast('Copia creada (sin entregas). Elige su casilla del registro al editarla.', 'ok', 3500);
+  },
+  'aula-del': el => {
+    const m = curMod(), ex = aulaFind(m, el.dataset.id); if (!ex) return;
+    const n = Object.keys(ex.resp).length;
+    confirmBox('¿Eliminar este examen?', `Se borran las preguntas${n ? ' y las ' + n + ' entregas' : ''} del Aula (también de la nube). Las notas que ya pasaron al registro se quedan.`, 'Eliminar', () => {
+      const go = () => { m.aula = m.aula.filter(x => x.id !== ex.id); state.aulaSel = null; aulaUnwatch(); persist(); render(); toast('Eliminado.', 'ok'); };
+      if (ex.pub && aulaCloudOK()) aulaDeleteCloud(ex).then(go).catch(e => { toast('No se pudo borrar de la nube (' + aulaErr(e) + ').', 'error', 5000); });
+      else go();
+    });
+  }
+});
+document.addEventListener('change', e => {
+  if (e.target.id !== 'aulaAuto') return;
+  const m = curMod(), ex = aulaFind(m, state.aulaSel); if (!ex) return;
+  ex.auto = e.target.checked;
+  const r = ex.auto ? aulaApply(m, ex) : { n: 0 };
+  persist(); render(); toast(ex.auto ? (r.n ? `Activado · ${r.n} notas pasadas al registro.` : 'Activado: las notas pasarán solas al registro.') : 'Desactivado: usa «Pasar notas ahora» cuando quieras.', 'ok', 3200);
+});
 
 /* =========================================================
    Reportes imprimibles (PDF sin internet) y exportación CSV
