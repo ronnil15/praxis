@@ -8602,6 +8602,16 @@ function aulaParseText(txt) {
   let q = null;
   const tfVal = s => { const f = aulaFold(s); if (/^(v|verdadero|true|cierto|correcto)\b/.test(f)) return true; if (/^(f|falso|false|incorrecto)\b/.test(f)) return false; return null; };
   const push = () => { if (q) ex.qs.push(q); q = null; };
+  const TAG = /^\[\s*([^\]]+)\]\s*/, PTS = /\(\s*(\d+(?:[.,]\d+)?)\s*(?:pts?|puntos?|ptos?)\.?\s*\)\s*$/i;
+  const startQ = txt => {
+    push();
+    let text = txt.trim(), t = '', pts = 1, hasPts = false;
+    const tag = text.match(TAG);
+    if (tag) { const f = aulaFold(tag[1]); t = /v ?f|verdadero/.test(f) ? 'tf' : /corta|completar/.test(f) ? 'short' : /desarrollo|abierta|ensayo/.test(f) ? 'open' : /seleccion|multiple/.test(f) ? 'mc' : ''; text = text.slice(tag[0].length); }
+    const pm = text.match(PTS);
+    if (pm) { pts = parseFloat(pm[1].replace(',', '.')); text = text.slice(0, pm.index).trim(); hasPts = true; }
+    q = { t, text, pts, opts: [], ok: null, acc: [], _okLetter: '', _hasPts: hasPts, _closed: hasPts && (t === 'open'), _ans: false };
+  };
   for (const line of lines) {
     if (!line) continue;
     let mt;
@@ -8609,35 +8619,33 @@ function aulaParseText(txt) {
     if (!q && (mt = line.match(/^(tipo|kind)\s*:\s*(.+)$/i))) { const k = Object.keys(AULA_KINDS).find(x => aulaFold(x) === aulaFold(mt[2]).split(' ')[0] || aulaFold(mt[2]).startsWith(aulaFold(x))); if (k) ex.kind = k; continue; }
     if (!q && (mt = line.match(/^(tiempo|duraci[oó]n)\s*:\s*(\d+)/i))) { ex.dur = Math.min(600, +mt[2]); continue; }
     if (!q && (mt = line.match(/^instrucciones?\s*:\s*(.+)$/i))) { ex.instr = mt[1].trim(); continue; }
+    if (/^```/.test(line) || /^-{3,}$/.test(line)) continue;
     mt = line.match(/^(?:pregunta\s*)?(\d{1,3})\s*[.):\-–]\s*(.+)$/i);
-    if (mt && !(q && q.t === 'mc' && /^[a-h]$/i.test(mt[1]))) {
-      push();
-      let text = mt[2].trim(), t = '', pts = 1;
-      const tag = text.match(/^\[\s*([^\]]+)\]\s*/);
-      if (tag) { const f = aulaFold(tag[1]); t = /v ?f|verdadero/.test(f) ? 'tf' : /corta|completar/.test(f) ? 'short' : /desarrollo|abierta|ensayo/.test(f) ? 'open' : /seleccion|multiple/.test(f) ? 'mc' : ''; text = text.slice(tag[0].length); }
-      const pm = text.match(/\(\s*(\d+(?:[.,]\d+)?)\s*(?:pts?|puntos?|ptos?)\.?\s*\)\s*$/i);
-      if (pm) { pts = parseFloat(pm[1].replace(',', '.')); text = text.slice(0, pm.index).trim(); }
-      q = { t, text, pts, opts: [], ok: null, acc: [], _okLetter: '' };
-      continue;
-    }
-    if (!q) { if (!ex.title && !ex.qs.length) ex.title = line.slice(0, 120); continue; }
+    if (mt) { startQ(mt[2]); continue; }
+    if (TAG.test(line)) { startQ(line); continue; }
     mt = line.match(/^[-•]?\s*([*✓✔]\s*)?\(?([a-h])\s*[).]\s*(.+?)\s*$/i);
-    if (mt && (q.t === '' || q.t === 'mc') && !/^respuesta/i.test(line)) {
+    if (mt && q && !q._ans && (q.t === '' || q.t === 'mc') && !/^respuesta/i.test(line)) {
       let o = mt[3], ok = !!mt[1];
       if (/\s*(\*|✓|✔|\((correcta|correct)\))\s*$/i.test(o)) { ok = true; o = o.replace(/\s*(\*|✓|✔|\((correcta|correct)\))\s*$/i, ''); }
       q.t = 'mc'; q.opts.push(o.trim()); if (ok) q.ok = q.opts.length - 1;
       continue;
     }
     mt = line.match(/^(respuestas?(?:\s+correctas?)?|clave|answer|soluci[oó]n)\s*:\s*(.+)$/i);
-    if (mt) {
+    if (mt && q) {
       const v = mt[2].trim();
       if (q.t === 'mc' || (q.t === '' && q.opts.length)) { const l = v.match(/^\(?([a-h])\b/i); if (l) q._okLetter = l[1].toLowerCase(); }
       else if (q.t === 'tf' || (q.t === '' && tfVal(v) !== null)) { q.t = 'tf'; q.ok = tfVal(v); }
       else { if (!q.t) q.t = 'short'; q.acc = v.split(/\s*[|;]\s*|\s+o\s+/).map(x => x.replace(/^["“']|["”']$/g, '').trim()).filter(Boolean); }
+      q._ans = q._closed = true;
       continue;
     }
     const pl = line.match(/^\(\s*(\d+(?:[.,]\d+)?)\s*(?:pts?|puntos?|ptos?)\.?\s*\)$/i);
-    if (pl) { q.pts = parseFloat(pl[1].replace(',', '.')); continue; }
+    if (pl && q) { q.pts = parseFloat(pl[1].replace(',', '.')); q._hasPts = q._closed = true; continue; }
+    // Línea normal: ¿pregunta nueva sin número (la IA o el copiado quitaron los números) o sigue el enunciado?
+    if (!q) { if (PTS.test(line) || /\?\s*$/.test(line)) startQ(line); else if (!ex.title && !/^(claro|aqu[ií]|por supuesto|perfecto|listo|a continuaci[oó]n|este es|here)/i.test(line)) ex.title = line.replace(/:$/, '').slice(0, 120); continue; }
+    if (q._closed || q.opts.length || (PTS.test(line) && q._hasPts)) { startQ(line); continue; }
+    const pm = line.match(PTS);
+    if (pm) { q.pts = parseFloat(pm[1].replace(',', '.')); q._hasPts = true; if (q.t && q.t !== 'mc') q._closed = true; q.text += (q.text ? '\n' : '') + line.slice(0, pm.index).trim(); continue; }
     q.text += (q.text ? '\n' : '') + line; // continúa el enunciado
   }
   push();
@@ -8648,7 +8656,7 @@ function aulaParseText(txt) {
     if (x.t === 'mc' && x.opts.length < 2) warns.push(`Pregunta ${i + 1}: tiene menos de 2 opciones.`);
     if (x.t === 'tf' && x.ok === null) warns.push(`Pregunta ${i + 1}: falta si es Verdadero o Falso.`);
     if (x.t === 'short' && !x.acc.length) warns.push(`Pregunta ${i + 1}: falta la respuesta aceptada.`);
-    delete x._okLetter; return normAulaQ(x);
+    delete x._okLetter; delete x._hasPts; delete x._closed; delete x._ans; return normAulaQ(x);
   }).filter(Boolean);
   if (!ex.title) ex.title = 'Examen importado';
   return { ex, warns };
@@ -8661,7 +8669,7 @@ function aulaAIPrompt(m, o) {
 Tema: ${o.topic || '(el tema del RA indicado)'}${ra ? `\nResultado de aprendizaje: RA ${o.ra + 1}${ra.desc ? ' — ' + ra.desc : ''}` : ''}
 Preguntas: ${mix}. Dificultad: ${o.level}. Lenguaje claro para estudiantes de ese curso.
 
-Responde SOLO con el examen en este formato exacto, sin explicaciones antes ni después, sin tablas y sin negritas:
+Responde SOLO con el examen dentro de un bloque de código (para poder copiarlo con el botón «Copiar código»), en este formato exacto, sin explicaciones, sin tablas y sin negritas:
 
 TÍTULO: (título corto)
 TIPO: ${o.kind}
@@ -8687,7 +8695,7 @@ Reglas:
 - Respuestas cortas de 1 a 3 palabras; pon con | las otras formas válidas (siglas, sinónimos).
 - Pon los puntos de cada pregunta entre paréntesis al final, como (1 pt) o (2 pts).
 - Las preguntas de desarrollo no llevan RESPUESTA.
-- Numera las preguntas 1, 2, 3… en orden, mezclando los tipos.`;
+- Numera las preguntas 1, 2, 3… en orden, mezclando los tipos, y deja una línea en blanco entre preguntas.`;
 }
 function aulaImportDialog() {
   const m = curMod(); if (!m) return;
