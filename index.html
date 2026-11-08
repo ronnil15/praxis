@@ -1808,6 +1808,11 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .row-menu summary { padding: .3rem; }
 .aula-tbl td:last-child { overflow: visible; }
 .table-card .table-wrap:has(details[open]) { overflow: visible; }
+.tbl-bar { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; padding: .65rem .8rem; border-bottom: 1px solid var(--border); }
+.seg-sm button { padding: .32rem .7rem; font-size: .8rem; }
+.seg-sm button span { font-size: .7rem; font-weight: 800; color: var(--muted); background: var(--surface-2); border-radius: 99px; padding: 0 .4rem; margin-left: .15rem; }
+.seg-sm button.on span { color: var(--primary); background: var(--primary-light); }
+.tbl-empty { padding: .8rem 1rem 0; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8076,6 +8081,7 @@ const AULA_KCLS = { 'Examen': 'k-exam', 'Práctica': 'k-prac', 'Quiz': 'k-quiz',
 const AQ_TYPES = { mc: 'Selección múltiple', tf: 'Verdadero / Falso', short: 'Respuesta corta', open: 'Desarrollo' };
 const AQ_ICON = { mc: '', tf: '', short: '', open: '' };
 const AULA_STOP = ['de', 'del', 'la', 'las', 'los', 'el', 'y', 'da', 'do', 'dos', 'das', 'san', 'mc'];
+try { state.aulaRows = localStorage.getItem('praxisAulaRows') || 'all'; } catch (e) { }
 const AulaLive = { eid: '', mid: '', xid: '', unsub: null, unsub2: null, err: '', live: {} };
 
 /* ---------- Normalización ---------- */
@@ -8427,10 +8433,17 @@ function renderAulaExam(m, ex) {
   const avg = done.length ? done.reduce((a, k) => a + scores[k].got / (scores[k].total || 1), 0) / done.length * 100 : null;
   const pend = nums.filter(k => scores[k].pending).length;
   const used = new Set();
+  // Filtro de la tabla (solo vista): todos / entregaron / pendientes; los que están respondiendo o bloqueados cuentan como «en curso»
+  const view = ['all', 'sent', 'pend'].includes(state.aulaRows) ? state.aulaRows : 'all';
+  let nSent = 0, nPend = 0;
   const rows = asg.map(s => {
     const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; });
     if (num !== undefined) used.add(num);
-    return aulaRow(m, ex, s, num, num !== undefined ? scores[num] : null);
+    const sent = num !== undefined, busy = !sent && ((AulaLive.xid === ex.id && AulaLive.live[s.num]) || ex.blocked[s.id]);
+    if (sent) nSent++; else if (!busy) nPend++;
+    if (view === 'sent' && !sent && !busy) return '';
+    if (view === 'pend' && (sent || busy)) return '';
+    return aulaRow(m, ex, s, num, sent ? scores[num] : null);
   });
   const extra = nums.filter(k => !used.has(k)).map(k => { const s = aulaStudent(m, ex, k); return aulaRow(m, ex, s && !asgIds.has(s.id) ? s : null, k, scores[k], !!s); });
   const stats = ex.qs.map((q, i) => {
@@ -8485,7 +8498,11 @@ function renderAulaExam(m, ex) {
          <button class="btn btn-sm btn-secondary" data-act="aula-apply" data-id="${ex.id}">Pasar notas ahora</button>`
       : `<div class="at-l"><span class="at-ic warn">${AI.alert}</span><div><strong>Sin casilla del registro.</strong><div class="muted small">Elige en «Editar» a qué actividad va la nota para que pase sola.</div></div></div>`}</div>
     ${stats ? `<details class="card aula-qstats"><summary><strong>Aciertos por pregunta</strong> <span class="muted small">(para saber qué repasar)</span></summary><div class="aq-stats">${stats}</div></details>` : ''}
-    <div class="card table-card"><div class="table-wrap"><table class="tbl aula-tbl">
+    <div class="card table-card">
+      <div class="tbl-bar"><div class="seg seg-sm">${[['all', 'Todos', asg.length], ['sent', 'Entregaron y en curso', asg.length - nPend], ['pend', 'Pendientes', nPend]].map(([k, l, n]) => `<button type="button" data-act="aula-rows" data-id="${k}" class="${view === k ? 'on' : ''}">${l} <span>${n}</span></button>`).join('')}</div>
+        ${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}</div>
+      ${view !== 'pend' || nPend ? '' : '<p class="muted small tbl-empty">No hay pendientes: todos entregaron o están respondiendo.</p>'}
+      <div class="table-wrap"><table class="tbl aula-tbl">
       <thead><tr><th>Nº</th><th>Estudiante</th><th>Estado</th><th>Puntos</th><th>Nota${t ? ' /' + fmtN(t.c.max) : ''}</th><th title="Veces que salió de la página del examen">Salidas</th><th>Entregó</th><th></th></tr></thead>
       <tbody>${rows.join('')}${extra.join('')}</tbody></table></div></div>
   </div>`;
@@ -9140,6 +9157,7 @@ Object.assign(ACTIONS, {
   'aula-arch-open': el => aulaArchDialog(el.dataset.id),
   'aula-stu': el => aulaStuAct(el.dataset.id, el.dataset.num, el.dataset.op),
   'aula-reset-all': el => aulaResetAll(el.dataset.id),
+  'aula-rows': el => { state.aulaRows = el.dataset.id; try { localStorage.setItem('praxisAulaRows', el.dataset.id); } catch (e) { } render(); },
   'aula-out-clear': el => aulaOutClear(el.dataset.id),
   'aula-archive': el => { aulaCloseMenus(); aulaArchive(el.dataset.id); },
   'aula-dup': el => {
