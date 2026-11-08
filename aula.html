@@ -42,7 +42,13 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 18px
 .msg svg{margin-top:2px}
 .msg.bad{background:var(--badb);color:var(--bad)}.msg.ok{background:var(--okb);color:var(--ok)}.msg.warn{background:var(--warnb);color:var(--warn)}
 .tips{display:grid;gap:10px;margin:18px 0 0;padding:14px;list-style:none;font-size:13.5px;color:var(--mut);background:var(--bg);border-radius:12px}
-.tips li{display:flex;gap:10px;align-items:flex-start}.tips svg{color:var(--pri);margin-top:2px}
+.tips li{display:flex;gap:10px;align-items:flex-start}
+.rub-h{font-size:14px;margin:16px 0 6px;color:var(--ink2)}.rub{list-style:none;margin:0;padding:0;font-size:14px}.rub li{display:flex;gap:10px;justify-content:space-between;padding:7px 0;border-top:1px solid var(--line)}.rub b{white-space:nowrap;color:var(--pri)}
+.drop{display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 12px;border:2px dashed var(--line);border-radius:14px;cursor:pointer;text-align:center;color:var(--ink2);transition:border-color .15s,background .15s}.drop:hover{border-color:var(--btn);background:var(--pri2)}.drop svg{width:28px;height:28px;color:var(--pri)}.drop small{color:var(--mut);font-size:12.5px}.drop input,.camb input{display:none}
+.camb{display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.pf{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;margin-top:10px}.pf>svg{color:var(--pri);flex:none}.pf div{flex:1;min-width:0}.pf b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pf small{color:var(--mut);font-size:12px}.pf.bad{border-color:var(--bad)}.pf.bad small{color:var(--bad)}
+.pb{display:block;height:4px;background:var(--line);border-radius:4px;margin-top:6px;overflow:hidden}.pb em{display:block;height:100%;width:0;background:var(--ok);transition:width .2s}
+.px{background:none;border:0;color:var(--mut);padding:6px;cursor:pointer;border-radius:8px}.px:hover{background:var(--bg)}.tips svg{color:var(--pri);margin-top:2px}
 .bar{background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:10px 16px}
 .bar .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:10px}
 .bar .t{flex:1;min-width:0}.bar .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}.bar .t span{font-size:12px;color:var(--mut)}
@@ -102,6 +108,7 @@ button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 18px
 <script>(function(){try{var t=localStorage.getItem('praxisAulaTheme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
 </head>
 <body>
@@ -131,11 +138,15 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     ban: ic('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'), phone: ic('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'),
     alert: ic('<path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.01"/>'), check: ic('<path d="M5 12.5l4.5 4.5L19 7"/>'), pin: ic('<path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
     sun: ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'), moon: ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),
-    send: ic('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>'), award: ic('<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/>')
+    send: ic('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>'), up: ic('<path d="M12 15V3M8 7l4-4 4 4M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/>'), file: ic('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>'), x: ic('<path d="M6 6l12 12M18 6L6 18"/>'), cam: ic('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'), award: ic('<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/>')
   };
   var KINDS = { 'Examen': ic('<path d="M9 3h6l1 2h3v16H5V5h3z"/><path d="M9 12l2 2 4-4"/>'), 'Práctica': ic('<path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 0-5-5L13 5z"/>'), 'Quiz': ic('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'), 'Tarea': ic('<path d="M4 4h6a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h7z"/>') };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var MIME = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', odt: 'application/vnd.oasis.opendocument.text', rtf: 'application/rtf', ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', odp: 'application/vnd.oasis.opendocument.presentation', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ods: 'application/vnd.oasis.opendocument.spreadsheet', csv: 'text/csv', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', heic: 'image/heic', heif: 'image/heif', gif: 'image/gif', zip: 'application/zip', rar: 'application/vnd.rar', '7z': 'application/x-7z-compressed' };
+  function extOf(n) { return String(n || '').split('.').pop().toLowerCase(); }
+  function size(b) { return b >= 1048576 ? (Math.round(b / 104857.6) / 10) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+  function when(ms) { return new Date(ms).toLocaleString('es-DO', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }); }
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
   function save() { try { if (S) { S.savedAt = Date.now(); localStorage.setItem(KEY, JSON.stringify(S)); } } catch (e) { } }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -196,7 +207,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   /** El examen no está habilitado ahora: espera sin perder nada y sigue solo cuando lo habiliten. */
   function paused() {
     view = 'paused'; clearInterval(tick); clearInterval(watchT); send.checked = 0;
-    hero(); screen(box(I.lock, '', 'El examen no está habilitado ahora', 'Tus respuestas están guardadas en este teléfono (' + answered() + ' de ' + S.qs.length + '). Cuando tu profesor lo vuelva a habilitar, podrás seguir. No borres los datos del navegador.', '<p class="small"><span class="spin"></span> Esperando a tu profesor…</p><button class="btn2" id="pv">Volver a intentar</button>'));
+    hero(); screen(box(I.lock, '', S.mode === 'file' ? 'La entrega no está habilitada ahora' : 'El examen no está habilitado ahora', (S.mode === 'file' ? (S.sentAt ? 'Tu entrega del ' + esc(when(S.sentAt)) + ' está guardada. ' : '') + 'Cuando tu profesor la vuelva a habilitar, podrás entregar o cambiar tu archivo.' : 'Tus respuestas están guardadas en este teléfono (' + answered() + ' de ' + S.qs.length + '). Cuando tu profesor lo vuelva a habilitar, podrás seguir. No borres los datos del navegador.'), '<p class="small"><span class="spin"></span> Esperando a tu profesor…</p><button class="btn2" id="pv">Volver a intentar</button>'));
     $('#pv').onclick = function () { verify(); };
     watchT = setInterval(function () {
       if (!navigator.onLine) return;
@@ -208,7 +219,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     view = 'code'; clearInterval(tick); clearInterval(watchT);
     var pc = (P.get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), pre = pc && pc !== S.code ? pc : '';
     hero();
-    screen('<form class="card" id="cf" autocomplete="off" novalidate><h2>Tu profesor volvió a habilitar el examen</h2><p class="sub">Ahora tiene un <b>código nuevo</b>. Escríbelo (o abre el enlace nuevo) para seguir. Tus respuestas guardadas se mantienen: ' + answered() + ' de ' + S.qs.length + '.</p>' +
+    screen('<form class="card" id="cf" autocomplete="off" novalidate><h2>Tu profesor volvió a habilitar el examen</h2><p class="sub">Ahora tiene un <b>código nuevo</b>. Escríbelo (o abre el enlace nuevo) para seguir.' + (S.mode === 'file' ? '' : ' Tus respuestas guardadas se mantienen: ' + answered() + ' de ' + S.qs.length + '.') + '</p>' +
       '<label class="f" for="nc">Código nuevo</label><input type="text" id="nc" class="code-in" maxlength="8" placeholder="······" autocapitalize="characters" spellcheck="false" value="' + esc(pre) + '">' +
       '<div id="cpw" hidden><label class="f" for="cp">Tu clave personal</label><input type="password" id="cp" class="pin-in" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="····" autocomplete="off"></div>' +
       '<div id="cm"></div><button class="btn" id="cb">Seguir con mi examen</button><button type="button" class="btn2" id="cr">Empezar de nuevo (solo si tu profesor lo pidió)</button></form>');
@@ -241,6 +252,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function adopt(X, code, pin, xd) {
     var fresh = build(X, S.num), had = S.answers || {}, ans = {};
     fresh.forEach(function (q) { if (had[q.id] !== undefined) ans[q.id] = had[q.id]; });
+    if (X.mode === 'file') { S.ext = X.ext || []; S.ftn = X.ftn || []; S.mb = X.mb || 10; S.nf = X.nf || 1; S.due = X.due && X.due.toMillis ? X.due.toMillis() : 0; }
     S.code = code; S.pin = pin; S.qs = fresh; S.answers = ans; S.instr = X.instr || ''; S.dur = X.dur || 0; S.lock = !!X.lock;
     S.startedAt = Date.now(); S.locked = 0; S.blockedAt = 0; S.unlockSeen = xd && xd.m === 'unlock' ? xd.n : (S.unlockSeen || '');
     if (xd && xd.m === 'reset') S.reset = xd.n;
@@ -269,7 +281,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       '<div><label class="f" for="nm">Nombre y apellido</label><input type="text" id="nm" maxlength="80" autocomplete="name" value="' + esc(last.name || '') + '"></div></div>' +
       (META.pin ? '<label class="f" for="pin">Tu clave personal</label><input type="password" id="pin" class="pin-in" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="····" autocomplete="off">' : '') +
       (META.lock ? '<div class="msg bad" style="margin-top:16px">' + I.lock + '<div><b>Si sales de esta página, tu examen se bloquea</b> y solo podrás seguir cuando tu profesor lo permita. No cambies de app ni de pestaña.</div></div>' : '') +
-      '<ul class="tips">' + (META.dur ? '<li>' + I.clock + '<span>Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</span></li>' : '') + '<li>' + I.eye + '<span>No salgas de esta página: tu profesor verá cuántas veces saliste.</span></li><li>' + I.save + '<span>Tus respuestas se guardan en el teléfono mientras respondes.</span></li></ul>' +
+      (META.mode === 'file' ? '<ul class="tips"><li>' + I.up + '<span>Aquí subes tu archivo' + (META.nf > 1 ? ' (hasta ' + META.nf + ')' : '') + '. Máximo ' + META.mb + ' MB cada uno.</span></li>' + (META.due && META.due.toMillis ? '<li>' + I.clock + '<span>Fecha límite: <b>' + esc(when(META.due.toMillis())) + '</b>. Hasta entonces puedes cambiarlo.</span></li>' : '') + '<li>' + I.lock + '<span>Solo tu profesor puede ver tu archivo.</span></li></ul>' : '<ul class="tips">' + (META.dur ? '<li>' + I.clock + '<span>Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</span></li>' : '') + '<li>' + I.eye + '<span>No salgas de esta página: tu profesor verá cuántas veces saliste.</span></li><li>' + I.save + '<span>Tus respuestas se guardan en el teléfono mientras respondes.</span></li></ul>') +
       '<div id="jm"></div><button class="btn" id="jb">Comenzar</button></form>');
     $('#jf').onsubmit = function (ev) {
       ev.preventDefault();
@@ -348,14 +360,19 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   }
   function go(X, code, num, name, pin, until) {
     var qs = build(X, num);
+    if (X.mode === 'file') {
+      S = { mode: 'file', num: num, name: name, code: code, pin: pin, tok: rnd(20), reset: X._reset || '', qs: qs, answers: {}, instr: X.instr || '', ext: X.ext || [], ftn: X.ftn || [], mb: X.mb || 10, nf: X.nf || 1, due: X.due && X.due.toMillis ? X.due.toMillis() : 0, until: until || 0, files: [], sentAt: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
+      lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name })); save(); return exam();
+    }
     S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), reset: X._reset || '', lock: !!X.lock, unlockSeen: X._unlock || '', locked: 0, qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
     lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name }));
     lsSet(DEV, String(num));
     save(); exam();
   }
 
-  function answered() { var n = 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
+  function answered() { var n = 0; if (!S.answers) return 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
   function exam() {
+    if (S.mode === 'file') return fileScreen();
     if (S.locked) return showLocked();
     view = 'exam';
     document.body.classList.add('exam');
@@ -428,7 +445,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   // Cuenta una salida cuando se oculta la página (otra app, otra pestaña) o pierde el foco (otra ventana en la PC)
   var away = false;
   function leave() {
-    if (!S || !S.qs || S.sent || away || S.locked || view !== 'exam') return; away = true; S.blurs = (S.blurs || 0) + 1;
+    if (!S || !S.qs || S.sent || away || S.locked || view !== 'exam' || S.mode === 'file') return; away = true; S.blurs = (S.blurs || 0) + 1;
     if (S.lock) { S.locked = Date.now(); save(); pushLive(); showLocked(); return; }
     save(); pushLive();
   }
@@ -466,6 +483,84 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   document.addEventListener('visibilitychange', function () { if (document.hidden) leave(); else back(); });
   window.addEventListener('blur', function () { setTimeout(function () { if (!document.hasFocus()) leave(); }, 250); });
   window.addEventListener('focus', back);
+  /* ---------- Práctica con archivo ---------- */
+  var picked = [], upBusy = false;
+  function fileScreen(just) {
+    view = 'exam'; clearInterval(tick); clearInterval(watchT);
+    hero('Nº ' + S.num + ' · ' + S.name);
+    var now = Date.now(), late = S.due && now > S.due, acc = S.ext.map(function (x) { return '.' + x; }).join(','), img = S.ext.indexOf('jpg') >= 0;
+    var rub = S.qs.map(function (q) { return '<li><span>' + esc(q.text) + '</span><b>' + q.pts + ' pt' + (q.pts == 1 ? '' : 's') + '</b></li>'; }).join('');
+    var h = '<div id="wb"></div>', kinds = (S.ftn && S.ftn.length ? S.ftn.join(', ') : S.ext.join(', '));
+    if (S.sentAt) h += msg('ok', I.check, '<b>' + (just ? '¡Entregado! Tu profesor ya lo recibió.' : 'Entregado') + '</b><br>' + esc(when(S.sentAt)) + ' · ' + S.files.map(function (f) { return esc(f.nm); }).join(', ') + (S.until > now ? '<br><span style="opacity:.85">Puedes cambiarlo hasta ' + esc(when(S.until)) + '</span>' : ''));
+    h += '<div class="card">' + (S.instr ? '<p class="small" style="margin:0 0 12px;white-space:pre-wrap;display:flex;gap:8px">' + I.pin + '<span>' + esc(S.instr) + '</span></p>' : '') +
+      '<ul class="tips" style="margin:0">' + (S.due ? '<li>' + I.clock + '<span>Fecha límite: <b>' + esc(when(S.due)) + '</b>' + (late ? ' · <b style="color:var(--warn)">ya pasó: tu entrega quedará marcada «tarde»</b>' : '') + '</span></li>' : '') +
+      '<li>' + I.file + '<span>Acepta: ' + esc(kinds) + ' · máximo ' + S.mb + ' MB' + (S.nf > 1 ? ' · hasta ' + S.nf + ' archivos' : '') + '</span></li></ul>' +
+      (rub ? '<h3 class="rub-h">Cómo se va a corregir</h3><ul class="rub">' + rub + '</ul>' : '') + '</div>';
+    h += '<div class="card"><h2 style="margin-bottom:10px">' + (S.sentAt ? 'Cambiar mi entrega' : 'Tu entrega') + '</h2>' +
+      '<label class="drop" for="fi">' + I.up + '<b>Elegir archivo' + (S.nf > 1 ? 's' : '') + '</b><small>' + esc(kinds) + ' · ' + S.mb + ' MB</small><input type="file" id="fi" accept="' + esc(acc) + '"' + (S.nf > 1 ? ' multiple' : '') + '></label>' +
+      (img ? '<label class="btn2 camb" for="fc">' + I.cam + 'Tomar una foto<input type="file" id="fc" accept="image/*" capture="environment"></label>' : '') +
+      '<div id="pk"></div><div id="fm"></div><button class="btn" id="up">' + I.send + (S.sentAt ? 'Reemplazar mi entrega' : 'Entregar') + '</button></div>';
+    h += '<div id="res"></div>';
+    screen(h); drawPicked();
+    var add = function (list) { for (var i = 0; i < list.length; i++) picked.push(list[i]); if (picked.length > S.nf) picked = picked.slice(-S.nf); drawPicked(); };
+    $('#fi').onchange = function (e) { add(e.target.files); e.target.value = ''; };
+    if ($('#fc')) $('#fc').onchange = function (e) { add(e.target.files); e.target.value = ''; };
+    $('#up').onclick = upload;
+    // Resultado y órdenes del docente
+    var check = function () {
+      if (!navigator.onLine || view !== 'exam') return;
+      var res = (META && META.res) || (S.meta && S.meta.res) || 'off', el = $('#res');
+      if (S.sentAt && res !== 'off' && S.tok) { if (el && !el.innerHTML) el.innerHTML = '<div class="card center"><div class="ico">' + I.award + '</div><h2>Tu resultado</h2><p class="sub">Aparecerá aquí cuando tu profesor lo corrija.</p></div>'; pollRes(); }
+      ref().collection('x').doc(String(S.num)).get().then(function (d) {
+        if (!d.exists) return; var x = d.data();
+        if (x.m === 'reset' && x.n !== S.reset) restart(); else if (x.m === 'block') closedForMe('block');
+      }).catch(function () { });
+    };
+    check(); clearInterval(resT); resT = setInterval(check, 30000);
+  }
+  function drawPicked() {
+    var el = $('#pk'); if (!el) return;
+    el.innerHTML = picked.map(function (f, i) {
+      var x = extOf(f.name), bad = S.ext.indexOf(x) < 0 ? 'Ese tipo de archivo no se acepta.' : f.size > S.mb * 1048576 ? 'Pesa más de ' + S.mb + ' MB.' : f.size === 0 ? 'El archivo está vacío.' : '';
+      return '<div class="pf' + (bad ? ' bad' : '') + '">' + I.file + '<div><b>' + esc(f.name) + '</b><small>' + size(f.size) + (bad ? ' · ' + bad : '') + '</small><i class="pb"><em id="pb' + i + '"></em></i></div><button type="button" class="px" data-px="' + i + '" aria-label="Quitar">' + I.x + '</button></div>';
+    }).join('');
+    el.querySelectorAll('[data-px]').forEach(function (b) { b.onclick = function () { if (upBusy) return; picked.splice(+b.getAttribute('data-px'), 1); drawPicked(); }; });
+  }
+  function upload() {
+    var say = function (cls, t) { $('#fm').innerHTML = msg(cls, cls === 'ok' ? I.check : I.alert, t); };
+    if (upBusy) return;
+    if (!picked.length) return say('bad', 'Primero elige tu archivo.');
+    for (var i = 0; i < picked.length; i++) { var f = picked[i], x = extOf(f.name); if (S.ext.indexOf(x) < 0 || f.size > S.mb * 1048576 || !f.size) return say('bad', 'Revisa «' + esc(f.name) + '»: ' + (S.ext.indexOf(x) < 0 ? 'ese tipo no se acepta.' : !f.size ? 'está vacío.' : 'pesa más de ' + S.mb + ' MB.')); }
+    if (!navigator.onLine) return say('warn', 'Sin internet. Conéctate y vuelve a tocar «Entregar».');
+    if (!firebase.storage) return say('bad', 'No se pudo cargar el sistema de archivos. Recarga la página.');
+    upBusy = true; var b = $('#up'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Subiendo…';
+    var st = firebase.storage(), stamp = Date.now(), out = [];
+    var one = function (f, i) {
+      var x = extOf(f.name), safe = f.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9._-]+/g, '_').slice(-60);
+      var path = 'aula/' + EID + '/f/' + S.num + '/' + stamp + '-' + i + '-' + safe;
+      return new Promise(function (ok, bad) {
+        var task = st.ref(path).put(f, { contentType: MIME[x], customMetadata: { pin: S.pin || '', code: S.code } });
+        task.on('state_changed', function (sn) { var e = document.getElementById('pb' + i); if (e) e.style.width = Math.round(sn.bytesTransferred / (sn.totalBytes || 1) * 100) + '%'; }, bad, function () { out[i] = { p: path, nm: f.name.slice(0, 120), sz: f.size, ty: MIME[x] }; ok(); });
+      });
+    };
+    var chain = Promise.resolve();
+    picked.forEach(function (f, i) { chain = chain.then(function () { return one(f, i); }); });
+    chain.then(function () {
+      return ref().collection('ent').doc(String(S.num)).set({ num: S.num, name: S.name, code: S.code, pin: S.pin || '', tok: S.tok, files: out, n: (S.n || 0) + 1, sentAt: firebase.firestore.FieldValue.serverTimestamp(), ua: String(navigator.userAgent || '').slice(0, 150) });
+    }).then(function () {
+      upBusy = false; S.files = out; S.sentAt = Date.now(); S.n = (S.n || 0) + 1; picked = []; save();
+      fileScreen(true);
+      window.scrollTo(0, 0);
+    }).catch(function (e) {
+      upBusy = false; b.disabled = false; b.innerHTML = I.send + (S.sentAt ? 'Reemplazar mi entrega' : 'Entregar');
+      var c = String(e && (e.code || e.message) || e);
+      if (c.indexOf('unauthorized') >= 0 || c.indexOf('permission') >= 0) {
+        // ¿Cerró, cambió el código o ya entregó desde otro celular?
+        return verify(function () { say('bad', S.sentAt ? 'No se pudo cambiar tu entrega. Si entregaste desde otro celular, usa ese mismo o pídele a tu profesor que te permita entregar otra vez.' : 'No se pudo entregar. Puede que ya hayas entregado desde otro celular, o que tu profesor te haya cerrado la entrega. Habla con tu profesor.'); });
+      }
+      say('warn', (c.indexOf('retry-limit') >= 0 || c.indexOf('network') >= 0 || c.indexOf('unavailable') >= 0 || !navigator.onLine ? 'Se cortó el internet mientras subía.' : 'No se pudo subir (' + esc(c.slice(0, 80)) + ').') + ' Toca «Entregar» otra vez.');
+    });
+  }
   function confirmSend() {
     var miss = S.qs.length - answered();
     var ov = document.createElement('div'); ov.className = 'ov';
@@ -532,11 +627,11 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     var pct = Math.round(R.pct || 0), c = pct >= 70 ? 'ok' : pct >= 60 ? 'mid' : 'bad', col = c === 'ok' ? 'var(--ok)' : c === 'mid' ? 'var(--warn)' : 'var(--bad)';
     var det = (R.det || []).map(function (q) {
       var st = q.st === 'pend' ? '' : q.st;
-      return '<div class="d ' + st + '"><span class="pt">' + (q.got == null ? '?' : q.got) + ' / ' + q.pts + '</span><b>' + q.n + '. ' + esc(q.q) + '</b>' + (q.ans ? '<small>Tu respuesta: ' + esc(q.ans) + '</small>' : '<small>Sin responder</small>') + (q.cor && q.st !== 'ok' ? '<small>Correcta: ' + esc(q.cor) + '</small>' : '') + '</div>';
+      return '<div class="d ' + st + '"><span class="pt">' + (q.got == null ? '?' : q.got) + ' / ' + q.pts + '</span><b>' + q.n + '. ' + esc(q.q) + '</b>' + (R.mode === 'file' ? '' : q.ans ? '<small>Tu respuesta: ' + esc(q.ans) + '</small>' : '<small>Sin responder</small>') + (q.cor && q.st !== 'ok' ? '<small>Correcta: ' + esc(q.cor) + '</small>' : '') + '</div>';
     }).join('');
     el.innerHTML = '<div class="card"><h2 style="margin-bottom:14px">Tu resultado</h2><div class="res-h"><div class="ring" style="--p:' + pct + ';--c:' + col + '"><b>' + pct + '%</b></div><div>' +
       (R.max ? '<div class="big">' + R.grade + ' <span class="small">/ ' + R.max + '</span></div>' : '<div class="big">' + R.got + ' <span class="small">/ ' + R.total + ' pts</span></div>') +
-      '<div class="small" style="margin:2px 0 8px">' + R.got + ' de ' + R.total + ' puntos</div><span class="pill ' + c + '">' + esc(R.cond || '') + '</span></div></div>' + (det ? '<div class="det">' + det + '</div>' : '') + '</div>';
+      '<div class="small" style="margin:2px 0 8px">' + R.got + ' de ' + R.total + ' puntos</div><span class="pill ' + c + '">' + esc(R.cond || '') + '</span></div></div>' + (det ? '<div class="det">' + det + '</div>' : '') + (R.com ? '<div class="msg ok" style="margin-top:12px">' + I.pin + '<div><b>Comentario de tu profesor:</b> ' + esc(R.com) + '</div></div>' : '') + '</div>';
     var rg = el.querySelector('.ring'); if (rg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { rg.style.setProperty('--p', 0); requestAnimationFrame(function () { requestAnimationFrame(function () { rg.style.setProperty('--p', pct); }); }); }
   }
   /* ---------- Arranque (al final: así todos los eventos ya están registrados) ----------
@@ -546,7 +641,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   else if (S && S.qs) {
     exam();
     // Comprueba que siga habilitado y con el mismo código; si quedó a medio enviar, reintenta
-    var resume = function () { if (S.sending && !S.locked && view === 'exam') setTimeout(function () { send(false); }, 800); };
+    var resume = function () { if (S.mode === 'file') { if (view === 'exam' && !upBusy && !picked.length) fileScreen(); return; } if (S.sending && !S.locked && view === 'exam') setTimeout(function () { send(false); }, 800); };
     if (navigator.onLine) verify(resume); else resume();
   }
   else start();
