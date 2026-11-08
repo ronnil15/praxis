@@ -10048,7 +10048,8 @@ async function portalCreateAccounts(m, users, onProg) {
     } else {
       pw = portalPw();
       try { const c = await A.createUserWithEmailAndPassword(portalEmail(u), pw); uidv = c.user.uid; await A.signOut(); }
-      catch (e) { const t = portalAuthErr(e); out.bad.push(`${s.num}. ${s.name}: ${t}${t === 'ese usuario ya existe' ? '. Cambia el usuario.' : ''}`); if (String(e && e.code).includes('too-many') || String(e && e.code).includes('operation-not-allowed')) break; continue; }
+      catch (e) { const t = portalAuthErr(e); out.bad.push(`${s.num}. ${s.name}: ${t}${t === 'ese usuario ya existe' ? '. Cambia el usuario.' : ''}`); if (/too-many|operation-not-allowed|admin-restricted|network/.test(String(e && e.code))) { out.stop = 1; break; } continue; }
+      await new Promise(r => setTimeout(r, 350)); // con calma: Google frena si se crean muchas de golpe
     }
     await withTimeout(Cloud.fs.collection('pstu').doc(uidv).set({ owner: Cloud.user.uid, p: { [P.pid]: { mod: modShort(m), course: m.course || '', num: s.num, name: s.name } } }, { merge: true }), 15000);
     P.accts[sid] = { u, uid: uidv, pw, at: new Date().toISOString() }; delete P.pushed[sid];
@@ -10232,7 +10233,7 @@ Object.assign(ACTIONS, {
     try {
       const r = await portalCreateAccounts(m, users, (i, n) => { el.innerHTML = `<span class="spin"></span> Creando ${i} de ${n}…`; });
       render(); portalSync(m).catch(() => { });
-      if (r.bad.length) openModal({ title: `${r.ok} cuenta${r.ok === 1 ? '' : 's'} creada${r.ok === 1 ? '' : 's'}`, icon: AI.alert, body: `<p class="modal-msg">Estas no se pudieron crear:</p><ul class="ar-conf">${r.bad.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, actions: [{ label: 'Entendido', cls: 'btn-primary' }] });
+      if (r.bad.length) openModal({ title: `${r.ok} cuenta${r.ok === 1 ? '' : 's'} creada${r.ok === 1 ? '' : 's'}`, icon: AI.alert, body: `<p class="modal-msg">${r.stop ? 'Se detuvo para no insistir. Cuando lo resuelvas, vuelve a tocar «Crear cuentas»: sigue con las que faltan.' : 'Estas no se pudieron crear:'}</p><ul class="ar-conf">${r.bad.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, actions: [{ label: 'Entendido', cls: 'btn-primary' }] });
       else toast(`Listo: ${r.ok} cuenta${r.ok === 1 ? '' : 's'}. Imprime las tarjetas.`, 'ok', 4000);
     } catch (e) { toast(aulaErr(e), 'error', 6000); render(); }
     finally { el.disabled = false; el.innerHTML = lbl; }
