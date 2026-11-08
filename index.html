@@ -1870,6 +1870,54 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 @keyframes aulaSpin { to { transform: rotate(360deg); } }
 .modal [hidden] { display: none !important; }
 
+/* ---------- Portal de estudiantes (docente) ---------- */
+.portal { display: flex; flex-direction: column; gap: 1rem; }
+.pt-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+.pt-head h2 { margin: .2rem 0 .4rem; }
+.pt-eye { color: var(--primary); }
+.pt-url { display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; margin-bottom: .3rem; }
+.pt-url code { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: .25rem .5rem; font-size: .82rem; word-break: break-all; }
+.pt-ha { display: flex; gap: .5rem; flex-wrap: wrap; }
+.pt-tabs { width: fit-content; max-width: 100%; flex-wrap: wrap; }
+.pt-sec h3 { margin: 0 0 .25rem; }
+.pt-sec-h { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.pt-tbl td { vertical-align: middle; }
+.pt-seg { width: fit-content; }
+.pt-user { width: 150px; padding: .3rem .5rem; font-family: ui-monospace, Menlo, monospace; font-size: .85rem; }
+.pt-pw { font-size: .85rem; }
+.pt-det { border-top: 1px solid var(--border); padding: .5rem 0; }
+.pt-det summary { cursor: pointer; }
+.pt-acts { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .25rem .8rem; padding: .5rem 0 .2rem; }
+.pt-act { font-size: .88rem; }
+.pt-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; align-items: start; }
+.pt-list { margin-top: .8rem; display: flex; flex-direction: column; }
+.pt-item { display: flex; justify-content: space-between; align-items: flex-start; gap: .6rem; padding: .55rem 0; border-top: 1px solid var(--border); font-size: .9rem; }
+.pt-how { padding: 1.2rem 1.4rem; }
+.pp-box { margin-top: .6rem; }
+.pp { max-width: 420px; margin: 0 auto; border: 1px solid var(--border); border-radius: 18px; padding: 1rem 1.1rem; background: var(--surface-2); }
+.pp h4 { margin: .9rem 0 .3rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.pp-h b { display: block; font-size: 1.15rem; }
+.pp-h span { font-size: .82rem; color: var(--muted); }
+.pp-tot { margin-top: .7rem; display: flex; align-items: baseline; gap: .5rem; background: var(--surface); border-radius: 12px; padding: .6rem .8rem; }
+.pp-tot b { font-size: 1.6rem; }
+.pp-row { display: flex; justify-content: space-between; gap: .6rem; padding: .35rem 0; border-top: 1px solid var(--border); font-size: .88rem; }
+.pp-sub { padding-left: .8rem; color: var(--ink-2); }
+/* Tarjetas de acceso (impresión) */
+.pc-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.pc-card { border: 1.5px dashed #94a3b8; border-radius: 12px; padding: 10px 12px; break-inside: avoid; page-break-inside: avoid; font-family: Inter, system-ui, sans-serif; color: #0f172a; }
+.pc-top { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; margin-bottom: 6px; }
+.pc-top b { font-size: 13pt; color: #4338ca; }
+.pc-top span { font-size: 9pt; color: #475569; }
+.pc-body { display: flex; gap: 10px; align-items: center; }
+.pc-qr { width: 92px; height: 92px; flex: none; }
+.pc-qr svg { width: 92px; height: 92px; }
+.pc-name { font-weight: 700; font-size: 11pt; margin-bottom: 4px; }
+.pc-k { font-size: 8pt; color: #64748b; text-transform: uppercase; letter-spacing: .05em; }
+.pc-v { font-family: ui-monospace, Menlo, monospace; font-size: 13pt; font-weight: 700; margin-bottom: 3px; }
+.pc-url { font-size: 8pt; color: #475569; margin-top: 5px; word-break: break-all; }
+.pc-tip { font-size: 8pt; color: #64748b; }
+.pt-sec, .pt-head { padding: 1.1rem 1.3rem; }
+
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
 </head>
@@ -2072,6 +2120,7 @@ function normalizeModule(m) {
   nm.plan = nm.plan ? normPlan(nm.plan) : null;
   nm.aula = typeof normAulaList === 'function' ? normAulaList(nm.aula) : (Array.isArray(nm.aula) ? nm.aula : []);
   nm.aulaPins = typeof normAulaPins === 'function' ? normAulaPins(nm.aulaPins) : (nm.aulaPins || {});
+  nm.portal = typeof normPortal === 'function' ? normPortal(nm.portal) : (nm.portal || {});
   nm.aulaArch = typeof normAulaArch === 'function' ? normAulaArch(nm.aulaArch) : (Array.isArray(nm.aulaArch) ? nm.aulaArch : []);
   nm.ras = (Array.isArray(nm.ras) ? nm.ras : []).map((r, i) => {
     const nr = Object.assign({ id: uid(), name: `RA ${i + 1}`, w: 0, cats: [] }, r);
@@ -2935,9 +2984,9 @@ function modCard(m) {
 }
 
 /* ---------- Módulo ---------- */
-const TABS = [['resumen', 'Resumen'], ['panel', 'Panel'], ['registro', 'Registro por RA'], ['estudiante', 'Por estudiante'], ['recuperacion', 'Recuperación'], ['asistencia', 'Asistencia'], ['anecdotario', 'Anecdotario'], ['aula', 'Aula'], ['herramientas', 'Herramientas'], ['planificacion', 'Planificación'], ['config', 'Configuración'], ['reportes', 'Reportes']];
+const TABS = [['resumen', 'Resumen'], ['panel', 'Panel'], ['registro', 'Registro por RA'], ['estudiante', 'Por estudiante'], ['recuperacion', 'Recuperación'], ['asistencia', 'Asistencia'], ['anecdotario', 'Anecdotario'], ['aula', 'Aula'], ['portal', 'Portal'], ['herramientas', 'Herramientas'], ['planificacion', 'Planificación'], ['config', 'Configuración'], ['reportes', 'Reportes']];
 function renderModule(m) {
-  const body = { resumen: renderResumen, panel: renderPanel, registro: renderRegistro, estudiante: renderEstudiante, recuperacion: renderRecuperacion, asistencia: renderAsistencia, anecdotario: renderAnecdotario, aula: renderAula, herramientas: renderHerramientas, planificacion: renderPlanificacion, config: renderConfig, reportes: renderReportes }[state.tab] || renderResumen;
+  const body = { resumen: renderResumen, panel: renderPanel, registro: renderRegistro, estudiante: renderEstudiante, recuperacion: renderRecuperacion, asistencia: renderAsistencia, anecdotario: renderAnecdotario, aula: renderAula, portal: renderPortal, herramientas: renderHerramientas, planificacion: renderPlanificacion, config: renderConfig, reportes: renderReportes }[state.tab] || renderResumen;
   return `
   <div class="mod-head">
     <button class="btn btn-secondary btn-icon" data-act="go-home" title="Volver al panel">${ICON.back}</button>
@@ -7909,6 +7958,7 @@ function cloudBoot(afterLocal) {
   Cloud.auth.onAuthStateChanged(async u => {
     document.body.classList.remove('auth-wait');
     if (!u) { Cloud.user = null; authScreen('login'); return; }
+    if (typeof PORTAL_DOMAIN === 'string' && String(u.email || '').endsWith('@' + PORTAL_DOMAIN)) { await Cloud.auth.signOut(); authScreen('login', 'Esa es una cuenta de estudiante. Entra en «Mi aula».'); return; }
     if (Cloud.user && Cloud.user.uid === u.uid) return;
     Cloud.user = u; closeAuth();
     // Cada docente con su propia copia en este equipo
@@ -9865,6 +9915,362 @@ function aulaAnimate() {
     });
   }
 }
+
+/* =====================================================================
+   Portal de estudiantes «Mi aula» (etapa 1)
+   - Cuentas de estudiante (usuario + contraseña; las administra el docente)
+   - Qué ve cada estudiante: notas por RA (nada / total / detallado), acumulado, actividades ocultas
+   - Pendientes del Aula, avisos y documentos (enlaces)
+   Nube: portal/{pid} (avisos y documentos del módulo), portal/{pid}/s/{uid} (lo que ve ese estudiante),
+         pstu/{uid} (a qué portales pertenece). Solo se publica lo que el docente permite.
+   ===================================================================== */
+const PORTAL_DOMAIN = typeof CLOUD_CONFIG === 'object' && CLOUD_CONFIG.projectId ? `alumnos.${CLOUD_CONFIG.projectId}.firebaseapp.com` : 'alumnos.praxis.invalid';
+const PORTAL_DOC_KINDS = { pdf: 'PDF', doc: 'Word', ppt: 'Presentación', xls: 'Excel', video: 'Video', link: 'Enlace' };
+
+function normPortal(p) {
+  const o = p && typeof p === 'object' ? p : {};
+  const vis = v => { const x = v && typeof v === 'object' ? v : {}; return { v: ['off', 'total', 'detail', 'on'].includes(x.v) ? x.v : 'off', to: x.to === 'some' ? 'some' : 'all', ids: Array.isArray(x.ids) ? x.ids.map(String) : [] }; };
+  const ras = {}; if (o.ras && typeof o.ras === 'object') Object.entries(o.ras).forEach(([k, v]) => { ras[k] = vis(v); });
+  const accts = {}; if (o.accts && typeof o.accts === 'object') Object.entries(o.accts).forEach(([k, a]) => { if (a && a.u) accts[k] = { u: String(a.u), uid: String(a.uid || ''), pw: String(a.pw || ''), at: String(a.at || '') }; });
+  const arr = (a, n) => (Array.isArray(a) ? a : []).filter(x => x && typeof x === 'object' && x.id).slice(-n);
+  return { on: !!o.on, pid: String(o.pid || ''), accts, ras, tot: vis(o.tot), hide: o.hide && typeof o.hide === 'object' ? o.hide : {}, news: arr(o.news, 50), docs: arr(o.docs, 200), pushed: o.pushed && typeof o.pushed === 'object' ? o.pushed : {}, metaH: String(o.metaH || ''), lastSync: String(o.lastSync || '') };
+}
+
+/* ---------- Utilidades ---------- */
+function portalSlug(s) { return aulaFold(s).replace(/[^a-z0-9]+/g, ''); }
+function portalUserDefault(m, s) { return `${portalSlug(m.course) || portalSlug(modShort(m)) || 'est'}-${String(s.num).padStart(2, '0')}`; }
+function portalUserOk(u) { return /^[a-z0-9][a-z0-9.-]{2,39}$/.test(u); }
+function portalEmail(u) { return `${u}@${PORTAL_DOMAIN}`; }
+function portalPw() { const A = 'abcdefghjkmnpqrstuvwxyz23456789'; return aulaRand(4, A) + '-' + aulaRand(4, A); }
+function portalUrl() { return (_aulaHostOk && AULA_HOST ? new URL('portal/', AULA_HOST) : new URL('portal/', location.href)).href; }
+function portalRaTitle(ra) { let t = (ra.name || '').trim(); if (!t || /^RA\s*[\d.]+$/i.test(t)) t = (ra.desc || '').trim(); return t.length > 90 ? t.slice(0, 88) + '…' : t; }
+function portalSees(v, s) { return !!v && v.v !== 'off' && (v.to === 'all' || v.ids.includes(s.id)); }
+function portalVis(m, id) { const P = m.portal; return id === '_tot' ? P.tot : (P.ras[id] = P.ras[id] || { v: 'off', to: 'all', ids: [] }); }
+/** Cuenta de otro módulo con el mismo usuario (el mismo estudiante en dos módulos usa una sola cuenta). */
+function portalFindAcct(u, except) {
+  for (const mm of db.modules) { if (mm === except || !mm.portal) continue; for (const [sid, a] of Object.entries(mm.portal.accts)) if (a.u === u && a.uid) return { m: mm, s: findStu(mm, sid), a }; }
+  return null;
+}
+function portalUidShared(uid, except) { return db.modules.some(mm => mm !== except && mm.portal && Object.values(mm.portal.accts).some(a => a.uid === uid)); }
+/** Segunda conexión, solo para crear o cambiar cuentas de estudiantes (no cierra la sesión del docente). */
+async function portalAdminAuth() {
+  const app = (firebase.apps || []).find(a => a.name === 'praxisAlumnos') || firebase.initializeApp(CLOUD_CONFIG, 'praxisAlumnos');
+  const A = app.auth();
+  try { await A.setPersistence(firebase.auth.Auth.Persistence.NONE); } catch (e) { }
+  return A;
+}
+function portalAuthErr(e) {
+  const c = String(e && e.code || e && e.message || e);
+  if (c.includes('email-already-in-use')) return 'ese usuario ya existe';
+  if (c.includes('too-many-requests')) return 'Google pidió esperar un rato; intenta más tarde';
+  if (c.includes('operation-not-allowed')) return 'falta activar «Correo y contraseña» en Firebase Authentication';
+  if (c.includes('admin-restricted')) return 'Firebase no permite crear cuentas nuevas: activa «Permitir crear cuentas» en Authentication › Configuración';
+  if (c.includes('wrong-password') || c.includes('invalid-credential') || c.includes('invalid-login')) return 'la contraseña guardada no coincide';
+  if (c.includes('network')) return 'sin conexión';
+  return aulaErr(e);
+}
+
+/* ---------- Lo que ve cada estudiante ---------- */
+function portalMeta(m) {
+  const P = m.portal;
+  return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1,
+    news: P.news.slice(-30).map(n => ({ id: n.id, t: n.t, at: n.at })), docs: P.docs.map(d => ({ id: d.id, t: d.t, url: d.url, k: d.k, ra: d.ra, at: d.at })) };
+}
+function portalPayload(m, s) {
+  const P = m.portal, r = calcStudent(m, s);
+  const ras = m.ras.map((ra, i) => {
+    const v = P.ras[ra.id];
+    if (!portalSees(v, s)) return { n: i + 1, name: portalRaTitle(ra), hid: 1 };
+    const x = r.ras[i], o = { n: i + 1, name: portalRaTitle(ra), w: +ra.w || 0, pts: r2(x.pts), pct: Math.round(x.pct * 100), st: x.status, stl: RA_STATUS[x.status].label };
+    if (v.v === 'detail') {
+      o.acts = [];
+      ra.cats.forEach(c => { for (let k = 0; k < c.count; k++) {
+        const key = `${m.id}|${ra.id}|${c.id}|${k}`; if (P.hide[key]) continue;
+        const a = actOf(c, k), g = getGrade(s, ra.id, c.id, k);
+        o.acts.push({ l: `${c.count > 1 ? c.label + ' ' + (k + 1) : c.label}${a.n ? ' · ' + a.n : ''}`, g: g === '' ? null : g, max: c.max });
+      } });
+    }
+    return o;
+  });
+  const st = statusOf(r);
+  const tot = portalSees(P.tot, s) ? { total: r2(r.total), acc: r2(r.acc), fin: r.finalSet ? r2(r.fin) : null, cond: st.label, cls: st.cls } : null;
+  const pend = (m.aula || []).filter(ex => ex.pub && aulaIsOpen(ex) && aulaAssigned(m, ex).some(x => x.id === s.id)).map(ex => ({
+    t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLink(ex), code: ex.withCode ? 0 : 1, dur: ex.dur || 0,
+    done: Object.keys(ex.resp).some(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; }) ? 1 : 0
+  }));
+  return { num: s.num, name: s.name, ras, tot, pend };
+}
+
+/* ---------- Sincronizar con la nube ---------- */
+let _portalT = null, _portalBusy = false;
+const _portalPersist = persist;
+// Cada vez que se guarda algo (notas, Aula, ajustes), el portal se actualiza solo unos segundos después
+persist = function () { _portalPersist(); if (db.modules.some(m => m.portal && m.portal.on)) portalSoon(); };
+function portalSoon(ms = 12000) { clearTimeout(_portalT); _portalT = setTimeout(() => portalSyncAll().catch(() => { }), ms); }
+async function portalSyncAll() {
+  if (_portalBusy || !aulaCloudOK() || !navigator.onLine) return 0;
+  _portalBusy = true; let n = 0;
+  try { for (const m of db.modules) if (m.portal && m.portal.on && m.portal.pid) n += await portalSync(m).catch(e => { console.warn('Portal', e); return 0; }); }
+  finally { _portalBusy = false; }
+  return n;
+}
+async function portalPushMeta(m, force) {
+  const data = portalMeta(m), h = aulaHash(JSON.stringify(data), 32);
+  if (!force && h === m.portal.metaH) return 0;
+  await withTimeout(Cloud.fs.collection('portal').doc(m.portal.pid).set({ ...data, upd: firebase.firestore.FieldValue.serverTimestamp() }), 15000);
+  m.portal.metaH = h; return 1;
+}
+async function portalSync(m, force) {
+  const P = m.portal; let n = await portalPushMeta(m, force);
+  const ref = Cloud.fs.collection('portal').doc(P.pid).collection('s');
+  for (const s of m.students) {
+    const a = P.accts[s.id]; if (!a || !a.uid) continue;
+    const data = portalPayload(m, s), h = aulaHash(JSON.stringify(data), 32);
+    if (!force && P.pushed[s.id] === h) continue;
+    await withTimeout(ref.doc(a.uid).set({ ...data, upd: firebase.firestore.FieldValue.serverTimestamp() }), 15000);
+    P.pushed[s.id] = h; n++;
+  }
+  if (n) { P.lastSync = new Date().toISOString(); _portalPersist(); if (state.tab === 'portal') aulaRenderSoon(); }
+  return n;
+}
+
+/* ---------- Cuentas ---------- */
+async function portalCreateAccounts(m, users, onProg) {
+  const P = m.portal, A = await portalAdminAuth(), out = { ok: 0, bad: [] };
+  let i = 0;
+  for (const [sid, u] of users) {
+    const s = findStu(m, sid); if (!s) continue;
+    let uidv = '', pw = '';
+    const other = portalFindAcct(u, m);
+    if (other) {
+      if (!other.s || !aulaNameOk(s, { name: other.s.name })) { out.bad.push(`${s.num}. ${s.name}: el usuario «${u}» ya es de ${other.s ? other.s.name : 'otro estudiante'} en ${modShort(other.m)}. Cambia el usuario.`); continue; }
+      uidv = other.a.uid; pw = other.a.pw; // mismo estudiante en otro módulo: misma cuenta
+    } else {
+      pw = portalPw();
+      try { const c = await A.createUserWithEmailAndPassword(portalEmail(u), pw); uidv = c.user.uid; await A.signOut(); }
+      catch (e) { const t = portalAuthErr(e); out.bad.push(`${s.num}. ${s.name}: ${t}${t === 'ese usuario ya existe' ? '. Cambia el usuario.' : ''}`); if (String(e && e.code).includes('too-many') || String(e && e.code).includes('operation-not-allowed')) break; continue; }
+    }
+    await withTimeout(Cloud.fs.collection('pstu').doc(uidv).set({ owner: Cloud.user.uid, p: { [P.pid]: { mod: modShort(m), course: m.course || '', num: s.num, name: s.name } } }, { merge: true }), 15000);
+    P.accts[sid] = { u, uid: uidv, pw, at: new Date().toISOString() }; delete P.pushed[sid];
+    out.ok++; _portalPersist(); if (onProg) onProg(++i, users.length);
+  }
+  return out;
+}
+async function portalChangePw(m, sid) {
+  const a = m.portal.accts[sid]; if (!a) return;
+  const A = await portalAdminAuth(), np = portalPw();
+  const c = await A.signInWithEmailAndPassword(portalEmail(a.u), a.pw);
+  await c.user.updatePassword(np); await A.signOut();
+  db.modules.forEach(mm => mm.portal && Object.values(mm.portal.accts).forEach(x => { if (x.uid === a.uid) x.pw = np; }));
+  _portalPersist(); return np;
+}
+async function portalRemoveAcct(m, sid) {
+  const P = m.portal, a = P.accts[sid]; if (!a) return;
+  const FV = firebase.firestore.FieldValue, shared = portalUidShared(a.uid, m);
+  await Cloud.fs.collection('portal').doc(P.pid).collection('s').doc(a.uid).delete().catch(() => { });
+  if (shared) await Cloud.fs.collection('pstu').doc(a.uid).update({ [`p.${P.pid}`]: FV.delete() });
+  else {
+    await Cloud.fs.collection('pstu').doc(a.uid).delete().catch(() => { });
+    try { const A = await portalAdminAuth(); const c = await A.signInWithEmailAndPassword(portalEmail(a.u), a.pw); await c.user.delete(); await A.signOut(); } catch (e) { console.warn('Portal: cuenta', e); }
+  }
+  delete P.accts[sid]; delete P.pushed[sid]; _portalPersist();
+}
+
+/* ---------- Pantalla del docente ---------- */
+function renderPortal(m) {
+  const P = m.portal, cloud = aulaCloudOK();
+  if (!P.on) return `<div class="portal"><section class="aula-hero">
+      <div class="ah-txt"><span class="ah-eyebrow">${AI.school} Portal de estudiantes</span><h2>Mi aula <span>${esc(modShort(m))} ${esc(m.course || '')}</span></h2>
+        <p>Cada estudiante entra con su usuario y contraseña, desde el celular o la PC (se instala como app), y ve sus pendientes, tus avisos, tus documentos y las notas que tú decidas publicar.</p></div>
+      <div class="ah-acts"><button class="btn ah-main" data-act="portal-on" ${cloud ? '' : 'disabled title="Necesitas la versión web con tu cuenta"'}>${AI.play} Activar el portal</button></div></section>
+      <div class="card pt-how"><ol class="aula-steps">
+        <li><span>1</span><div><b>Crea las cuentas</b> de tus estudiantes y entrégales su tarjeta con usuario y contraseña.</div></li>
+        <li><span>2</span><div><b>Elige qué notas ven:</b> nada, el total de cada RA o el detalle, para todos o para algunos.</div></li>
+        <li><span>3</span><div><b>Publica avisos y documentos.</b> Los exámenes y prácticas habilitados les aparecen solos.</div></li></ol>
+      ${cloud ? '' : '<p class="muted small">Para activarlo entra en la versión web con tu cuenta.</p>'}</div></div>`;
+  const tab = ['notas', 'cuentas', 'avisos'].includes(state.portalTab) ? state.portalTab : 'notas';
+  const nAcc = m.students.filter(s => P.accts[s.id]).length;
+  return `<div class="portal">
+    <section class="pt-head card">
+      <div class="pt-ht"><span class="ah-eyebrow pt-eye">${AI.school} Portal de estudiantes · Mi aula</span><h2>Qué ve cada estudiante</h2>
+        <div class="pt-url"><code>${esc(portalUrl())}</code><button class="btn btn-sm btn-ghost" data-act="portal-copy">${AI.copy} Copiar</button><button class="btn btn-sm btn-ghost" data-act="portal-qr">${AI.qr} QR</button></div>
+        <div class="muted small">${nAcc} de ${m.students.length} con cuenta · ${P.lastSync ? 'actualizado ' + esc(aulaHM(P.lastSync)) : 'sin publicar todavía'} · se actualiza solo cuando guardas cambios</div></div>
+      <div class="pt-ha"><button class="btn btn-secondary" data-act="portal-preview">${AI.eye} Ver como estudiante</button><button class="btn btn-primary" data-act="portal-sync">${AI.refresh} Publicar ahora</button></div>
+    </section>
+    <div class="seg pt-tabs">${[['notas', AI.chart, 'Notas'], ['cuentas', AI.users, 'Cuentas'], ['avisos', AI.file, 'Avisos y documentos']].map(([k, ic, l]) => `<button type="button" data-act="portal-tab" data-id="${k}" class="${tab === k ? 'on' : ''}">${ic}${l}</button>`).join('')}</div>
+    ${tab === 'notas' ? portalNotasHTML(m) : tab === 'cuentas' ? portalCuentasHTML(m) : portalAvisosHTML(m)}
+  </div>`;
+}
+function portalToLabel(m, v) { return v.to === 'all' ? 'Todo el curso' : v.ids.length === 1 ? (findStu(m, v.ids[0]) || {}).name || '1 estudiante' : `${v.ids.length} estudiantes`; }
+function portalNotasHTML(m) {
+  const P = m.portal;
+  const seg = (id, v, opts) => `<div class="seg seg-sm pt-seg">${opts.map(([k, l]) => `<button type="button" data-act="portal-vis" data-id="${id}" data-v="${k}" class="${v.v === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
+  const row = (id, title, sub, v, opts) => `<tr><td><b>${esc(title)}</b>${sub ? `<div class="muted small">${esc(sub)}</div>` : ''}</td><td>${seg(id, v, opts)}</td>
+    <td>${v.v === 'off' ? '<span class="muted">—</span>' : `<button type="button" class="btn btn-sm btn-ghost" data-act="portal-to" data-id="${id}">${v.to === 'all' ? AI.cap : AI.user} ${esc(portalToLabel(m, v))}</button>`}</td></tr>`;
+  const raRows = m.ras.map((ra, i) => row(ra.id, `RA ${i + 1}`, portalRaTitle(ra), portalVis(m, ra.id), [['off', 'No mostrar'], ['total', 'Solo total'], ['detail', 'Detallado']])).join('');
+  const det = m.ras.map((ra, i) => {
+    const v = P.ras[ra.id]; if (!v || v.v !== 'detail') return '';
+    const items = []; ra.cats.forEach(c => { for (let k = 0; k < c.count; k++) { const key = `${m.id}|${ra.id}|${c.id}|${k}`, a = actOf(c, k); items.push(`<label class="check pt-act"><input type="checkbox" data-ph="${esc(key)}" ${P.hide[key] ? '' : 'checked'}> ${esc(c.count > 1 ? c.label + ' ' + (k + 1) : c.label)}${a.n ? ' <span class="muted">· ' + esc(a.n) + '</span>' : ''}</label>`); } });
+    return `<details class="pt-det"><summary><b>RA ${i + 1}</b> · actividades visibles <span class="muted small">(${items.length - ra.cats.reduce((n, c) => n + Array.from({ length: c.count }, (_, k) => P.hide[`${m.id}|${ra.id}|${c.id}|${k}`] ? 1 : 0).reduce((x, y) => x + y, 0), 0)} de ${items.length})</span></summary><div class="pt-acts">${items.join('')}</div></details>`;
+  }).join('');
+  return `<section class="card pt-sec"><div class="pt-sec-h"><div><h3>Notas por RA</h3><p class="muted small">Lo que no publiques, el estudiante no lo ve. Cada estudiante solo ve sus propias notas.</p></div>
+      <div class="row-wrap"><button class="btn btn-sm btn-ghost" data-act="portal-all" data-id="detail">Mostrar todo detallado</button><button class="btn btn-sm btn-ghost" data-act="portal-all" data-id="off">Ocultar todo</button></div></div>
+    <div class="table-wrap"><table class="tbl pt-tbl"><thead><tr><th>RA</th><th>Qué ven</th><th>Para</th></tr></thead><tbody>${raRows}
+      ${row('_tot', 'Acumulado general', 'Suma de los RA, el cierre y su condición (Aprobado, En riesgo…)', P.tot, [['off', 'No mostrar'], ['on', 'Mostrar']])}</tbody></table></div></section>
+    ${det ? `<section class="card pt-sec"><h3>Actividades que se ven en los RA detallados</h3><p class="muted small">Quita la marca a una actividad para que no aparezca (por ejemplo, una que todavía estás corrigiendo).</p>${det}</section>` : ''}
+    <section class="card pt-sec"><h3>Exámenes y prácticas del Aula</h3><p class="muted small">Los que estén habilitados le aparecen en «Pendientes» a quien deba hacerlos. Su nota se ve aquí arriba, dentro de su RA, cuando pase al registro. El resultado detallado (preguntas, rúbrica y comentario) se elige en cada examen, en «Resultado para el estudiante».</p></section>`;
+}
+function portalCuentasHTML(m) {
+  const P = m.portal, studs = m.students.slice().sort((a, b) => a.num - b.num), sin = studs.filter(s => !P.accts[s.id]);
+  return `<section class="card pt-sec"><div class="pt-sec-h"><div><h3>Cuentas de los estudiantes</h3><p class="muted small">Usuario y contraseña para entrar a Mi aula. Las contraseñas las administras tú: si alguien la olvida, le das una nueva. Si un estudiante está en dos de tus módulos, usa el mismo usuario y tendrá una sola cuenta.</p></div>
+      <div class="row-wrap">${sin.length ? `<button class="btn btn-primary" data-act="portal-create">${AI.users} Crear ${sin.length} cuenta${sin.length === 1 ? '' : 's'}</button>` : ''}<button class="btn btn-secondary" data-act="portal-cards" ${studs.length - sin.length ? '' : 'disabled'}>${AI.file} Imprimir tarjetas</button></div></div>
+    <div class="table-wrap"><table class="tbl pt-tbl"><thead><tr><th>Nº</th><th>Estudiante</th><th>Usuario</th><th>Contraseña</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${studs.map(s => { const a = P.accts[s.id]; return `<tr><td>${s.num}</td><td>${esc(s.name)}</td>
+      <td>${a ? `<code>${esc(a.u)}</code>` : `<input type="text" class="pt-user" data-pu="${s.id}" value="${esc(portalUserDefault(m, s))}" maxlength="40" spellcheck="false" aria-label="Usuario de ${esc(s.name)}">`}</td>
+      <td>${a ? `<code class="pt-pw" data-pw="${esc(a.pw)}">••••-••••</code> <button type="button" class="btn btn-ghost btn-icon btn-sm" data-act="portal-pw-show" title="Ver contraseña">${AI.eye}</button>` : '<span class="muted">—</span>'}</td>
+      <td>${a ? '<span class="badge ok">Activa</span>' : '<span class="badge neutral">Sin cuenta</span>'}</td>
+      <td>${a ? aulaRowMenu({ id: 'portal' }, s.id, [['pw', AI.key, 'Darle otra contraseña', 'La de antes deja de servir'], ['card', AI.file, 'Imprimir su tarjeta', ''], ['del', AI.trash, 'Eliminar su cuenta', 'Ya no podrá entrar']]).replace(/data-act="aula-stu"/g, 'data-act="portal-acct"') : ''}</td></tr>`; }).join('')}
+    </tbody></table></div></section>`;
+}
+function portalAvisosHTML(m) {
+  const P = m.portal, raOpts = m.ras.map((ra, i) => `<option value="${i + 1}">RA ${i + 1}</option>`).join('');
+  return `<div class="pt-two">
+    <section class="card pt-sec"><h3>Avisos</h3>
+      <label class="field">Nuevo aviso<textarea id="pnText" rows="3" maxlength="500" placeholder="Ej.: Traigan su laptop el lunes."></textarea></label>
+      <div class="row-wrap"><button class="btn btn-primary" data-act="portal-news-add">${AI.send || AI.arrow} Publicar aviso</button></div>
+      <div class="pt-list">${P.news.slice().reverse().map(n => `<div class="pt-item"><div><div>${esc(n.t)}</div><small class="muted">${esc(aulaWhen(n.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-news-del" data-id="${n.id}" title="Quitar">${AI.trash}</button></div>`).join('') || '<p class="muted small">Todavía no hay avisos.</p>'}</div></section>
+    <section class="card pt-sec"><h3>Documentos y enlaces</h3>
+      <p class="muted small">Pega el enlace de un archivo (Google Drive, OneDrive…) o de un video. Comparte el archivo como «Cualquier persona con el enlace puede ver».</p>
+      <div class="form-grid"><label class="field">Título<input type="text" id="pdT" maxlength="120" placeholder="Ej.: Guía RA 2 · Formularios"></label>
+        <label class="field">Enlace<input type="url" id="pdU" maxlength="600" placeholder="https://…"></label>
+        <label class="field">Tipo<select id="pdK">${Object.entries(PORTAL_DOC_KINDS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label>
+        <label class="field">RA<select id="pdR"><option value="">General</option>${raOpts}</select></label></div>
+      <div class="row-wrap"><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar</button></div>
+      <div class="pt-list">${P.docs.slice().reverse().map(d => `<div class="pt-item"><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.t)}</a><small class="muted"> · ${esc(PORTAL_DOC_KINDS[d.k] || 'Enlace')}${d.ra ? ' · RA ' + esc(d.ra) : ''} · ${esc(aulaWhen(d.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-doc-del" data-id="${d.id}" title="Quitar">${AI.trash}</button></div>`).join('') || '<p class="muted small">Todavía no hay documentos.</p>'}</div></section></div>`;
+}
+
+/* ---------- Diálogos ---------- */
+function portalToDialog(m, id) {
+  const v = portalVis(m, id), on = new Set(v.to === 'some' ? v.ids : m.students.map(s => s.id)), pk = aulaPicker(m, on);
+  openModal({
+    title: '¿Para quién?', icon: AI.users, wide: true, sub: id === '_tot' ? 'Acumulado general' : `RA ${m.ras.findIndex(r => r.id === id) + 1}`,
+    body: `<p class="muted small">Marca a quiénes les publicas esta nota. Con todos marcados, también la verán los que agregues después.</p>${pk.html}`,
+    actions: [{ label: 'Cancelar' }, { label: 'Listo', cls: 'btn-primary', onClick: () => {
+      if (!on.size) { toast('Marca al menos un estudiante, o elige «No mostrar».', 'error'); return false; }
+      if (on.size === m.students.length) { v.to = 'all'; v.ids = []; } else { v.to = 'some'; v.ids = [...on]; }
+      persist(); render();
+    } }],
+    onOpen: ov => pk.bind(ov)
+  });
+}
+function portalPreview(m) {
+  const studs = m.students.slice().sort((a, b) => a.num - b.num), withAcc = studs.filter(s => m.portal.accts[s.id]);
+  const list = withAcc.length ? withAcc : studs;
+  const draw = sid => { const s = findStu(m, sid); return portalPreviewHTML(m, portalPayload(m, s)); };
+  openModal({
+    title: 'Ver como estudiante', icon: AI.eye, wide: true, sub: 'Así lo verá en Mi aula (con lo que tienes guardado ahora).',
+    body: `<label class="field">Estudiante<select id="ppS">${list.map(s => `<option value="${s.id}">${s.num}. ${esc(s.name)}</option>`).join('')}</select></label><div id="ppBox" class="pp-box">${list.length ? draw(list[0].id) : ''}</div>`,
+    actions: [{ label: 'Cerrar', cls: 'btn-primary' }],
+    onOpen: ov => { const sel = ov.querySelector('#ppS'); if (sel) sel.onchange = () => { ov.querySelector('#ppBox').innerHTML = draw(sel.value); }; }
+  });
+}
+function portalPreviewHTML(m, d) {
+  const ras = d.ras.filter(r => !r.hid);
+  return `<div class="pp">
+    <div class="pp-h"><b>Hola, ${esc(String(d.name).split(' ')[0])}</b><span>${esc(modShort(m))} · ${esc(m.course || '')} · Nº ${d.num}</span></div>
+    ${d.tot ? `<div class="pp-tot"><b>${fmtN(d.tot.total)}</b><span>Acumulado · ${esc(d.tot.cond)}</span></div>` : ''}
+    <h4>Pendientes</h4>${d.pend.length ? d.pend.map(p => `<div class="pp-row"><span>${esc(p.k)} · ${esc(p.t)}</span><small>${p.done ? 'entregado' : p.file ? 'entregar archivo' : 'abierto'}</small></div>`).join('') : '<p class="muted small">Nada pendiente.</p>'}
+    <h4>Mis notas</h4>${ras.length ? ras.map(r => `<div class="pp-ra"><div class="pp-row"><b>RA ${r.n}</b><span>${fmtN(r.pts)} / ${fmtN(r.w)} · ${esc(r.stl)}</span></div>${(r.acts || []).map(a => `<div class="pp-row pp-sub"><span>${esc(a.l)}</span><span>${a.g === null ? '—' : fmtN(a.g) + ' / ' + fmtN(a.max)}</span></div>`).join('')}</div>`).join('') : '<p class="muted small">No ve ninguna nota todavía.</p>'}
+    ${d.ras.some(r => r.hid) ? `<p class="muted small">${d.ras.filter(r => r.hid).length} RA sin publicar (le aparecen con candado).</p>` : ''}</div>`;
+}
+async function portalCards(m, sids) {
+  const P = m.portal, url = portalUrl();
+  let qr = '';
+  try { await aulaLoadQR(); qr = aulaQRsvg(url); } catch (e) { }
+  const studs = sids.map(id => findStu(m, id)).filter(s => s && P.accts[s.id]).sort((a, b) => a.num - b.num);
+  if (!studs.length) return toast('No hay cuentas para imprimir.', 'info');
+  printHTML(`<section class="pc-cards">${studs.map(s => { const a = P.accts[s.id]; return `<div class="pc-card"><div class="pc-top"><b>Mi aula</b><span>${esc(modShort(m))} · ${esc(m.course || '')}</span></div>
+    <div class="pc-body"><div class="pc-qr">${qr}</div><div><div class="pc-name">${s.num}. ${esc(s.name)}</div><div class="pc-k">Usuario</div><div class="pc-v">${esc(a.u)}</div><div class="pc-k">Contraseña</div><div class="pc-v">${esc(a.pw)}</div></div></div>
+    <div class="pc-url">${esc(url)}</div><div class="pc-tip">Guárdala. No la compartas con nadie.</div></div>`; }).join('')}</section>`, 'portrait');
+}
+
+/* ---------- Acciones ---------- */
+Object.assign(ACTIONS, {
+  'portal-on': async () => {
+    const m = curMod(); if (!m || !aulaCloudOK()) return;
+    try {
+      m.portal.on = true; if (!m.portal.ras || !Object.keys(m.portal.ras).length) m.ras.forEach(ra => { m.portal.ras[ra.id] = { v: 'off', to: 'all', ids: [] }; });
+      if (!m.portal.pid) m.portal.pid = Cloud.fs.collection('portal').doc().id;
+      await portalPushMeta(m, true); _portalPersist(); state.portalTab = 'cuentas'; render();
+      toast('Portal activado. Ahora crea las cuentas de tus estudiantes.', 'ok', 4000);
+    } catch (e) { m.portal.on = false; toast(aulaErr(e), 'error', 6000); render(); }
+  },
+  'portal-tab': el => { state.portalTab = el.dataset.id; render(); },
+  'portal-vis': el => { const m = curMod(), v = portalVis(m, el.dataset.id); v.v = el.dataset.v; persist(); render(); },
+  'portal-all': el => { const m = curMod(); m.ras.forEach(ra => { const v = portalVis(m, ra.id); v.v = el.dataset.id; }); m.portal.tot.v = el.dataset.id === 'off' ? 'off' : 'on'; persist(); render(); },
+  'portal-to': el => portalToDialog(curMod(), el.dataset.id),
+  'portal-copy': () => aulaCopy(portalUrl(), 'Dirección de Mi aula copiada.'),
+  'portal-qr': () => {
+    const url = portalUrl();
+    openModal({ title: 'Mi aula', icon: AI.qr, sub: 'Escanéalo para abrir el portal e instalarlo.', body: `<div class="aula-share"><div class="qr-box" id="pqBox"><span class="muted small">Cargando QR…</span></div><div class="share-side"><div class="code-lbl">Dirección</div><p><code>${esc(url)}</code></p></div></div>`, actions: [{ label: 'Listo', cls: 'btn-primary' }],
+      onOpen: ov => aulaLoadQR().then(() => { ov.querySelector('#pqBox').innerHTML = aulaQRsvg(url); }).catch(() => { }) });
+  },
+  'portal-sync': async el => {
+    const m = curMod(); if (!aulaCloudOK()) return toast('Necesitas la versión web con tu cuenta e internet.', 'error');
+    el.disabled = true;
+    try { const n = await portalSync(m, true); toast(n ? 'Publicado: los estudiantes ya lo ven.' : 'Todo estaba al día.', 'ok'); } catch (e) { toast(aulaErr(e), 'error', 6000); }
+    el.disabled = false; render();
+  },
+  'portal-preview': () => portalPreview(curMod()),
+  'portal-pw-show': el => { const c = el.parentElement.querySelector('[data-pw]'); if (c) c.textContent = c.textContent.includes('•') ? c.dataset.pw : '••••-••••'; },
+  'portal-create': async el => {
+    const m = curMod(), P = m.portal; if (!aulaCloudOK()) return toast('Necesitas la versión web con tu cuenta e internet.', 'error');
+    const users = [...document.querySelectorAll('[data-pu]')].map(i => [i.dataset.pu, i.value.trim().toLowerCase()]);
+    const bad = users.filter(([, u]) => !portalUserOk(u)); if (bad.length) return toast(`Usuario no válido: «${bad[0][1]}». Usa letras, números, punto o guion (3 a 40).`, 'error', 5000);
+    const seen = {}; for (const [, u] of users) { if (seen[u] || Object.values(P.accts).some(a => a.u === u)) return toast(`El usuario «${u}» está repetido.`, 'error'); seen[u] = 1; }
+    el.disabled = true; const lbl = el.innerHTML;
+    try {
+      const r = await portalCreateAccounts(m, users, (i, n) => { el.innerHTML = `<span class="spin"></span> Creando ${i} de ${n}…`; });
+      render(); portalSync(m).catch(() => { });
+      if (r.bad.length) openModal({ title: `${r.ok} cuenta${r.ok === 1 ? '' : 's'} creada${r.ok === 1 ? '' : 's'}`, icon: AI.alert, body: `<p class="modal-msg">Estas no se pudieron crear:</p><ul class="ar-conf">${r.bad.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, actions: [{ label: 'Entendido', cls: 'btn-primary' }] });
+      else toast(`Listo: ${r.ok} cuenta${r.ok === 1 ? '' : 's'}. Imprime las tarjetas.`, 'ok', 4000);
+    } catch (e) { toast(aulaErr(e), 'error', 6000); render(); }
+    finally { el.disabled = false; el.innerHTML = lbl; }
+  },
+  'portal-cards': () => { const m = curMod(); portalCards(m, m.students.map(s => s.id)); },
+  'portal-acct': el => {
+    aulaCloseMenus();
+    const m = curMod(), sid = el.dataset.num, s = findStu(m, sid), op = el.dataset.op; if (!s) return;
+    if (op === 'card') return portalCards(m, [sid]);
+    if (op === 'pw') return confirmBox(`Otra contraseña · ${s.num}. ${s.name}`, 'Se crea una contraseña nueva y la de antes deja de servir. Después imprime su tarjeta.', 'Cambiar', () => {
+      portalChangePw(m, sid).then(np => { render(); toast(`Contraseña nueva: ${np}`, 'ok', 8000); }).catch(e => toast('No se pudo cambiar: ' + portalAuthErr(e), 'error', 6000));
+    }, { danger: false });
+    if (op === 'del') return confirmBox(`Eliminar la cuenta · ${s.num}. ${s.name}`, 'Ya no podrá entrar a Mi aula de este módulo. Sus notas del registro no se tocan.', 'Eliminar', () => {
+      portalRemoveAcct(m, sid).then(() => { render(); toast('Cuenta eliminada.', 'ok'); }).catch(e => toast(aulaErr(e), 'error', 6000));
+    });
+  },
+  'portal-news-add': () => {
+    const m = curMod(), t = (document.getElementById('pnText').value || '').trim(); if (!t) return toast('Escribe el aviso.', 'error');
+    m.portal.news.push({ id: uid(), t: t.slice(0, 500), at: new Date().toISOString() }); m.portal.news = m.portal.news.slice(-50);
+    persist(); render(); portalSoon(500); toast('Aviso publicado.', 'ok');
+  },
+  'portal-news-del': el => { const m = curMod(); m.portal.news = m.portal.news.filter(n => n.id !== el.dataset.id); persist(); render(); portalSoon(500); },
+  'portal-doc-add': () => {
+    const m = curMod(), g = id => (document.getElementById(id).value || '').trim();
+    const t = g('pdT'), url = g('pdU');
+    if (!t) return toast('Escribe el título.', 'error');
+    if (!/^https:\/\/\S+$/i.test(url)) return toast('Pega un enlace que empiece con https://', 'error');
+    m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: url.slice(0, 600), k: g('pdK') || 'link', ra: g('pdR'), at: new Date().toISOString() });
+    persist(); render(); portalSoon(500); toast('Documento agregado.', 'ok');
+  },
+  'portal-doc-del': el => { const m = curMod(); m.portal.docs = m.portal.docs.filter(d => d.id !== el.dataset.id); persist(); render(); portalSoon(500); }
+});
+document.addEventListener('change', e => {
+  const k = e.target && e.target.dataset && e.target.dataset.ph; if (!k) return;
+  const m = curMod(); if (!m) return;
+  if (e.target.checked) delete m.portal.hide[k]; else m.portal.hide[k] = 1;
+  persist(); render();
+});
 
 /* =========================================================
    Reportes imprimibles (PDF sin internet) y exportación CSV
