@@ -1819,6 +1819,8 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .tb-off > svg { width: 34px; height: 34px; padding: 8px; border-radius: 10px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
 .tb-off b { display: block; }
 .table-card:has(.tbl-off) .table-wrap { border-top: 1px solid var(--border); }
+.aula-tbl tr.ar-lock td { background: color-mix(in srgb, var(--bad-bg) 45%, transparent); color: var(--ink); }
+.aula-tbl tr.ar-lock td:first-child { box-shadow: inset 3px 0 0 var(--bad); }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8115,7 +8117,7 @@ function normAula(e) {
     status: ['draft', 'open', 'closed'].includes(e.status) ? e.status : 'draft', code: String(e.code || ''), pub: String(e.pub || ''), until: String(e.until || ''),
     kdocs: Array.isArray(e.kdocs) ? e.kdocs.map(String) : [], openedAt: String(e.openedAt || ''), lastOpen: String(e.lastOpen || ''), closedAt: String(e.closedAt || ''),
     blocked: e.blocked && typeof e.blocked === 'object' ? e.blocked : {}, res: ['off', 'close', 'now'].includes(e.res) ? e.res : 'off', resDetail: e.resDetail !== false, resPushed: e.resPushed && typeof e.resPushed === 'object' ? e.resPushed : {},
-    outBase: e.outBase && typeof e.outBase === 'object' ? e.outBase : {},
+    outBase: e.outBase && typeof e.outBase === 'object' ? e.outBase : {}, lockLeave: !!e.lockLeave, unlockAt: e.unlockAt && typeof e.unlockAt === 'object' ? e.unlockAt : {}, lockSent: e.lockSent && typeof e.lockSent === 'object' ? e.lockSent : {},
     auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
     resp: {}, marks: {}, applied: {}, map: {}
   };
@@ -8279,10 +8281,10 @@ async function aulaPublish(m, ex) {
   if (ex.pin && aulaEnsurePins(m, list)) persist();
   const ref = aulaRef(ex);
   const until = ex.until ? new Date(ex.until) : new Date(Date.now() + 3 * 3600e3);
-  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, res: ex.res, v: 3, upd: FV.serverTimestamp() }), 15000);
+  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, res: ex.res, lock: ex.lockLeave, v: 3, upd: FV.serverTimestamp() }), 15000);
   const ros = {}; list.forEach(s => { ros[s.num] = aulaToks(s.name).map(t => aulaHash(ex.pub + ':' + t)); });
   const oldCode = ex._old; delete ex._old;
-  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })) }), 15000);
+  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, lock: ex.lockLeave, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })) }), 15000);
   // Permisos para entregar: uno por estudiante asignado (con su clave si se pide)
   const want = list.filter(s => ex.blocked[s.id] !== 'block').map(s => `${s.num}-${ex.pin ? m.aulaPins[s.id] : ''}`);
   const b = Cloud.fs.batch(); let n = 0;
@@ -8310,6 +8312,8 @@ async function aulaDeleteCloud(ex) {
   await ref.delete();
 }
 /** Veces que salió de la página (entregado o respondiendo), descontando lo que limpiaste. */
+/** ¿Está bloqueado por salir de la página? (examen con bloqueo, salió y aún no le permites seguir) */
+function aulaLeaveLocked(ex, num) { const lv = AulaLive.xid === ex.id && AulaLive.live[num]; return !!(ex.lockLeave && lv && !ex.resp[num] && (lv.b || 0) > (+ex.unlockAt[num] || 0)); }
 function aulaOutRaw(ex, num) { const r = ex.resp[num]; if (r) return r.blurs || 0; const lv = AulaLive.xid === ex.id && AulaLive.live[num]; return lv ? lv.b || 0 : 0; }
 function aulaOutN(ex, num) { return Math.max(0, aulaOutRaw(ex, num) - (+ex.outBase[num] || 0)); }
 function aulaOutBadge(n) { return n ? `<span class="out-n ${n > 2 ? 'bad' : ''}" title="Veces que salió de la página">${n}</span>` : '<span class="out-n zero">0</span>'; }
@@ -8355,17 +8359,27 @@ function aulaWatch(m, ex) {
     const mm = findMod(AulaLive.mid), e = aulaFind(mm, AulaLive.xid);
     if (AulaLive.liveReady && e) Object.entries(L).forEach(([num, v]) => {
       const before = (AulaLive.live[num] || {}).b || 0;
-      if (v.b > before && !e.resp[num]) { const s = aulaStudent(mm, e, num); toast(`${s ? s.num + '. ' + s.name : 'Nº ' + num} salió de la página del examen (${v.b} ${v.b === 1 ? 'vez' : 'veces'}).`, v.b > 2 ? 'error' : 'warn', 4500); }
+      if (v.b > before && !e.resp[num]) { const s = aulaStudent(mm, e, num); toast(`${s ? s.num + '. ' + s.name : 'Nº ' + num} salió de la página del examen (${v.b} ${v.b === 1 ? 'vez' : 'veces'})${e.lockLeave ? ': su examen quedó bloqueado' : ''}.`, v.b > 2 ? 'error' : 'warn', 4500); }
     });
     AulaLive.liveReady = true;
+    // Bloqueo por salir: también en la nube, para que no lo salte entrando desde otro navegador
+    if (e && e.lockLeave && aulaIsOpen(e)) Object.entries(L).forEach(([num, v]) => {
+      if (e.resp[num] || (v.b || 0) <= (+e.unlockAt[num] || 0) || e.lockSent[num] === v.b) return;
+      e.lockSent[num] = v.b; aulaRef(e).collection('x').doc(num).set({ m: 'lock', n: aulaRand(6) }).catch(() => { delete e.lockSent[num]; });
+      persist();
+    });
     AulaLive.live = L; aulaRenderSoon();
   }, () => { });
 }
 /** Redibuja el Aula cuando no haya una ventana abierta (para no cerrarle nada al docente). */
 let _aulaRS = null;
+let _aulaRSat = 0;
 function aulaRenderSoon() {
   clearInterval(_aulaRS);
-  const go = () => { if (state.view !== 'module' || state.tab !== 'aula') { clearInterval(_aulaRS); return true; } if (document.querySelector('.modal-overlay') || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) return false; clearInterval(_aulaRS); render(); return true; };
+  // Fluidez: como mucho un redibujo cada 0,7 s aunque lleguen muchas entregas o avisos juntos
+  const wait = 700 - (Date.now() - _aulaRSat);
+  if (wait > 0) { _aulaRS = setTimeout(aulaRenderSoon, wait); return; }
+  const go = () => { if (state.view !== 'module' || state.tab !== 'aula') { clearInterval(_aulaRS); return true; } if (document.querySelector('.modal-overlay') || (document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))) return false; clearInterval(_aulaRS); _aulaRSat = Date.now(); render(); return true; };
   if (!go()) _aulaRS = setInterval(go, 600);
 }
 /** Se llama después de cada dibujo: escucha las entregas solo del examen abierto en pantalla. */
@@ -8466,7 +8480,7 @@ function renderAulaExam(m, ex) {
       <div class="ax-t">
         <div class="ax-row"><span class="ac-kind">${AULA_KINDS[ex.kind]} ${esc(ex.kind)}</span><span class="ac-st st-${st.dot}"><i></i>${esc(st.label)}</span></div>
         <h2>${esc(ex.title)}</h2>
-        <div class="ac-meta"><span>${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'}</span><span>${fmtN(aulaTotal(ex))} pts</span><span>${ex.dur ? ex.dur + ' min por estudiante' : 'sin límite de tiempo'}</span><span>${aulaToIcon(ex)}${esc(aulaToLabel(m, ex))}</span>${ex.pin ? `<span>${AI.key}con clave</span>` : ''}${ex.oneDev ? `<span>${AI.phone}un celular, una entrega</span>` : ''}</div>
+        <div class="ac-meta"><span>${ex.qs.length} pregunta${ex.qs.length === 1 ? '' : 's'}</span><span>${fmtN(aulaTotal(ex))} pts</span><span>${ex.dur ? ex.dur + ' min por estudiante' : 'sin límite de tiempo'}</span><span>${aulaToIcon(ex)}${esc(aulaToLabel(m, ex))}</span>${ex.pin ? `<span>${AI.key}con clave</span>` : ''}${ex.oneDev ? `<span>${AI.phone}un celular, una entrega</span>` : ''}${ex.lockLeave ? `<span>${AI.lock}se bloquea al salir</span>` : ''}</div>
         ${ex.openedAt ? `<div class="ax-when">${AI.cal}Aplicado ${esc(aulaWhen(ex.openedAt))}${ex.closedAt || (ex.status !== 'draft' && !open && ex.until) ? ' · cerró ' + esc(aulaHM(ex.closedAt || ex.until)) : ''}</div>` : ''}
       </div>
       ${ex.code && ex.status !== 'draft' ? `<div class="ax-code"><span>Código</span><b>${esc(ex.code)}</b>${ex.oneDev && open ? `<small title="Escríbelo tú en el celular que comparten dos estudiantes">Celular compartido: <b>${esc(ex.unlock)}</b></small>` : ''}</div>` : ''}
@@ -8524,13 +8538,14 @@ function aulaRow(m, ex, s, num, sc, known) {
   const r = num !== undefined ? ex.resp[num] : null;
   if (!r) {
     const bl = ex.blocked[s.id], lv = AulaLive.xid === ex.id && AulaLive.live[s.num], open = aulaIsOpen(ex);
-    const st = bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
+    const lk = aulaLeaveLocked(ex, s.num);
+    const st = lk && !bl ? `<span class="badge bad">${AI.lock} Bloqueado por salir</span>` : bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
     const on = ex.pub && ex.status !== 'draft', out = aulaOutN(ex, s.num);
     const items = !on ? [['unassign', AI.x, 'Quitar de este examen', 'Ya no aparece en la lista']] : bl === 'block' ? [['unblock', AI.unlock, 'Desbloquear', 'Puede volver a entrar y seguir']] : [
       ...(open ? [['collect', AI.inbox, 'Recoger lo que lleva', 'Se entrega solo y ya no puede seguir'], ['block', AI.ban, 'Bloquear', 'No puede entrar ni entregar']] : []),
       ...(lv || bl ? [['reset', AI.refresh, 'Reiniciar su examen', 'Empieza de cero en su celular']] : [])];
     if (!lv && bl !== 'block') items.push(['unassign', AI.x, 'Quitar de este examen', 'Ya no aparece en la lista ni puede entrar']);
-    return `<tr class="ar-none${lv && !bl ? ' ar-live' : ''}${out ? ' ar-out' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td>${lv || out ? aulaOutBadge(out) : ''}</td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${aulaRowMenu(ex, s.num, items)}</div></td></tr>`;
+    return `<tr class="ar-none${lk && !bl ? ' ar-lock' : lv && !bl ? ' ar-live' : ''}${out ? ' ar-out' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td>${lv || out ? aulaOutBadge(out) : ''}</td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${lk && !bl ? `<button class="btn btn-sm btn-primary" data-act="aula-stu" data-op="permit" data-id="${ex.id}" data-num="${s.num}">${AI.unlock} Permitir continuar</button>` : ''}${aulaRowMenu(ex, s.num, items)}</div></td></tr>`;
   }
   const v = aulaScaled(m, ex, sc), warnName = s && !aulaNameOk(s, r);
   const usedMin = r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null;
@@ -8606,6 +8621,7 @@ function aulaEditor(id, preset) {
         <div id="aeToBox" class="ae-tobox"></div></div>
       <div class="ae-sec"><h4>3 · Seguridad</h4>
         <label class="check"><input type="checkbox" id="aeShuf" ${ex.shuffle ? 'checked' : ''}> Mezclar el orden de las preguntas y opciones para cada estudiante</label>
+        <label class="check"><input type="checkbox" id="aeLock" ${ex.lockLeave ? 'checked' : ''}> Bloquear el examen si sale de la página <span class="muted small">(solo sigue cuando tú lo permitas · ideal para exámenes en casa)</span></label>
         <label class="check"><input type="checkbox" id="aeOne" ${ex.oneDev ? 'checked' : ''}> Un celular, una entrega <span class="muted small">(si dos comparten celular, tú lo desbloqueas con un código)</span></label>
         <label class="check"><input type="checkbox" id="aePin" ${ex.pin ? 'checked' : ''}> Pedir la clave personal de 4 números <span class="muted small">(nadie puede entrar con el número de otro)</span></label>
         <p class="muted small">Siempre: el nombre debe corresponder al número de la lista y cada número entrega una sola vez.</p></div>
@@ -8620,7 +8636,7 @@ function aulaEditor(id, preset) {
       label: orig ? 'Guardar cambios' : 'Guardar examen', cls: 'btn-primary', onClick: ov => {
         ex.title = ov.querySelector('#aeTitle').value.trim(); ex.kind = ov.querySelector('#aeKind').value; ex.dur = +ov.querySelector('#aeDur').value;
         ex.actKey = ov.querySelector('#aeAct').value; ex.instr = ov.querySelector('#aeInstr').value.trim(); ex.shuffle = ov.querySelector('#aeShuf').checked;
-        ex.oneDev = ov.querySelector('#aeOne').checked; ex.pin = ov.querySelector('#aePin').checked; ex.resDetail = ov.querySelector('#aeResDet').checked;
+        ex.oneDev = ov.querySelector('#aeOne').checked; ex.lockLeave = ov.querySelector('#aeLock').checked; ex.pin = ov.querySelector('#aePin').checked; ex.resDetail = ov.querySelector('#aeResDet').checked;
         const errs = [];
         if (!ex.title) errs.push('Escribe el título.');
         if (ex.to.mode === 'group' && !groups.length) errs.push('No hay grupos: elige «Todo el curso» o «Elegir estudiantes».');
@@ -9102,25 +9118,57 @@ function aulaImportDialog() {
   });
 }
 /** Texto o JSON → { ex, warns } o { archive } */
+/** Texto o JSON → { ex, warns } o { archive }. Acepta JSON con claves en español o inglés, aunque venga dentro de ```json … ```. */
 function aulaReadImport(txt) {
-  const t = txt.trim();
-  if (/^[{[]/.test(t)) {
-    try {
-      const j = JSON.parse(t);
-      if (j && j.kind === 'aula-exam' && j.exam) return { archive: j };
-      const src = Array.isArray(j) ? { qs: j } : j.exam || j;
-      const qs = (src.qs || src.questions || src.preguntas || []).map(q => {
-        const tp = q.t || ({ multiple: 'mc', seleccion: 'mc', mc: 'mc', vf: 'tf', tf: 'tf', truefalse: 'tf', corta: 'short', short: 'short', desarrollo: 'open', open: 'open' })[aulaFold(q.type || q.tipo || '').replace(/ /g, '')] || (q.opts || q.options || q.opciones ? 'mc' : 'open');
-        const opts = q.opts || q.options || q.opciones || [];
-        let ok = q.ok ?? q.correct ?? q.correcta ?? q.answer ?? q.respuesta;
-        if (tp === 'mc' && typeof ok === 'string') ok = /^[a-h]$/i.test(ok) ? 'abcdefgh'.indexOf(ok.toLowerCase()) : opts.indexOf(ok);
-        if (tp === 'tf' && typeof ok === 'string') ok = /^(v|verdadero|true)/i.test(ok);
-        return normAulaQ({ t: tp, text: q.text || q.texto || q.pregunta || q.question, pts: q.pts || q.puntos || q.points || 1, opts, ok, acc: q.acc || (tp === 'short' ? [].concat(ok || []) : []) });
-      }).filter(Boolean);
-      return { ex: { title: src.title || src.titulo || 'Examen importado', kind: AULA_KINDS[src.kind] ? src.kind : 'Examen', dur: src.dur || src.tiempo || 30, instr: src.instr || src.instrucciones || '', qs }, warns: [] };
-    } catch (e) { /* no era JSON: se lee como texto */ }
+  const t = String(txt || '').trim();
+  const body = t.replace(/^```[a-z]*\s*/i, '').replace(/```\s*$/, '').trim();
+  const a = body.search(/[{[]/), json = a >= 0 ? body.slice(a, Math.max(body.lastIndexOf('}'), body.lastIndexOf(']')) + 1) : '';
+  if (json && (a === 0 || /^[{[]/.test(body) || /"(preguntas|questions|qs|exam)"\s*:/.test(json))) {
+    try { const j = JSON.parse(json); if (j && j.kind === 'aula-exam' && j.exam) return { archive: j }; return aulaFromJSON(j); }
+    catch (e) { /* no era JSON válido: se lee como texto */ }
   }
-  return aulaParseText(t);
+  return aulaParseText(body);
+}
+function aulaFromJSON(j) {
+  const pick = (o, ...ks) => { for (const k of ks) if (o && o[k] !== undefined && o[k] !== null && o[k] !== '') return o[k]; };
+  const src = Array.isArray(j) ? { qs: j } : (j.exam || j.examen || j);
+  const list = pick(src, 'qs', 'questions', 'preguntas', 'items') || [];
+  const warns = [], L = 'abcdefgh';
+  const typeOf = (q, opts) => {
+    const f = aulaFold(pick(q, 't', 'type', 'tipo') || '').replace(/\s+/g, '');
+    if (['mc', 'tf', 'short', 'open'].includes(f)) return f;
+    if (/verdad|vf|truefalse|boolean/.test(f)) return 'tf';
+    if (/corta|short|completar|fill/.test(f)) return 'short';
+    if (/desarrollo|abierta|open|ensayo|essay/.test(f)) return 'open';
+    if (/seleccion|multiple|choice|opcion/.test(f) || opts.length) return 'mc';
+    return 'open';
+  };
+  const qs = list.map((q, i) => {
+    if (!q || typeof q !== 'object') return null;
+    const raw = pick(q, 'opts', 'options', 'opciones', 'choices', 'alternativas') || [];
+    const opts = raw.map(o => typeof o === 'object' && o ? String(pick(o, 'texto', 'text', 'opcion', 'label', 'valor') ?? '') : String(o));
+    const tp = typeOf(q, opts);
+    let ok = null, acc = [];
+    const ans = pick(q, 'ok', 'correct', 'correcta', 'answer', 'respuesta', 'respuestas', 'respuesta_correcta', 'solucion');
+    if (tp === 'mc') {
+      const byFlag = raw.findIndex(o => o && typeof o === 'object' && (o.correcta === true || o.correct === true || o.ok === true || o.es_correcta === true));
+      if (byFlag >= 0) ok = byFlag;
+      else if (typeof ans === 'number') ok = ans >= 0 && ans < opts.length ? ans : (ans - 1 >= 0 && ans - 1 < opts.length ? ans - 1 : null);
+      else if (typeof ans === 'string') { const l = ans.trim().match(/^\(?([a-h])\)?$/i); ok = l ? L.indexOf(l[1].toLowerCase()) : opts.findIndex(o => aulaFold(o) === aulaFold(ans)); if (ok < 0) ok = null; }
+    } else if (tp === 'tf') {
+      ok = typeof ans === 'boolean' ? ans : /^(v|verdadero|true|cierto)/i.test(String(ans ?? '').trim()) ? true : /^(f|falso|false)/i.test(String(ans ?? '').trim()) ? false : null;
+    } else if (tp === 'short') {
+      acc = (Array.isArray(ans) ? ans : String(ans ?? '').split('|')).map(x => String(x).trim()).filter(Boolean);
+    }
+    const n = i + 1;
+    if (tp === 'mc' && ok === null) warns.push(`Pregunta ${n}: no trae la respuesta correcta marcada.`);
+    if (tp === 'tf' && ok === null) warns.push(`Pregunta ${n}: falta si es Verdadero o Falso.`);
+    if (tp === 'short' && !acc.length) warns.push(`Pregunta ${n}: falta la respuesta aceptada.`);
+    return normAulaQ({ t: tp, text: pick(q, 'text', 'texto', 'enunciado', 'pregunta', 'question', 'titulo') || '', pts: pick(q, 'pts', 'puntos', 'points', 'valor') || 1, opts, ok, acc });
+  }).filter(Boolean);
+  const kRaw = String(pick(src, 'kind', 'tipo', 'type') || '');
+  const kind = Object.keys(AULA_KINDS).find(k => aulaFold(k) === aulaFold(kRaw)) || 'Examen';
+  return { ex: { title: String(pick(src, 'title', 'titulo', 'nombre') || 'Examen importado'), kind, dur: parseInt(pick(src, 'dur', 'tiempo', 'duracion', 'minutos'), 10) || 30, instr: String(pick(src, 'instr', 'instrucciones', 'instructions') || ''), qs }, warns };
 }
 
 /* ---------- Archivar y restaurar ---------- */
@@ -9353,7 +9401,8 @@ const AULA_OPS = {
   delete: { t: 'Eliminar la entrega', b: 'Se borra su entrega y, si la nota del Aula está en el registro, también esa nota. Podrá volver a hacerlo mientras el examen esté abierto.', ok: 'Eliminar' },
   collect: { t: 'Recoger lo que lleva', b: 'En unos segundos su examen se entrega solo con lo que haya respondido y ya no puede seguir.', ok: 'Recoger' },
   block: { t: 'Bloquear', b: 'No puede entrar ni entregar. Lo que respondió se queda en su celular. Puedes desbloquearlo cuando quieras.', ok: 'Bloquear' },
-  unblock: { t: 'Desbloquear', b: '', ok: 'Desbloquear' }
+  unblock: { t: 'Desbloquear', b: '', ok: 'Desbloquear' },
+  permit: { t: 'Permitir continuar', b: '', ok: 'Permitir' }
 };
 function aulaStuAct(id, num, op) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
@@ -9361,7 +9410,7 @@ function aulaStuAct(id, num, op) {
   aulaCloseMenus();
   if (op === 'unassign') return aulaSetAssigned(m, ex, aulaAssigned(m, ex).filter(x => !s || x.id !== s.id).map(x => x.id), `${who} ya no está en este examen.`);
   const run = () => aulaApplyOp(m, ex, [String(num)], op).then(() => toast(`${who}: ${O.t.toLowerCase()} listo.`, 'ok', 3500)).catch(e => toast(aulaErr(e), 'error', 5000));
-  if (op === 'unblock') return run();
+  if (op === 'unblock' || op === 'permit') return run();
   confirmBox(`${O.t} · ${who}`, O.b, O.ok, run, { danger: op !== 'collect' });
 }
 /** Aplica una acción a varios números de lista a la vez (un estudiante o todo el curso). */
@@ -9378,11 +9427,14 @@ async function aulaApplyOp(m, ex, nums, op) {
       const rp = ex.resPushed[num]; if (rp && rp.tok) await ref.collection('res').doc(rp.tok).delete().catch(() => { });
       await ref.collection('x').doc(num).set({ m: 'reset', n: nonce });
       if (op === 'delete' && t && st && isNum(ex.applied[sid]) && getGrade(st, t.ra.id, t.c.id, t.i) === ex.applied[sid]) setGrade(st, t.ra.id, t.c.id, t.i, '');
-      delete ex.resp[num]; delete ex.marks[num]; delete ex.map[num]; delete ex.resPushed[num]; delete ex.outBase[num]; if (sid) { delete ex.blocked[sid]; if (op === 'delete') delete ex.applied[sid]; }
+      delete ex.resp[num]; delete ex.marks[num]; delete ex.map[num]; delete ex.resPushed[num]; delete ex.outBase[num]; delete ex.unlockAt[num]; delete ex.lockSent[num]; if (sid) { delete ex.blocked[sid]; if (op === 'delete') delete ex.applied[sid]; }
       delete AulaLive.live[num];
     } else if (op === 'collect' || op === 'block') {
       await withTimeout(ref.collection('x').doc(num).set({ m: op }), 12000);
       if (sid) ex.blocked[sid] = op;
+    } else if (op === 'permit') {
+      await withTimeout(ref.collection('x').doc(num).set({ m: 'unlock', n: nonce }), 12000);
+      const lv = AulaLive.live[num]; ex.unlockAt[num] = lv ? lv.b || 0 : 0; delete ex.lockSent[num];
     } else if (op === 'unblock') {
       await withTimeout(ref.collection('x').doc(num).delete(), 12000);
       if (sid) delete ex.blocked[sid];

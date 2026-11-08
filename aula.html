@@ -173,12 +173,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   if (!EID) { hero(); screen(box(I.link, '', 'Enlace incompleto', 'Pídele a tu profesor el enlace o el QR otra vez.')); return; }
   try { firebase.initializeApp(CLOUD_CONFIG); db = firebase.firestore(); } catch (e) { fail('No se pudo cargar. Revisa tu internet.', I.wifi); return; }
 
-  // Si ya empezó en este teléfono, sigue donde se quedó (aunque no haya internet)
-  if (S && S.sent) { done(); return; }
-  if (S && S.qs) { exam(); refreshMeta(); }
-  setInterval(function () { if (S && S.qs && !S.sent && navigator.onLine) refreshMeta(); }, 60000);
-  if (S && S.qs) return;
-  start();
+  // (el arranque está al final, después de registrar todos los eventos)
 
   function refreshMeta() { ref().get().then(function (d) { if (d.exists) { META = d.data(); if (S) { S.until = META.until && META.until.toMillis ? META.until.toMillis() : S.until; S.meta.res = META.res || 'off'; save(); } } }).catch(function () { }); }
 
@@ -201,6 +196,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       '<div class="row"><div><label class="f" for="num">Nº de lista</label><input type="number" id="num" min="1" max="199" inputmode="numeric" value="' + esc(last.num || '') + '"></div>' +
       '<div><label class="f" for="nm">Nombre y apellido</label><input type="text" id="nm" maxlength="80" autocomplete="name" value="' + esc(last.name || '') + '"></div></div>' +
       (META.pin ? '<label class="f" for="pin">Tu clave personal</label><input type="password" id="pin" class="pin-in" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="····" autocomplete="off">' : '') +
+      (META.lock ? '<div class="msg bad" style="margin-top:16px">' + I.lock + '<div><b>Si sales de esta página, tu examen se bloquea</b> y solo podrás seguir cuando tu profesor lo permita. No cambies de app ni de pestaña.</div></div>' : '') +
       '<ul class="tips">' + (META.dur ? '<li>' + I.clock + '<span>Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</span></li>' : '') + '<li>' + I.eye + '<span>No salgas de esta página: tu profesor verá cuántas veces saliste.</span></li><li>' + I.save + '<span>Tus respuestas se guardan en el teléfono mientras respondes.</span></li></ul>' +
       '<div id="jm"></div><button class="btn" id="jb">Comenzar</button></form>');
     $('#jf').onsubmit = function (ev) {
@@ -226,7 +222,9 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
         return Promise.all([ref().collection('k').doc(num + '-' + pin).get(), ref().collection('x').doc(String(num)).get().catch(function () { return { exists: false }; })]).then(function (rs) {
           var xd = rs[1].exists ? rs[1].data() : null;
           if (xd && (xd.m === 'block' || xd.m === 'collect')) { reset(); return closedForMe(xd.m); }
+          if (xd && xd.m === 'lock') { reset(); return waitPermit(num, function (n) { X._unlock = n; go(X, code, num, name, pin, until); }); }
           X._reset = xd && xd.m === 'reset' ? xd.n : '';
+          X._unlock = xd && xd.m === 'unlock' ? xd.n : '';
           if (!rs[0].exists) { reset(); return say(X.pin ? 'Clave incorrecta. Revísala con tu profesor.' : 'No tienes acceso a este examen. Pregúntale a tu profesor.'); }
           go(X, code, num, name, pin, until);
         });
@@ -268,7 +266,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     var r = seedRand(EID + ':' + num);
     var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, r) : o }; });
     if (X.shuffle) qs = shuffle(qs, r);
-    S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), reset: X._reset || '', qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
+    S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), reset: X._reset || '', lock: !!X.lock, unlockSeen: X._unlock || '', locked: 0, qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
     lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name }));
     lsSet(DEV, String(num));
     save(); exam();
@@ -276,6 +274,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
 
   function answered() { var n = 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
   function exam() {
+    if (S.locked) return showLocked();
     document.body.classList.add('exam');
     top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div>' + thmBtn() + '<div class="timer" id="tm">' + I.clock + '<span>' + (deadline() < Infinity ? '--:--' : 'Sin límite') + '</span></div></div></div><div class="prog"><div id="pg"></div></div>';
     top.style.position = 'sticky'; top.style.top = '0'; top.style.zIndex = '5';
@@ -303,7 +302,10 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function pushLive() {
     if (!S || S.sent || sending || !db) return;
     var n = answered(), sig = n + ':' + (S.blurs || 0);
-    if (sig === liveN) return; liveN = sig;
+    if (sig === liveN) return;
+    var outChanged = String(liveN).split(':')[1] !== String(S.blurs || 0);
+    if (!outChanged && Date.now() - (pushLive.at || 0) < 8000) { clearTimeout(pushLive.t); pushLive.t = setTimeout(pushLive, 8200); return; }
+    pushLive.at = Date.now(); liveN = sig;
     ref().collection('live').doc(String(S.num)).set({ num: S.num, pin: S.pin || '', n: n, tot: S.qs.length, b: S.blurs || 0, at: firebase.firestore.FieldValue.serverTimestamp() }).catch(function () { liveN = -1; });
   }
   function watch() {
@@ -313,6 +315,8 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       if (!d.exists || S.sent) return;
       var mode = d.data().m;
       if (mode === 'reset') { if (d.data().n !== S.reset) restart(); return; }
+      if (mode === 'unlock') return;
+      if (mode === 'lock') { if (!S.locked) { S.locked = Date.now(); save(); showLocked(); } return; }
       if (mode === 'collect') { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.lock, 'Tu profesor cerró tu examen. Se entrega lo que llevas respondido…'); clearInterval(watchT); send(true, true); }
       else { clearInterval(watchT); clearInterval(tick); S.blockedAt = Date.now(); save(); closedForMe('block'); }
     }).catch(function () { });
@@ -339,8 +343,37 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function warnBlur() { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.alert, 'Saliste de la página del examen ' + S.blurs + ' ' + (S.blurs === 1 ? 'vez' : 'veces') + '. Tu profesor lo verá.'); }
   // Cuenta una salida cuando se oculta la página (otra app, otra pestaña) o pierde el foco (otra ventana en la PC)
   var away = false;
-  function leave() { if (!S || !S.qs || S.sent || away) return; away = true; S.blurs = (S.blurs || 0) + 1; save(); pushLive(); }
-  function back() { if (!S || !S.qs || S.sent || !away) return; away = false; warnBlur(); watch(); }
+  function leave() {
+    if (!S || !S.qs || S.sent || away || S.locked) return; away = true; S.blurs = (S.blurs || 0) + 1;
+    if (S.lock) { S.locked = Date.now(); save(); pushLive(); showLocked(); return; }
+    save(); pushLive();
+  }
+  function back() { if (!S || !S.qs || S.sent || !away) return; away = false; if (S.locked) return; warnBlur(); watch(); }
+  /** Examen bloqueado por salir de la página: espera a que el docente lo permita (o lo recoja / reinicie). */
+  function showLocked() {
+    clearInterval(watchT); clearInterval(tick);
+    hero(); screen(box(I.lock, 'bad', 'Tu examen está bloqueado', 'Saliste de la página del examen. Tus respuestas están guardadas. Pídele a tu profesor que te permita continuar.', '<p class="small"><span class="spin"></span> Esperando a tu profesor…</p>'));
+    var poll = function () {
+      if (!navigator.onLine) return;
+      ref().collection('x').doc(String(S.num)).get().then(function (d) {
+        var x = d.exists ? d.data() : null; if (!x) return;
+        if (x.m === 'unlock' && x.n !== S.unlockSeen) { S.locked = 0; S.unlockSeen = x.n; away = false; save(); exam(); }
+        else if (x.m === 'collect') { exam(); send(true, true); }
+        else if (x.m === 'reset' && x.n !== S.reset) restart();
+        else if (x.m === 'block') closedForMe('block');
+        else return;
+        clearInterval(watchT);
+      }).catch(function () { });
+    };
+    poll(); watchT = setInterval(poll, 8000);
+  }
+  /** Al entrar desde otro navegador con el examen bloqueado: espera el permiso del docente. */
+  function waitPermit(num, onOk) {
+    hero(); screen(box(I.lock, 'bad', 'Tu examen está bloqueado', 'Saliste de la página durante el examen. Solo puedes seguir cuando tu profesor lo permita.', '<p class="small"><span class="spin"></span> Esperando a tu profesor…</p>'));
+    clearInterval(watchT); watchT = setInterval(function () {
+      ref().collection('x').doc(String(num)).get().then(function (d) { var x = d.exists ? d.data() : null; if (!x || x.m === 'unlock') { clearInterval(watchT); onOk(x ? x.n : ''); } }).catch(function () { });
+    }, 8000);
+  }
   document.addEventListener('visibilitychange', function () { if (document.hidden) leave(); else back(); });
   window.addEventListener('blur', function () { setTimeout(function () { if (!document.hasFocus()) leave(); }, 250); });
   window.addEventListener('focus', back);
@@ -412,8 +445,16 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       '<div class="small" style="margin:2px 0 8px">' + R.got + ' de ' + R.total + ' puntos</div><span class="pill ' + c + '">' + esc(R.cond || '') + '</span></div></div>' + (det ? '<div class="det">' + det + '</div>' : '') + '</div>';
     var rg = el.querySelector('.ring'); if (rg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { rg.style.setProperty('--p', 0); requestAnimationFrame(function () { requestAnimationFrame(function () { rg.style.setProperty('--p', pct); }); }); }
   }
-  // Si el examen quedó a medio enviar (se cerró la página), reintenta al abrir
-  if (S && S.sending && !S.sent && S.qs) setTimeout(function () { send(false); }, 800);
+  /* ---------- Arranque (al final: así todos los eventos ya están registrados) ----------
+     Si ya empezó en este teléfono, sigue donde se quedó (aunque no haya internet). */
+  setInterval(function () { if (S && S.qs && !S.sent && navigator.onLine) refreshMeta(); }, 60000);
+  if (S && S.sent) done();
+  else if (S && S.qs) {
+    exam(); refreshMeta();
+    // Si el examen quedó a medio enviar (se cerró la página), reintenta al abrir
+    if (S.sending && !S.locked) setTimeout(function () { send(false); }, 800);
+  }
+  else start();
 })();
 </script>
 </body>
