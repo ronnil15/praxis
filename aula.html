@@ -188,7 +188,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       if (!d.exists) { screen(box(I.folder, '', 'No encontrado', 'Este examen no existe o tu profesor lo eliminó.')); return; }
       META = d.data(); hero();
       var until = META.until && META.until.toMillis ? META.until.toMillis() : 0;
-      if (META.status !== 'open' || (until && until < Date.now())) { screen(box(I.lock, '', META.status === 'draft' ? 'Todavía no está abierto' : 'Ya está cerrado', 'Espera a que tu profesor lo abra y vuelve a intentar.', '<button class="btn" onclick="location.reload()">Volver a intentar</button>')); return; }
+      if (META.status !== 'open' || (until && until < Date.now())) { screen(box(I.lock, '', 'Este examen no está habilitado', 'Espera a que tu profesor lo habilite y vuelve a intentar.', '<button class="btn" onclick="location.reload()">Volver a intentar</button>')); return; }
       join(until);
     }).catch(function (e) { fail(String(e && e.code || '').indexOf('unavailable') >= 0 || !navigator.onLine ? 'Sin conexión a internet. Conéctate y vuelve a intentar.' : 'No se pudo abrir el examen (' + esc(e && e.code || e) + ').', I.wifi); });
   }

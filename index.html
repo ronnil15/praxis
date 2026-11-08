@@ -1814,6 +1814,11 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .seg-sm button.on span { color: var(--primary); background: var(--primary-light); }
 .tbl-empty { padding: .8rem 1rem 0; }
 .ae-stus-tall { max-height: 55vh; }
+.tbl-off { border-bottom: 0; padding: 1rem 1.1rem; }
+.tb-off { display: flex; align-items: center; gap: .75rem; }
+.tb-off > svg { width: 34px; height: 34px; padding: 8px; border-radius: 10px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+.tb-off b { display: block; }
+.table-card:has(.tbl-off) .table-wrap { border-top: 1px solid var(--border); }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8151,9 +8156,9 @@ function aulaIsOpen(ex) { return ex.status === 'open' && (!ex.until || new Date(
 function aulaState(ex) { return ex.status === 'draft' ? 'draft' : aulaIsOpen(ex) ? 'open' : 'closed'; }
 function aulaStatus(ex) {
   const s = aulaState(ex);
-  if (s === 'draft') return { cls: 'neutral', label: 'Borrador', dot: 'draft' };
-  if (s === 'open') return { cls: 'ok', label: 'Abierto' + (ex.until ? ' hasta ' + aulaHM(ex.until) : ''), dot: 'open' };
-  return { cls: 'bad', label: 'Cerrado', dot: 'closed' };
+  if (s === 'draft') return { cls: 'neutral', label: 'Sin habilitar', dot: 'draft' };
+  if (s === 'open') return { cls: 'ok', label: 'Habilitado' + (ex.until ? ' hasta ' + aulaHM(ex.until) : ''), dot: 'open' };
+  return { cls: 'bad', label: 'Inhabilitado', dot: 'closed' };
 }
 function aulaHM(iso) {
   const d = new Date(iso); if (isNaN(d)) return '';
@@ -8383,7 +8388,7 @@ function renderAula(m) {
   const list = f === 'all' ? all : f === 'arch' ? [] : all.filter(e => aulaState(e) === f);
   const pend = all.reduce((a, e) => a + Object.keys(e.resp).filter(k => aulaScore(e, k).pending).length, 0);
   const cloud = aulaCloudOK();
-  const chips = [['all', 'Todos'], ['open', 'Abiertos'], ['draft', 'Borradores'], ['closed', 'Cerrados'], ['arch', 'Archivados']].map(([k, l]) => `<button class="aula-chip ${f === k ? 'on' : ''}" data-act="aula-filter" data-id="${k}">${l} <span>${cnt[k]}</span></button>`).join('');
+  const chips = [['all', 'Todos'], ['open', 'Habilitados'], ['draft', 'Sin habilitar'], ['closed', 'Inhabilitados'], ['arch', 'Archivados']].map(([k, l]) => `<button class="aula-chip ${f === k ? 'on' : ''}" data-act="aula-filter" data-id="${k}">${l} <span>${cnt[k]}</span></button>`).join('');
   return `<div class="aula">
     <section class="aula-hero">
       <div class="ah-txt">
@@ -8398,9 +8403,9 @@ function renderAula(m) {
         <button class="btn ah-sec" data-act="aula-pins">${AI.key} Claves de estudiantes</button>
       </div>
     </section>
-    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Aquí puedes preparar, importar e imprimir exámenes; para abrirlos a los estudiantes entra en la versión web con internet.</div></div>`}
+    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Aquí puedes preparar, importar e imprimir exámenes; para habilitarlos a los estudiantes entra en la versión web con internet.</div></div>`}
     ${all.length || arch.length ? `<div class="aula-chips">${chips}</div>` : ''}
-    ${f === 'arch' ? aulaTrayHTML(m, arch) : list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : all.length ? `<p class="muted aula-none">No hay exámenes en «${esc({ open: 'Abiertos', draft: 'Borradores', closed: 'Cerrados' }[f])}».</p>` : `<div class="aula-empty card">
+    ${f === 'arch' ? aulaTrayHTML(m, arch) : list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : all.length ? `<p class="muted aula-none">No hay exámenes en «${esc({ open: 'Habilitados', draft: 'Sin habilitar', closed: 'Inhabilitados' }[f])}».</p>` : `<div class="aula-empty card">
       <div class="ae-art">${AI.exam}</div>
       <h3>Tu aula está lista para el primer examen</h3>
       <ol class="aula-steps">
@@ -8435,7 +8440,8 @@ function renderAulaExam(m, ex) {
   const pend = nums.filter(k => scores[k].pending).length;
   const used = new Set();
   // Filtro de la tabla (solo vista): todos / entregaron / pendientes; los que están respondiendo o bloqueados cuentan como «en curso»
-  const view = ['all', 'sent', 'pend'].includes(state.aulaRows) ? state.aulaRows : 'all';
+  // Sin habilitar o inhabilitado: la lista queda limpia (solo quienes entregaron)
+  const view = !open ? 'sent' : ['all', 'sent', 'pend'].includes(state.aulaRows) ? state.aulaRows : 'all';
   let nSent = 0, nPend = 0;
   const rows = asg.map(s => {
     const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; });
@@ -8467,8 +8473,8 @@ function renderAulaExam(m, ex) {
     </section>
     <div class="aula-actions">
       ${open
-      ? `<button class="btn btn-primary" data-act="aula-share" data-id="${ex.id}">${AI.qr} Mostrar QR y código</button><button class="btn btn-secondary" data-act="aula-extend" data-id="${ex.id}">${AI.clock} Extender</button><button class="btn btn-danger" data-act="aula-close" data-id="${ex.id}">${AI.stop} Cerrar ahora</button>`
-      : `<button class="btn btn-primary" data-act="aula-start" data-id="${ex.id}" ${cloud ? '' : 'disabled title="Necesitas la versión web con tu cuenta"'}>${AI.play} ${ex.status === 'draft' ? 'Abrir a los estudiantes' : 'Volver a abrir'}</button>`}
+      ? `<button class="btn btn-primary" data-act="aula-share" data-id="${ex.id}">${AI.qr} Mostrar QR y código</button><button class="btn btn-secondary" data-act="aula-extend" data-id="${ex.id}">${AI.clock} Extender</button><button class="btn btn-danger" data-act="aula-close" data-id="${ex.id}">${AI.stop} Inhabilitar</button>`
+      : `<button class="btn btn-primary" data-act="aula-start" data-id="${ex.id}" ${cloud ? '' : 'disabled title="Necesitas la versión web con tu cuenta"'}>${AI.play} Habilitar</button>`}
       <button class="btn btn-secondary" data-act="aula-edit" data-id="${ex.id}">${AI.edit} Editar</button>
       <details class="aula-menu"><summary class="btn btn-secondary">${AI.down} Exportar</summary><div class="am-pop">
         <button data-act="aula-pdf" data-id="${ex.id}">${AI.file}<span>PDF para los estudiantes<small>Para imprimir o guardar como PDF</small></span></button>
@@ -8485,7 +8491,7 @@ function renderAulaExam(m, ex) {
         <button data-act="aula-del" data-id="${ex.id}" class="am-danger">${AI.trash}<span>Eliminar</span></button>
       </div></details>
     </div>
-    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para abrirlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo, exportarlo e imprimirlo.</div></div>`}
+    ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para habilitarlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo, exportarlo e imprimirlo.</div></div>`}
     ${AulaLive.err && AulaLive.xid === ex.id ? `<div class="alert alert-bad"><div><strong>No se pudieron leer las entregas.</strong> ${AulaLive.err.includes('permission') ? 'Falta activar las reglas del Aula en Firebase.' : 'Revisa tu conexión.'} <small class="muted">(${esc(AulaLive.err)})</small></div></div>` : ''}
     <div class="aula-kpis">
       ${aulaDonutKPI(nums.length - pend, pend, asg.length)}
@@ -8500,12 +8506,13 @@ function renderAulaExam(m, ex) {
       : `<div class="at-l"><span class="at-ic warn">${AI.alert}</span><div><strong>Sin casilla del registro.</strong><div class="muted small">Elige en «Editar» a qué actividad va la nota para que pase sola.</div></div></div>`}</div>
     ${stats ? `<details class="card aula-qstats"><summary><strong>Aciertos por pregunta</strong> <span class="muted small">(para saber qué repasar)</span></summary><div class="aq-stats">${stats}</div></details>` : ''}
     <div class="card table-card">
-      <div class="tbl-bar"><div class="seg seg-sm">${[['all', 'Todos', asg.length], ['sent', 'Entregaron y en curso', asg.length - nPend], ['pend', 'Pendientes', nPend]].map(([k, l, n]) => `<button type="button" data-act="aula-rows" data-id="${k}" class="${view === k ? 'on' : ''}">${l} <span>${n}</span></button>`).join('')}</div>
+      ${open ? `<div class="tbl-bar"><div class="seg seg-sm">${[['all', 'Todos', asg.length], ['sent', 'Entregaron y en curso', asg.length - nPend], ['pend', 'Pendientes', nPend]].map(([k, l, n]) => `<button type="button" data-act="aula-rows" data-id="${k}" class="${view === k ? 'on' : ''}">${l} <span>${n}</span></button>`).join('')}</div>
         <div class="row-wrap">${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}<button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>
-      ${view !== 'pend' || nPend ? '' : '<p class="muted small tbl-empty">No hay pendientes: todos entregaron o están respondiendo.</p>'}
-      <div class="table-wrap"><table class="tbl aula-tbl">
+      ${view !== 'pend' || nPend ? '' : '<p class="muted small tbl-empty">No hay pendientes: todos entregaron o están respondiendo.</p>'}`
+      : `<div class="tbl-bar tbl-off"><div class="tb-off">${AI.lock}<div><b>${ex.status === 'draft' ? 'Sin habilitar' : 'Inhabilitado'}</b><span class="muted small">${nums.length ? 'Solo se muestran los que entregaron.' : 'No hay estudiantes en espera. Al habilitarlo eliges quién lo toma.'}</span></div></div></div>`}
+      ${!open && !nums.length ? '' : `<div class="table-wrap"><table class="tbl aula-tbl">
       <thead><tr><th>Nº</th><th>Estudiante</th><th>Estado</th><th>Puntos</th><th>Nota${t ? ' /' + fmtN(t.c.max) : ''}</th><th title="Veces que salió de la página del examen">Salidas</th><th>Entregó</th><th></th></tr></thead>
-      <tbody>${rows.join('')}${extra.join('')}</tbody></table></div></div>
+      <tbody>${rows.join('')}${extra.join('')}</tbody></table></div>`}</div>
   </div>`;
 }
 /** Menú ⋯ de acciones de un estudiante (todas pasan por aulaStuAct). */
@@ -8634,7 +8641,7 @@ function aulaEditor(id, preset) {
         if (ne.auto) aulaApply(m, ne);
         persist(); state.aulaSel = ne.id; render();
         if (ne.pub && ne.status !== 'draft') aulaPublish(m, ne).then(() => { aulaPushResults(m, ne); persist(); toast('Cambios guardados y publicados.', 'ok'); }).catch(e => toast('Guardado aquí, pero no se pudo publicar: ' + aulaErr(e), 'warn', 5000));
-        else toast(orig ? 'Cambios guardados.' : 'Examen guardado. Cuando quieras, ábrelo a los estudiantes.', 'ok', 3200);
+        else toast(orig ? 'Cambios guardados.' : 'Examen guardado. Cuando llegue el día, habilítalo.', 'ok', 3200);
       }
     }],
     onOpen: ov => {
@@ -8694,26 +8701,29 @@ window.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e
 /* ---------- Abrir, cerrar y compartir ---------- */
 function aulaStartDialog(id, extend = false) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  if (!aulaCloudOK()) return toast('Entra en la versión web con tu cuenta para abrir el Aula.', 'error', 4000);
+  if (!aulaCloudOK()) return toast('Entra en la versión web con tu cuenta para habilitar exámenes.', 'error', 4000);
   if (!ex.qs.length) return toast('Agrega preguntas primero.', 'error');
-  if (!aulaAssigned(m, ex).length) return toast('No hay estudiantes asignados. Revísalo en «Editar».', 'error', 4000);
   const base = extend && ex.until && new Date(ex.until) > new Date() ? new Date(ex.until) : new Date();
   const def = new Date(base.getTime() + (extend ? 15 : Math.max(ex.dur || 45, 20) + 15) * 60000);
   def.setSeconds(0, 0);
+  const on = new Set(aulaAssigned(m, ex).map(s => s.id)), pk = aulaPicker(m, on);
   openModal({
-    title: extend ? 'Extender el tiempo' : 'Abrir a los estudiantes', icon: extend ? AI.clock : AI.play,
+    title: extend ? 'Extender el tiempo' : 'Habilitar el examen', wide: !extend, icon: extend ? AI.clock : AI.play,
     sub: `${ex.title} · ${modShort(m)}${m.course ? ' · ' + m.course : ''} · ${aulaToLabel(m, ex)}`,
-    body: `<label class="field">Recibe entregas hasta<input type="datetime-local" id="asUntil" value="${dtLocal(def)}"></label>
+    body: `${extend ? '' : `<div class="ae-sec" style="margin-top:0"><h4>¿Quién lo toma?</h4>${pk.html}</div>`}
+      <label class="field">Recibe entregas hasta<input type="datetime-local" id="asUntil" value="${dtLocal(def)}"></label>
       <div class="row-wrap">${(extend ? [5, 10, 15, 30] : [30, 45, 60, 90, 120]).map(x => `<button type="button" class="btn btn-sm btn-ghost" data-plus="${x}">${extend ? '+' : ''}${x} min</button>`).join('')}</div>
-      ${extend ? '' : `<p class="muted small">Se crea un <b>código y un QR nuevos</b> cada vez que lo abres: los de antes (o una foto) ya no sirven.</p><label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del QR (no tendrán que escribirlo)</label>
+      ${extend ? '' : `<p class="muted small">Se crea un <b>código y un QR nuevos</b> cada vez que lo habilitas: los de antes (o una foto) ya no sirven.</p><label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del QR (no tendrán que escribirlo)</label>
       <p class="muted small">Si no lo marcas, les dices el código en voz alta o lo escribes en la pizarra: así nadie de fuera puede entrar solo con el enlace.</p>
       ${ex.pin ? '<p class="muted small">Pedirá la clave personal: entrégales sus tarjetas (Aula › Claves de estudiantes).</p>' : ''}`}
       ${ex.dur ? `<p class="muted small">Cada estudiante tendrá ${ex.dur} minutos desde que empiece.</p>` : ''}`,
     actions: [{ label: 'Cancelar' }, {
-      label: extend ? 'Extender' : 'Abrir ahora', cls: 'btn-primary', onClick: (ov, close) => {
+      label: extend ? 'Extender' : 'Habilitar ahora', cls: 'btn-primary', onClick: (ov, close) => {
         const v = ov.querySelector('#asUntil').value; const d = v ? new Date(v) : null;
         if (!d || isNaN(d) || d <= new Date()) { toast('Elige una hora que todavía no haya pasado.', 'error'); return false; }
         if (!extend) {
+          if (!on.size) { toast('Marca al menos un estudiante.', 'error'); return false; }
+          aulaPickTo(m, ex, on);
           ex.withCode = ov.querySelector('#asCode').checked;
           if (ex.code) ex._old = ex.code;
           ex.code = aulaCode(); ex.unlock = aulaRand(4); // código y QR nuevos en cada apertura
@@ -8721,16 +8731,16 @@ function aulaStartDialog(id, extend = false) {
         }
         const btn = ov.querySelector('.modal-foot .btn-primary'); btn.disabled = true; btn.textContent = 'Publicando…';
         aulaSetStatus(m, ex, 'open', d.toISOString()).then(() => {
-          persist(); close(); render(); toast(extend ? 'Tiempo extendido.' : '¡Abierto! Muestra el QR a tus estudiantes.', 'ok', 3200);
+          persist(); close(); render(); toast(extend ? 'Tiempo extendido.' : '¡Habilitado! Muestra el QR a tus estudiantes.', 'ok', 3200);
           if (!extend) setTimeout(() => aulaShare(ex.id), 250);
-        }).catch(e => { btn.disabled = false; btn.textContent = extend ? 'Extender' : 'Abrir ahora'; toast(aulaErr(e), 'error', 6000); });
+        }).catch(e => { btn.disabled = false; btn.textContent = extend ? 'Extender' : 'Habilitar ahora'; toast(aulaErr(e), 'error', 6000); });
         return false;
       }
     }],
-    onOpen: ov => ov.querySelectorAll('[data-plus]').forEach(b => b.onclick = () => {
+    onOpen: ov => { if (!extend) pk.bind(ov); ov.querySelectorAll('[data-plus]').forEach(b => b.onclick = () => {
       const now = extend ? base : new Date(); const d = new Date(now.getTime() + +b.dataset.plus * 60000); d.setSeconds(0, 0);
       ov.querySelector('#asUntil').value = dtLocal(d);
-    })
+    }); },
   });
 }
 function aulaErr(e) {
@@ -8741,9 +8751,9 @@ function aulaErr(e) {
 }
 function aulaClose(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  confirmBox('¿Cerrar ahora?', 'Nadie más podrá entregar. Quien esté respondiendo y no haya entregado no podrá enviar (puedes volver a abrirlo).', 'Cerrar', () => {
+  confirmBox('¿Inhabilitar el examen?', 'Nadie más podrá entrar ni entregar; quien esté respondiendo y no haya entregado no podrá enviar. La lista queda limpia: solo se ven los que entregaron. Puedes habilitarlo otra vez cuando quieras.', 'Inhabilitar', () => {
     const was = ex.closedAt; ex.closedAt = new Date().toISOString();
-    aulaSetStatus(m, ex, 'closed').then(() => { aulaPushResults(m, ex); persist(); render(); toast('Cerrado.', 'ok'); }).catch(e => { ex.closedAt = was; throw e; }).catch(e => toast(aulaErr(e), 'error', 5000));
+    aulaSetStatus(m, ex, 'closed').then(() => { aulaPushResults(m, ex); persist(); render(); toast('Inhabilitado.', 'ok'); }).catch(e => { ex.closedAt = was; throw e; }).catch(e => toast(aulaErr(e), 'error', 5000));
   });
 }
 let _qrLoad = null;
@@ -9391,24 +9401,37 @@ function aulaSetAssigned(m, ex, ids, okMsg) {
   if (ex.pub && ex.status !== 'draft' && aulaCloudOK()) aulaPublish(m, ex).then(() => { persist(); done(); }).catch(e => toast('Guardado aquí, pero no se pudo publicar: ' + aulaErr(e), 'warn', 5000));
   else done();
 }
+/** Lista de estudiantes con casillas (se usa al habilitar y en «Elegir quién lo toma»). */
+function aulaPicker(m, on) {
+  const studs = m.students.slice().sort((a, b) => a.num - b.num);
+  return {
+    html: `<div class="ae-stus-h"><span class="muted small" data-pk-n></span><button type="button" class="btn btn-sm btn-ghost" data-pk="all">Todos</button><button type="button" class="btn btn-sm btn-ghost" data-pk="none">Ninguno</button></div>
+      <div class="ae-stus ae-stus-tall">${studs.map(s => `<label class="ae-stu"><input type="checkbox" value="${s.id}" data-pk-s><span>${s.num}</span>${esc(s.name)}</label>`).join('')}</div>`,
+    bind(root) {
+      const draw = () => {
+        root.querySelector('[data-pk-n]').textContent = `${on.size} de ${studs.length} elegido${on.size === 1 ? '' : 's'}`;
+        root.querySelectorAll('[data-pk-s]').forEach(c => { c.checked = on.has(c.value); c.parentElement.classList.toggle('on', c.checked); });
+      };
+      root.querySelectorAll('[data-pk-s]').forEach(c => c.onchange = () => { if (c.checked) on.add(c.value); else on.delete(c.value); draw(); });
+      root.querySelectorAll('[data-pk]').forEach(b => b.onclick = () => { on.clear(); if (b.dataset.pk === 'all') studs.forEach(s => on.add(s.id)); draw(); });
+      draw();
+    }
+  };
+}
+/** Guarda la lista elegida en el examen; si no cambió, conserva el modo (grupo, todos…). */
+function aulaPickTo(m, ex, on) {
+  const cur = aulaAssigned(m, ex).map(s => s.id);
+  if (cur.length === on.size && cur.every(id => on.has(id))) return;
+  ex.to = on.size === m.students.length ? { mode: 'all', gs: '', gi: 0, ids: [] } : { mode: 'some', gs: '', gi: 0, ids: [...on] };
+}
 function aulaAssignDialog(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  const on = new Set(aulaAssigned(m, ex).map(s => s.id)), studs = m.students.slice().sort((a, b) => a.num - b.num);
-  const draw = ov => {
-    ov.querySelector('#asN').textContent = `${on.size} de ${studs.length} en el examen`;
-    ov.querySelectorAll('.ae-stu').forEach(l => { const c = l.querySelector('input'); c.checked = on.has(c.value); l.classList.toggle('on', c.checked); });
-  };
+  const on = new Set(aulaAssigned(m, ex).map(s => s.id)), pk = aulaPicker(m, on);
   openModal({
     title: 'Elegir quién lo toma', icon: AI.users, wide: true, sub: `${ex.title} · marca a los que deben aparecer en la lista y poder entrar`,
-    body: `<div class="ae-stus-h"><span class="muted small" id="asN"></span><button type="button" class="btn btn-sm btn-ghost" data-as="all">Todos</button><button type="button" class="btn btn-sm btn-ghost" data-as="none">Ninguno</button></div>
-      <div class="ae-stus ae-stus-tall">${studs.map(s => `<label class="ae-stu"><input type="checkbox" value="${s.id}"><span>${s.num}</span>${esc(s.name)}</label>`).join('')}</div>
-      ${Object.keys(ex.resp).length ? '<p class="muted small">Quien ya entregó sigue apareciendo en la tabla aunque lo desmarques.</p>' : ''}`,
+    body: pk.html + (Object.keys(ex.resp).length ? '<p class="muted small">Quien ya entregó sigue apareciendo en la tabla aunque lo desmarques.</p>' : ''),
     actions: [{ label: 'Cancelar' }, { label: 'Guardar', cls: 'btn-primary', onClick: () => { if (!on.size) { toast('Marca al menos un estudiante.', 'error'); return false; } aulaSetAssigned(m, ex, [...on]); } }],
-    onOpen: ov => {
-      ov.querySelectorAll('.ae-stu input').forEach(c => c.onchange = () => { if (c.checked) on.add(c.value); else on.delete(c.value); draw(ov); });
-      ov.querySelectorAll('[data-as]').forEach(b => b.onclick = () => { on.clear(); if (b.dataset.as === 'all') studs.forEach(s => on.add(s.id)); draw(ov); });
-      draw(ov);
-    }
+    onOpen: ov => pk.bind(ov)
   });
 }
 /** Reiniciar o eliminar las entregas de todo el curso. */
