@@ -1783,6 +1783,31 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .out-list { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .35rem; }
 .out-list span { font-size: .72rem; background: var(--risk-bg); color: var(--risk); border-radius: 99px; padding: .05rem .45rem; font-weight: 600; }
 .out-list span.bad { background: var(--bad-bg); color: var(--bad); }
+/* Salidas de la página */
+.out-n { display: inline-grid; place-items: center; min-width: 1.6rem; height: 1.6rem; padding: 0 .4rem; border-radius: 8px; font-weight: 800; font-size: .8rem; background: var(--risk-bg); color: var(--risk); }
+.out-n.bad { background: var(--bad-bg); color: var(--bad); }
+.out-n.zero { background: transparent; color: var(--muted); font-weight: 600; }
+.kpi-out { justify-content: flex-start; gap: .35rem; }
+.ko-h { display: flex; align-items: center; justify-content: space-between; gap: .4rem; min-height: 1.6rem; }
+.ko-h > span { font-size: .68rem; text-transform: uppercase; font-weight: 800; color: var(--muted); letter-spacing: .5px; }
+.ko-clear { padding: .15rem .45rem; font-size: .72rem; color: var(--muted); }
+.ko-clear svg { width: 13px; height: 13px; }
+.ko-tot { display: flex; align-items: baseline; gap: .5rem; }
+.ko-tot b { font-size: 1.6rem; line-height: 1; }
+.ko-tot small { color: var(--muted); font-size: .76rem; }
+.ko-list { list-style: none; margin: .25rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+.ko-list li { display: grid; grid-template-columns: minmax(0, 1fr) 54px 1.5rem; align-items: center; gap: .45rem; font-size: .78rem; }
+.ko-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-2); font-weight: 600; }
+.ko-list i { height: 6px; border-radius: 9px; background: var(--track); overflow: hidden; display: block; }
+.ko-list em { display: block; height: 100%; border-radius: 9px; background: var(--gold); }
+.ko-list li.bad em { background: var(--bad); }
+.ko-list b { text-align: right; font-size: .8rem; }
+.ko-list li.bad b { color: var(--bad); }
+.ko-more { color: var(--muted); display: block !important; }
+.row-menu .am-pop.am-right { left: auto; right: 0; min-width: 250px; }
+.row-menu summary { padding: .3rem; }
+.aula-tbl td:last-child { overflow: visible; }
+.table-card .table-wrap:has(details[open]) { overflow: visible; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8078,6 +8103,7 @@ function normAula(e) {
     status: ['draft', 'open', 'closed'].includes(e.status) ? e.status : 'draft', code: String(e.code || ''), pub: String(e.pub || ''), until: String(e.until || ''),
     kdocs: Array.isArray(e.kdocs) ? e.kdocs.map(String) : [], openedAt: String(e.openedAt || ''), lastOpen: String(e.lastOpen || ''), closedAt: String(e.closedAt || ''),
     blocked: e.blocked && typeof e.blocked === 'object' ? e.blocked : {}, res: ['off', 'close', 'now'].includes(e.res) ? e.res : 'off', resDetail: e.resDetail !== false, resPushed: e.resPushed && typeof e.resPushed === 'object' ? e.resPushed : {},
+    outBase: e.outBase && typeof e.outBase === 'object' ? e.outBase : {},
     auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
     resp: {}, marks: {}, applied: {}, map: {}
   };
@@ -8271,14 +8297,20 @@ async function aulaDeleteCloud(ex) {
   if (ex.code) await ref.collection('q').doc(ex.code).delete().catch(() => { });
   await ref.delete();
 }
-/** Quiénes salieron de la página (entregados y los que siguen respondiendo). */
-function aulaOutList(m, ex) {
-  const L = [];
-  Object.keys(ex.resp).forEach(k => { const b = ex.resp[k].blurs || 0; if (b) L.push([k, b]); });
-  if (AulaLive.xid === ex.id) Object.entries(AulaLive.live).forEach(([k, v]) => { if (!ex.resp[k] && v.b) L.push([k, v.b]); });
-  if (!L.length) return '';
-  L.sort((a, b) => b[1] - a[1]);
-  return `<div class="out-list">${L.slice(0, 4).map(([k, b]) => { const s = aulaStudent(m, ex, k); return `<span class="${b > 2 ? 'bad' : ''}">${esc(s ? s.name.split(' ')[0] : 'Nº ' + k)} <b>${b}</b></span>`; }).join('')}${L.length > 4 ? `<span>+${L.length - 4}</span>` : ''}</div>`;
+/** Veces que salió de la página (entregado o respondiendo), descontando lo que limpiaste. */
+function aulaOutRaw(ex, num) { const r = ex.resp[num]; if (r) return r.blurs || 0; const lv = AulaLive.xid === ex.id && AulaLive.live[num]; return lv ? lv.b || 0 : 0; }
+function aulaOutN(ex, num) { return Math.max(0, aulaOutRaw(ex, num) - (+ex.outBase[num] || 0)); }
+function aulaOutBadge(n) { return n ? `<span class="out-n ${n > 2 ? 'bad' : ''}" title="Veces que salió de la página">${n}</span>` : '<span class="out-n zero">0</span>'; }
+/** Recuadro «Salidas de la página»: total y quiénes salieron, con barra proporcional. */
+function aulaOutCard(m, ex) {
+  const nums = new Set(Object.keys(ex.resp)); if (AulaLive.xid === ex.id) Object.keys(AulaLive.live).forEach(k => nums.add(k));
+  const L = [...nums].map(k => [k, aulaOutN(ex, k)]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+  const tot = L.reduce((a, x) => a + x[1], 0), max = L.length ? L[0][1] : 1;
+  return `<div class="kpi kpi-out">
+    <div class="ko-h"><span>Salidas de la página</span>${tot ? `<button class="btn btn-ghost btn-sm ko-clear" data-act="aula-out-clear" data-id="${ex.id}" title="Poner los contadores en cero">${AI.refresh} Limpiar</button>` : ''}</div>
+    <div class="ko-tot"><b>${tot}</b><small>${L.length ? `${L.length} estudiante${L.length === 1 ? '' : 's'}` : 'nadie ha salido'}</small></div>
+    ${L.length ? `<ul class="ko-list">${L.slice(0, 4).map(([k, n]) => { const st = aulaStudent(m, ex, k); return `<li class="${n > 2 ? 'bad' : ''}"><span class="ko-name">${esc(st ? st.name : 'Nº ' + k)}</span><i><em style="width:${Math.round(n / max * 100)}%"></em></i><b>${n}</b></li>`; }).join('')}${L.length > 4 ? `<li class="ko-more">y ${L.length - 4} más</li>` : ''}</ul>` : ''}
+  </div>`;
 }
 function aulaUnwatch() { [AulaLive.unsub, AulaLive.unsub2].forEach(f => { if (f) { try { f(); } catch (e) { } } }); Object.assign(AulaLive, { eid: '', mid: '', xid: '', unsub: null, unsub2: null, err: '', ready: false, live: {}, liveReady: false }); }
 function aulaWatch(m, ex) {
@@ -8292,7 +8324,7 @@ function aulaWatch(m, ex) {
     snap.docs.forEach(d => {
       const x = d.data(), num = String(parseInt(x.num, 10) || d.id);
       const r = { num: +num, name: String(x.name || '').slice(0, 80), tok: String(x.tok || '').slice(0, 40), answers: x.answers || {}, startedAt: +x.startedAt || 0, sentAt: x.sentAt && x.sentAt.toMillis ? x.sentAt.toMillis() : (+x.sentAt || 0), blurs: parseInt(x.blurs, 10) || 0 };
-      if (JSON.stringify(e.resp[num]) !== JSON.stringify(r)) { if (!e.resp[num]) fresh.push(r); e.resp[num] = r; changed++; }
+      if (JSON.stringify(e.resp[num]) !== JSON.stringify(r)) { if (!e.resp[num]) fresh.push(r); e.resp[num] = r; changed++; const st = aulaStudent(mm, e, num); if (st && e.blocked[st.id] === 'collect') delete e.blocked[st.id]; }
     });
     if (!changed) { AulaLive.ready = true; return; }
     let applied = 0;
@@ -8434,6 +8466,7 @@ function renderAulaExam(m, ex) {
       </div></details>
       <details class="aula-menu"><summary class="btn btn-ghost">${AI.more} Más</summary><div class="am-pop">
         <button data-act="aula-dup" data-id="${ex.id}">${AI.copy}<span>Duplicar<small>Copia sin entregas (otra sección, recuperación…)</small></span></button>
+        ${ex.pub ? `<button data-act="aula-reset-all" data-id="${ex.id}">${AI.refresh}<span>Reiniciar para todo el curso<small>Borra las entregas para hacerlo de nuevo</small></span></button>` : ''}
         <button data-act="aula-archive" data-id="${ex.id}">${AI.archive}<span>Archivar<small>Guarda un archivo con todo y lo quita del Aula</small></span></button>
         <button data-act="aula-del" data-id="${ex.id}" class="am-danger">${AI.trash}<span>Eliminar</span></button>
       </div></details>
@@ -8444,7 +8477,7 @@ function renderAulaExam(m, ex) {
       ${aulaDonutKPI(nums.length - pend, pend, asg.length)}
       <div class="kpi"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
       <div class="kpi"><b style="color:var(--${pend ? 'gold' : 'ok'})">${pend}</b><span>Por corregir</span></div>
-      <div class="kpi"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0) + (AulaLive.xid === ex.id ? Object.entries(AulaLive.live).filter(([k]) => !ex.resp[k]).reduce((a, [, v]) => a + (v.b || 0), 0) : 0)}</b><span>Salidas de la página</span>${aulaOutList(m, ex)}</div>
+      ${aulaOutCard(m, ex)}
     </div>
     <div class="card aula-target">${t
       ? `<div class="at-l"><span class="at-ic">${AI.down}</span><div><strong>Las notas van a ${esc(aulaTargetLabel(m, t))}</strong><div class="muted small">Se calculan sobre ${fmtN(t.c.max)} puntos</div></div></div>
@@ -8457,13 +8490,21 @@ function renderAulaExam(m, ex) {
       <tbody>${rows.join('')}${extra.join('')}</tbody></table></div></div>
   </div>`;
 }
+/** Menú ⋯ de acciones de un estudiante (todas pasan por aulaStuAct). */
+function aulaRowMenu(ex, num, items) {
+  if (!items.length) return '';
+  return `<details class="aula-menu row-menu"><summary class="btn btn-ghost btn-icon btn-sm" title="Más acciones">${AI.more}</summary><div class="am-pop am-right">${items.map(([a, ic, l, d]) => `<button data-act="aula-stu" data-op="${a}" data-id="${ex.id}" data-num="${num}" class="${a === 'delete' || a === 'block' ? 'am-danger' : ''}">${ic}<span>${l}<small>${d}</small></span></button>`).join('')}</div></details>`;
+}
 function aulaRow(m, ex, s, num, sc, known) {
   const r = num !== undefined ? ex.resp[num] : null;
   if (!r) {
     const bl = ex.blocked[s.id], lv = AulaLive.xid === ex.id && AulaLive.live[s.num], open = aulaIsOpen(ex);
     const st = bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
-    const btn = !ex.pub || ex.status === 'draft' ? '' : bl ? `<button class="btn btn-sm btn-ghost" data-act="aula-unblock" data-id="${ex.id}" data-sid="${s.id}">${AI.unlock} Desbloquear</button>` : open ? `<button class="btn btn-sm btn-ghost" data-act="aula-block" data-id="${ex.id}" data-sid="${s.id}" title="Cerrar el examen solo a este estudiante">${AI.lock} Cerrar</button>` : '';
-    return `<tr class="ar-none${lv && !bl ? ' ar-live' : ''}${lv && lv.b ? ' ar-out' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td>${lv && lv.b ? `<span class="badge ${lv.b > 2 ? 'bad' : 'warn'}" title="Veces que salió de la página mientras responde">${lv.b}</span>` : lv ? '0' : ''}</td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${btn}</div></td></tr>`;
+    const on = ex.pub && ex.status !== 'draft', out = aulaOutN(ex, s.num);
+    const items = !on ? [] : bl === 'block' ? [['unblock', AI.unlock, 'Desbloquear', 'Puede volver a entrar y seguir']] : [
+      ...(open ? [['collect', AI.inbox, 'Recoger lo que lleva', 'Se entrega solo y ya no puede seguir'], ['block', AI.ban, 'Bloquear', 'No puede entrar ni entregar']] : []),
+      ...(lv || bl ? [['reset', AI.refresh, 'Reiniciar su examen', 'Empieza de cero en su celular']] : [])];
+    return `<tr class="ar-none${lv && !bl ? ' ar-live' : ''}${out ? ' ar-out' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td>${lv || out ? aulaOutBadge(out) : ''}</td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${aulaRowMenu(ex, s.num, items)}</div></td></tr>`;
   }
   const v = aulaScaled(m, ex, sc), warnName = s && !aulaNameOk(s, r);
   const usedMin = r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null;
@@ -8474,9 +8515,9 @@ function aulaRow(m, ex, s, num, sc, known) {
     <td>${sc.pending ? `<span class="badge warn">${sc.pending} por corregir</span>` : '<span class="badge ok">Corregido</span>'}${ex.res !== 'off' && ex.resPushed[num] ? `<span class="res-pub" title="El estudiante ya puede ver su resultado">${AI.eye}</span>` : ''}</td>
     <td><b>${fmtN(sc.got)}</b>/${fmtN(sc.total)}</td>
     <td>${nota}</td>
-    <td>${r.blurs ? `<span class="badge ${r.blurs > 2 ? 'bad' : 'warn'}">${r.blurs}</span>` : '0'}</td>
+    <td>${aulaOutBadge(aulaOutN(ex, num))}</td>
     <td class="small">${r.sentAt ? new Date(r.sentAt).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : '—'}${usedMin !== null ? `<div class="muted">${usedMin} min</div>` : ''}</td>
-    <td><div class="ar-btns"><button class="btn btn-sm ${sc.pending ? 'btn-primary' : 'btn-secondary'}" data-act="aula-review" data-id="${ex.id}" data-num="${num}">${sc.pending ? 'Corregir' : 'Ver'}</button>${sc.pending ? '' : `<button class="btn btn-sm btn-ghost" data-act="aula-stu-pdf" data-id="${ex.id}" data-num="${num}" title="PDF con el examen de este estudiante">${AI.file} PDF</button>`}</div></td>
+    <td><div class="ar-btns"><button class="btn btn-sm ${sc.pending ? 'btn-primary' : 'btn-secondary'}" data-act="aula-review" data-id="${ex.id}" data-num="${num}">${sc.pending ? 'Corregir' : 'Ver'}</button>${sc.pending ? '' : `<button class="btn btn-sm btn-ghost" data-act="aula-stu-pdf" data-id="${ex.id}" data-num="${num}" title="PDF con el examen de este estudiante">${AI.file} PDF</button>`}${aulaRowMenu(ex, num, ex.pub ? [['reset', AI.refresh, 'Reiniciar su examen', 'Borra la entrega; lo vuelve a hacer'], ['delete', AI.trash, 'Eliminar la entrega', 'Borra la entrega y su nota del registro']] : [])}</div></td>
   </tr>`;
 }
 
@@ -8753,7 +8794,7 @@ function aulaReview(id, num) {
       }).join('')}</div>
       <p class="muted small">${t ? `La nota se calcula sobre ${fmtN(t.c.max)} y pasa a ${esc(aulaTargetLabel(m, t))}.` : 'Este examen no está vinculado a una casilla del registro.'}</p>`,
     actions: [
-      { label: 'Permitir otro intento', cls: 'btn-ghost', onClick: () => { aulaRetake(ex, num); } },
+      { label: 'Reiniciar su examen', cls: 'btn-ghost', onClick: () => { aulaStuAct(ex.id, num, 'reset'); } },
       { label: 'Descargar PDF', cls: 'btn-ghost', onClick: () => { if (aulaScore(ex, num).pending) { toast('Primero termina de corregir y guarda.', 'warn'); return false; } aulaStudentPDF(m, ex, [num]); } },
       { label: 'Cancelar' },
       {
@@ -8775,14 +8816,6 @@ function aulaReview(id, num) {
           toast(res.n ? 'Guardado · nota pasada al registro.' : res.conflicts.length ? 'Guardado. Hay notas distintas en el registro: usa «Pasar notas ahora».' : 'Guardado.', 'ok', 3200);
         }
       }]
-  });
-}
-function aulaRetake(ex, num) {
-  const m = curMod(); const s = aulaStudent(m, ex, num);
-  confirmBox('¿Permitir otro intento?', `Se borra la entrega del número ${num}${s ? ' (' + s.name + ')' : ''} para que pueda volver a hacerlo. La nota del registro no se borra.`, 'Borrar entrega', () => {
-    const go = () => { delete ex.resp[num]; delete ex.marks[num]; delete ex.map[num]; persist(); render(); toast('Listo: puede volver a entrar (en su celular debe tocar «Empezar de nuevo»).', 'ok', 4500); };
-    if (aulaCloudOK() && ex.pub) withTimeout(aulaRef(ex).collection('resp').doc(String(num)).delete(), 12000).then(go).catch(e => toast(aulaErr(e), 'error', 5000));
-    else go();
   });
 }
 function aulaApplyNow(id) {
@@ -9105,8 +9138,9 @@ Object.assign(ACTIONS, {
   'aula-stu-pdf': el => { const m = curMod(), ex = aulaFind(m, el.dataset.id); if (ex) aulaStudentPDF(m, ex, [el.dataset.num]); },
   'aula-stu-pdf-all': el => { aulaCloseMenus(); const m = curMod(), ex = aulaFind(m, el.dataset.id); if (!ex) return; const nums = Object.keys(ex.resp).filter(k => !aulaScore(ex, k).pending).sort((a, b) => ((aulaStudent(m, ex, a) || {}).num || +a) - ((aulaStudent(m, ex, b) || {}).num || +b)); if (!nums.length) return toast('Todavía no hay entregas corregidas.', 'info'); aulaStudentPDF(m, ex, nums); },
   'aula-arch-open': el => aulaArchDialog(el.dataset.id),
-  'aula-block': el => aulaBlockDialog(el.dataset.id, el.dataset.sid),
-  'aula-unblock': el => aulaUnblock(el.dataset.id, el.dataset.sid),
+  'aula-stu': el => aulaStuAct(el.dataset.id, el.dataset.num, el.dataset.op),
+  'aula-reset-all': el => aulaResetAll(el.dataset.id),
+  'aula-out-clear': el => aulaOutClear(el.dataset.id),
   'aula-archive': el => { aulaCloseMenus(); aulaArchive(el.dataset.id); },
   'aula-dup': el => {
     aulaCloseMenus();
@@ -9162,7 +9196,7 @@ function aulaSummary(m, ex) {
     const r = num !== undefined ? ex.resp[num] : null;
     if (!r) return { num: s.num, name: s.name, sent: false };
     const sc = aulaScore(ex, num), pct = sc.total ? r2(sc.got / sc.total * 100) : 0;
-    return { num: s ? s.num : +num, name: s ? s.name : r.name, typed: r.name, sent: true, got: sc.got, total: sc.total, pending: sc.pending, pct, grade: !sc.pending && t ? aulaScaled(m, ex, sc) : null, blurs: r.blurs || 0, min: r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null, at: r.sentAt || 0 };
+    return { num: s ? s.num : +num, name: s ? s.name : r.name, typed: r.name, sent: true, got: sc.got, total: sc.total, pending: sc.pending, pct, grade: !sc.pending && t ? aulaScaled(m, ex, sc) : null, blurs: aulaOutN(ex, num), min: r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null, at: r.sentAt || 0 };
   };
   const rows = asg.map(s => { const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; }); if (num !== undefined) seen.add(num); return row(s, num); });
   nums.filter(k => !seen.has(k)).forEach(k => rows.push(row(aulaStudent(m, ex, k), k)));
@@ -9277,35 +9311,81 @@ function aulaArchDialog(id) {
   });
 }
 
-/* ---------- Cerrar o bloquear el examen a un estudiante ---------- */
-function aulaBlockDialog(id, sid) {
-  const m = curMod(), ex = aulaFind(m, id), s = ex && findStu(m, sid); if (!s) return;
-  const lv = AulaLive.live[s.num];
+/* ---------- Acciones sobre un estudiante o todo el curso ----------
+   reset   → borra su entrega y su progreso; empieza de cero (su celular se reinicia solo)
+   delete  → borra la entrega y la nota que pasó al registro (no se bloquea)
+   collect → recoge lo que lleva respondido (se entrega solo)
+   block / unblock → no puede entrar ni entregar / vuelve a poder
+   ------------------------------------------------------------------ */
+const AULA_OPS = {
+  reset: { t: 'Reiniciar su examen', b: 'Se borran su entrega y lo que lleva respondido. En su celular el examen empieza de cero (con otro número de lista no se mezcla). La nota del registro no se toca.', ok: 'Reiniciar' },
+  delete: { t: 'Eliminar la entrega', b: 'Se borra su entrega y, si la nota del Aula está en el registro, también esa nota. Podrá volver a hacerlo mientras el examen esté abierto.', ok: 'Eliminar' },
+  collect: { t: 'Recoger lo que lleva', b: 'En unos segundos su examen se entrega solo con lo que haya respondido y ya no puede seguir.', ok: 'Recoger' },
+  block: { t: 'Bloquear', b: 'No puede entrar ni entregar. Lo que respondió se queda en su celular. Puedes desbloquearlo cuando quieras.', ok: 'Bloquear' },
+  unblock: { t: 'Desbloquear', b: '', ok: 'Desbloquear' }
+};
+function aulaStuAct(id, num, op) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const s = aulaStudent(m, ex, num), who = s ? `${s.num}. ${s.name}` : 'Nº ' + num, O = AULA_OPS[op];
+  aulaCloseMenus();
+  const run = () => aulaApplyOp(m, ex, [String(num)], op).then(() => toast(`${who}: ${O.t.toLowerCase()} listo.`, 'ok', 3500)).catch(e => toast(aulaErr(e), 'error', 5000));
+  if (op === 'unblock') return run();
+  confirmBox(`${O.t} · ${who}`, O.b, O.ok, run, { danger: op !== 'collect' });
+}
+/** Aplica una acción a varios números de lista a la vez (un estudiante o todo el curso). */
+async function aulaApplyOp(m, ex, nums, op) {
+  if (!aulaCloudOK() || !ex.pub) throw new Error('Necesitas la versión web con tu cuenta e internet.');
+  const ref = aulaRef(ex), nonce = aulaRand(6);
+  if (op === 'delete') snapshot('Aula: eliminar entregas de ' + ex.title);
+  const t = aulaTarget(m, ex);
+  for (const num of nums) {
+    const st = aulaStudent(m, ex, num), sid = st && st.id;
+    if (op === 'reset' || op === 'delete') {
+      await withTimeout(ref.collection('resp').doc(num).delete(), 12000);
+      await ref.collection('live').doc(num).delete().catch(() => { });
+      const rp = ex.resPushed[num]; if (rp && rp.tok) await ref.collection('res').doc(rp.tok).delete().catch(() => { });
+      await ref.collection('x').doc(num).set({ m: 'reset', n: nonce });
+      if (op === 'delete' && t && st && isNum(ex.applied[sid]) && getGrade(st, t.ra.id, t.c.id, t.i) === ex.applied[sid]) setGrade(st, t.ra.id, t.c.id, t.i, '');
+      delete ex.resp[num]; delete ex.marks[num]; delete ex.map[num]; delete ex.resPushed[num]; delete ex.outBase[num]; if (sid) { delete ex.blocked[sid]; if (op === 'delete') delete ex.applied[sid]; }
+      delete AulaLive.live[num];
+    } else if (op === 'collect' || op === 'block') {
+      await withTimeout(ref.collection('x').doc(num).set({ m: op }), 12000);
+      if (sid) ex.blocked[sid] = op;
+    } else if (op === 'unblock') {
+      await withTimeout(ref.collection('x').doc(num).delete(), 12000);
+      if (sid) delete ex.blocked[sid];
+    }
+  }
+  if (op === 'block' || op === 'unblock' || op === 'reset' || op === 'delete') await aulaPublish(m, ex);
+  persist(); render();
+}
+/** Reiniciar o eliminar las entregas de todo el curso. */
+function aulaResetAll(id) {
+  aulaCloseMenus();
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const nums = [...new Set([...Object.keys(ex.resp), ...(AulaLive.xid === ex.id ? Object.keys(AulaLive.live) : [])])];
+  if (!nums.length) return toast('Todavía nadie ha entrado a este examen.', 'info');
   openModal({
-    title: `Cerrar el examen a ${s.name}`, icon: AI.lock, sub: `${ex.title} · Nº ${s.num}${lv ? ` · está respondiendo (${lv.n}/${lv.tot})` : ''}`,
+    title: 'Reiniciar para todo el curso', icon: AI.refresh, sub: `${ex.title} · ${nums.length} estudiante${nums.length === 1 ? '' : 's'} con entrega o respondiendo`,
     body: `<div class="blk-opts">
-      <label class="blk-opt"><input type="radio" name="blk" value="collect" checked><span class="blk-ic">${AI.inbox}</span><div><b>Recoger lo que lleva</b><small>Su examen se entrega solo en unos segundos con lo que haya respondido y ya no puede seguir.</small></div></label>
-      <label class="blk-opt"><input type="radio" name="blk" value="block"><span class="blk-ic bad">${AI.ban}</span><div><b>Bloquear sin entregar</b><small>No puede entrar ni entregar. Lo que respondió se queda en su celular.</small></div></label></div>
-      <p class="muted small">Puedes deshacerlo con «Desbloquear».</p>`,
+      <label class="blk-opt"><input type="radio" name="rall" value="reset" checked><span class="blk-ic">${AI.refresh}</span><div><b>Reiniciar</b><small>Se borran todas las entregas y lo que llevan. Todos empiezan de cero. Las notas del registro no se tocan.</small></div></label>
+      <label class="blk-opt"><input type="radio" name="rall" value="delete"><span class="blk-ic bad">${AI.trash}</span><div><b>Reiniciar y quitar las notas</b><small>Además se borran del registro las notas que puso el Aula (las que escribiste tú a mano se quedan).</small></div></label></div>`,
     actions: [{ label: 'Cancelar' }, {
-      label: 'Cerrar a este estudiante', cls: 'btn-danger', onClick: (ov, close) => {
-        const mode = ov.querySelector('[name=blk]:checked').value, btn = ov.querySelector('.modal-foot .btn-danger');
-        btn.disabled = true; btn.textContent = 'Aplicando…';
-        const prev = ex.blocked[sid]; ex.blocked[sid] = mode;
-        aulaRef(ex).collection('x').doc(String(s.num)).set({ m: mode }).then(() => mode === 'block' ? aulaPublish(m, ex) : null)
-          .then(() => { persist(); close(); render(); toast(mode === 'block' ? `${s.name}: bloqueado.` : `${s.name}: se recogerá lo que lleva.`, 'ok', 3500); })
-          .catch(e => { if (prev) ex.blocked[sid] = prev; else delete ex.blocked[sid]; btn.disabled = false; btn.textContent = 'Cerrar a este estudiante'; toast(aulaErr(e), 'error', 5000); });
+      label: 'Reiniciar para todos', cls: 'btn-danger', onClick: (ov, close) => {
+        const op = ov.querySelector('[name=rall]:checked').value, btn = ov.querySelector('.modal-foot .btn-danger');
+        btn.disabled = true; btn.textContent = 'Reiniciando…';
+        aulaApplyOp(m, ex, nums, op).then(() => { close(); toast(`Listo: ${nums.length} reiniciados.`, 'ok', 3500); }).catch(e => { btn.disabled = false; btn.textContent = 'Reiniciar para todos'; toast(aulaErr(e), 'error', 5000); });
         return false;
       }
     }]
   });
 }
-function aulaUnblock(id, sid) {
-  const m = curMod(), ex = aulaFind(m, id), s = ex && findStu(m, sid); if (!s) return;
-  const prev = ex.blocked[sid]; delete ex.blocked[sid];
-  aulaRef(ex).collection('x').doc(String(s.num)).delete().then(() => aulaPublish(m, ex))
-    .then(() => { persist(); render(); toast(`${s.name} puede volver a entrar.`, 'ok'); })
-    .catch(e => { ex.blocked[sid] = prev; toast(aulaErr(e), 'error', 5000); });
+/** Pone en cero los contadores de salidas (lo que ya contó no se borra de la entrega). */
+function aulaOutClear(id) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const nums = new Set(Object.keys(ex.resp)); if (AulaLive.xid === ex.id) Object.keys(AulaLive.live).forEach(k => nums.add(k));
+  nums.forEach(k => { ex.outBase[k] = aulaOutRaw(ex, k); });
+  persist(); render(); toast('Contadores de salidas en cero.', 'ok');
 }
 
 /* ---------- Resultado para el estudiante ---------- */

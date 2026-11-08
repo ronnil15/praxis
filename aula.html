@@ -224,7 +224,9 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
         var prev = lsGet(DEV);
         if (X.one && prev && prev !== String(num)) { reset(); return blocked1(X, prev, function () { go(X, code, num, name, pin, until); }); }
         return Promise.all([ref().collection('k').doc(num + '-' + pin).get(), ref().collection('x').doc(String(num)).get().catch(function () { return { exists: false }; })]).then(function (rs) {
-          if (rs[1].exists) { reset(); return closedForMe(rs[1].data().m); }
+          var xd = rs[1].exists ? rs[1].data() : null;
+          if (xd && (xd.m === 'block' || xd.m === 'collect')) { reset(); return closedForMe(xd.m); }
+          X._reset = xd && xd.m === 'reset' ? xd.n : '';
           if (!rs[0].exists) { reset(); return say(X.pin ? 'Clave incorrecta. Revísala con tu profesor.' : 'No tienes acceso a este examen. Pregúntale a tu profesor.'); }
           go(X, code, num, name, pin, until);
         });
@@ -235,7 +237,25 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       });
     };
   }
-  function closedForMe(mode) { hero(); screen(box(I.ban, 'bad', 'Tu profesor cerró este examen para ti', mode === 'collect' ? 'Ya no puedes responder. Si tienes dudas, habla con tu profesor.' : 'No puedes entrar a este examen. Habla con tu profesor.', '<button class="btn2" onclick="location.reload()">Volver a intentar</button>')); }
+  function closedForMe(mode) {
+    hero(); screen(box(I.ban, 'bad', 'Tu profesor cerró este examen para ti', mode === 'collect' ? 'Ya no puedes responder. Si tienes dudas, habla con tu profesor.' : 'No puedes entrar a este examen. Si tu profesor te desbloquea, seguirás donde te quedaste.', '<button class="btn2" onclick="location.reload()">Volver a intentar</button>'));
+    // Si el docente lo desbloquea o lo reinicia, sigue solo (sin tocar nada)
+    clearInterval(watchT); watchT = setInterval(function () {
+      if (!navigator.onLine) return;
+      ref().collection('x').doc(String(S ? S.num : 0)).get().then(function (d) {
+        if (d.exists && d.data().m !== 'reset') return;
+        clearInterval(watchT);
+        if (d.exists && S && d.data().n !== S.reset) return restart();
+        if (S && S.qs && !S.sent) exam(); else location.reload();
+      }).catch(function () { });
+    }, 15000);
+  }
+  /** El docente reinició el examen de este estudiante: se borra lo local y empieza de cero. */
+  function restart() {
+    clearInterval(watchT); clearInterval(tick); clearInterval(resT);
+    try { localStorage.removeItem(KEY); } catch (e) { }
+    hero(); screen(box(I.check, '', 'Tu profesor reinició tu examen', 'Empieza otra vez desde el principio.', '<button class="btn" onclick="location.reload()">Empezar</button>'));
+  }
   function blocked1(X, prev, onOk) {
     screen(box(I.phone, '', 'Este celular ya se usó', 'Aquí ya entró el número ' + esc(prev) + ' en este examen. Cada celular es para una sola entrega.', '<p class="small">Si comparten celular, pídele a tu profesor que escriba aquí su código de desbloqueo.</p><input type="text" id="ul" class="code-in" maxlength="6" placeholder="····" autocapitalize="characters"><div id="um"></div><button class="btn" id="ub">Desbloquear</button><button class="btn2" onclick="location.reload()">Volver</button>'));
     $('#ub').onclick = function () {
@@ -248,7 +268,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     var r = seedRand(EID + ':' + num);
     var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, r) : o }; });
     if (X.shuffle) qs = shuffle(qs, r);
-    S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
+    S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), reset: X._reset || '', qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
     lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name }));
     lsSet(DEV, String(num));
     save(); exam();
@@ -292,6 +312,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     ref().collection('x').doc(String(S.num)).get().then(function (d) {
       if (!d.exists || S.sent) return;
       var mode = d.data().m;
+      if (mode === 'reset') { if (d.data().n !== S.reset) restart(); return; }
       if (mode === 'collect') { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.lock, 'Tu profesor cerró tu examen. Se entrega lo que llevas respondido…'); clearInterval(watchT); send(true, true); }
       else { clearInterval(watchT); clearInterval(tick); S.blockedAt = Date.now(); save(); closedForMe('block'); }
     }).catch(function () { });
@@ -364,10 +385,16 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     var res = (META && META.res) || (S.meta && S.meta.res) || 'off';
     screen('<div class="card center"><div class="ico ok">' + I.check + '</div><h2>¡Entregado!</h2><p class="sub">Nº ' + S.num + ' · ' + esc(S.name) + '</p><p class="small">' + (S.sent ? 'Enviado a las ' + new Date(S.sent).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) + ' · ' : '') + 'Tu profesor ya recibió tus respuestas.</p></div>' +
       '<div id="res">' + (res !== 'off' ? '<div class="card center"><div class="ico">' + I.award + '</div><h2>Tu resultado</h2><p class="sub">' + (res === 'close' ? 'Aparecerá aquí cuando tu profesor cierre el examen.' : 'Aparecerá aquí cuando tu profesor lo corrija.') + ' Puedes dejar esta página abierta o volver a entrar con el mismo enlace.</p></div>' : '') + '</div>' +
-      '<button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button>');
-    $('#reset').onclick = reset;
-    if (res !== 'off' && S.tok) { pollRes(); clearInterval(resT); resT = setInterval(pollRes, 20000); }
-    else if (S.tok) ref().get().then(function (d) { if (d.exists && d.data().res && d.data().res !== 'off') { META = d.data(); S.meta.res = META.res; save(); done(); } }).catch(function () { });
+      '');
+    // Revisa si el docente publicó el resultado o reinició el examen
+    var check = function () {
+      if (!navigator.onLine) return;
+      if (res !== 'off' && S.tok) pollRes();
+      ref().collection('x').doc(String(S.num)).get().then(function (d) { if (d.exists && d.data().m === 'reset' && d.data().n !== S.reset) restart(); }).catch(function () { });
+    };
+    check(); clearInterval(resT); resT = setInterval(check, 20000);
+    // (el resultado y el reinicio se revisan cada 20 s)
+    if (res === 'off' && S.tok) ref().get().then(function (d) { if (d.exists && d.data().res && d.data().res !== 'off') { META = d.data(); S.meta.res = META.res; save(); done(); } }).catch(function () { });
   }
   function pollRes() {
     if (!navigator.onLine) return;
@@ -383,7 +410,6 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     el.innerHTML = '<div class="card"><h2 style="margin-bottom:14px">Tu resultado</h2><div class="res-h"><div class="ring" style="--p:' + pct + ';--c:' + col + '"><b>' + pct + '%</b></div><div>' +
       (R.max ? '<div class="big">' + R.grade + ' <span class="small">/ ' + R.max + '</span></div>' : '<div class="big">' + R.got + ' <span class="small">/ ' + R.total + ' pts</span></div>') +
       '<div class="small" style="margin:2px 0 8px">' + R.got + ' de ' + R.total + ' puntos</div><span class="pill ' + c + '">' + esc(R.cond || '') + '</span></div></div>' + (det ? '<div class="det">' + det + '</div>' : '') + '</div>';
-    if (R.det) clearInterval(resT); // con el detalle ya no cambia; si no, sigue revisando por si el docente corrige algo
     var rg = el.querySelector('.ring'); if (rg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { rg.style.setProperty('--p', 0); requestAnimationFrame(function () { requestAnimationFrame(function () { rg.style.setProperty('--p', pct); }); }); }
   }
   // Si el examen quedó a medio enviar (se cerró la página), reintenta al abrir
