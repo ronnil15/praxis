@@ -3,84 +3,100 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#312e81">
+<meta name="theme-color" content="#0f172a">
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
-<title>Aula · Praxis Pro</title>
+<title>Aula</title>
 <link rel="icon" href="icon-192.png">
 <style>
-:root{--btn:#4f46e5;--bg:#eef1f8;--card:#fff;--ink:#0f172a;--ink2:#334155;--mut:#64748b;--line:#e2e8f0;--pri:#4f46e5;--pri-d:#3730a3;--pri2:#eef2ff;--ring:#c7d2fe;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--warn:#b45309;--warnb:#fef3c7;--r:18px;--sh:0 1px 2px rgba(15,23,42,.05),0 8px 24px -12px rgba(15,23,42,.18)}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--btn:#6366f1;--bg:#0b1020;--card:#131a2c;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#243049;--pri:#818cf8;--pri-d:#a5b4fc;--pri2:#1e1b4b;--ring:#3730a3;--okb:#052e16;--badb:#450a0a;--warnb:#451a03;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -12px rgba(0,0,0,.6)}}
-:root[data-theme=dark]{--btn:#6366f1;--bg:#0b1020;--card:#131a2c;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#243049;--pri:#818cf8;--pri-d:#a5b4fc;--pri2:#1e1b4b;--ring:#3730a3;--okb:#052e16;--badb:#450a0a;--warnb:#451a03;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -12px rgba(0,0,0,.6)}
+:root{--btn:#4f46e5;--btn-h:#4338ca;--bg:#f4f6fb;--card:#fff;--ink:#0f172a;--ink2:#334155;--mut:#64748b;--line:#e3e8f0;--pri:#4f46e5;--pri2:#eef2ff;--ok:#15803d;--okb:#dcfce7;--bad:#b91c1c;--badb:#fee2e2;--warn:#b45309;--warnb:#fef3c7;--r:16px;--sh:0 1px 2px rgba(15,23,42,.04),0 6px 20px -10px rgba(15,23,42,.15);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--btn:#6366f1;--btn-h:#818cf8;--bg:#0a0f1c;--card:#111827;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#1f2a3d;--pri:#a5b4fc;--pri2:#1e1b4b;--okb:#052e16;--badb:#3f0d0d;--warnb:#3a2005;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -14px rgba(0,0,0,.7);color-scheme:dark}}
+:root[data-theme=dark]{--btn:#6366f1;--btn-h:#818cf8;--bg:#0a0f1c;--card:#111827;--ink:#e5e7eb;--ink2:#cbd5e1;--mut:#94a3b8;--line:#1f2a3d;--pri:#a5b4fc;--pri2:#1e1b4b;--okb:#052e16;--badb:#3f0d0d;--warnb:#3a2005;--ok:#4ade80;--bad:#f87171;--warn:#fbbf24;--sh:0 8px 24px -14px rgba(0,0,0,.7);color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
-.hero{background:linear-gradient(135deg,#312e81 0%,#4f46e5 55%,#7c3aed 100%);color:#fff;padding:18px 16px 64px;position:relative;overflow:hidden}
-.hero:after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+svg.i{width:1.1em;height:1.1em;flex:none;vertical-align:-.18em}
+.hero{background:#0f172a;color:#fff;padding:16px 16px 68px;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background:radial-gradient(600px 240px at 85% -20%,rgba(99,102,241,.45),transparent 70%),radial-gradient(500px 220px at 0% 120%,rgba(14,165,233,.18),transparent 70%)}
+.hero:after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:18px 18px;mask-image:linear-gradient(180deg,#000,transparent)}
 .hero .in{max-width:680px;margin:0 auto;position:relative;z-index:1}
-.brand{display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;margin-bottom:14px}
-.brand b{font-weight:800;letter-spacing:.3px}
-.kind{display:inline-block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:99px}
-.hero h1{font-size:26px;line-height:1.2;margin:10px 0 4px;letter-spacing:-.3px}
-.hero p{margin:0;opacity:.85;font-size:14px}
-main{max-width:680px;margin:-44px auto 0;padding:0 16px 130px;position:relative;z-index:2}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:8px;font-size:13px;color:#cbd5e1;font-weight:600;letter-spacing:.2px}
+.brand i{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-style:normal}
+.kind{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#c7d2fe}
+.hero h1{font-size:25px;line-height:1.2;margin:8px 0 6px;letter-spacing:-.4px}
+.hero p{margin:0;color:#94a3b8;font-size:14px}
+main{max-width:680px;margin:-46px auto 0;padding:0 16px 130px;position:relative;z-index:2}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin:0 0 14px;box-shadow:var(--sh)}
-h2{font-size:19px;margin:0 0 4px}
+h2{font-size:19px;margin:0 0 4px;letter-spacing:-.2px}
 .sub{color:var(--mut);font-size:14px;margin:0}
-label.f{display:block;font-weight:700;font-size:13px;margin:16px 0 6px;color:var(--ink2)}
-input[type=text],input[type=number],input[type=password],textarea{width:100%;font:inherit;color:inherit;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;outline:none;transition:border-color .15s,box-shadow .15s}
-input:focus,textarea:focus{border-color:var(--pri);background:var(--card);box-shadow:0 0 0 4px var(--pri2)}
-.code-in{text-transform:uppercase;letter-spacing:.3em;font-weight:800;font-size:22px;text-align:center}
-.pin-in{letter-spacing:.5em;font-weight:800;font-size:22px;text-align:center}
+label.f{display:block;font-weight:600;font-size:13px;margin:16px 0 6px;color:var(--ink2)}
+input[type=text],input[type=number],input[type=password],textarea{width:100%;font:inherit;color:inherit;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;outline:none;transition:border-color .15s,box-shadow .15s,background .15s}
+input:focus,textarea:focus{border-color:var(--btn);background:var(--card);box-shadow:0 0 0 4px var(--pri2)}
+.code-in,.pin-in{text-transform:uppercase;letter-spacing:.3em;font-weight:700;font-size:21px;text-align:center;font-family:ui-monospace,Menlo,monospace}
 .row{display:grid;grid-template-columns:104px 1fr;gap:10px}
-button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 18px;font-weight:700;-webkit-tap-highlight-color:transparent}
-.btn{background:var(--btn);color:#fff;width:100%;font-size:17px;margin-top:18px;box-shadow:0 8px 18px -8px var(--btn);transition:transform .1s}
-.btn:active{transform:scale(.98)}
-.btn:disabled{opacity:.6}
-.btn2{background:transparent;color:var(--pri);padding:10px 0;font-weight:700;width:100%}
-.msg{padding:12px 14px;border-radius:12px;margin:12px 0 0;font-size:15px}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px 18px;font-weight:600;-webkit-tap-highlight-color:transparent}
+.btn{background:var(--btn);color:#fff;width:100%;font-size:16px;margin-top:18px;transition:background .15s,transform .1s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:var(--btn-h)}.btn:active{transform:scale(.985)}.btn:disabled{opacity:.6}
+.btn2{background:transparent;color:var(--pri);padding:10px 0;font-weight:600;width:100%;font-size:14px}
+.msg{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;margin:12px 0 0;font-size:14.5px}
+.msg svg{margin-top:2px}
 .msg.bad{background:var(--badb);color:var(--bad)}.msg.ok{background:var(--okb);color:var(--ok)}.msg.warn{background:var(--warnb);color:var(--warn)}
-.tips{display:grid;gap:8px;margin:16px 0 0;padding:0;list-style:none;font-size:14px;color:var(--mut)}
-.tips li{display:flex;gap:10px;align-items:flex-start}
-.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px 16px}
-.bar .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.tips{display:grid;gap:10px;margin:18px 0 0;padding:14px;list-style:none;font-size:13.5px;color:var(--mut);background:var(--bg);border-radius:12px}
+.tips li{display:flex;gap:10px;align-items:flex-start}.tips svg{color:var(--pri);margin-top:2px}
+.bar{background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:10px 16px}
+.bar .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:10px}
 .bar .t{flex:1;min-width:0}.bar .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}.bar .t span{font-size:12px;color:var(--mut)}
-.timer{font-variant-numeric:tabular-nums;font-weight:800;font-size:18px;padding:7px 12px;border-radius:12px;background:var(--pri2);color:var(--pri)}
+.timer{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;font-weight:700;font-size:17px;padding:7px 11px;border-radius:10px;background:var(--pri2);color:var(--pri)}
 .timer.low{background:var(--badb);color:var(--bad);animation:pulse 1s infinite}
-@keyframes pulse{50%{opacity:.6}}
-.prog{height:4px;background:var(--line)}.prog div{height:100%;background:linear-gradient(90deg,var(--pri),#7c3aed);transition:width .3s}
+@keyframes pulse{50%{opacity:.55}}
+.prog{height:3px;background:var(--line)}.prog div{height:100%;background:var(--btn);transition:width .35s}
 .exam main{margin-top:14px}
-.q .n{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut);font-weight:700}
-.q .n i{font-style:normal;width:30px;height:30px;border-radius:10px;background:var(--pri2);color:var(--pri);display:grid;place-items:center;font-size:14px}
-.q.done .n i{background:var(--pri);color:#fff}
-.q .n span{margin-left:auto;background:var(--bg);padding:2px 9px;border-radius:99px;font-size:12px}
-.q .tx{font-size:17px;font-weight:650;margin:12px 0 14px;white-space:pre-wrap}
-.op{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;margin:8px 0;cursor:pointer;transition:border-color .15s,background .15s}
+.q .n{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--mut);font-weight:600}
+.q .n i{font-style:normal;min-width:28px;height:28px;padding:0 6px;border-radius:8px;background:var(--pri2);color:var(--pri);display:grid;place-items:center;font-size:13px;font-weight:700;transition:background .2s,color .2s}
+.q.done .n i{background:var(--btn);color:#fff}
+.q .n span{margin-left:auto;border:1px solid var(--line);padding:1px 9px;border-radius:99px;font-size:12px}
+.q .tx{font-size:16.5px;font-weight:600;margin:12px 0 14px;white-space:pre-wrap;line-height:1.45}
+.op{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;margin:8px 0;cursor:pointer;transition:border-color .15s,background .15s}
+.op:hover{border-color:color-mix(in srgb,var(--btn) 40%,var(--line))}
 .op input{position:absolute;opacity:0;pointer-events:none}
-.op .l{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--mut);transition:all .15s}
-.op.on{border-color:var(--pri);background:var(--pri2)}
-.op.on .l{background:var(--pri);border-color:var(--pri);color:#fff}
-.op span.t{padding-top:2px}
-.tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tf .op{justify-content:center;align-items:center;font-weight:700;margin:0}
+.op .l{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:12.5px;color:var(--mut);transition:all .15s}
+.op.on{border-color:var(--btn);background:var(--pri2)}.op.on .l{background:var(--btn);border-color:var(--btn);color:#fff}
+.op span.t{padding-top:1px}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tf .op{justify-content:center;align-items:center;font-weight:600;margin:0}
 .cnt{font-size:12px;color:var(--mut);text-align:right;margin-top:4px}
-.foot{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:6;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
 .foot .in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:12px}.foot .btn{margin:0;width:auto;flex:1}
-.saved{font-size:12px;color:var(--mut);min-width:96px;line-height:1.3}
+.saved{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);min-width:110px;line-height:1.3}
 #wb:empty{display:none}
 .center{text-align:center}
-.big{font-size:54px;line-height:1;margin:6px 0 12px}
-.done-ic{width:84px;height:84px;border-radius:50%;background:var(--okb);color:var(--ok);display:grid;place-items:center;font-size:44px;margin:4px auto 14px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+.ico{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;margin:4px auto 14px;background:var(--pri2);color:var(--pri)}
+.ico svg{width:30px;height:30px}
+.ico.ok{background:var(--okb);color:var(--ok);border-radius:50%;width:76px;height:76px;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+.ico.bad{background:var(--badb);color:var(--bad)}.ico.warn{background:var(--warnb);color:var(--warn)}
 @keyframes pop{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
 .small{font-size:13px;color:var(--mut)}
-.ov{position:fixed;inset:0;background:rgba(15,23,42,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px}
+.ov{position:fixed;inset:0;background:rgba(2,6,23,.6);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px}
 .ov .card{width:100%;max-width:480px;margin:0;animation:up .25s ease-out}
 @keyframes up{from{transform:translateY(30px);opacity:0}}
 .ov .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ov .two button{margin-top:16px}
-.gray{background:var(--line);color:var(--ink)}
-.spin{display:inline-block;width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-3px}
+.gray{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.spin{display:inline-block;width:17px;height:17px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-3px}
 @keyframes s{to{transform:rotate(360deg)}}
-.thm{position:absolute;top:14px;right:16px;z-index:3;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700;display:inline-flex;gap:6px;align-items:center}
-.bar .thm{position:static;background:var(--bg);border-color:var(--line);color:var(--ink);padding:7px 10px}
-html{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark}}
+.thm{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#e2e8f0;border-radius:99px;padding:6px 12px;font-size:12.5px;font-weight:600}
+.bar .thm{background:var(--bg);border-color:var(--line);color:var(--ink2);padding:7px 9px}.bar .thm span{display:none}
+/* Resultado */
+.res-h{display:flex;align-items:center;gap:16px}
+.ring{--p:0;width:96px;height:96px;flex:none;border-radius:50%;display:grid;place-items:center;background:radial-gradient(closest-side,var(--card) 78%,transparent 80%),conic-gradient(var(--c,var(--btn)) calc(var(--p)*1%),var(--line) 0);transition:--p 1s}
+@property --p{syntax:'<number>';inherits:false;initial-value:0}
+.ring b{font-size:22px}
+.res-h .big{font-size:28px;font-weight:800;letter-spacing:-.5px}
+.pill{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 10px;border-radius:99px}
+.pill.ok{background:var(--okb);color:var(--ok)}.pill.mid{background:var(--warnb);color:var(--warn)}.pill.bad{background:var(--badb);color:var(--bad)}
+.det{margin-top:16px;display:grid;gap:8px}
+.det .d{border:1px solid var(--line);border-left:4px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+.det .d.ok{border-left-color:var(--ok)}.det .d.bad{border-left-color:var(--bad)}.det .d.half{border-left-color:var(--warn)}
+.det .d b{display:block;margin-bottom:4px}.det .d small{display:block;color:var(--mut)}
+.det .d .pt{float:right;font-weight:700;font-size:12.5px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script>(function(){try{var t=localStorage.getItem('praxisAulaTheme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -101,36 +117,61 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   var EID = (P.get('e') || '').replace(/[^A-Za-z0-9]/g, '');
   var KEY = 'praxisAula:' + EID, DEV = 'praxisAulaDev:' + EID;
   var STOP = ['de', 'del', 'la', 'las', 'los', 'el', 'y', 'da', 'do', 'dos', 'das', 'san', 'mc'];
-  var KINDS = { 'Examen': '📝', 'Práctica': '🛠️', 'Quiz': '⚡', 'Tarea': '📚' };
   var S = load();
-  var META = null, db = null, tick = null, sending = null, retry = null;
+  var META = null, db = null, tick = null, sending = null, retry = null, watchT = null, resT = null, liveN = -1;
+
+  // Iconos (trazo)
+  function ic(d) { return '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
+  var I = {
+    school: ic('<path d="M3 21h18M5 21V10l7-5 7 5v11M9 21v-5h6v5"/>'), clock: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+    eye: ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'), save: ic('<path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/>'),
+    lock: ic('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>'), link: ic('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+    wifi: ic('<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 19.5v.01"/>'), folder: ic('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),
+    ban: ic('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'), phone: ic('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'),
+    alert: ic('<path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.01"/>'), check: ic('<path d="M5 12.5l4.5 4.5L19 7"/>'), pin: ic('<path d="M12 21s-7-6.5-7-11a7 7 0 0 1 14 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
+    sun: ic('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'), moon: ic('<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>'),
+    send: ic('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>'), award: ic('<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/>')
+  };
+  var KINDS = { 'Examen': ic('<path d="M9 3h6l1 2h3v16H5V5h3z"/><path d="M9 12l2 2 4-4"/>'), 'Práctica': ic('<path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 0-5-5L13 5z"/>'), 'Quiz': ic('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'), 'Tarea': ic('<path d="M4 4h6a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h7z"/>') };
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
   function save() { try { if (S) { S.savedAt = Date.now(); localStorage.setItem(KEY, JSON.stringify(S)); } } catch (e) { } }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  function rnd(n) { var A = 'abcdefghijkmnpqrstuvwxyz23456789', s = '', r = new Uint32Array(n); (window.crypto || window.msCrypto).getRandomValues(r); for (var i = 0; i < n; i++) s += A[r[i] % A.length]; return s; }
   // Igual que en Praxis Pro: palabras del nombre y huella corta
   function fold(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
   function toks(name) { var o = []; fold(name).split(' ').forEach(function (w) { if (w.length >= 2 && STOP.indexOf(w) < 0 && o.indexOf(w) < 0) o.push(w); }); return o; }
   function hash(s, bits) { var h = 0x811c9dc5; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return bits === 32 ? h.toString(16).padStart(8, '0') : (((h >>> 16) ^ (h & 0xffff)) >>> 0).toString(16).padStart(4, '0'); }
   function meta() { return META || (S && S.meta) || {}; }
+  function ref() { return db.collection('aula').doc(EID); }
+
+  // Día / noche
   function isDark() { var t = document.documentElement.getAttribute('data-theme'); return t ? t === 'dark' : !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); }
-  function thmBtn() { return '<button type="button" class="thm" data-thm>' + (isDark() ? '☀️ Día' : '🌙 Noche') + '</button>'; }
+  function thmBtn() { return '<button type="button" class="thm" data-thm title="Cambiar modo día / noche">' + (isDark() ? I.sun + '<span>Día</span>' : I.moon + '<span>Noche</span>') + '</button>'; }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-thm]'); if (!b) return;
     var t = isDark() ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); lsSet('praxisAulaTheme', t);
-    document.querySelectorAll('[data-thm]').forEach(function (x) { x.textContent = isDark() ? '☀️ Día' : '🌙 Noche'; });
+    document.querySelectorAll('[data-thm]').forEach(function (x) { x.outerHTML = thmBtn(); });
   });
-  function hero(sub) { var m = meta(); top.innerHTML = '<div class="hero">' + thmBtn() + '<div class="in"><div class="brand">🏫 <b>Aula</b> · Praxis Pro</div>' + (m.title ? '<span class="kind">' + (KINDS[m.kind] || '📝') + ' ' + esc(m.kind || 'Examen') + '</span><h1>' + esc(m.title) + '</h1><p>' + esc(sub || [m.mod, m.course].filter(Boolean).join(' · ')) + '</p>' : '<h1>Aula</h1>') + '</div></div>'; document.body.classList.remove('exam'); top.removeAttribute('style'); }
-  function screen(html) { app.innerHTML = html; window.scrollTo(0, 0); }
-  function fail(t, d) { hero(); screen('<div class="card center"><div class="big">' + (d || '⚠️') + '</div><p>' + t + '</p><button class="btn" onclick="location.reload()">Intentar otra vez</button></div>'); }
-  function seedRand(seed) { var x = 0; for (var i = 0; i < seed.length; i++) x = (x * 31 + seed.charCodeAt(i)) >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
-  function shuffle(a, rnd) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  function deadline() { var d = Infinity; if (S && S.dur) d = S.startedAt + S.dur * 60000; if (S && S.until) d = Math.min(d, S.until - 15000); return d; }
 
-  if (!EID) { hero(); screen('<div class="card center"><div class="big">🔗</div><p>El enlace está incompleto. Pídele a tu profesor el enlace o el QR otra vez.</p></div>'); return; }
-  try { firebase.initializeApp(CLOUD_CONFIG); db = firebase.firestore(); } catch (e) { fail('No se pudo cargar. Revisa tu internet.', '📶'); return; }
+  function hero(sub) {
+    var m = meta();
+    top.removeAttribute('style'); document.body.classList.remove('exam');
+    top.innerHTML = '<div class="hero"><div class="in"><div class="top"><div class="brand"><i>' + I.school + '</i>Aula virtual</div>' + thmBtn() + '</div>' +
+      (m.title ? '<span class="kind">' + (KINDS[m.kind] || KINDS.Examen) + esc(m.kind || 'Examen') + '</span><h1>' + esc(m.title) + '</h1><p>' + esc(sub || [m.mod, m.course].filter(Boolean).join(' · ')) + '</p>' : '<h1>Aula virtual</h1>') + '</div></div>';
+  }
+  function screen(html) { app.innerHTML = html; window.scrollTo(0, 0); }
+  function box(icon, cls, title, text, extra) { return '<div class="card center"><div class="ico ' + (cls || '') + '">' + icon + '</div>' + (title ? '<h2>' + title + '</h2>' : '') + (text ? '<p class="sub">' + text + '</p>' : '') + (extra || '') + '</div>'; }
+  function fail(t, icon) { hero(); screen(box(icon || I.alert, 'warn', '', t, '<button class="btn" onclick="location.reload()">Intentar otra vez</button>')); }
+  function seedRand(seed) { var x = 0; for (var i = 0; i < seed.length; i++) x = (x * 31 + seed.charCodeAt(i)) >>> 0; return function () { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; }; }
+  function shuffle(a, r) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function deadline() { var d = Infinity; if (S && S.dur) d = S.startedAt + S.dur * 60000; if (S && S.until) d = Math.min(d, S.until - 15000); return d; }
+  function msg(cls, icon, html) { return '<div class="msg ' + cls + '" style="margin:0 0 14px">' + icon + '<div>' + html + '</div></div>'; }
+
+  if (!EID) { hero(); screen(box(I.link, '', 'Enlace incompleto', 'Pídele a tu profesor el enlace o el QR otra vez.')); return; }
+  try { firebase.initializeApp(CLOUD_CONFIG); db = firebase.firestore(); } catch (e) { fail('No se pudo cargar. Revisa tu internet.', I.wifi); return; }
 
   // Si ya empezó en este teléfono, sigue donde se quedó (aunque no haya internet)
   if (S && S.sent) { done(); return; }
@@ -139,17 +180,17 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   if (S && S.qs) return;
   start();
 
-  function refreshMeta() { db.collection('aula').doc(EID).get().then(function (d) { if (d.exists) { META = d.data(); if (S) { S.until = META.until && META.until.toMillis ? META.until.toMillis() : S.until; save(); } } }).catch(function () { }); }
+  function refreshMeta() { ref().get().then(function (d) { if (d.exists) { META = d.data(); if (S) { S.until = META.until && META.until.toMillis ? META.until.toMillis() : S.until; S.meta.res = META.res || 'off'; save(); } } }).catch(function () { }); }
 
   function start() {
     hero();
-    db.collection('aula').doc(EID).get().then(function (d) {
-      if (!d.exists) { screen('<div class="card center"><div class="big">🗂️</div><p>Este examen no existe o tu profesor lo eliminó.</p></div>'); return; }
+    ref().get().then(function (d) {
+      if (!d.exists) { screen(box(I.folder, '', 'No encontrado', 'Este examen no existe o tu profesor lo eliminó.')); return; }
       META = d.data(); hero();
       var until = META.until && META.until.toMillis ? META.until.toMillis() : 0;
-      if (META.status !== 'open' || (until && until < Date.now())) { screen('<div class="card center"><div class="big">🔒</div><h2>' + (META.status === 'draft' ? 'Todavía no está abierto' : 'Ya está cerrado') + '</h2><p class="small">Espera a que tu profesor lo abra y vuelve a intentar.</p><button class="btn" onclick="location.reload()">Volver a intentar</button></div>'); return; }
+      if (META.status !== 'open' || (until && until < Date.now())) { screen(box(I.lock, '', META.status === 'draft' ? 'Todavía no está abierto' : 'Ya está cerrado', 'Espera a que tu profesor lo abra y vuelve a intentar.', '<button class="btn" onclick="location.reload()">Volver a intentar</button>')); return; }
       join(until);
-    }).catch(function (e) { fail(String(e && e.code || '').indexOf('unavailable') >= 0 || !navigator.onLine ? 'Sin conexión a internet. Conéctate y vuelve a intentar.' : 'No se pudo abrir el examen (' + esc(e && e.code || e) + ').', '📶'); });
+    }).catch(function (e) { fail(String(e && e.code || '').indexOf('unavailable') >= 0 || !navigator.onLine ? 'Sin conexión a internet. Conéctate y vuelve a intentar.' : 'No se pudo abrir el examen (' + esc(e && e.code || e) + ').', I.wifi); });
   }
 
   function join(until) {
@@ -160,52 +201,54 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       '<div class="row"><div><label class="f" for="num">Nº de lista</label><input type="number" id="num" min="1" max="199" inputmode="numeric" value="' + esc(last.num || '') + '"></div>' +
       '<div><label class="f" for="nm">Nombre y apellido</label><input type="text" id="nm" maxlength="80" autocomplete="name" value="' + esc(last.name || '') + '"></div></div>' +
       (META.pin ? '<label class="f" for="pin">Tu clave personal</label><input type="password" id="pin" class="pin-in" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="····" autocomplete="off">' : '') +
-      '<ul class="tips">' + (META.dur ? '<li>⏱️ <span>Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</span></li>' : '') + '<li>👀 <span>No salgas de esta página: tu profesor verá cuántas veces saliste.</span></li><li>💾 <span>Tus respuestas se guardan en el teléfono mientras respondes.</span></li></ul>' +
+      '<ul class="tips">' + (META.dur ? '<li>' + I.clock + '<span>Tendrás <b>' + META.dur + ' minutos</b> desde que toques «Comenzar».</span></li>' : '') + '<li>' + I.eye + '<span>No salgas de esta página: tu profesor verá cuántas veces saliste.</span></li><li>' + I.save + '<span>Tus respuestas se guardan en el teléfono mientras respondes.</span></li></ul>' +
       '<div id="jm"></div><button class="btn" id="jb">Comenzar</button></form>');
     $('#jf').onsubmit = function (ev) {
       ev.preventDefault();
       var code = ($('#code').value || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), num = parseInt($('#num').value, 10), name = $('#nm').value.trim().replace(/\s+/g, ' ');
       var pin = META.pin ? ($('#pin').value || '').replace(/\D/g, '') : '';
-      var msg = function (t) { $('#jm').innerHTML = '<div class="msg bad">' + t + '</div>'; };
-      if (!code) return msg('Escribe el código que te dio tu profesor.');
-      if (!(num >= 1 && num <= 199)) return msg('Escribe tu número de lista.');
-      if (name.split(' ').length < 2) return msg('Escribe tu nombre y tu apellido.');
-      if (META.pin && pin.length !== 4) return msg('Escribe tu clave personal de 4 números.');
+      var say = function (t) { $('#jm').innerHTML = '<div class="msg bad">' + I.alert + '<div>' + t + '</div></div>'; };
+      if (!code) return say('Escribe el código que te dio tu profesor.');
+      if (!(num >= 1 && num <= 199)) return say('Escribe tu número de lista.');
+      if (name.split(' ').length < 2) return say('Escribe tu nombre y tu apellido.');
+      if (META.pin && pin.length !== 4) return say('Escribe tu clave personal de 4 números.');
       var b = $('#jb'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Comprobando…';
       var reset = function () { b.disabled = false; b.textContent = 'Comenzar'; };
-      db.collection('aula').doc(EID).collection('q').doc(code).get().then(function (d) {
+      ref().collection('q').doc(code).get().then(function (d) {
         if (!d.exists) throw { code: 'permission-denied' };
         var X = d.data(), ros = X.ros || {};
-        // ¿Está asignado y el nombre corresponde a ese número?
-        if (!ros[num]) { reset(); return msg('El número ' + num + ' no está en la lista de este examen. Revisa tu número.'); }
+        if (!ros[num]) { reset(); return say('El número ' + num + ' no está en la lista de este examen. Revisa tu número.'); }
         var L = ros[num], T = toks(name).map(function (t) { return hash(EID + ':' + t); });
         var hit = T.filter(function (h) { return L.indexOf(h) >= 0; }).length;
-        if (hit < Math.min(2, L.length)) { reset(); return msg('Ese nombre no corresponde al número ' + num + ' de la lista. Escribe tu nombre y apellido como están en la lista, o revisa tu número.'); }
-        // Un celular, una entrega
+        if (hit < Math.min(2, L.length)) { reset(); return say('Ese nombre no corresponde al número ' + num + ' de la lista. Escríbelo como está en la lista, o revisa tu número.'); }
         var prev = lsGet(DEV);
-        if (X.one && prev && prev !== String(num)) { reset(); return blocked(X, prev, function () { go(X, code, num, name, pin, until); }); }
-        var check = X.pin ? db.collection('aula').doc(EID).collection('k').doc(num + '-' + pin).get() : Promise.resolve({ exists: true });
-        return check.then(function (k) { if (!k.exists) { reset(); return msg('Clave incorrecta. Revísala con tu profesor.'); } go(X, code, num, name, pin, until); });
+        if (X.one && prev && prev !== String(num)) { reset(); return blocked1(X, prev, function () { go(X, code, num, name, pin, until); }); }
+        return Promise.all([ref().collection('k').doc(num + '-' + pin).get(), ref().collection('x').doc(String(num)).get().catch(function () { return { exists: false }; })]).then(function (rs) {
+          if (rs[1].exists) { reset(); return closedForMe(rs[1].data().m); }
+          if (!rs[0].exists) { reset(); return say(X.pin ? 'Clave incorrecta. Revísala con tu profesor.' : 'No tienes acceso a este examen. Pregúntale a tu profesor.'); }
+          go(X, code, num, name, pin, until);
+        });
       }).catch(function (e) {
         reset();
         var c = String(e && e.code || e);
-        msg(c.indexOf('permission') >= 0 ? 'Código incorrecto, o el examen ya cerró. Revísalo con tu profesor.' : 'Sin conexión. Revisa tu internet e inténtalo otra vez.');
+        say(c.indexOf('permission') >= 0 ? 'Código incorrecto, o el examen ya cerró. Revísalo con tu profesor.' : 'Sin conexión. Revisa tu internet e inténtalo otra vez.');
       });
     };
   }
-  function blocked(X, prev, onOk) {
-    screen('<div class="card center"><div class="big">📱</div><h2>Este celular ya se usó</h2><p class="sub">Aquí ya entró el número ' + esc(prev) + ' en este examen. Cada celular es para una sola entrega.</p><p class="small">Si comparten celular, pídele a tu profesor que escriba aquí su código de desbloqueo.</p><input type="text" id="ul" class="code-in" maxlength="6" placeholder="····" autocapitalize="characters"><div id="um"></div><button class="btn" id="ub">Desbloquear</button><button class="btn2" onclick="location.reload()">Volver</button></div>');
+  function closedForMe(mode) { hero(); screen(box(I.ban, 'bad', 'Tu profesor cerró este examen para ti', mode === 'collect' ? 'Ya no puedes responder. Si tienes dudas, habla con tu profesor.' : 'No puedes entrar a este examen. Habla con tu profesor.', '<button class="btn2" onclick="location.reload()">Volver a intentar</button>')); }
+  function blocked1(X, prev, onOk) {
+    screen(box(I.phone, '', 'Este celular ya se usó', 'Aquí ya entró el número ' + esc(prev) + ' en este examen. Cada celular es para una sola entrega.', '<p class="small">Si comparten celular, pídele a tu profesor que escriba aquí su código de desbloqueo.</p><input type="text" id="ul" class="code-in" maxlength="6" placeholder="····" autocapitalize="characters"><div id="um"></div><button class="btn" id="ub">Desbloquear</button><button class="btn2" onclick="location.reload()">Volver</button>'));
     $('#ub').onclick = function () {
       var v = ($('#ul').value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
       if (v && hash(EID + ':' + v, 32) === X.ulk) { lsSet(DEV, ''); onOk(); }
-      else $('#um').innerHTML = '<div class="msg bad">Código incorrecto.</div>';
+      else $('#um').innerHTML = '<div class="msg bad">' + I.alert + '<div>Código incorrecto.</div></div>';
     };
   }
   function go(X, code, num, name, pin, until) {
-    var rnd = seedRand(EID + ':' + num);
-    var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, rnd) : o }; });
-    if (X.shuffle) qs = shuffle(qs, rnd);
-    S = { num: num, name: name, code: code, pin: pin, qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course } };
+    var r = seedRand(EID + ':' + num);
+    var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, r) : o }; });
+    if (X.shuffle) qs = shuffle(qs, r);
+    S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
     lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name }));
     lsSet(DEV, String(num));
     save(); exam();
@@ -214,10 +257,10 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function answered() { var n = 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
   function exam() {
     document.body.classList.add('exam');
-    top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div>' + thmBtn() + '<div class="timer" id="tm">' + (deadline() < Infinity ? '--:--' : '⏱') + '</div></div></div><div class="prog"><div id="pg"></div></div>';
+    top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div>' + thmBtn() + '<div class="timer" id="tm">' + I.clock + '<span>' + (deadline() < Infinity ? '--:--' : 'Sin límite') + '</span></div></div></div><div class="prog"><div id="pg"></div></div>';
     top.style.position = 'sticky'; top.style.top = '0'; top.style.zIndex = '5';
     var h = '<div id="wb"></div>';
-    if (S.instr) h += '<div class="card"><p class="small" style="margin:0;white-space:pre-wrap">📌 ' + esc(S.instr) + '</p></div>';
+    if (S.instr) h += '<div class="card"><p class="small" style="margin:0;white-space:pre-wrap;display:flex;gap:8px">' + I.pin + '<span>' + esc(S.instr) + '</span></p></div>';
     S.qs.forEach(function (q, i) {
       var a = S.answers[q.id], body = '';
       if (q.t === 'mc') body = q.opts.map(function (o, j) { var on = a === o.i; return '<label class="op' + (on ? ' on' : '') + '"><input type="radio" name="' + q.id + '" value="' + o.i + '"' + (on ? ' checked' : '') + '><span class="l">' + 'ABCDEFGH'[j] + '</span><span class="t">' + esc(o.t) + '</span></label>'; }).join('');
@@ -227,12 +270,25 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       var isDone = a !== undefined && a !== '' && a !== null;
       h += '<div class="card q' + (isDone ? ' done' : '') + '" data-qid="' + q.id + '"><div class="n"><i>' + (i + 1) + '</i>de ' + S.qs.length + '<span>' + q.pts + ' pt' + (q.pts == 1 ? '' : 's') + '</span></div><div class="tx">' + esc(q.text) + '</div>' + body + '</div>';
     });
-    h += '<div class="foot"><div class="in"><span class="saved" id="sv">💾 Guardado en este teléfono</span><button class="btn" id="send">Entregar</button></div></div>';
+    h += '<div class="foot"><div class="in"><span class="saved" id="sv">' + I.save + 'Guardado en este teléfono</span><button class="btn" id="send">' + I.send + 'Entregar</button></div></div>';
     screen(h);
     app.onchange = onAns; app.oninput = onAns;
     $('#send').onclick = function () { confirmSend(); };
     progress(); clock(); clearInterval(tick); tick = setInterval(clock, 1000);
     if (S.blurs) warnBlur();
+    watch(); clearInterval(watchT); watchT = setInterval(watch, 20000);
+  }
+  // Avisa al docente que está respondiendo y revisa si el docente le cerró el examen
+  function watch() {
+    if (!S || S.sent || sending || !navigator.onLine) return;
+    var n = answered();
+    if (n !== liveN) { liveN = n; ref().collection('live').doc(String(S.num)).set({ num: S.num, pin: S.pin || '', n: n, tot: S.qs.length, at: firebase.firestore.FieldValue.serverTimestamp() }).catch(function () { }); }
+    ref().collection('x').doc(String(S.num)).get().then(function (d) {
+      if (!d.exists || S.sent) return;
+      var mode = d.data().m;
+      if (mode === 'collect') { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.lock, 'Tu profesor cerró tu examen. Se entrega lo que llevas respondido…'); clearInterval(watchT); send(true, true); }
+      else { clearInterval(watchT); clearInterval(tick); S.blockedAt = Date.now(); save(); closedForMe('block'); }
+    }).catch(function () { });
   }
   function onAns(e) {
     var t = e.target, q = t.closest('[data-qid]'); if (!q || !S || S.sent) return;
@@ -242,61 +298,84 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       q.querySelectorAll('.op').forEach(function (l) { l.classList.toggle('on', l.querySelector('input').checked); });
     } else if (t.getAttribute('data-q')) { S.answers[id] = t.value; var c = document.getElementById('c' + id); if (c) c.textContent = t.value.length + '/1500'; }
     var a = S.answers[id]; q.classList.toggle('done', a !== undefined && a !== '' && a !== null);
-    save(); progress(); var sv = $('#sv'); if (sv) sv.textContent = '✓ Guardado ' + new Date().toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+    save(); progress(); var sv = $('#sv'); if (sv) sv.innerHTML = I.check + 'Guardado ' + new Date().toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   }
   function progress() { var p = $('#pg'); if (p) p.style.width = (answered() / S.qs.length * 100) + '%'; }
   function clock() {
     if (!S || S.sent) return;
     var tm = $('#tm'), d = deadline(); if (!tm || d === Infinity) return;
     var left = Math.max(0, Math.round((d - Date.now()) / 1000));
-    tm.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    tm.querySelector('span').textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
     tm.classList.toggle('low', left <= 120);
     if (left <= 0 && !sending) { clearInterval(tick); send(true); }
   }
-  function warnBlur() { var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">⚠️ Saliste de la página del examen ' + S.blurs + ' ' + (S.blurs === 1 ? 'vez' : 'veces') + '. Tu profesor lo verá.</div>'; }
+  function warnBlur() { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.alert, 'Saliste de la página del examen ' + S.blurs + ' ' + (S.blurs === 1 ? 'vez' : 'veces') + '. Tu profesor lo verá.'); }
   document.addEventListener('visibilitychange', function () {
     if (!S || !S.qs || S.sent) return;
-    if (document.hidden) { S.blurs = (S.blurs || 0) + 1; save(); } else warnBlur();
+    if (document.hidden) { S.blurs = (S.blurs || 0) + 1; save(); } else { warnBlur(); watch(); }
   });
   function confirmSend() {
     var miss = S.qs.length - answered();
     var ov = document.createElement('div'); ov.className = 'ov';
-    ov.innerHTML = '<div class="card"><h2>¿Entregar ahora?</h2><p>' + (miss ? '<b>Te faltan ' + miss + ' pregunta' + (miss > 1 ? 's' : '') + ' por responder.</b> ' : '✓ Respondiste todas las preguntas. ') + 'Después de entregar no podrás cambiar nada.</p><div class="two"><button class="gray" id="no">Seguir respondiendo</button><button class="btn" id="yes">Entregar</button></div></div>';
+    ov.innerHTML = '<div class="card"><h2>¿Entregar ahora?</h2><p class="sub">' + (miss ? '<b>Te faltan ' + miss + ' pregunta' + (miss > 1 ? 's' : '') + ' por responder.</b> ' : 'Respondiste todas las preguntas. ') + 'Después de entregar no podrás cambiar nada.</p><div class="two"><button class="gray" id="no">Seguir respondiendo</button><button class="btn" id="yes">Entregar</button></div></div>';
     document.body.appendChild(ov);
     ov.querySelector('#no').onclick = function () { ov.remove(); };
     ov.querySelector('#yes').onclick = function () { ov.remove(); send(false); };
   }
-  function send(auto) {
+  function send(auto, byTeacher) {
     if (sending) return;
     clearInterval(tick);
     var b = $('#send'); if (b) { b.disabled = true; b.innerHTML = '<span class="spin"></span> Enviando…'; }
     var ans = {}; Object.keys(S.answers).forEach(function (k) { var v = S.answers[k]; if (typeof v === 'string') v = v.slice(0, 1500); if (v !== '' && v !== undefined && v !== null) ans[k] = v; });
-    var doc = { num: S.num, name: S.name, code: S.code, pin: S.pin || '', answers: ans, startedAt: S.startedAt, sentAt: firebase.firestore.FieldValue.serverTimestamp(), blurs: S.blurs || 0, ua: String(navigator.userAgent || '').slice(0, 150) };
+    if (!S.tok) S.tok = rnd(20);
+    var doc = { num: S.num, name: S.name, code: S.code, pin: S.pin || '', tok: S.tok, answers: ans, startedAt: S.startedAt, sentAt: firebase.firestore.FieldValue.serverTimestamp(), blurs: S.blurs || 0, ua: String(navigator.userAgent || '').slice(0, 150) };
     S.sending = Date.now(); save();
-    var w = $('#wb'); if (w && auto) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">⏱️ Se acabó el tiempo. Entregando tus respuestas…</div>';
-    sending = db.collection('aula').doc(EID).collection('resp').doc(String(S.num)).set(doc);
-    var slow = setTimeout(function () { var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">📶 Sin conexión. Tus respuestas están guardadas en este teléfono y se enviarán solas cuando vuelva el internet. <b>No cierres esta página.</b></div>'; }, 6000);
-    sending.then(function () { clearTimeout(slow); S.sent = Date.now(); save(); done(); })
+    var w = $('#wb'); if (w && auto && !byTeacher) w.innerHTML = msg('warn', I.clock, 'Se acabó el tiempo. Entregando tus respuestas…');
+    sending = ref().collection('resp').doc(String(S.num)).set(doc);
+    var slow = setTimeout(function () { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.wifi, 'Sin conexión. Tus respuestas están guardadas en este teléfono y se enviarán solas cuando vuelva el internet. <b>No cierres esta página.</b>'); }, 6000);
+    sending.then(function () { clearTimeout(slow); clearInterval(watchT); S.sent = Date.now(); save(); ref().collection('live').doc(String(S.num)).delete().catch(function () { }); done(); })
       .catch(function (e) {
         clearTimeout(slow); sending = null;
         var c = String(e && e.code || e);
         if (c.indexOf('permission') >= 0) {
           S.rejected = 1; save(); hero();
-          screen('<div class="card center"><div class="big">🚫</div><h2>No se pudo entregar</h2><p>El examen ya cerró, o ya hay una entrega con el número ' + S.num + '. Muéstrale esta pantalla a tu profesor: tus respuestas siguen guardadas en este teléfono.</p><button class="btn" id="again">Intentar enviar otra vez</button><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button></div>');
+          screen(box(I.ban, 'bad', 'No se pudo entregar', 'El examen ya cerró, tu profesor lo cerró para ti, o ya hay una entrega con el número ' + S.num + '. Muéstrale esta pantalla a tu profesor: tus respuestas siguen guardadas en este teléfono.', '<button class="btn" id="again">Intentar enviar otra vez</button><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button>'));
           $('#again').onclick = function () { exam(); send(false); };
           $('#reset').onclick = reset;
         } else {
-          var w = $('#wb'); if (w) w.innerHTML = '<div class="msg warn" style="margin:0 0 14px">📶 No se pudo enviar. Reintentando… No cierres esta página.</div>';
-          clearTimeout(retry); retry = setTimeout(function () { send(auto); }, 8000);
+          var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.wifi, 'No se pudo enviar. Reintentando… No cierres esta página.');
+          clearTimeout(retry); retry = setTimeout(function () { send(auto, byTeacher); }, 8000);
         }
       });
   }
   window.addEventListener('online', function () { if (S && S.sending && !S.sent && !sending) send(false); });
   function reset() { if (!confirm('¿Borrar tus respuestas de este teléfono y empezar otra vez?')) return; try { localStorage.removeItem(KEY); } catch (e) { } location.reload(); }
   function done() {
-    clearInterval(tick); hero('Nº ' + S.num + ' · ' + S.name);
-    screen('<div class="card center"><div class="done-ic">✓</div><h2>¡Entregado!</h2><p>Nº ' + S.num + ' · ' + esc(S.name) + '</p><p class="small">' + (S.sent ? 'Enviado a las ' + new Date(S.sent).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) + '. ' : '') + 'Tu profesor ya recibió tus respuestas. Puedes cerrar esta página.</p><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button></div>');
+    clearInterval(tick); clearInterval(watchT); hero('Nº ' + S.num + ' · ' + S.name);
+    var res = (META && META.res) || (S.meta && S.meta.res) || 'off';
+    screen('<div class="card center"><div class="ico ok">' + I.check + '</div><h2>¡Entregado!</h2><p class="sub">Nº ' + S.num + ' · ' + esc(S.name) + '</p><p class="small">' + (S.sent ? 'Enviado a las ' + new Date(S.sent).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) + ' · ' : '') + 'Tu profesor ya recibió tus respuestas.</p></div>' +
+      '<div id="res">' + (res !== 'off' ? '<div class="card center"><div class="ico">' + I.award + '</div><h2>Tu resultado</h2><p class="sub">' + (res === 'close' ? 'Aparecerá aquí cuando tu profesor cierre el examen.' : 'Aparecerá aquí cuando tu profesor lo corrija.') + ' Puedes dejar esta página abierta o volver a entrar con el mismo enlace.</p></div>' : '') + '</div>' +
+      '<button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button>');
     $('#reset').onclick = reset;
+    if (res !== 'off' && S.tok) { pollRes(); clearInterval(resT); resT = setInterval(pollRes, 20000); }
+    else if (S.tok) ref().get().then(function (d) { if (d.exists && d.data().res && d.data().res !== 'off') { META = d.data(); S.meta.res = META.res; save(); done(); } }).catch(function () { });
+  }
+  function pollRes() {
+    if (!navigator.onLine) return;
+    ref().collection('res').doc(S.tok).get().then(function (d) { if (d.exists) showRes(d.data()); }).catch(function () { });
+  }
+  function showRes(R) {
+    var el = $('#res'); if (!el) return;
+    var pct = Math.round(R.pct || 0), c = pct >= 70 ? 'ok' : pct >= 60 ? 'mid' : 'bad', col = c === 'ok' ? 'var(--ok)' : c === 'mid' ? 'var(--warn)' : 'var(--bad)';
+    var det = (R.det || []).map(function (q) {
+      var st = q.st === 'pend' ? '' : q.st;
+      return '<div class="d ' + st + '"><span class="pt">' + (q.got == null ? '?' : q.got) + ' / ' + q.pts + '</span><b>' + q.n + '. ' + esc(q.q) + '</b>' + (q.ans ? '<small>Tu respuesta: ' + esc(q.ans) + '</small>' : '<small>Sin responder</small>') + (q.cor && q.st !== 'ok' ? '<small>Correcta: ' + esc(q.cor) + '</small>' : '') + '</div>';
+    }).join('');
+    el.innerHTML = '<div class="card"><h2 style="margin-bottom:14px">Tu resultado</h2><div class="res-h"><div class="ring" style="--p:' + pct + ';--c:' + col + '"><b>' + pct + '%</b></div><div>' +
+      (R.max ? '<div class="big">' + R.grade + ' <span class="small">/ ' + R.max + '</span></div>' : '<div class="big">' + R.got + ' <span class="small">/ ' + R.total + ' pts</span></div>') +
+      '<div class="small" style="margin:2px 0 8px">' + R.got + ' de ' + R.total + ' puntos</div><span class="pill ' + c + '">' + esc(R.cond || '') + '</span></div></div>' + (det ? '<div class="det">' + det + '</div>' : '') + '</div>';
+    if (R.det) clearInterval(resT); // con el detalle ya no cambia; si no, sigue revisando por si el docente corrige algo
+    var rg = el.querySelector('.ring'); if (rg && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { rg.style.setProperty('--p', 0); requestAnimationFrame(function () { requestAnimationFrame(function () { rg.style.setProperty('--p', pct); }); }); }
   }
   // Si el examen quedó a medio enviar (se cerró la página), reintenta al abrir
   if (S && S.sending && !S.sent && S.qs) setTimeout(function () { send(false); }, 800);
