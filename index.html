@@ -1779,6 +1779,10 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 @keyframes aulaIn { from { opacity: 0; transform: translateY(8px); } }
 :root[data-motion-off] .aula-card, :root[data-motion-off] .tray-item { animation: none; }
 @media print { svg.ai { width: 12px; height: 12px; } }
+.aula-tbl tr.ar-out td:first-child { box-shadow: inset 3px 0 0 var(--gold); }
+.out-list { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .35rem; }
+.out-list span { font-size: .72rem; background: var(--risk-bg); color: var(--risk); border-radius: 99px; padding: .05rem .45rem; font-weight: 600; }
+.out-list span.bad { background: var(--bad-bg); color: var(--bad); }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8267,7 +8271,16 @@ async function aulaDeleteCloud(ex) {
   if (ex.code) await ref.collection('q').doc(ex.code).delete().catch(() => { });
   await ref.delete();
 }
-function aulaUnwatch() { [AulaLive.unsub, AulaLive.unsub2].forEach(f => { if (f) { try { f(); } catch (e) { } } }); Object.assign(AulaLive, { eid: '', mid: '', xid: '', unsub: null, unsub2: null, err: '', ready: false, live: {} }); }
+/** Quiénes salieron de la página (entregados y los que siguen respondiendo). */
+function aulaOutList(m, ex) {
+  const L = [];
+  Object.keys(ex.resp).forEach(k => { const b = ex.resp[k].blurs || 0; if (b) L.push([k, b]); });
+  if (AulaLive.xid === ex.id) Object.entries(AulaLive.live).forEach(([k, v]) => { if (!ex.resp[k] && v.b) L.push([k, v.b]); });
+  if (!L.length) return '';
+  L.sort((a, b) => b[1] - a[1]);
+  return `<div class="out-list">${L.slice(0, 4).map(([k, b]) => { const s = aulaStudent(m, ex, k); return `<span class="${b > 2 ? 'bad' : ''}">${esc(s ? s.name.split(' ')[0] : 'Nº ' + k)} <b>${b}</b></span>`; }).join('')}${L.length > 4 ? `<span>+${L.length - 4}</span>` : ''}</div>`;
+}
+function aulaUnwatch() { [AulaLive.unsub, AulaLive.unsub2].forEach(f => { if (f) { try { f(); } catch (e) { } } }); Object.assign(AulaLive, { eid: '', mid: '', xid: '', unsub: null, unsub2: null, err: '', ready: false, live: {}, liveReady: false }); }
 function aulaWatch(m, ex) {
   if (!aulaCloudOK() || !ex.pub) { aulaUnwatch(); return; }
   if (AulaLive.eid === ex.pub && AulaLive.unsub) return;
@@ -8292,8 +8305,15 @@ function aulaWatch(m, ex) {
   }, err => { AulaLive.err = String(err && err.code || err); console.warn('Aula', err); aulaRenderSoon(); });
   // Quién está respondiendo ahora (progreso en vivo)
   AulaLive.unsub2 = aulaRef(ex).collection('live').onSnapshot(snap => {
-    const L = {}; snap.docs.forEach(d => { const x = d.data(); L[d.id] = { n: +x.n || 0, tot: +x.tot || 0, at: x.at && x.at.toMillis ? x.at.toMillis() : 0 }; });
+    const L = {}; snap.docs.forEach(d => { const x = d.data(); L[d.id] = { n: +x.n || 0, tot: +x.tot || 0, b: +x.b || 0, at: x.at && x.at.toMillis ? x.at.toMillis() : 0 }; });
     if (JSON.stringify(L) === JSON.stringify(AulaLive.live)) return;
+    // Aviso al docente cuando alguien sale de la página del examen
+    const mm = findMod(AulaLive.mid), e = aulaFind(mm, AulaLive.xid);
+    if (AulaLive.liveReady && e) Object.entries(L).forEach(([num, v]) => {
+      const before = (AulaLive.live[num] || {}).b || 0;
+      if (v.b > before && !e.resp[num]) { const s = aulaStudent(mm, e, num); toast(`${s ? s.num + '. ' + s.name : 'Nº ' + num} salió de la página del examen (${v.b} ${v.b === 1 ? 'vez' : 'veces'}).`, v.b > 2 ? 'error' : 'warn', 4500); }
+    });
+    AulaLive.liveReady = true;
     AulaLive.live = L; aulaRenderSoon();
   }, () => { });
 }
@@ -8424,7 +8444,7 @@ function renderAulaExam(m, ex) {
       ${aulaDonutKPI(nums.length - pend, pend, asg.length)}
       <div class="kpi"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
       <div class="kpi"><b style="color:var(--${pend ? 'gold' : 'ok'})">${pend}</b><span>Por corregir</span></div>
-      <div class="kpi"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0)}</b><span>Salidas de la página</span></div>
+      <div class="kpi"><b>${nums.reduce((a, k) => a + (ex.resp[k].blurs || 0), 0) + (AulaLive.xid === ex.id ? Object.entries(AulaLive.live).filter(([k]) => !ex.resp[k]).reduce((a, [, v]) => a + (v.b || 0), 0) : 0)}</b><span>Salidas de la página</span>${aulaOutList(m, ex)}</div>
     </div>
     <div class="card aula-target">${t
       ? `<div class="at-l"><span class="at-ic">${AI.down}</span><div><strong>Las notas van a ${esc(aulaTargetLabel(m, t))}</strong><div class="muted small">Se calculan sobre ${fmtN(t.c.max)} puntos</div></div></div>
@@ -8443,7 +8463,7 @@ function aulaRow(m, ex, s, num, sc, known) {
     const bl = ex.blocked[s.id], lv = AulaLive.xid === ex.id && AulaLive.live[s.num], open = aulaIsOpen(ex);
     const st = bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
     const btn = !ex.pub || ex.status === 'draft' ? '' : bl ? `<button class="btn btn-sm btn-ghost" data-act="aula-unblock" data-id="${ex.id}" data-sid="${s.id}">${AI.unlock} Desbloquear</button>` : open ? `<button class="btn btn-sm btn-ghost" data-act="aula-block" data-id="${ex.id}" data-sid="${s.id}" title="Cerrar el examen solo a este estudiante">${AI.lock} Cerrar</button>` : '';
-    return `<tr class="ar-none${lv && !bl ? ' ar-live' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td></td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${btn}</div></td></tr>`;
+    return `<tr class="ar-none${lv && !bl ? ' ar-live' : ''}${lv && lv.b ? ' ar-out' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td>${lv && lv.b ? `<span class="badge ${lv.b > 2 ? 'bad' : 'warn'}" title="Veces que salió de la página mientras responde">${lv.b}</span>` : lv ? '0' : ''}</td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${btn}</div></td></tr>`;
   }
   const v = aulaScaled(m, ex, sc), warnName = s && !aulaNameOk(s, r);
   const usedMin = r.sentAt && r.startedAt ? Math.max(0, Math.round((r.sentAt - r.startedAt) / 60000)) : null;

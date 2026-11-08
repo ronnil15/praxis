@@ -279,10 +279,16 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     watch(); clearInterval(watchT); watchT = setInterval(watch, 20000);
   }
   // Avisa al docente que está respondiendo y revisa si el docente le cerró el examen
+  // Progreso y salidas de la página en vivo (el docente los ve mientras responde)
+  function pushLive() {
+    if (!S || S.sent || sending || !db) return;
+    var n = answered(), sig = n + ':' + (S.blurs || 0);
+    if (sig === liveN) return; liveN = sig;
+    ref().collection('live').doc(String(S.num)).set({ num: S.num, pin: S.pin || '', n: n, tot: S.qs.length, b: S.blurs || 0, at: firebase.firestore.FieldValue.serverTimestamp() }).catch(function () { liveN = -1; });
+  }
   function watch() {
     if (!S || S.sent || sending || !navigator.onLine) return;
-    var n = answered();
-    if (n !== liveN) { liveN = n; ref().collection('live').doc(String(S.num)).set({ num: S.num, pin: S.pin || '', n: n, tot: S.qs.length, at: firebase.firestore.FieldValue.serverTimestamp() }).catch(function () { }); }
+    pushLive();
     ref().collection('x').doc(String(S.num)).get().then(function (d) {
       if (!d.exists || S.sent) return;
       var mode = d.data().m;
@@ -310,10 +316,13 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     if (left <= 0 && !sending) { clearInterval(tick); send(true); }
   }
   function warnBlur() { var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.alert, 'Saliste de la página del examen ' + S.blurs + ' ' + (S.blurs === 1 ? 'vez' : 'veces') + '. Tu profesor lo verá.'); }
-  document.addEventListener('visibilitychange', function () {
-    if (!S || !S.qs || S.sent) return;
-    if (document.hidden) { S.blurs = (S.blurs || 0) + 1; save(); } else { warnBlur(); watch(); }
-  });
+  // Cuenta una salida cuando se oculta la página (otra app, otra pestaña) o pierde el foco (otra ventana en la PC)
+  var away = false;
+  function leave() { if (!S || !S.qs || S.sent || away) return; away = true; S.blurs = (S.blurs || 0) + 1; save(); pushLive(); }
+  function back() { if (!S || !S.qs || S.sent || !away) return; away = false; warnBlur(); watch(); }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) leave(); else back(); });
+  window.addEventListener('blur', function () { setTimeout(function () { if (!document.hasFocus()) leave(); }, 250); });
+  window.addEventListener('focus', back);
   function confirmSend() {
     var miss = S.qs.length - answered();
     var ov = document.createElement('div'); ov.className = 'ov';
