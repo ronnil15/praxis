@@ -1813,6 +1813,7 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .seg-sm button span { font-size: .7rem; font-weight: 800; color: var(--muted); background: var(--surface-2); border-radius: 99px; padding: 0 .4rem; margin-left: .15rem; }
 .seg-sm button.on span { color: var(--primary); background: var(--primary-light); }
 .tbl-empty { padding: .8rem 1rem 0; }
+.ae-stus-tall { max-height: 55vh; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8500,7 +8501,7 @@ function renderAulaExam(m, ex) {
     ${stats ? `<details class="card aula-qstats"><summary><strong>Aciertos por pregunta</strong> <span class="muted small">(para saber qué repasar)</span></summary><div class="aq-stats">${stats}</div></details>` : ''}
     <div class="card table-card">
       <div class="tbl-bar"><div class="seg seg-sm">${[['all', 'Todos', asg.length], ['sent', 'Entregaron y en curso', asg.length - nPend], ['pend', 'Pendientes', nPend]].map(([k, l, n]) => `<button type="button" data-act="aula-rows" data-id="${k}" class="${view === k ? 'on' : ''}">${l} <span>${n}</span></button>`).join('')}</div>
-        ${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}</div>
+        <div class="row-wrap">${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}<button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>
       ${view !== 'pend' || nPend ? '' : '<p class="muted small tbl-empty">No hay pendientes: todos entregaron o están respondiendo.</p>'}
       <div class="table-wrap"><table class="tbl aula-tbl">
       <thead><tr><th>Nº</th><th>Estudiante</th><th>Estado</th><th>Puntos</th><th>Nota${t ? ' /' + fmtN(t.c.max) : ''}</th><th title="Veces que salió de la página del examen">Salidas</th><th>Entregó</th><th></th></tr></thead>
@@ -8518,9 +8519,10 @@ function aulaRow(m, ex, s, num, sc, known) {
     const bl = ex.blocked[s.id], lv = AulaLive.xid === ex.id && AulaLive.live[s.num], open = aulaIsOpen(ex);
     const st = bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
     const on = ex.pub && ex.status !== 'draft', out = aulaOutN(ex, s.num);
-    const items = !on ? [] : bl === 'block' ? [['unblock', AI.unlock, 'Desbloquear', 'Puede volver a entrar y seguir']] : [
+    const items = !on ? [['unassign', AI.x, 'Quitar de este examen', 'Ya no aparece en la lista']] : bl === 'block' ? [['unblock', AI.unlock, 'Desbloquear', 'Puede volver a entrar y seguir']] : [
       ...(open ? [['collect', AI.inbox, 'Recoger lo que lleva', 'Se entrega solo y ya no puede seguir'], ['block', AI.ban, 'Bloquear', 'No puede entrar ni entregar']] : []),
       ...(lv || bl ? [['reset', AI.refresh, 'Reiniciar su examen', 'Empieza de cero en su celular']] : [])];
+    if (!lv && bl !== 'block') items.push(['unassign', AI.x, 'Quitar de este examen', 'Ya no aparece en la lista ni puede entrar']);
     return `<tr class="ar-none${lv && !bl ? ' ar-live' : ''}${out ? ' ar-out' : ''}"><td>${s.num}</td><td>${esc(s.name)}</td><td>${st}</td><td>—</td><td>—</td><td>${lv || out ? aulaOutBadge(out) : ''}</td><td class="small">${lv && lv.at ? 'activo ' + new Date(lv.at).toLocaleTimeString('es-DO', { hour: 'numeric', minute: '2-digit' }) : ''}</td><td><div class="ar-btns">${aulaRowMenu(ex, s.num, items)}</div></td></tr>`;
   }
   const v = aulaScaled(m, ex, sc), warnName = s && !aulaNameOk(s, r);
@@ -8645,7 +8647,7 @@ function aulaEditor(id, preset) {
         if (!ex.qs.length) return toast('Agrega preguntas primero.', 'error');
         aulaDistribute(ex.qs, V, b.dataset.dist); draw(ov); toast(`Listo: ${ex.qs.length} preguntas suman ${fmtN(aulaTotal(ex))} puntos.`, 'ok');
       });
-      ov.querySelectorAll('[data-tomode]').forEach(b => b.onclick = () => { ex.to.mode = b.dataset.tomode; if (ex.to.mode === 'group' && !ex.to.gs && groups.length) { const [gs, gi] = groups[0].v.split('|'); ex.to.gs = gs; ex.to.gi = +gi; } drawTo(ov); });
+      ov.querySelectorAll('[data-tomode]').forEach(b => b.onclick = () => { if (b.dataset.tomode === 'some' && ex.to.mode !== 'some' && !ex.to.ids.length) ex.to.ids = aulaAssigned(m, ex).map(s => s.id); ex.to.mode = b.dataset.tomode; if (ex.to.mode === 'group' && !ex.to.gs && groups.length) { const [gs, gi] = groups[0].v.split('|'); ex.to.gs = gs; ex.to.gi = +gi; } drawTo(ov); });
       const kindSel = ov.querySelector('#aeKind'), act = ov.querySelector('#aeAct');
       // Sugerencia: la primera casilla libre del mismo tipo (Examen → Examen 1, 2…), sin pisar lo que elijas tú
       const typeOf = () => kindSel.value === 'Quiz' ? 'Examen' : kindSel.value;
@@ -9157,6 +9159,7 @@ Object.assign(ACTIONS, {
   'aula-arch-open': el => aulaArchDialog(el.dataset.id),
   'aula-stu': el => aulaStuAct(el.dataset.id, el.dataset.num, el.dataset.op),
   'aula-reset-all': el => aulaResetAll(el.dataset.id),
+  'aula-assign': el => aulaAssignDialog(el.dataset.id),
   'aula-rows': el => { state.aulaRows = el.dataset.id; try { localStorage.setItem('praxisAulaRows', el.dataset.id); } catch (e) { } render(); },
   'aula-out-clear': el => aulaOutClear(el.dataset.id),
   'aula-archive': el => { aulaCloseMenus(); aulaArchive(el.dataset.id); },
@@ -9346,6 +9349,7 @@ function aulaStuAct(id, num, op) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
   const s = aulaStudent(m, ex, num), who = s ? `${s.num}. ${s.name}` : 'Nº ' + num, O = AULA_OPS[op];
   aulaCloseMenus();
+  if (op === 'unassign') return aulaSetAssigned(m, ex, aulaAssigned(m, ex).filter(x => !s || x.id !== s.id).map(x => x.id), `${who} ya no está en este examen.`);
   const run = () => aulaApplyOp(m, ex, [String(num)], op).then(() => toast(`${who}: ${O.t.toLowerCase()} listo.`, 'ok', 3500)).catch(e => toast(aulaErr(e), 'error', 5000));
   if (op === 'unblock') return run();
   confirmBox(`${O.t} · ${who}`, O.b, O.ok, run, { danger: op !== 'collect' });
@@ -9376,6 +9380,36 @@ async function aulaApplyOp(m, ex, nums, op) {
   }
   if (op === 'block' || op === 'unblock' || op === 'reset' || op === 'delete') await aulaPublish(m, ex);
   persist(); render();
+}
+/** Cambia a quién está asignado el examen (desde la tabla o desde «Elegir quién lo toma»). */
+function aulaSetAssigned(m, ex, ids, okMsg) {
+  if (!ids.length) return toast('Debe quedar al menos un estudiante en el examen.', 'error');
+  const all = m.students.length === ids.length;
+  ex.to = all ? { mode: 'all', gs: '', gi: 0, ids: [] } : { mode: 'some', gs: '', gi: 0, ids };
+  persist(); render();
+  const done = () => toast(okMsg || 'Lista del examen actualizada.', 'ok', 3000);
+  if (ex.pub && ex.status !== 'draft' && aulaCloudOK()) aulaPublish(m, ex).then(() => { persist(); done(); }).catch(e => toast('Guardado aquí, pero no se pudo publicar: ' + aulaErr(e), 'warn', 5000));
+  else done();
+}
+function aulaAssignDialog(id) {
+  const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
+  const on = new Set(aulaAssigned(m, ex).map(s => s.id)), studs = m.students.slice().sort((a, b) => a.num - b.num);
+  const draw = ov => {
+    ov.querySelector('#asN').textContent = `${on.size} de ${studs.length} en el examen`;
+    ov.querySelectorAll('.ae-stu').forEach(l => { const c = l.querySelector('input'); c.checked = on.has(c.value); l.classList.toggle('on', c.checked); });
+  };
+  openModal({
+    title: 'Elegir quién lo toma', icon: AI.users, wide: true, sub: `${ex.title} · marca a los que deben aparecer en la lista y poder entrar`,
+    body: `<div class="ae-stus-h"><span class="muted small" id="asN"></span><button type="button" class="btn btn-sm btn-ghost" data-as="all">Todos</button><button type="button" class="btn btn-sm btn-ghost" data-as="none">Ninguno</button></div>
+      <div class="ae-stus ae-stus-tall">${studs.map(s => `<label class="ae-stu"><input type="checkbox" value="${s.id}"><span>${s.num}</span>${esc(s.name)}</label>`).join('')}</div>
+      ${Object.keys(ex.resp).length ? '<p class="muted small">Quien ya entregó sigue apareciendo en la tabla aunque lo desmarques.</p>' : ''}`,
+    actions: [{ label: 'Cancelar' }, { label: 'Guardar', cls: 'btn-primary', onClick: () => { if (!on.size) { toast('Marca al menos un estudiante.', 'error'); return false; } aulaSetAssigned(m, ex, [...on]); } }],
+    onOpen: ov => {
+      ov.querySelectorAll('.ae-stu input').forEach(c => c.onchange = () => { if (c.checked) on.add(c.value); else on.delete(c.value); draw(ov); });
+      ov.querySelectorAll('[data-as]').forEach(b => b.onclick = () => { on.clear(); if (b.dataset.as === 'all') studs.forEach(s => on.add(s.id)); draw(ov); });
+      draw(ov);
+    }
+  });
 }
 /** Reiniciar o eliminar las entregas de todo el curso. */
 function aulaResetAll(id) {
