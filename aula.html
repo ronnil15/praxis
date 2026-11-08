@@ -119,6 +119,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   var STOP = ['de', 'del', 'la', 'las', 'los', 'el', 'y', 'da', 'do', 'dos', 'das', 'san', 'mc'];
   var S = load();
   var META = null, db = null, tick = null, sending = null, retry = null, watchT = null, resT = null, liveN = -1;
+  var view = ''; // pantalla actual: exam | locked | closed | paused | code
 
   // Iconos (trazo)
   function ic(d) { return '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
@@ -175,7 +176,78 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
 
   // (el arranque está al final, después de registrar todos los eventos)
 
-  function refreshMeta() { ref().get().then(function (d) { if (d.exists) { META = d.data(); if (S) { S.until = META.until && META.until.toMillis ? META.until.toMillis() : S.until; S.meta.res = META.res || 'off'; save(); } } }).catch(function () { }); }
+  function syncMeta() { if (S && META) { S.until = META.until && META.until.toMillis ? META.until.toMillis() : S.until; if (S.meta) S.meta.res = META.res || 'off'; save(); } }
+  function isOpen() { var u = META && META.until && META.until.toMillis ? META.until.toMillis() : 0; return !!META && META.status === 'open' && (!u || u > Date.now()); }
+  function refreshMeta() { ref().get().then(function (d) { if (d.exists) { META = d.data(); syncMeta(); if (view === 'exam' && S && !S.sent && !sending && META.status !== 'open') paused(); } }).catch(function () { }); }
+
+  /** Antes de seguir o entregar: comprueba que el examen esté habilitado y que el código siga siendo el mismo.
+      Si el docente lo volvió a habilitar (código nuevo), pide el código nuevo y conserva las respuestas. */
+  function verify(next) {
+    if (!S || !S.qs) return start();
+    next = next || exam;
+    if (!navigator.onLine) return next();
+    ref().get().then(function (d) {
+      if (!d.exists) { view = ''; clearInterval(tick); clearInterval(watchT); hero(); screen(box(I.folder, '', 'No encontrado', 'Este examen ya no existe o tu profesor lo eliminó.')); return; }
+      META = d.data(); syncMeta();
+      if (!isOpen()) return paused();
+      return ref().collection('q').doc(S.code).get().then(function (q) { if (q.exists) next(); else askCode(); }, function (e) { if (String(e && e.code || e).indexOf('permission') >= 0) askCode(); else next(); });
+    }).catch(function () { next(); });
+  }
+  /** El examen no está habilitado ahora: espera sin perder nada y sigue solo cuando lo habiliten. */
+  function paused() {
+    view = 'paused'; clearInterval(tick); clearInterval(watchT); send.checked = 0;
+    hero(); screen(box(I.lock, '', 'El examen no está habilitado ahora', 'Tus respuestas están guardadas en este teléfono (' + answered() + ' de ' + S.qs.length + '). Cuando tu profesor lo vuelva a habilitar, podrás seguir. No borres los datos del navegador.', '<p class="small"><span class="spin"></span> Esperando a tu profesor…</p><button class="btn2" id="pv">Volver a intentar</button>'));
+    $('#pv').onclick = function () { verify(); };
+    watchT = setInterval(function () {
+      if (!navigator.onLine) return;
+      ref().get().then(function (d) { if (d.exists) { META = d.data(); syncMeta(); if (isOpen()) { clearInterval(watchT); verify(); } } }).catch(function () { });
+    }, 15000);
+  }
+  /** Código nuevo (el docente volvió a habilitar el examen): se mantienen las respuestas. */
+  function askCode() {
+    view = 'code'; clearInterval(tick); clearInterval(watchT);
+    var pc = (P.get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), pre = pc && pc !== S.code ? pc : '';
+    hero();
+    screen('<form class="card" id="cf" autocomplete="off" novalidate><h2>Tu profesor volvió a habilitar el examen</h2><p class="sub">Ahora tiene un <b>código nuevo</b>. Escríbelo (o abre el enlace nuevo) para seguir. Tus respuestas guardadas se mantienen: ' + answered() + ' de ' + S.qs.length + '.</p>' +
+      '<label class="f" for="nc">Código nuevo</label><input type="text" id="nc" class="code-in" maxlength="8" placeholder="······" autocapitalize="characters" spellcheck="false" value="' + esc(pre) + '">' +
+      '<div id="cpw" hidden><label class="f" for="cp">Tu clave personal</label><input type="password" id="cp" class="pin-in" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="····" autocomplete="off"></div>' +
+      '<div id="cm"></div><button class="btn" id="cb">Seguir con mi examen</button><button type="button" class="btn2" id="cr">Empezar de nuevo (solo si tu profesor lo pidió)</button></form>');
+    $('#cr').onclick = reset;
+    var say = function (t) { $('#cm').innerHTML = '<div class="msg bad">' + I.alert + '<div>' + t + '</div></div>'; };
+    $('#cf').onsubmit = function (ev) {
+      ev.preventDefault();
+      var code = ($('#nc').value || '').toUpperCase().replace(/[^A-Z0-9]/g, ''), pinBox = !$('#cpw').hidden;
+      var pin = pinBox ? ($('#cp').value || '').replace(/\D/g, '') : (S.pin || '');
+      if (!code) return say('Escribe el código nuevo que te dio tu profesor.');
+      if (pinBox && pin.length !== 4) return say('Escribe tu clave personal de 4 números.');
+      var b = $('#cb'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Comprobando…';
+      var fix = function () { b.disabled = false; b.textContent = 'Seguir con mi examen'; };
+      ref().collection('q').doc(code).get().then(function (d) {
+        if (!d.exists) throw { code: 'permission-denied' };
+        var X = d.data();
+        if (!(X.ros || {})[S.num]) { fix(); return say('Tu número (' + S.num + ') ya no está en la lista de este examen. Habla con tu profesor.'); }
+        return Promise.all([ref().collection('k').doc(S.num + '-' + pin).get(), ref().collection('x').doc(String(S.num)).get().catch(function () { return { exists: false }; })]).then(function (rs) {
+          var xd = rs[1].exists ? rs[1].data() : null;
+          if (xd && xd.m === 'reset' && xd.n !== S.reset) return restart();
+          if (xd && (xd.m === 'block' || xd.m === 'collect')) { S.code = code; save(); return closedForMe(xd.m); }
+          if (!rs[0].exists) { fix(); if (X.pin && !pinBox) { $('#cpw').hidden = false; $('#cp').focus(); return say('Escribe tu clave personal para seguir.'); } return say(X.pin ? 'Clave incorrecta. Revísala con tu profesor.' : 'No tienes acceso a este examen. Pregúntale a tu profesor.'); }
+          adopt(X, code, pin, xd);
+        });
+      }).catch(function (e) { fix(); say(String(e && e.code || e).indexOf('permission') >= 0 ? 'Ese código no es el de ahora. Revísalo con tu profesor.' : 'Sin conexión. Revisa tu internet e inténtalo otra vez.'); });
+    };
+    if (pre) $('#cb').click();
+  }
+  /** Pasa el examen guardado al código nuevo: mismas preguntas y respuestas, tiempo completo otra vez. */
+  function adopt(X, code, pin, xd) {
+    var fresh = build(X, S.num), had = S.answers || {}, ans = {};
+    fresh.forEach(function (q) { if (had[q.id] !== undefined) ans[q.id] = had[q.id]; });
+    S.code = code; S.pin = pin; S.qs = fresh; S.answers = ans; S.instr = X.instr || ''; S.dur = X.dur || 0; S.lock = !!X.lock;
+    S.startedAt = Date.now(); S.locked = 0; S.blockedAt = 0; S.unlockSeen = xd && xd.m === 'unlock' ? xd.n : (S.unlockSeen || '');
+    if (xd && xd.m === 'reset') S.reset = xd.n;
+    if (xd && xd.m === 'lock') S.locked = Date.now();
+    delete S.sending; delete S.rejected; S.reopened = 1; send.checked = 0;
+    liveN = -1; away = false; save(); lsSet(DEV, String(S.num)); exam();
+  }
 
   function start() {
     hero();
@@ -231,11 +303,17 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       }).catch(function (e) {
         reset();
         var c = String(e && e.code || e);
-        say(c.indexOf('permission') >= 0 ? 'Código incorrecto, o el examen ya cerró. Revísalo con tu profesor.' : 'Sin conexión. Revisa tu internet e inténtalo otra vez.');
+        if (c.indexOf('permission') >= 0 && pc && $('#code').type === 'hidden') {
+          // Enlace de antes: el docente volvió a habilitar el examen con otro código
+          var h = $('#code'); h.insertAdjacentHTML('afterend', '<label class="f" for="code">Código del examen</label><input type="text" id="code2" class="code-in" maxlength="8" placeholder="······" autocapitalize="characters" spellcheck="false">'); h.remove(); $('#code2').id = 'code'; pc = '';
+          say('Este enlace es de antes: tu profesor volvió a habilitar el examen con un <b>código nuevo</b>. Escríbelo arriba o abre el enlace nuevo.');
+          $('#code').focus();
+        } else say(c.indexOf('permission') >= 0 ? 'Ese código no sirve ahora. Si tu profesor volvió a habilitar el examen, el código cambió: pídele el nuevo.' : 'Sin conexión. Revisa tu internet e inténtalo otra vez.');
       });
     };
   }
   function closedForMe(mode) {
+    view = 'closed'; clearInterval(tick);
     hero(); screen(box(I.ban, 'bad', 'Tu profesor cerró este examen para ti', mode === 'collect' ? 'Ya no puedes responder. Si tienes dudas, habla con tu profesor.' : 'No puedes entrar a este examen. Si tu profesor te desbloquea, seguirás donde te quedaste.', '<button class="btn2" onclick="location.reload()">Volver a intentar</button>'));
     // Si el docente lo desbloquea o lo reinicia, sigue solo (sin tocar nada)
     clearInterval(watchT); watchT = setInterval(function () {
@@ -244,7 +322,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
         if (d.exists && d.data().m !== 'reset') return;
         clearInterval(watchT);
         if (d.exists && S && d.data().n !== S.reset) return restart();
-        if (S && S.qs && !S.sent) exam(); else location.reload();
+        if (S && S.qs && !S.sent) verify(); else location.reload();
       }).catch(function () { });
     }, 15000);
   }
@@ -262,10 +340,14 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
       else $('#um').innerHTML = '<div class="msg bad">' + I.alert + '<div>Código incorrecto.</div></div>';
     };
   }
-  function go(X, code, num, name, pin, until) {
+  /** Preguntas en el orden de este estudiante (mismo orden siempre para el mismo número). */
+  function build(X, num) {
     var r = seedRand(EID + ':' + num);
     var qs = (X.qs || []).map(function (q) { var o = (q.opts || []).map(function (t, i) { return { i: i, t: t }; }); return { id: q.id, t: q.t, text: q.text, pts: q.pts, opts: q.t === 'mc' && X.shuffle ? shuffle(o, r) : o }; });
-    if (X.shuffle) qs = shuffle(qs, r);
+    return X.shuffle ? shuffle(qs, r) : qs;
+  }
+  function go(X, code, num, name, pin, until) {
+    var qs = build(X, num);
     S = { num: num, name: name, code: code, pin: pin, tok: rnd(20), reset: X._reset || '', lock: !!X.lock, unlockSeen: X._unlock || '', locked: 0, qs: qs, instr: X.instr || '', dur: X.dur || 0, until: until || 0, startedAt: Date.now(), answers: {}, blurs: 0, meta: { title: META.title, kind: META.kind, mod: META.mod, course: META.course, res: META.res || 'off' } };
     lsSet('praxisAulaMe', JSON.stringify({ num: num, name: name }));
     lsSet(DEV, String(num));
@@ -275,6 +357,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   function answered() { var n = 0; S.qs.forEach(function (q) { var a = S.answers[q.id]; if (a !== undefined && a !== '' && a !== null) n++; }); return n; }
   function exam() {
     if (S.locked) return showLocked();
+    view = 'exam';
     document.body.classList.add('exam');
     top.innerHTML = '<div class="bar"><div class="in"><div class="t"><b>' + esc(S.meta.title) + '</b><span>Nº ' + S.num + ' · ' + esc(S.name) + '</span></div>' + thmBtn() + '<div class="timer" id="tm">' + I.clock + '<span>' + (deadline() < Infinity ? '--:--' : 'Sin límite') + '</span></div></div></div><div class="prog"><div id="pg"></div></div>';
     top.style.position = 'sticky'; top.style.top = '0'; top.style.zIndex = '5';
@@ -295,6 +378,7 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
     $('#send').onclick = function () { confirmSend(); };
     progress(); clock(); clearInterval(tick); tick = setInterval(clock, 1000);
     if (S.blurs) warnBlur();
+    if (S.reopened) { var w0 = $('#wb'); if (w0) w0.innerHTML = msg('ok', I.check, 'Tu profesor volvió a habilitar el examen. Tus respuestas siguen aquí: sigue respondiendo y toca <b>Entregar</b> al terminar.'); delete S.reopened; save(); }
     watch(); clearInterval(watchT); watchT = setInterval(watch, 20000);
   }
   // Avisa al docente que está respondiendo y revisa si el docente le cerró el examen
@@ -344,25 +428,30 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   // Cuenta una salida cuando se oculta la página (otra app, otra pestaña) o pierde el foco (otra ventana en la PC)
   var away = false;
   function leave() {
-    if (!S || !S.qs || S.sent || away || S.locked) return; away = true; S.blurs = (S.blurs || 0) + 1;
+    if (!S || !S.qs || S.sent || away || S.locked || view !== 'exam') return; away = true; S.blurs = (S.blurs || 0) + 1;
     if (S.lock) { S.locked = Date.now(); save(); pushLive(); showLocked(); return; }
     save(); pushLive();
   }
   function back() { if (!S || !S.qs || S.sent || !away) return; away = false; if (S.locked) return; warnBlur(); watch(); }
   /** Examen bloqueado por salir de la página: espera a que el docente lo permita (o lo recoja / reinicie). */
   function showLocked() {
-    clearInterval(watchT); clearInterval(tick);
+    view = 'locked'; clearInterval(watchT); clearInterval(tick);
     hero(); screen(box(I.lock, 'bad', 'Tu examen está bloqueado', 'Saliste de la página del examen. Tus respuestas están guardadas. Pídele a tu profesor que te permita continuar.', '<p class="small"><span class="spin"></span> Esperando a tu profesor…</p>'));
     var poll = function () {
       if (!navigator.onLine) return;
       ref().collection('x').doc(String(S.num)).get().then(function (d) {
-        var x = d.exists ? d.data() : null; if (!x) return;
-        if (x.m === 'unlock' && x.n !== S.unlockSeen) { S.locked = 0; S.unlockSeen = x.n; away = false; save(); exam(); }
-        else if (x.m === 'collect') { exam(); send(true, true); }
-        else if (x.m === 'reset' && x.n !== S.reset) restart();
-        else if (x.m === 'block') closedForMe('block');
-        else return;
+        var x = d.exists ? d.data() : null;
+        if (!x || (x.m === 'unlock' && x.n === S.unlockSeen)) {
+          // ¿Lo volvieron a habilitar con otro código? Entonces se sigue con el código nuevo
+          return ref().collection('q').doc(S.code).get().then(function (q) { if (!q.exists) { clearInterval(watchT); verify(); } }).catch(function () { });
+        }
+        if (x.m === 'reset' && x.n === S.reset) return;
+        if (x.m === 'lock') return;
         clearInterval(watchT);
+        if (x.m === 'unlock') { S.locked = 0; S.unlockSeen = x.n; away = false; save(); verify(); }
+        else if (x.m === 'collect') { S.locked = 0; save(); exam(); send(true, true); }
+        else if (x.m === 'reset') restart();
+        else if (x.m === 'block') closedForMe('block');
       }).catch(function () { });
     };
     poll(); watchT = setInterval(poll, 8000);
@@ -401,15 +490,20 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
         clearTimeout(slow); sending = null;
         var c = String(e && e.code || e);
         if (c.indexOf('permission') >= 0) {
-          S.rejected = 1; save(); hero();
-          screen(box(I.ban, 'bad', 'No se pudo entregar', 'El examen ya cerró, tu profesor lo cerró para ti, o ya hay una entrega con el número ' + S.num + '. Muéstrale esta pantalla a tu profesor: tus respuestas siguen guardadas en este teléfono.', '<button class="btn" id="again">Intentar enviar otra vez</button><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button>'));
-          $('#again').onclick = function () { exam(); send(false); };
-          $('#reset').onclick = reset;
+          // Puede ser que lo inhabilitaron o que lo volvieron a habilitar con otro código: eso se resuelve solo
+          if (!send.checked) { send.checked = 1; return verify(function () { rejected(); }); }
+          rejected();
         } else {
           var w = $('#wb'); if (w) w.innerHTML = msg('warn', I.wifi, 'No se pudo enviar. Reintentando… No cierres esta página.');
           clearTimeout(retry); retry = setTimeout(function () { send(auto, byTeacher); }, 8000);
         }
       });
+  }
+  function rejected() {
+    send.checked = 0; view = 'rejected'; S.rejected = 1; save(); hero();
+    screen(box(I.ban, 'bad', 'No se pudo entregar', 'El examen ya cerró, tu profesor lo cerró para ti, o ya hay una entrega con el número ' + S.num + '. Muéstrale esta pantalla a tu profesor: tus respuestas siguen guardadas en este teléfono.', '<button class="btn" id="again">Intentar enviar otra vez</button><button class="btn2" id="reset">Empezar de nuevo (solo si tu profesor lo autorizó)</button>'));
+    $('#again').onclick = function () { verify(function () { exam(); send(false); }); };
+    $('#reset').onclick = reset;
   }
   window.addEventListener('online', function () { if (S && S.sending && !S.sent && !sending) send(false); });
   function reset() { if (!confirm('¿Borrar tus respuestas de este teléfono y empezar otra vez?')) return; try { localStorage.removeItem(KEY); } catch (e) { } location.reload(); }
@@ -450,9 +544,10 @@ var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDoma
   setInterval(function () { if (S && S.qs && !S.sent && navigator.onLine) refreshMeta(); }, 60000);
   if (S && S.sent) done();
   else if (S && S.qs) {
-    exam(); refreshMeta();
-    // Si el examen quedó a medio enviar (se cerró la página), reintenta al abrir
-    if (S.sending && !S.locked) setTimeout(function () { send(false); }, 800);
+    exam();
+    // Comprueba que siga habilitado y con el mismo código; si quedó a medio enviar, reintenta
+    var resume = function () { if (S.sending && !S.locked && view === 'exam') setTimeout(function () { send(false); }, 800); };
+    if (navigator.onLine) verify(resume); else resume();
   }
   else start();
 })();

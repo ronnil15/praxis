@@ -8455,7 +8455,7 @@ function renderAulaExam(m, ex) {
   const used = new Set();
   // Filtro de la tabla (solo vista): todos / entregaron / pendientes; los que están respondiendo o bloqueados cuentan como «en curso»
   // Sin habilitar o inhabilitado: la lista queda limpia (solo quienes entregaron)
-  const view = !open ? 'sent' : ['all', 'sent', 'pend'].includes(state.aulaRows) ? state.aulaRows : 'all';
+  const view = !open ? (state.aulaShowList ? 'all' : 'sent') : ['all', 'sent', 'pend'].includes(state.aulaRows) ? state.aulaRows : 'all';
   let nSent = 0, nPend = 0;
   const rows = asg.map(s => {
     const num = nums.find(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; });
@@ -8523,8 +8523,9 @@ function renderAulaExam(m, ex) {
       ${open ? `<div class="tbl-bar"><div class="seg seg-sm">${[['all', 'Todos', asg.length], ['sent', 'Entregaron y en curso', asg.length - nPend], ['pend', 'Pendientes', nPend]].map(([k, l, n]) => `<button type="button" data-act="aula-rows" data-id="${k}" class="${view === k ? 'on' : ''}">${l} <span>${n}</span></button>`).join('')}</div>
         <div class="row-wrap">${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}<button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>
       ${view !== 'pend' || nPend ? '' : '<p class="muted small tbl-empty">No hay pendientes: todos entregaron o están respondiendo.</p>'}`
-      : `<div class="tbl-bar tbl-off"><div class="tb-off">${AI.lock}<div><b>${ex.status === 'draft' ? 'Sin habilitar' : 'Inhabilitado'}</b><span class="muted small">${nums.length ? 'Solo se muestran los que entregaron.' : 'No hay estudiantes en espera. Al habilitarlo eliges quién lo toma.'}</span></div></div></div>`}
-      ${!open && !nums.length ? '' : `<div class="table-wrap"><table class="tbl aula-tbl">
+      : `<div class="tbl-bar tbl-off"><div class="tb-off">${AI.lock}<div><b>${ex.status === 'draft' ? 'Sin habilitar' : 'Inhabilitado'}</b><span class="muted small">${state.aulaShowList ? `Lista del examen: ${asg.length} estudiante${asg.length === 1 ? '' : 's'}. Nadie puede entrar hasta que lo habilites.` : nums.length ? 'Solo se muestran los que entregaron.' : 'No hay estudiantes en espera. Al habilitarlo eliges quién lo toma.'}</span></div></div>
+        <div class="row-wrap"><button type="button" class="btn btn-sm btn-ghost" data-act="aula-showlist">${AI.users} ${state.aulaShowList ? 'Ocultar la lista' : `Ver la lista (${asg.length})`}</button><button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>`}
+      ${!open && !nums.length && !state.aulaShowList ? '' : `<div class="table-wrap"><table class="tbl aula-tbl">
       <thead><tr><th>Nº</th><th>Estudiante</th><th>Estado</th><th>Puntos</th><th>Nota${t ? ' /' + fmtN(t.c.max) : ''}</th><th title="Veces que salió de la página del examen">Salidas</th><th>Entregó</th><th></th></tr></thead>
       <tbody>${rows.join('')}${extra.join('')}</tbody></table></div>`}</div>
   </div>`;
@@ -8539,7 +8540,7 @@ function aulaRow(m, ex, s, num, sc, known) {
   if (!r) {
     const bl = ex.blocked[s.id], lv = AulaLive.xid === ex.id && AulaLive.live[s.num], open = aulaIsOpen(ex);
     const lk = aulaLeaveLocked(ex, s.num);
-    const st = lk && !bl ? `<span class="badge bad">${AI.lock} Bloqueado por salir</span>` : bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
+    const st = lk && !bl ? `<span class="badge bad">${AI.lock} Bloqueado por salir</span>` : bl === 'block' ? `<span class="badge bad">${AI.ban} Bloqueado</span>` : !open ? (lv ? `<span class="badge neutral">${AI.clock} En pausa ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Asignado</span>') : bl === 'collect' ? `<span class="badge warn">${AI.stop} Cerrando…</span>` : lv ? `<span class="badge info live-b"><i></i>Respondiendo ${lv.n}/${lv.tot}</span>` : '<span class="badge neutral">Pendiente</span>';
     const on = ex.pub && ex.status !== 'draft', out = aulaOutN(ex, s.num);
     const items = !on ? [['unassign', AI.x, 'Quitar de este examen', 'Ya no aparece en la lista']] : bl === 'block' ? [['unblock', AI.unlock, 'Desbloquear', 'Puede volver a entrar y seguir']] : [
       ...(open ? [['collect', AI.inbox, 'Recoger lo que lleva', 'Se entrega solo y ya no puede seguir'], ['block', AI.ban, 'Bloquear', 'No puede entrar ni entregar']] : []),
@@ -8722,7 +8723,7 @@ function aulaStartDialog(id, extend = false) {
   const base = extend && ex.until && new Date(ex.until) > new Date() ? new Date(ex.until) : new Date();
   const def = new Date(base.getTime() + (extend ? 15 : Math.max(ex.dur || 45, 20) + 15) * 60000);
   def.setSeconds(0, 0);
-  const on = new Set(aulaAssigned(m, ex).map(s => s.id)), pk = aulaPicker(m, on);
+  const on = new Set(aulaAssigned(m, ex).map(s => s.id)), pk = aulaPicker(m, on), sentN = Object.keys(ex.resp).length;
   openModal({
     title: extend ? 'Extender el tiempo' : 'Habilitar el examen', wide: !extend, icon: extend ? AI.clock : AI.play,
     sub: `${ex.title} · ${modShort(m)}${m.course ? ' · ' + m.course : ''} · ${aulaToLabel(m, ex)}`,
@@ -8731,7 +8732,9 @@ function aulaStartDialog(id, extend = false) {
       <div class="row-wrap">${(extend ? [5, 10, 15, 30] : [30, 45, 60, 90, 120]).map(x => `<button type="button" class="btn btn-sm btn-ghost" data-plus="${x}">${extend ? '+' : ''}${x} min</button>`).join('')}</div>
       ${extend ? '' : `<p class="muted small">Se crea un <b>código y un QR nuevos</b> cada vez que lo habilitas: los de antes (o una foto) ya no sirven.</p><label class="check"><input type="checkbox" id="asCode" ${ex.withCode ? 'checked' : ''}> Poner el código dentro del QR (no tendrán que escribirlo)</label>
       <p class="muted small">Si no lo marcas, les dices el código en voz alta o lo escribes en la pizarra: así nadie de fuera puede entrar solo con el enlace.</p>
-      ${ex.pin ? '<p class="muted small">Pedirá la clave personal: entrégales sus tarjetas (Aula › Claves de estudiantes).</p>' : ''}`}
+      ${ex.pin ? '<p class="muted small">Pedirá la clave personal: entrégales sus tarjetas (Aula › Claves de estudiantes).</p>' : ''}
+      <p class="muted small">Los que quedaron a medias siguen donde se quedaron (con el código nuevo y sus respuestas guardadas). Se quitan los bloqueos que tenían.</p>
+      ${sentN ? `<label class="check"><input type="checkbox" id="asRetake"> Que los que ya entregaron (${sentN}) lo hagan otra vez <span class="muted small">— se borran sus entregas del Aula; las notas que ya pasaron al registro no se tocan</span></label>` : ''}`}
       ${ex.dur ? `<p class="muted small">Cada estudiante tendrá ${ex.dur} minutos desde que empiece.</p>` : ''}`,
     actions: [{ label: 'Cancelar' }, {
       label: extend ? 'Extender' : 'Habilitar ahora', cls: 'btn-primary', onClick: (ov, close) => {
@@ -8745,8 +8748,12 @@ function aulaStartDialog(id, extend = false) {
           ex.code = aulaCode(); ex.unlock = aulaRand(4); // código y QR nuevos en cada apertura
           const now = new Date().toISOString(); if (!ex.openedAt) ex.openedAt = now; ex.lastOpen = now; ex.closedAt = '';
         }
+        const retake = !extend && !!(ov.querySelector('#asRetake') || {}).checked;
         const btn = ov.querySelector('.modal-foot .btn-primary'); btn.disabled = true; btn.textContent = 'Publicando…';
-        aulaSetStatus(m, ex, 'open', d.toISOString()).then(() => {
+        (extend ? Promise.resolve(null) : aulaReopenPrep(m, ex, on)).then(prep => aulaSetStatus(m, ex, 'open', d.toISOString()).then(async () => {
+          if (prep) await aulaReopenSend(ex, prep.out);
+          if (retake) { const rn = Object.keys(ex.resp).filter(n => { const s = aulaStudent(m, ex, n); return s && on.has(s.id); }); if (rn.length) await aulaApplyOp(m, ex, rn, 'reset').catch(e => toast('No se pudieron borrar las entregas: ' + aulaErr(e), 'warn', 5000)); }
+        }, e => { if (prep) Object.assign(ex, prep.keep); throw e; })).then(() => {
           persist(); close(); render(); toast(extend ? 'Tiempo extendido.' : '¡Habilitado! Muestra el QR a tus estudiantes.', 'ok', 3200);
           if (!extend) setTimeout(() => aulaShare(ex.id), 250);
         }).catch(e => { btn.disabled = false; btn.textContent = extend ? 'Extender' : 'Habilitar ahora'; toast(aulaErr(e), 'error', 6000); });
@@ -8759,6 +8766,25 @@ function aulaStartDialog(id, extend = false) {
     }); },
   });
 }
+/** Al volver a habilitar: quita los cierres y bloqueos por estudiante (si no, no podrían volver a entrar).
+    Toma como base las salidas que ya tenían, para que no se bloqueen otra vez por las salidas de antes. */
+async function aulaReopenPrep(m, ex, ids) {
+  const keep = { blocked: { ...ex.blocked }, lockSent: { ...ex.lockSent }, unlockAt: { ...ex.unlockAt } }, out = {};
+  Object.keys(ex.blocked).forEach(sid => { if (!ids.has(sid)) return; const s = m.students.find(x => x.id === sid); if (s) out[s.num] = 'clear'; delete ex.blocked[sid]; });
+  const live = {};
+  if (ex.pub && aulaCloudOK()) { try { (await withTimeout(aulaRef(ex).collection('live').get(), 10000)).forEach(d => { live[d.id] = d.data() || {}; }); } catch (e) { } }
+  new Set([...Object.keys(ex.lockSent), ...Object.keys(live)]).forEach(n => {
+    const b = Math.max(+(live[n] && live[n].b) || 0, +ex.lockSent[n] || 0);
+    if (!ex.resp[n] && !out[n] && (b > (+ex.unlockAt[n] || 0) || ex.lockSent[n] !== undefined)) out[n] = 'unlock';
+    if (b > (+ex.unlockAt[n] || 0)) ex.unlockAt[n] = b;
+    delete ex.lockSent[n];
+  });
+  return { keep, out };
+}
+async function aulaReopenSend(ex, out) {
+  const ref = aulaRef(ex), n = aulaRand(6);
+  await Promise.all(Object.entries(out).map(([num, k]) => (k === 'clear' ? ref.collection('x').doc(String(num)).delete() : ref.collection('x').doc(String(num)).set({ m: 'unlock', n })).catch(() => { })));
+}
 function aulaErr(e) {
   const c = String(e && (e.code || e.message) || e);
   if (c.includes('permission')) return 'Firebase no dio permiso. Falta activar las reglas nuevas del Aula (pídeselo a Claude).';
@@ -8767,7 +8793,7 @@ function aulaErr(e) {
 }
 function aulaClose(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
-  confirmBox('¿Inhabilitar el examen?', 'Nadie más podrá entrar ni entregar; quien esté respondiendo y no haya entregado no podrá enviar. La lista queda limpia: solo se ven los que entregaron. Puedes habilitarlo otra vez cuando quieras.', 'Inhabilitar', () => {
+  confirmBox('¿Inhabilitar el examen?', 'Nadie más podrá entrar ni entregar. Quien esté respondiendo queda en pausa con sus respuestas guardadas en su celular: si lo vuelves a habilitar, sigue donde se quedó. La lista queda limpia (puedes verla con «Ver la lista»).', 'Inhabilitar', () => {
     const was = ex.closedAt; ex.closedAt = new Date().toISOString();
     aulaSetStatus(m, ex, 'closed').then(() => { aulaPushResults(m, ex); persist(); render(); toast('Inhabilitado.', 'ok'); }).catch(e => { ex.closedAt = was; throw e; }).catch(e => toast(aulaErr(e), 'error', 5000));
   });
@@ -9218,6 +9244,7 @@ Object.assign(ACTIONS, {
   'aula-stu': el => aulaStuAct(el.dataset.id, el.dataset.num, el.dataset.op),
   'aula-reset-all': el => aulaResetAll(el.dataset.id),
   'aula-assign': el => aulaAssignDialog(el.dataset.id),
+  'aula-showlist': () => { state.aulaShowList = !state.aulaShowList; render(); },
   'aula-rows': el => { state.aulaRows = el.dataset.id; try { localStorage.setItem('praxisAulaRows', el.dataset.id); } catch (e) { } render(); },
   'aula-out-clear': el => aulaOutClear(el.dataset.id),
   'aula-archive': el => { aulaCloseMenus(); aulaArchive(el.dataset.id); },
