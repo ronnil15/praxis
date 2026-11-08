@@ -1917,6 +1917,10 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .pc-url { font-size: 8pt; color: #475569; margin-top: 5px; word-break: break-all; }
 .pc-tip { font-size: 8pt; color: #64748b; }
 .pt-sec, .pt-head { padding: 1.1rem 1.3rem; }
+.ok-t { color: var(--ok); display: flex; align-items: center; gap: .25rem; }
+.ok-t svg { width: 14px; height: 14px; }
+.pt-near { margin-top: .25rem; font-size: .8rem; }
+.pt-tbl .pt-user { width: 170px; max-width: 100%; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -9938,7 +9942,35 @@ function normPortal(p) {
 
 /* ---------- Utilidades ---------- */
 function portalSlug(s) { return aulaFold(s).replace(/[^a-z0-9]+/g, ''); }
-function portalUserDefault(m, s) { return `${portalSlug(m.course) || portalSlug(modShort(m)) || 'est'}-${String(s.num).padStart(2, '0')}`; }
+function portalUserDefault(m, s) {
+  const base = `${portalSlug(m.course) || portalSlug(modShort(m)) || 'est'}-${String(s.num).padStart(2, '0')}`;
+  // Si ese usuario ya es de otro estudiante (en otro módulo), se le agrega la sigla de este módulo
+  const o = portalFindAcct(base, m);
+  return o && !(o.s && portalSameName(o.s.name, s.name)) ? `${base}${portalSlug(modShort(m)).slice(0, 5)}` : base;
+}
+function portalNameKey(n) { return aulaToks(n).slice().sort().join(' '); }
+function portalSameName(a, b) { return portalNameKey(a) === portalNameKey(b); }
+/** El mismo estudiante en otro de tus módulos, que ya tiene cuenta: por nombre (no por número de lista). */
+function portalMatch(m, s) {
+  let near = null;
+  for (const mm of db.modules) {
+    if (mm === m || !mm.portal) continue;
+    for (const [sid, a] of Object.entries(mm.portal.accts)) {
+      const st = findStu(mm, sid); if (!st || !a.uid) continue;
+      const sameCourse = portalSlug(mm.course) === portalSlug(m.course);
+      if (portalSameName(st.name, s.name) && (sameCourse || !near)) return { kind: 'same', m: mm, s: st, a };
+      if (!near && sameCourse && aulaNameOk(s, { name: st.name }) && aulaNameOk(st, { name: s.name })) near = { kind: 'near', m: mm, s: st, a };
+    }
+  }
+  return near;
+}
+/** Otra cuenta distinta del mismo estudiante en otro módulo (para unirlas). */
+function portalJoinable(m, s) {
+  const a = m.portal.accts[s.id]; if (!a) return null;
+  for (const mm of db.modules) { if (mm === m || !mm.portal) continue; for (const [sid, b] of Object.entries(mm.portal.accts)) { const st = findStu(mm, sid); if (st && b.uid && b.uid !== a.uid && portalSameName(st.name, s.name)) return { m: mm, s: st, a: b }; } }
+  return null;
+}
+function portalModsOf(uid) { return db.modules.filter(mm => mm.portal && Object.values(mm.portal.accts).some(a => a.uid === uid)); }
 function portalUserOk(u) { return /^[a-z0-9][a-z0-9.-]{2,39}$/.test(u); }
 function portalEmail(u) { return `${u}@${PORTAL_DOMAIN}`; }
 function portalPw() { const A = 'abcdefghjkmnpqrstuvwxyz23456789'; return aulaRand(4, A) + '-' + aulaRand(4, A); }
@@ -10038,13 +10070,13 @@ async function portalSync(m, force) {
 async function portalCreateAccounts(m, users, onProg) {
   const P = m.portal, A = await portalAdminAuth(), out = { ok: 0, bad: [] };
   let i = 0;
-  for (const [sid, u] of users) {
+  for (const [sid, u, force] of users) {
     const s = findStu(m, sid); if (!s) continue;
     let uidv = '', pw = '';
     const other = portalFindAcct(u, m);
     if (other) {
-      if (!other.s || !aulaNameOk(s, { name: other.s.name })) { out.bad.push(`${s.num}. ${s.name}: el usuario «${u}» ya es de ${other.s ? other.s.name : 'otro estudiante'} en ${modShort(other.m)}. Cambia el usuario.`); continue; }
-      uidv = other.a.uid; pw = other.a.pw; // mismo estudiante en otro módulo: misma cuenta
+      if (!force && (!other.s || !aulaNameOk(s, { name: other.s.name }))) { out.bad.push(`${s.num}. ${s.name}: el usuario «${u}» ya es de ${other.s ? other.s.name : 'otro estudiante'} en ${modShort(other.m)}. Cambia el usuario.`); continue; }
+      uidv = other.a.uid; pw = other.a.pw; out.linked = (out.linked || 0) + 1; // mismo estudiante en otro módulo: misma cuenta
     } else {
       pw = portalPw();
       try { const c = await A.createUserWithEmailAndPassword(portalEmail(u), pw); uidv = c.user.uid; await A.signOut(); }
@@ -10057,13 +10089,20 @@ async function portalCreateAccounts(m, users, onProg) {
   }
   return out;
 }
-async function portalChangePw(m, sid) {
+async function portalChangePw(m, sid, custom) {
   const a = m.portal.accts[sid]; if (!a) return;
-  const A = await portalAdminAuth(), np = portalPw();
+  const A = await portalAdminAuth(), np = custom || portalPw();
   const c = await A.signInWithEmailAndPassword(portalEmail(a.u), a.pw);
   await c.user.updatePassword(np); await A.signOut();
   db.modules.forEach(mm => mm.portal && Object.values(mm.portal.accts).forEach(x => { if (x.uid === a.uid) x.pw = np; }));
   _portalPersist(); return np;
+}
+/** Une la cuenta de este módulo con la que el mismo estudiante ya tiene en otro (queda una sola). */
+async function portalJoin(m, sid, x) {
+  await portalRemoveAcct(m, sid);
+  const P = m.portal, s = findStu(m, sid);
+  await withTimeout(Cloud.fs.collection('pstu').doc(x.a.uid).set({ owner: Cloud.user.uid, p: { [P.pid]: { mod: modShort(m), course: m.course || '', num: s.num, name: s.name } } }, { merge: true }), 15000);
+  P.accts[sid] = { u: x.a.u, uid: x.a.uid, pw: x.a.pw, at: new Date().toISOString() }; delete P.pushed[sid]; _portalPersist();
 }
 async function portalRemoveAcct(m, sid) {
   const P = m.portal, a = P.accts[sid]; if (!a) return;
@@ -10123,15 +10162,22 @@ function portalNotasHTML(m) {
 }
 function portalCuentasHTML(m) {
   const P = m.portal, studs = m.students.slice().sort((a, b) => a.num - b.num), sin = studs.filter(s => !P.accts[s.id]);
-  return `<section class="card pt-sec"><div class="pt-sec-h"><div><h3>Cuentas de los estudiantes</h3><p class="muted small">Usuario y contraseña para entrar a Mi aula. Las contraseñas las administras tú: si alguien la olvida, le das una nueva. Si un estudiante está en dos de tus módulos, usa el mismo usuario y tendrá una sola cuenta.</p></div>
-      <div class="row-wrap">${sin.length ? `<button class="btn btn-primary" data-act="portal-create">${AI.users} Crear ${sin.length} cuenta${sin.length === 1 ? '' : 's'}</button>` : ''}<button class="btn btn-secondary" data-act="portal-cards" ${studs.length - sin.length ? '' : 'disabled'}>${AI.file} Imprimir tarjetas</button></div></div>
+  return `<section class="card pt-sec"><div class="pt-sec-h"><div><h3>Cuentas de los estudiantes</h3><p class="muted small">Usuario y contraseña para entrar a Mi aula. Las contraseñas las administras tú: si alguien la olvida, le das una nueva. Si un estudiante está en dos de tus módulos, el programa lo reconoce por su nombre y usa su misma cuenta (un usuario y una contraseña para todo).</p></div>
+      <div class="row-wrap">${sin.length ? (() => { const k = sin.filter(s => (portalMatch(m, s) || {}).kind === 'same').length, n = sin.length - k; return `<button class="btn btn-primary" data-act="portal-create">${AI.users} ${n ? `Crear ${n} cuenta${n === 1 ? '' : 's'}` : 'Activar'}${k ? ` · ${k} ya tiene${k === 1 ? '' : 'n'} cuenta` : ''}</button>`; })() : ''}<button class="btn btn-secondary" data-act="portal-cards" ${studs.length - sin.length ? '' : 'disabled'}>${AI.file} Imprimir tarjetas</button></div></div>
     <div class="table-wrap"><table class="tbl pt-tbl"><thead><tr><th>Nº</th><th>Estudiante</th><th>Usuario</th><th>Contraseña</th><th>Estado</th><th></th></tr></thead><tbody>
     ${studs.map(s => { const a = P.accts[s.id]; return `<tr><td>${s.num}</td><td>${esc(s.name)}</td>
-      <td>${a ? `<code>${esc(a.u)}</code>` : `<input type="text" class="pt-user" data-pu="${s.id}" value="${esc(portalUserDefault(m, s))}" maxlength="40" spellcheck="false" aria-label="Usuario de ${esc(s.name)}">`}</td>
+      <td>${a ? `<code>${esc(a.u)}</code>${portalModsOf(a.uid).length > 1 ? `<div class="muted small">También en ${esc(portalModsOf(a.uid).filter(x => x !== m).map(modShort).join(', '))}</div>` : ''}` : portalUserCell(m, s)}</td>
       <td>${a ? `<code class="pt-pw" data-pw="${esc(a.pw)}">••••-••••</code> <button type="button" class="btn btn-ghost btn-icon btn-sm" data-act="portal-pw-show" title="Ver contraseña">${AI.eye}</button>` : '<span class="muted">—</span>'}</td>
       <td>${a ? '<span class="badge ok">Activa</span>' : '<span class="badge neutral">Sin cuenta</span>'}</td>
-      <td>${a ? aulaRowMenu({ id: 'portal' }, s.id, [['pw', AI.key, 'Darle otra contraseña', 'La de antes deja de servir'], ['card', AI.file, 'Imprimir su tarjeta', ''], ['del', AI.trash, 'Eliminar su cuenta', 'Ya no podrá entrar']]).replace(/data-act="aula-stu"/g, 'data-act="portal-acct"') : ''}</td></tr>`; }).join('')}
+      <td>${a ? aulaRowMenu({ id: 'portal' }, s.id, [['pw', AI.key, 'Cambiar la contraseña', 'Una al azar o la que tú escribas'], ['card', AI.file, 'Imprimir su tarjeta', ''], ...(portalJoinable(m, s) ? [['join', AI.users, 'Unir con su otra cuenta', `Usará la de ${modShort(portalJoinable(m, s).m)}`]] : []), ['del', AI.trash, 'Eliminar su cuenta', 'Ya no podrá entrar']]).replace(/data-act="aula-stu"/g, 'data-act="portal-acct"') : ''}</td></tr>`; }).join('')}
     </tbody></table></div></section>`;
+}
+function portalUserCell(m, s) {
+  const x = portalMatch(m, s);
+  if (x && x.kind === 'same') return `<input type="hidden" data-pu="${s.id}" data-force="1" value="${esc(x.a.u)}"><code>${esc(x.a.u)}</code><div class="small ok-t">${AI.check} Ya tiene cuenta en ${esc(modShort(x.m))}: usará la misma</div>`;
+  if (x) return `<input type="text" class="pt-user" data-pu="${s.id}" data-near="${esc(x.a.u)}" data-def="${esc(portalUserDefault(m, s))}" value="${esc(portalUserDefault(m, s))}" maxlength="40" spellcheck="false" aria-label="Usuario de ${esc(s.name)}">
+    <label class="check small pt-near"><input type="checkbox" data-same="${s.id}"> ¿Es ${esc(x.s.name)} de ${esc(modShort(x.m))}? Usar su cuenta</label>`;
+  return `<input type="text" class="pt-user" data-pu="${s.id}" value="${esc(portalUserDefault(m, s))}" maxlength="40" spellcheck="false" aria-label="Usuario de ${esc(s.name)}">`;
 }
 function portalAvisosHTML(m) {
   const P = m.portal, raOpts = m.ras.map((ra, i) => `<option value="${i + 1}">RA ${i + 1}</option>`).join('');
@@ -10190,7 +10236,7 @@ async function portalCards(m, sids) {
   try { await aulaLoadQR(); qr = aulaQRsvg(url); } catch (e) { }
   const studs = sids.map(id => findStu(m, id)).filter(s => s && P.accts[s.id]).sort((a, b) => a.num - b.num);
   if (!studs.length) return toast('No hay cuentas para imprimir.', 'info');
-  printHTML(`<section class="pc-cards">${studs.map(s => { const a = P.accts[s.id]; return `<div class="pc-card"><div class="pc-top"><b>Mi aula</b><span>${esc(modShort(m))} · ${esc(m.course || '')}</span></div>
+  printHTML(`<section class="pc-cards">${studs.map(s => { const a = P.accts[s.id]; return `<div class="pc-card"><div class="pc-top"><b>Mi aula</b><span>${esc(portalModsOf(a.uid).map(modShort).join(' y ') || modShort(m))} · ${esc(m.course || '')}</span></div>
     <div class="pc-body"><div class="pc-qr">${qr}</div><div><div class="pc-name">${s.num}. ${esc(s.name)}</div><div class="pc-k">Usuario</div><div class="pc-v">${esc(a.u)}</div><div class="pc-k">Contraseña</div><div class="pc-v">${esc(a.pw)}</div></div></div>
     <div class="pc-url">${esc(url)}</div><div class="pc-tip">Guárdala. No la compartas con nadie.</div></div>`; }).join('')}</section>`, 'portrait');
 }
@@ -10226,7 +10272,7 @@ Object.assign(ACTIONS, {
   'portal-pw-show': el => { const c = el.parentElement.querySelector('[data-pw]'); if (c) c.textContent = c.textContent.includes('•') ? c.dataset.pw : '••••-••••'; },
   'portal-create': async el => {
     const m = curMod(), P = m.portal; if (!aulaCloudOK()) return toast('Necesitas la versión web con tu cuenta e internet.', 'error');
-    const users = [...document.querySelectorAll('[data-pu]')].map(i => [i.dataset.pu, i.value.trim().toLowerCase()]);
+    const users = [...document.querySelectorAll('[data-pu]')].map(i => [i.dataset.pu, i.value.trim().toLowerCase(), i.dataset.force === '1']);
     const bad = users.filter(([, u]) => !portalUserOk(u)); if (bad.length) return toast(`Usuario no válido: «${bad[0][1]}». Usa letras, números, punto o guion (3 a 40).`, 'error', 5000);
     const seen = {}; for (const [, u] of users) { if (seen[u] || Object.values(P.accts).some(a => a.u === u)) return toast(`El usuario «${u}» está repetido.`, 'error'); seen[u] = 1; }
     el.disabled = true; const lbl = el.innerHTML;
@@ -10234,7 +10280,7 @@ Object.assign(ACTIONS, {
       const r = await portalCreateAccounts(m, users, (i, n) => { el.innerHTML = `<span class="spin"></span> Creando ${i} de ${n}…`; });
       render(); portalSync(m).catch(() => { });
       if (r.bad.length) openModal({ title: `${r.ok} cuenta${r.ok === 1 ? '' : 's'} creada${r.ok === 1 ? '' : 's'}`, icon: AI.alert, body: `<p class="modal-msg">${r.stop ? 'Se detuvo para no insistir. Cuando lo resuelvas, vuelve a tocar «Crear cuentas»: sigue con las que faltan.' : 'Estas no se pudieron crear:'}</p><ul class="ar-conf">${r.bad.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, actions: [{ label: 'Entendido', cls: 'btn-primary' }] });
-      else toast(`Listo: ${r.ok} cuenta${r.ok === 1 ? '' : 's'}. Imprime las tarjetas.`, 'ok', 4000);
+      else { const nw = r.ok - (r.linked || 0); toast(`Listo: ${nw} cuenta${nw === 1 ? '' : 's'} nueva${nw === 1 ? '' : 's'}${r.linked ? ` y ${r.linked} que ya tenía${r.linked === 1 ? '' : 'n'} cuenta en otro módulo` : ''}. Imprime las tarjetas.`, 'ok', 5000); }
     } catch (e) { toast(aulaErr(e), 'error', 6000); render(); }
     finally { el.disabled = false; el.innerHTML = lbl; }
   },
@@ -10243,9 +10289,24 @@ Object.assign(ACTIONS, {
     aulaCloseMenus();
     const m = curMod(), sid = el.dataset.num, s = findStu(m, sid), op = el.dataset.op; if (!s) return;
     if (op === 'card') return portalCards(m, [sid]);
-    if (op === 'pw') return confirmBox(`Otra contraseña · ${s.num}. ${s.name}`, 'Se crea una contraseña nueva y la de antes deja de servir. Después imprime su tarjeta.', 'Cambiar', () => {
-      portalChangePw(m, sid).then(np => { render(); toast(`Contraseña nueva: ${np}`, 'ok', 8000); }).catch(e => toast('No se pudo cambiar: ' + portalAuthErr(e), 'error', 6000));
-    }, { danger: false });
+    if (op === 'pw') { const a = m.portal.accts[sid], others = portalModsOf(a.uid).filter(x => x !== m).map(modShort); return openModal({
+      title: `Cambiar la contraseña · ${s.num}. ${s.name}`, icon: AI.key, sub: `Usuario: ${a.u}${others.length ? ' · también entra a ' + others.join(', ') : ''}`,
+      body: `<div class="blk-opts"><label class="blk-opt"><input type="radio" name="pwm" value="auto" checked><span class="blk-ic">${AI.refresh}</span><div><b>Una nueva al azar</b><small>Como «k7mp-q4xa»: fácil de leer y difícil de adivinar.</small></div></label>
+        <label class="blk-opt"><input type="radio" name="pwm" value="own"><span class="blk-ic">${AI.pen}</span><div><b>Escribirla yo</b><small>De 6 a 30 caracteres, sin espacios. Evita la fecha de nacimiento o el nombre.</small></div></label></div>
+        <label class="field" id="pwBox" hidden>Contraseña nueva<input type="text" id="pwNew" maxlength="30" autocomplete="off" spellcheck="false"></label>
+        <p class="muted small">La de antes deja de servir${others.length ? ' en todos sus módulos' : ''}. Después imprime su tarjeta.</p>`,
+      actions: [{ label: 'Cancelar' }, { label: 'Cambiar', cls: 'btn-primary', onClick: (ov, close) => {
+        const own = ov.querySelector('[name=pwm]:checked').value === 'own', np = own ? ov.querySelector('#pwNew').value.trim() : '';
+        if (own && (np.length < 6 || np.length > 30 || /\s/.test(np))) { toast('Escribe de 6 a 30 caracteres, sin espacios.', 'error'); return false; }
+        const b = ov.querySelector('.modal-foot .btn-primary'); b.disabled = true; b.textContent = 'Cambiando…';
+        portalChangePw(m, sid, np).then(x => { close(); render(); toast(`Contraseña nueva: ${x}`, 'ok', 8000); }).catch(e => { b.disabled = false; b.textContent = 'Cambiar'; toast('No se pudo cambiar: ' + portalAuthErr(e), 'error', 6000); });
+        return false;
+      } }],
+      onOpen: ov => ov.querySelectorAll('[name=pwm]').forEach(r => r.onchange = () => { const own = ov.querySelector('[name=pwm]:checked').value === 'own'; ov.querySelector('#pwBox').hidden = !own; if (own) ov.querySelector('#pwNew').focus(); })
+    }); }
+    if (op === 'join') { const x = portalJoinable(m, s); if (!x) return; return confirmBox(`Unir cuentas · ${s.num}. ${s.name}`, `Usará su cuenta de ${modShort(x.m)} (usuario «${x.a.u}», de ${x.s.name}) también en este módulo, y se elimina la de «${m.portal.accts[sid].u}». Sus notas no se tocan.`, 'Unir', () => {
+      portalJoin(m, sid, x).then(() => { render(); portalSync(m).catch(() => { }); toast('Listo: una sola cuenta para sus módulos. Imprime su tarjeta nueva.', 'ok', 5000); }).catch(e => { render(); toast(aulaErr(e), 'error', 6000); });
+    }, { danger: false }); }
     if (op === 'del') return confirmBox(`Eliminar la cuenta · ${s.num}. ${s.name}`, 'Ya no podrá entrar a Mi aula de este módulo. Sus notas del registro no se tocan.', 'Eliminar', () => {
       portalRemoveAcct(m, sid).then(() => { render(); toast('Cuenta eliminada.', 'ok'); }).catch(e => toast(aulaErr(e), 'error', 6000));
     });
@@ -10267,6 +10328,8 @@ Object.assign(ACTIONS, {
   'portal-doc-del': el => { const m = curMod(); m.portal.docs = m.portal.docs.filter(d => d.id !== el.dataset.id); persist(); render(); portalSoon(500); }
 });
 document.addEventListener('change', e => {
+  const sm = e.target && e.target.dataset && e.target.dataset.same;
+  if (sm) { const i = document.querySelector(`[data-pu="${sm}"]`); if (i) { i.value = e.target.checked ? i.dataset.near : i.dataset.def; i.readOnly = e.target.checked; if (e.target.checked) i.dataset.force = '1'; else delete i.dataset.force; } return; }
   const k = e.target && e.target.dataset && e.target.dataset.ph; if (!k) return;
   const m = curMod(); if (!m) return;
   if (e.target.checked) delete m.portal.hide[k]; else m.portal.hide[k] = 1;
