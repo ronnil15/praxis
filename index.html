@@ -1992,6 +1992,28 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .pt-empty { display: flex; align-items: center; gap: .7rem; padding: .9rem 0 .2rem; color: var(--muted); font-size: .88rem; }
 @media (max-width: 560px) { .pt-docf { grid-template-columns: 1fr; } }
 
+/* Google Drive para prácticas */
+.drv-box { display: flex; align-items: center; gap: .9rem; padding: .9rem 1rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); margin: 0 0 1rem; }
+.drv-box > div:nth-child(2) { flex: 1; min-width: 0; }
+.drv-box b { display: block; font-size: .92rem; }
+.drv-box small { color: var(--muted); font-size: .8rem; }
+.drv-ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--surface-3); color: var(--muted); flex: none; }
+.drv-box.on .drv-ic { background: var(--ok-bg); color: var(--ok); }
+.drv-steps { margin: 0 0 1rem; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .7rem; font-size: .9rem; line-height: 1.5; }
+.drv-steps code { background: var(--surface-3); padding: .05rem .35rem; border-radius: 5px; font-size: .82rem; }
+.drv-code { position: relative; margin-top: .5rem; }
+.drv-code pre { max-height: 180px; overflow: auto; margin: 0; padding: .8rem .9rem; border-radius: 10px; background: #0f172a; color: #cbd5e1; font-size: .72rem; line-height: 1.45; }
+.drv-code .btn { position: absolute; top: .5rem; right: .7rem; }
+.drv-test { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; margin: .7rem 0; }
+.ok-t { color: var(--ok); } .bad-t { color: var(--bad); }
+.ae-mat { display: flex; flex-direction: column; gap: .35rem; margin: .4rem 0; }
+.ae-mati { display: flex; align-items: center; gap: .6rem; padding: .45rem .6rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: .88rem; }
+.ae-mati a { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--ink); }
+.ae-matadd { display: grid; grid-template-columns: 1fr 1.4fr; gap: .5rem; align-items: center; }
+.ae-matadd > .btn { justify-self: start; } .ae-matadd > label.btn { justify-self: start; }
+.ae-matadd label.busy { opacity: .55; pointer-events: none; }
+@media (max-width: 720px) { .ae-matadd { grid-template-columns: 1fr; } }
+
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
 </head>
@@ -6139,7 +6161,7 @@ function settingsDialog() {
   const s = db.settings;
   openModal({
     title: 'Ajustes', icon: '⚙️', wide: true, sub: 'Estos datos aparecen en los reportes impresos.',
-    body: `${accountBox()}<div class="form-grid">
+    body: `${accountBox()}${typeof driveSettingsHTML === 'function' ? driveSettingsHTML() : ''}<div class="form-grid">
       <label class="field">Docente<input type="text" id="stTeacher" value="${esc(s.teacher)}"></label>
       <label class="field">Centro educativo<input type="text" id="stSchool" value="${esc(s.school)}" placeholder="Nombre del liceo o politécnico"></label>
       <label class="field">Año escolar<input type="text" id="stYear" value="${esc(s.year)}" placeholder="2026-2027"></label>
@@ -8355,6 +8377,7 @@ function normAula(e) {
     outBase: e.outBase && typeof e.outBase === 'object' ? e.outBase : {}, lockLeave: !!e.lockLeave, unlockAt: e.unlockAt && typeof e.unlockAt === 'object' ? e.unlockAt : {}, lockSent: e.lockSent && typeof e.lockSent === 'object' ? e.lockSent : {},
     auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
     mode: e.mode === 'file' ? 'file' : 'quiz', ft: (Array.isArray(e.ft) ? e.ft : ['pdf', 'word', 'ppt', 'img']).filter(k => AULA_FT[k]), mb: [2, 5, 10, 20].includes(+e.mb) ? +e.mb : 10, nf: Math.max(1, Math.min(5, parseInt(e.nf, 10) || 3)),
+    mat: (Array.isArray(e.mat) ? e.mat : []).filter(x => x && /^https:\/\//.test(x.url)).slice(0, 10).map(x => ({ nm: String(x.nm || 'Material').slice(0, 100), url: String(x.url).slice(0, 600) })),
     late: Math.max(0, Math.min(14, parseInt(e.late, 10) || 0)), due: String(e.due || ''), freed: String(e.freed || ''),
     notes: e.notes && typeof e.notes === 'object' ? e.notes : {}, seen: e.seen && typeof e.seen === 'object' ? e.seen : {},
     resp: {}, marks: {}, applied: {}, map: {}
@@ -8391,7 +8414,7 @@ function aulaProbeHost() {
   img.onerror = () => { _aulaHostOk = false; try { localStorage.removeItem('praxisAulaHost'); } catch (e) { } };
   img.src = AULA_HOST + 'icon-192.png?v=' + Date.now();
 }
-function aulaLink(ex) { const u = _aulaHostOk && AULA_HOST ? new URL(AULA_HOST) : new URL('aula.html', location.href); u.search = ''; u.hash = ''; u.searchParams.set('e', ex.pub); if (ex.withCode && ex.code) u.searchParams.set('c', ex.code); return u.toString(); }
+function aulaLink(ex) { const u = _aulaHostOk && AULA_HOST ? new URL(AULA_HOST) : new URL('aula.html', location.href); u.search = ''; u.hash = ''; u.searchParams.set('e', ex.pub); if (ex.withCode && ex.code) u.searchParams.set('c', ex.code); if (aulaIsFile(ex) && typeof driveId === 'function' && driveId()) u.searchParams.set('d', driveId()); return u.toString(); }
 function aulaFind(m, id) { return m && (m.aula || []).find(x => x.id === id); }
 function aulaIsOpen(ex) { return ex.status === 'open' && (!ex.until || new Date(ex.until) > new Date()); }
 function aulaState(ex) { return ex.status === 'draft' ? 'draft' : aulaIsOpen(ex) ? 'open' : 'closed'; }
@@ -8524,7 +8547,7 @@ async function aulaPublish(m, ex) {
   await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, res: ex.res, lock: ex.lockLeave, v: 3, upd: FV.serverTimestamp(), ...(aulaIsFile(ex) ? { mode: 'file', mb: ex.mb, nf: ex.nf, ct: aulaCT(ex), due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
   const ros = {}; list.forEach(s => { ros[s.num] = aulaToks(s.name).map(t => aulaHash(ex.pub + ':' + t)); });
   const oldCode = ex._old; delete ex._old;
-  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: ex.instr, dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, lock: ex.lockLeave, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })), ...(aulaIsFile(ex) ? { mode: 'file', ext: aulaExts(ex), ftn: ex.ft.map(k => AULA_FT[k][0]), mb: ex.mb, nf: ex.nf, due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
+  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: aulaInstrFull(ex), dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, lock: ex.lockLeave, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })), ...(aulaIsFile(ex) ? { mode: 'file', ext: aulaExts(ex), ftn: ex.ft.map(k => AULA_FT[k][0]), mb: ex.mb, nf: ex.nf, due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
   // Permisos para entregar: uno por estudiante asignado (con su clave si se pide)
   const want = list.filter(s => ex.blocked[s.id] !== 'block').map(s => `${s.num}-${ex.pin ? m.aulaPins[s.id] : ''}`);
   const b = Cloud.fs.batch(); let n = 0;
@@ -8570,16 +8593,22 @@ function aulaOutCard(m, ex) {
   </div>`;
 }
 /** Colección de entregas: preguntas = «resp» (una sola vez); archivos = «ent» (se puede cambiar hasta la fecha). */
+/** Instrucciones + enlaces del material de apoyo (la página de entrega los muestra como enlaces). */
+function aulaInstrFull(ex) { const mt = aulaIsFile(ex) && ex.mat && ex.mat.length ? '\n\nMaterial de apoyo:\n' + ex.mat.map(x => '• ' + x.nm + ': ' + x.url).join('\n') : ''; return (ex.instr + mt).trim().slice(0, 2000); }
 function aulaColl(ex) { return aulaIsFile(ex) ? 'ent' : 'resp'; }
 function aulaStore() { return typeof firebase === 'object' && firebase.storage ? firebase.storage() : null; }
 /** Borra de la nube los archivos de una práctica (todos o de algunos números). Las notas se quedan. */
 async function aulaFreeFiles(ex, nums) {
-  const st = aulaStore(); if (!st || !ex.pub) return 0;
+  const want = nums ? nums.map(String) : null, R = Object.entries(ex.resp).filter(([k]) => !want || want.includes(String(k)));
+  const dIds = R.flatMap(([, r]) => (r.files || []).filter(isDriveFile).map(driveFileId));
+  let dn = 0; if (dIds.length) { dn = await driveDelete(dIds); if (!nums && ex.pub) await driveDeletePractice(ex.pub).catch(() => { }); }
+  if (!R.some(([, r]) => (r.files || []).some(f => f.p && !isDriveFile(f)))) return dn;
+  const st = aulaStore(); if (!st || !ex.pub) return dn;
   const root = st.ref(`aula/${ex.pub}/f`);
   const folders = nums ? nums.map(n => root.child(String(n))) : (await withTimeout(root.listAll(), 15000)).prefixes;
   let n = 0;
   for (const f of folders) { const L = await withTimeout(f.listAll(), 15000); await Promise.all(L.items.map(i => i.delete().then(() => { n++; }).catch(() => { }))); }
-  return n;
+  return n + dn;
 }
 function aulaSpaceCard(ex) {
   const R = Object.values(ex.resp), n = R.reduce((a, r) => a + (r.files || []).length, 0), b = R.reduce((a, r) => a + (r.files || []).reduce((x, f) => x + f.sz, 0), 0);
@@ -8903,7 +8932,11 @@ function aulaEditor(id, preset) {
         <div class="ae-ft">${Object.entries(AULA_FT).map(([k, [l, xs]]) => `<label class="ae-stu ${ex.ft.includes(k) ? 'on' : ''}"><input type="checkbox" data-ft="${k}" ${ex.ft.includes(k) ? 'checked' : ''}>${esc(l)} <small class="muted">${xs.slice(0, 3).join(', ')}</small></label>`).join('')}</div>
         <div class="form-grid"><label class="field">Tamaño máximo por archivo<select id="aeMb">${[2, 5, 10, 20].map(v => `<option value="${v}" ${ex.mb === v ? 'selected' : ''}>${v} MB</option>`).join('')}</select></label>
         <label class="field">Archivos por estudiante<select id="aeNf">${[1, 2, 3, 5].map(v => `<option value="${v}" ${ex.nf === v ? 'selected' : ''}>${v === 1 ? 'Solo 1' : 'Hasta ' + v}</option>`).join('')}</select></label></div>
-        <p class="muted small">Consejo: pide PDF siempre que se pueda; se ve aquí mismo al corregir. Word se ve aproximado; PowerPoint y ZIP se descargan para abrirlos.</p></div></div>
+        <p class="muted small">Consejo: pide PDF siempre que se pueda; se ve aquí mismo al corregir. Word se ve aproximado; PowerPoint y ZIP se descargan para abrirlos.</p>
+        <h4 style="margin-top:1rem">Material de apoyo <span class="muted small" style="font-weight:500">(guías, plantillas o la carpeta con las instrucciones)</span></h4>
+        <div id="aeMat" class="ae-mat"></div>
+        <div class="ae-matadd"><input type="text" id="aeMatNm" maxlength="100" placeholder="Nombre (ej.: Guía de la práctica)"><input type="url" id="aeMatUrl" maxlength="600" placeholder="Enlace de Drive, OneDrive o una página"><button type="button" class="btn btn-secondary btn-sm" id="aeMatAdd">${ICON.plus} Agregar enlace</button>${driveUrl() ? `<label class="btn btn-secondary btn-sm" for="aeMatFile">${AI.upload} Subir archivo a mi Drive<input type="file" id="aeMatFile" hidden></label>` : ''}</div>
+        <p class="muted small">Lo verán en el portal y en la página de entrega, junto a las instrucciones.</p></div></div>
       <div class="ae-sec"><h4>2 · ¿Quién lo toma?</h4>
         <div class="seg">${[['all', AI.cap, 'Todo el curso'], ['group', AI.users, 'Un grupo'], ['some', AI.user, 'Elegir estudiantes']].map(([k, ic, l]) => `<button type="button" data-tomode="${k}">${ic}${l}</button>`).join('')}</div>
         <div id="aeToBox" class="ae-tobox"></div></div>
@@ -8958,6 +8991,22 @@ function aulaEditor(id, preset) {
     }],
     onOpen: ov => {
       draw(ov); drawTo(ov);
+      const drawMat = () => { const box = ov.querySelector('#aeMat'); if (!box) return; box.innerHTML = ex.mat.map((x, i) => `<div class="ae-mati">${AI.file}<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.nm)}</a><button type="button" class="btn btn-ghost btn-icon btn-sm" data-matx="${i}" title="Quitar">${AI.trash}</button></div>`).join(''); box.querySelectorAll('[data-matx]').forEach(bt => bt.onclick = () => { ex.mat.splice(+bt.dataset.matx, 1); drawMat(); }); };
+      drawMat();
+      const mAdd = ov.querySelector('#aeMatAdd'); if (mAdd) mAdd.onclick = () => {
+        const nm = ov.querySelector('#aeMatNm').value.trim(), url = ov.querySelector('#aeMatUrl').value.trim();
+        if (!/^https:\/\/\S+$/.test(url)) return toast('Pega un enlace que empiece con https://', 'error');
+        if (ex.mat.length >= 10) return toast('Máximo 10 materiales.', 'error');
+        ex.mat.push({ nm: nm || 'Material de apoyo', url }); ov.querySelector('#aeMatNm').value = ''; ov.querySelector('#aeMatUrl').value = ''; drawMat();
+      };
+      const mFile = ov.querySelector('#aeMatFile'); if (mFile) mFile.onchange = async () => {
+        const f = mFile.files[0]; mFile.value = ''; if (!f) return;
+        if (f.size > 20 * 1048576) return toast('El archivo pesa más de 20 MB. Súbelo a Drive y pega el enlace.', 'error', 4500);
+        const lb = mFile.closest('label'); lb.classList.add('busy'); toast('Subiendo «' + f.name + '» a tu Drive…', 'info', 2500);
+        try { const j = await driveUploadMat(f, m); ex.mat.push({ nm: f.name.replace(/\.[^.]+$/, '').slice(0, 100), url: j.url }); drawMat(); toast('Material subido a tu Drive.', 'ok'); }
+        catch (e) { toast('No se pudo subir: ' + (e.message || e), 'error', 5000); }
+        lb.classList.remove('busy');
+      };
       ov.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
         if (b.dataset.mode === ex.mode) return;
         const keep = { qs: ex.qs, kind: ex.kind }; ex.mode = b.dataset.mode;
@@ -9210,15 +9259,16 @@ function aulaLib(k) {
   return _aulaLib[k];
 }
 function aulaExt(nm) { return String(nm).split('.').pop().toLowerCase(); }
-async function aulaFileURL(f) { const st = aulaStore(); if (!st) throw new Error('Necesitas la versión web con tu cuenta.'); return withTimeout(st.ref(f.p).getDownloadURL(), 15000); }
-async function aulaFileBlob(f) { const r = await fetch(await aulaFileURL(f)); if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); }
+const _aulaObj = new Map();
+async function aulaFileURL(f) { if (isDriveFile(f)) { const id = driveFileId(f); if (!_aulaObj.has(id)) _aulaObj.set(id, URL.createObjectURL(await driveBlob(f))); return _aulaObj.get(id); } const st = aulaStore(); if (!st) throw new Error('Necesitas la versión web con tu cuenta.'); return withTimeout(st.ref(f.p).getDownloadURL(), 15000); }
+async function aulaFileBlob(f) { if (isDriveFile(f)) return driveBlob(f); const r = await fetch(await aulaFileURL(f)); if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); }
 /** Muestra un archivo dentro del programa: PDF e imágenes tal cual, Word aproximado; lo demás se abre en la PC. */
 function aulaPreview(box, ex, f) {
   if (ex.freed) { box.innerHTML = `<div class="af-none">${AI.trash}<b>Archivo liberado</b><p>Los archivos de esta práctica se borraron de la nube el ${esc(aulaHM(ex.freed))}. La nota y tu comentario se quedan.</p></div>`; return; }
   box.innerHTML = '<div class="af-none"><span class="spin"></span><p>Abriendo el archivo…</p></div>';
   const x = aulaExt(f.nm);
   aulaFileURL(f).then(async url => {
-    const open = `<a class="btn btn-sm btn-secondary" href="${esc(url)}" target="_blank" rel="noopener">${AI.down} Abrir / descargar</a>`;
+    const open = isDriveFile(f) ? `<a class="btn btn-sm btn-secondary" href="${esc(driveViewUrl(f))}" target="_blank" rel="noopener">${AI.share} Abrir en Drive</a><a class="btn btn-sm btn-secondary" href="${esc(url)}" download="${esc(f.nm)}">${AI.down} Descargar</a>` : `<a class="btn btn-sm btn-secondary" href="${esc(url)}" target="_blank" rel="noopener">${AI.down} Abrir / descargar</a>`;
     const bar = `<div class="af-bar"><span>${aulaFileIcon(f.nm)}${esc(f.nm)} · ${aulaSize(f.sz)}</span>${open}</div>`;
     if (x === 'pdf') box.innerHTML = bar + `<iframe class="af-frame" src="${esc(url)}#view=FitH" title="${esc(f.nm)}"></iframe>`;
     else if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(x)) box.innerHTML = bar + `<div class="af-img"><img src="${esc(url)}" alt="${esc(f.nm)}"></div>`;
@@ -10151,7 +10201,7 @@ function portalPayload(m, s) {
   const st = statusOf(r);
   const tot = portalSees(P.tot, s) ? { total: r2(r.total), acc: r2(r.acc), fin: r.finalSet ? r2(r.fin) : null, cond: st.label, cls: st.cls } : null;
   const pend = (m.aula || []).filter(ex => ex.pub && aulaIsOpen(ex) && aulaAssigned(m, ex).some(x => x.id === s.id)).map(ex => ({
-    t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLink(ex), code: ex.withCode ? 0 : 1, dur: ex.dur || 0,
+    t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLink(ex), code: ex.withCode ? 0 : 1, dur: ex.dur || 0, instr: String(ex.instr || '').slice(0, 600), mat: aulaIsFile(ex) ? (ex.mat || []).slice(0, 10) : [], pts: aulaTotal(ex),
     done: Object.keys(ex.resp).some(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; }) ? 1 : 0
   }));
   return { num: s.num, name: s.name, ras, tot, pend };
@@ -10461,6 +10511,176 @@ document.addEventListener('change', e => {
   if (e.target.checked) delete m.portal.hide[k]; else m.portal.hide[k] = 1;
   persist(); render();
 });
+
+/* =====================================================================
+   Archivos de prácticas en Google Drive (gratis, sin plan Blaze)
+   El docente publica un pequeño programa (Apps Script) con su cuenta de
+   Google; los estudiantes suben ahí sus entregas y quedan en su Drive.
+   ===================================================================== */
+const DRIVE_RE = /^https:\/\/script\.google\.com\/(?:a\/[^/]+\/)?macros\/s\/([A-Za-z0-9_-]{20,})\/exec\/?$/;
+function driveUrl() { const u = String((db.settings && db.settings.drive) || '').trim(); return DRIVE_RE.test(u) ? u.replace(/\/$/, '') : ''; }
+function driveId() { const m = DRIVE_RE.exec(driveUrl()); return m ? m[1] : ''; }
+function isDriveFile(f) { return !!f && String(f.p || '').startsWith('drive:'); }
+function driveFileId(f) { return String(f.p || '').slice(6); }
+function driveViewUrl(f) { return 'https://drive.google.com/file/d/' + encodeURIComponent(driveFileId(f)) + '/view'; }
+
+/** Llama al programa de Drive del docente (con su sesión, para que nadie más lea los archivos). */
+async function driveCall(a, data = {}, ms = 60000) {
+  const url = driveUrl(); if (!url) throw new Error('Conecta Google Drive en Ajustes.');
+  const u = (typeof Cloud === 'object' && Cloud.user && Cloud.user.getIdToken) ? Cloud.user : (typeof firebase === 'object' && firebase.auth ? firebase.auth().currentUser : null);
+  if (!u || !u.getIdToken) throw new Error('Necesitas la versión web con tu cuenta.');
+  const tok = await u.getIdToken();
+  const r = await withTimeout(fetch(url, { method: 'POST', body: JSON.stringify(Object.assign({ a, tok }, data)) }), ms);
+  if (!r.ok) throw new Error('Drive respondió ' + r.status);
+  const j = await r.json(); if (!j.ok) throw new Error(driveErr(j.e)); return j;
+}
+function driveErr(e) {
+  return ({ permiso: 'esa cuenta no es la dueña de este Drive', sesion: 'tu sesión venció; vuelve a entrar', accion: 'el programa de Drive está desactualizado; vuelve a pegar el código', 'no-existe': 'el archivo ya no existe en tu Drive' })[e] || String(e || 'error');
+}
+const _driveBlobs = new Map();
+async function driveBlob(f) {
+  const id = driveFileId(f); if (_driveBlobs.has(id)) return _driveBlobs.get(id);
+  const j = await driveCall('get', { id }, 90000);
+  const bin = atob(j.data), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  const b = new Blob([a], { type: j.ty || f.ty || 'application/octet-stream' });
+  if (_driveBlobs.size > 12) _driveBlobs.delete(_driveBlobs.keys().next().value);
+  _driveBlobs.set(id, b); return b;
+}
+async function driveDeletePractice(eid) { const j = await driveCall('delp', { eid }, 90000); return j.n || 0; }
+async function driveDelete(ids) { if (!ids.length) return 0; const j = await driveCall('del', { ids }, 90000); return j.n || 0; }
+async function driveUploadMat(file, m) {
+  const data = await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = bad; r.readAsDataURL(file); });
+  return driveCall('mat', { nm: file.name, ty: file.type || 'application/octet-stream', data, mod: modShort(m) + ' ' + (m.course || '') }, 120000);
+}
+
+/** Código del programa de Drive, ya con los datos de esta cuenta. */
+function driveScript() {
+  const C = typeof CLOUD_CONFIG === 'object' ? CLOUD_CONFIG : {}, uid = (typeof Cloud === 'object' && Cloud.user && Cloud.user.uid) || 'TU_UID';
+  return `// Praxis Pro · Archivos de prácticas en Google Drive
+// © ${new Date().getFullYear()} ${AppConfig.author}. Pega este código completo en Apps Script.
+const CFG = { project: '${C.projectId || ''}', key: '${C.apiKey || ''}', owner: '${uid}', root: 'Praxis Pro · Entregas' };
+
+function doGet() { return out({ ok: true, app: 'praxis-drive', v: 1 }); }
+function doPost(e) {
+  try {
+    const b = JSON.parse(e.postData.contents);
+    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping }[b.a];
+    return out(F ? F(b) : { ok: false, e: 'accion' });
+  } catch (err) { return out({ ok: false, e: String(err && err.message || err) }); }
+}
+function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+function fsGet(path) {
+  const r = UrlFetchApp.fetch('https://firestore.googleapis.com/v1/projects/' + CFG.project + '/databases/(default)/documents/' + path + '?key=' + CFG.key, { muteHttpExceptions: true });
+  return { code: r.getResponseCode(), doc: r.getResponseCode() === 200 ? JSON.parse(r.getContentText()) : null };
+}
+function val(f) {
+  if (!f) return null;
+  if ('stringValue' in f) return f.stringValue; if ('integerValue' in f) return +f.integerValue; if ('doubleValue' in f) return f.doubleValue;
+  if ('timestampValue' in f) return new Date(f.timestampValue).getTime(); if ('booleanValue' in f) return f.booleanValue; return null;
+}
+function teacher(tok) {
+  const r = UrlFetchApp.fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + CFG.key, { method: 'post', contentType: 'application/json', payload: JSON.stringify({ idToken: String(tok || '') }), muteHttpExceptions: true });
+  if (r.getResponseCode() !== 200) throw new Error('sesion');
+  const u = JSON.parse(r.getContentText()).users;
+  if (!u || !u[0] || u[0].localId !== CFG.owner) throw new Error('permiso');
+}
+function folder(parent, name) { const it = parent.getFoldersByName(name); return it.hasNext() ? it.next() : parent.createFolder(name); }
+function root() {
+  const p = PropertiesService.getScriptProperties(), id = p.getProperty('root');
+  if (id) { try { const f = DriveApp.getFolderById(id); if (!f.isTrashed()) return f; } catch (e) { } }
+  const f = folder(DriveApp.getRootFolder(), CFG.root); p.setProperty('root', f.getId()); return f;
+}
+function clean(s) { return String(s || '').replace(/[\\\\/:*?"<>|#%]+/g, ' ').replace(/\\s+/g, ' ').trim().slice(0, 80) || 'sin nombre'; }
+// Entrega de un estudiante: solo si la práctica está abierta, con el código vigente, el tipo y el tamaño permitidos
+function up(b) {
+  const eid = String(b.eid || '').replace(/[^A-Za-z0-9]/g, ''), num = parseInt(b.num, 10), code = String(b.code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!eid || !(num > 0) || !code) throw new Error('datos');
+  const A = fsGet('aula/' + eid); if (!A.doc) throw new Error('no-existe');
+  const F = A.doc.fields || {};
+  if (val(F.status) !== 'open' || val(F.mode) !== 'file' || !(val(F.until) > Date.now())) throw new Error('cerrada');
+  if (!fsGet('aula/' + eid + '/q/' + code).doc) throw new Error('codigo');
+  if (fsGet('aula/' + eid + '/k/' + num + '-' + String(b.pin || '').replace(/\\D/g, '')).code === 404) throw new Error('clave');
+  const bytes = Utilities.base64Decode(String(b.data || '')), mb = val(F.mb) || 10, ty = String(b.ty || '');
+  if (!bytes.length || bytes.length > mb * 1048576) throw new Error('tamano');
+  if (!new RegExp('^(?:' + (val(F.ct) || '$^') + ')$').test(ty)) throw new Error('tipo');
+  const dir = folder(folder(folder(root(), clean((val(F.mod) || '') + ' ' + (val(F.course) || ''))), clean(val(F.title)) + ' · ' + eid.slice(0, 6)), clean(('0' + num).slice(-2) + ' ' + (b.name || '')));
+  const f = dir.createFile(Utilities.newBlob(bytes, ty, clean(b.nm)));
+  return { ok: true, id: f.getId() };
+}
+function inRoot(f) { const r = root().getId(); let ps = f.getParents(), n = 0; while (ps.hasNext() && n++ < 8) { const p = ps.next(); if (p.getId() === r) return true; ps = p.getParents(); } return false; }
+function get(b) {
+  teacher(b.tok);
+  let f; try { f = DriveApp.getFileById(String(b.id || '')); } catch (e) { throw new Error('no-existe'); }
+  if (!inRoot(f)) throw new Error('permiso');
+  const bl = f.getBlob();
+  return { ok: true, nm: f.getName(), ty: bl.getContentType(), data: Utilities.base64Encode(bl.getBytes()) };
+}
+function del(b) {
+  teacher(b.tok); let n = 0;
+  (b.ids || []).slice(0, 500).forEach(function (id) { try { const f = DriveApp.getFileById(String(id)); if (inRoot(f)) { f.setTrashed(true); n++; } } catch (e) { } });
+  return { ok: true, n: n };
+}
+// Libera una práctica completa: manda a la papelera su carpeta (incluye archivos reemplazados)
+function delp(b) {
+  teacher(b.tok); const tag = ' · ' + String(b.eid || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 6); let n = 0;
+  if (tag.length < 9) throw new Error('datos');
+  const ms = root().getFolders();
+  while (ms.hasNext()) { const ps = ms.next().getFolders(); while (ps.hasNext()) { const p = ps.next(); if (p.getName().slice(-tag.length) === tag) { p.setTrashed(true); n++; } } }
+  return { ok: true, n: n };
+}
+// Material de apoyo del docente: queda visible para quien tenga el enlace
+function mat(b) {
+  teacher(b.tok);
+  const dir = folder(folder(root(), 'Material de apoyo'), clean(b.mod));
+  const f = dir.createFile(Utilities.newBlob(Utilities.base64Decode(String(b.data || '')), String(b.ty || 'application/octet-stream'), clean(b.nm)));
+  try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) { }
+  return { ok: true, id: f.getId(), url: 'https://drive.google.com/file/d/' + f.getId() + '/view' };
+}
+function ping(b) { if (b.tok) teacher(b.tok); return { ok: true, folder: root().getName(), url: root().getUrl() }; }
+`;
+}
+
+function driveSettingsHTML() {
+  const on = !!driveUrl();
+  return `<div class="drv-box ${on ? 'on' : ''}"><div class="drv-ic">${AI.folder}</div><div><b>Archivos de prácticas · Google Drive</b>
+    <small>${on ? 'Conectado: las entregas se guardan en tu Google Drive, en la carpeta «Praxis Pro · Entregas».' : 'Sin conectar. Conéctalo para que tus estudiantes suban sus prácticas gratis a tu Google Drive.'}</small></div>
+    <button class="btn btn-secondary btn-sm" type="button" data-act="drive-setup">${on ? 'Revisar' : 'Conectar'}</button></div>`;
+}
+
+function driveDialog() {
+  const code = driveScript();
+  openModal({
+    title: 'Conectar Google Drive', icon: AI.folder, wide: true, sub: 'Una sola vez · gratis · los archivos quedan en tu Drive',
+    body: `<ol class="drv-steps">
+      <li><b>Abre Apps Script</b> con tu cuenta de Google: <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com › Nuevo proyecto</a>. Ponle de nombre «Praxis Pro Drive».</li>
+      <li><b>Borra lo que trae y pega este código</b> completo. Luego toca <b>Guardar</b> (el disquete).
+        <div class="drv-code"><pre id="drvCode">${esc(code)}</pre><button type="button" class="btn btn-sm btn-primary" id="drvCopy">${AI.copy} Copiar código</button></div></li>
+      <li><b>Implementar › Nueva implementación</b>. En «Tipo», elige <b>Aplicación web</b>. «Ejecutar como»: <b>Yo</b>. «Quién tiene acceso»: <b>Cualquier usuario</b>. Toca <b>Implementar</b>.</li>
+      <li><b>Autoriza el acceso</b> con tu cuenta. Si Google dice «no verificada», toca <b>Configuración avanzada › Ir a Praxis Pro Drive</b>: el programa es tuyo y solo trabaja en la carpeta «Praxis Pro · Entregas».</li>
+      <li><b>Copia la «URL de la aplicación web»</b> (termina en <code>/exec</code>) y pégala aquí:</li></ol>
+      <label class="field">URL de la aplicación web<input type="url" id="drvUrl" value="${esc(driveUrl())}" placeholder="https://script.google.com/macros/s/…/exec" spellcheck="false"></label>
+      <div class="drv-test"><button type="button" class="btn btn-secondary btn-sm" id="drvTest">${AI.refresh} Probar la conexión</button><span id="drvMsg" class="small muted"></span></div>
+      <p class="muted small">Cada estudiante solo puede subir mientras la práctica está habilitada, con el código vigente y los tipos y tamaños que tú permites. Solo tú, con tu cuenta, puedes ver, descargar o borrar las entregas.</p>`,
+    onOpen: ov => {
+      const msg = (t, cls) => { const e = ov.querySelector('#drvMsg'); e.className = 'small ' + (cls || 'muted'); e.innerHTML = t; };
+      ov.querySelector('#drvCopy').onclick = () => { navigator.clipboard.writeText(code).then(() => toast('Código copiado. Pégalo en Apps Script.', 'ok'), () => toast('Selecciona el código y cópialo.', 'warn')); };
+      ov.querySelector('#drvTest').onclick = async () => {
+        const u = ov.querySelector('#drvUrl').value.trim();
+        if (!DRIVE_RE.test(u)) return msg('Esa no parece la URL correcta: debe empezar con https://script.google.com/macros/s/ y terminar en /exec.', 'bad-t');
+        const old = db.settings.drive; db.settings.drive = u; msg('<span class="spin"></span> Probando…');
+        try { const j = await driveCall('ping', {}, 40000); msg(`${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>`, 'ok-t'); }
+        catch (e) { db.settings.drive = old; msg('No funcionó: ' + esc(e.message || e) + '. Revisa que sea «Aplicación web», con acceso para «Cualquier usuario».', 'bad-t'); }
+      };
+    },
+    actions: [{ label: 'Cerrar' }, { label: 'Guardar', cls: 'btn-primary', onClick: ov => {
+      const u = ov.querySelector('#drvUrl').value.trim();
+      if (u && !DRIVE_RE.test(u)) { toast('Revisa la URL: debe terminar en /exec.', 'error'); return false; }
+      db.settings.drive = u; persist(); toast(u ? 'Google Drive conectado. Vuelve a habilitar las prácticas abiertas para que usen Drive.' : 'Google Drive desconectado.', 'ok', 4500);
+      const st = document.querySelector('.drv-box'); if (st) st.outerHTML = driveSettingsHTML();
+    } }]
+  });
+}
+ACTIONS['drive-setup'] = () => driveDialog();
 
 /* =========================================================
    Reportes imprimibles (PDF sin internet) y exportación CSV
