@@ -1,4 +1,4 @@
-const CACHE = 'praxis-10.14.1-v28';
+const CACHE = 'praxis-10.14.1-v29';
 const SDK = ["https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js", "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js", "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js", "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"];
 const CORE = ['./', './index.html', './qrcode.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE.map(x => new Request(x, { cache: 'reload' })).concat(SDK))).then(() => self.skipWaiting())); });

@@ -2014,6 +2014,22 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .ae-matadd label.busy { opacity: .55; pointer-events: none; }
 @media (max-width: 720px) { .ae-matadd { grid-template-columns: 1fr; } }
 
+/* Aula: exámenes y prácticas separados */
+.aula-bar { display: flex; align-items: center; justify-content: space-between; gap: .8rem 1rem; flex-wrap: wrap; margin: 1.2rem 0 1rem; }
+.aula-kinds button { display: inline-flex; align-items: center; gap: .45rem; }
+.aula-kinds svg { width: 16px; height: 16px; }
+.ak-n { font-size: .72rem; font-weight: 700; padding: 0 .45rem; border-radius: 99px; background: var(--track); color: var(--muted); }
+.aula-kinds button.on .ak-n { background: var(--primary-light); color: var(--primary); }
+.aula-group + .aula-group { margin-top: 1.6rem; }
+.aula-gh { display: flex; align-items: center; gap: .6rem; font-size: 1rem; margin: 0 0 .8rem; }
+.aula-gh span { width: 30px; height: 30px; border-radius: 9px; background: var(--primary-light); color: var(--primary); display: grid; place-items: center; }
+.aula-gh span svg { width: 17px; height: 17px; }
+.aula-gh small { font-size: .75rem; font-weight: 700; color: var(--muted); background: var(--track); border-radius: 99px; padding: .05rem .5rem; }
+/* Cuentas: copiar usuario y contraseña */
+.pt-cred { display: inline-flex; align-items: center; gap: .15rem; flex-wrap: wrap; }
+.pt-cred code { margin-right: .2rem; }
+.pt-cpboth { font-size: .76rem; min-height: 30px; padding: .2rem .55rem; }
+
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
 </head>
@@ -8692,8 +8708,11 @@ function renderAula(m) {
   const ex = state.aulaSel && aulaFind(m, state.aulaSel);
   if (ex) return renderAulaExam(m, ex);
   state.aulaSel = null;
-  const all = (m.aula || []).slice().sort((a, b) => (b.created || '').localeCompare(a.created || ''));
-  const arch = (m.aulaArch || []).slice().sort((a, b) => (b.archivedAt || '').localeCompare(a.archivedAt || ''));
+  const all0 = (m.aula || []).slice().sort((a, b) => (b.created || '').localeCompare(a.created || ''));
+  const arch0 = (m.aulaArch || []).slice().sort((a, b) => (b.archivedAt || '').localeCompare(a.archivedAt || ''));
+  const kc = { all: all0.length, quiz: all0.filter(e => !aulaIsFile(e)).length, file: all0.filter(aulaIsFile).length };
+  const kind = ['quiz', 'file'].includes(state.aulaK) ? state.aulaK : 'all', byKind = e => kind === 'all' || (kind === 'file') === aulaIsFile(e);
+  const all = all0.filter(byKind), arch = arch0.filter(byKind);
   const cnt = { all: all.length, open: 0, draft: 0, closed: 0, arch: arch.length }; all.forEach(e => { cnt[aulaState(e)]++; });
   const f = cnt[state.aulaF] !== undefined ? state.aulaF || 'all' : 'all';
   const list = f === 'all' ? all : f === 'arch' ? [] : all.filter(e => aulaState(e) === f);
@@ -8716,8 +8735,8 @@ function renderAula(m) {
       </div>
     </section>
     ${cloud ? '' : `<div class="alert alert-warn"><div><strong>El Aula necesita la versión web con tu cuenta.</strong> Aquí puedes preparar, importar e imprimir exámenes; para habilitarlos a los estudiantes entra en la versión web con internet.</div></div>`}
-    ${all.length || arch.length ? `<div class="aula-chips">${chips}</div>` : ''}
-    ${f === 'arch' ? aulaTrayHTML(m, arch) : list.length ? `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>` : all.length ? `<p class="muted aula-none">No hay exámenes en «${esc({ open: 'Habilitados', draft: 'Sin habilitar', closed: 'Inhabilitados' }[f])}».</p>` : `<div class="aula-empty card">
+    ${all0.length || arch0.length ? `<div class="aula-bar"><div class="seg aula-kinds">${[['all', AI.school, 'Todo'], ['quiz', AI.exam, 'Exámenes'], ['file', AI.upload, 'Prácticas']].map(([k, ic, l]) => `<button type="button" class="${kind === k ? 'on' : ''}" data-act="aula-kind" data-id="${k}">${ic}${l}<span class="ak-n">${kc[k]}</span></button>`).join('')}</div><div class="aula-chips">${chips}</div></div>` : ''}
+    ${f === 'arch' ? aulaTrayHTML(m, arch) : list.length ? (kind === 'all' && list.some(aulaIsFile) && list.some(e => !aulaIsFile(e)) ? [['quiz', AI.exam, 'Exámenes'], ['file', AI.upload, 'Prácticas con archivo']].map(([k, ic, l]) => { const L = list.filter(e => (k === 'file') === aulaIsFile(e)); return L.length ? `<section class="aula-group"><h3 class="aula-gh"><span>${ic}</span>${l}<small>${L.length}</small></h3><div class="aula-grid">${L.map(e => aulaCard(m, e)).join('')}</div></section>` : ''; }).join('') : `<div class="aula-grid">${list.map(e => aulaCard(m, e)).join('')}</div>`) : all0.length ? `<p class="muted aula-none">${all.length ? `No hay ${kind === 'file' ? 'prácticas' : kind === 'quiz' ? 'exámenes' : 'nada'} en «${esc({ open: 'Habilitados', draft: 'Sin habilitar', closed: 'Inhabilitados' }[f])}».` : kind === 'file' ? 'Todavía no hay prácticas. Crea una con «Práctica con archivo».' : 'Todavía no hay exámenes. Crea uno con «Nuevo examen».'}</p>` : `<div class="aula-empty card">
       <div class="ae-art">${AI.exam}</div>
       <h3>Tu aula está lista para el primer examen</h3>
       <ol class="aula-steps">
@@ -9392,7 +9411,8 @@ function aulaPinsDialog() {
   const studs = m.students.slice().sort((a, b) => a.num - b.num);
   const draw = ov => {
     const P = m.aulaPins || {};
-    ov.querySelector('#pinList').innerHTML = studs.map(s => `<div class="pin-row"><span class="pin-n">${s.num}</span><span class="pin-name">${esc(s.name)}</span><input class="pin-in" data-pin="${s.id}" value="${esc(P[s.id] || '')}" maxlength="4" inputmode="numeric" placeholder="····" title="Escribe otra clave (4 números) o usa ↻" data-noenter><button type="button" class="btn btn-ghost btn-icon" data-pinnew="${s.id}" title="Clave nueva para este estudiante">${AI.refresh}</button></div>`).join('');
+    ov.querySelector('#pinList').innerHTML = studs.map(s => `<div class="pin-row"><span class="pin-n">${s.num}</span><span class="pin-name">${esc(s.name)}</span><input class="pin-in" data-pin="${s.id}" value="${esc(P[s.id] || '')}" maxlength="4" inputmode="numeric" placeholder="····" title="Escribe otra clave (4 números) o usa ↻" data-noenter><button type="button" class="btn btn-ghost btn-icon" data-pinnew="${s.id}" title="Clave nueva para este estudiante">${AI.refresh}</button><button type="button" class="btn btn-ghost btn-icon btn-sm" data-pincopy="${s.id}" title="Copiar la clave" ${P[s.id] ? '' : 'disabled'}>${AI.copy}</button></div>`).join('');
+    ov.querySelectorAll('[data-pincopy]').forEach(b => b.onclick = () => { const st = findStu(m, b.dataset.pincopy), v = (m.aulaPins || {})[b.dataset.pincopy]; if (v) copyText(v, `Clave de ${st.name} copiada.`); });
     ov.querySelectorAll('[data-pinnew]').forEach(b => b.onclick = () => { const id = b.dataset.pinnew; delete m.aulaPins[id]; aulaEnsurePins(m, [findStu(m, id)]); aulaPinsChanged(m); draw(ov); toast(`Clave nueva para ${findStu(m, id).name}: ${m.aulaPins[id]}`, 'ok', 3500); });
     ov.querySelectorAll('[data-pin]').forEach(i => i.onchange = () => {
       const id = i.dataset.pin, v = i.value.replace(/\D/g, '');
@@ -9710,6 +9730,7 @@ Object.assign(ACTIONS, {
   'aula-import': () => aulaImportDialog(),
   'aula-pins': () => aulaPinsDialog(),
   'aula-filter': el => { state.aulaF = el.dataset.id; render(); },
+  'aula-kind': el => { state.aulaK = el.dataset.id; render(); },
   'aula-open': el => { state.aulaSel = el.dataset.id; render(); window.scrollTo(0, 0); },
   'aula-back': () => { state.aulaSel = null; render(); },
   'aula-edit': el => aulaEditor(el.dataset.id),
@@ -10340,8 +10361,8 @@ function portalCuentasHTML(m) {
       <div class="row-wrap">${sin.length ? (() => { const k = sin.filter(s => (portalMatch(m, s) || {}).kind === 'same').length, n = sin.length - k; return `<button class="btn btn-primary" data-act="portal-create">${AI.users} ${n ? `Crear ${n} cuenta${n === 1 ? '' : 's'}` : 'Activar'}${k ? ` · ${k} ya tiene${k === 1 ? '' : 'n'} cuenta` : ''}</button>`; })() : ''}<button class="btn btn-secondary" data-act="portal-cards" ${studs.length - sin.length ? '' : 'disabled'}>${AI.file} Imprimir tarjetas</button></div></div>
     <div class="table-wrap"><table class="tbl pt-tbl"><thead><tr><th>Nº</th><th>Estudiante</th><th>Usuario</th><th>Contraseña</th><th>Estado</th><th></th></tr></thead><tbody>
     ${studs.map(s => { const a = P.accts[s.id]; return `<tr><td>${s.num}</td><td>${esc(s.name)}</td>
-      <td>${a ? `<code>${esc(a.u)}</code>${portalModsOf(a.uid).length > 1 ? `<div class="muted small">También en ${esc(portalModsOf(a.uid).filter(x => x !== m).map(modShort).join(', '))}</div>` : ''}` : portalUserCell(m, s)}</td>
-      <td>${a ? `<code class="pt-pw" data-pw="${esc(a.pw)}">••••-••••</code> <button type="button" class="btn btn-ghost btn-icon btn-sm" data-act="portal-pw-show" title="Ver contraseña">${AI.eye}</button>` : '<span class="muted">—</span>'}</td>
+      <td>${a ? `<span class="pt-cred"><code>${esc(a.u)}</code><button type="button" class="btn btn-ghost btn-icon btn-sm" data-act="portal-cp" data-v="${esc(a.u)}" data-l="Usuario" title="Copiar el usuario">${AI.copy}</button></span>${portalModsOf(a.uid).length > 1 ? `<div class="muted small">También en ${esc(portalModsOf(a.uid).filter(x => x !== m).map(modShort).join(', '))}</div>` : ''}` : portalUserCell(m, s)}</td>
+      <td>${a ? `<span class="pt-cred"><code class="pt-pw" data-pw="${esc(a.pw)}">••••-••••</code><button type="button" class="btn btn-ghost btn-icon btn-sm" data-act="portal-pw-show" title="Ver contraseña">${AI.eye}</button><button type="button" class="btn btn-ghost btn-icon btn-sm" data-act="portal-cp" data-v="${esc(a.pw)}" data-l="Contraseña" title="Copiar la contraseña">${AI.copy}</button><button type="button" class="btn btn-ghost btn-sm pt-cpboth" data-act="portal-cp" data-v="${esc('Mi aula · ' + portalUrl() + '\nUsuario: ' + a.u + '\nContraseña: ' + a.pw)}" data-l="Usuario y contraseña de " data-who="${esc(s.name)}" title="Copiar usuario, contraseña y dirección para enviárselos">${AI.copy} Ambos</button></span>` : '<span class="muted">—</span>'}</td>
       <td>${a ? '<span class="badge ok">Activa</span>' : '<span class="badge neutral">Sin cuenta</span>'}</td>
       <td>${a ? aulaRowMenu({ id: 'portal' }, s.id, [['pw', AI.key, 'Cambiar la contraseña', 'Una al azar o la que tú escribas'], ['card', AI.file, 'Imprimir su tarjeta', ''], ...(portalJoinable(m, s) ? [['join', AI.users, 'Unir con su otra cuenta', `Usará la de ${modShort(portalJoinable(m, s).m)}`]] : []), ['del', AI.trash, 'Eliminar su cuenta', 'Ya no podrá entrar']]).replace(/data-act="aula-stu"/g, 'data-act="portal-acct"') : ''}</td></tr>`; }).join('')}
     </tbody></table></div></section>`;
@@ -10487,6 +10508,7 @@ Object.assign(ACTIONS, {
       portalRemoveAcct(m, sid).then(() => { render(); toast('Cuenta eliminada.', 'ok'); }).catch(e => toast(aulaErr(e), 'error', 6000));
     });
   },
+  'portal-cp': el => copyText(el.dataset.v, (el.dataset.l || 'Texto') + (el.dataset.who || '') + ' copiad' + (el.dataset.l === 'Usuario' ? 'o' : el.dataset.who ? 'os' : 'a') + '.'),
   'portal-news-add': () => {
     const m = curMod(), t = (document.getElementById('pnText').value || '').trim(); if (!t) return toast('Escribe el aviso.', 'error');
     m.portal.news.push({ id: uid(), t: t.slice(0, 500), at: new Date().toISOString() }); m.portal.news = m.portal.news.slice(-50);
