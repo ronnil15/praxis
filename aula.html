@@ -174,10 +174,14 @@ input:focus,textarea:focus{box-shadow:0 0 0 4px color-mix(in srgb,var(--btn) 18%
 @media (max-width:560px){.card{padding:20px}.q{padding:20px 18px}.hero h1{font-size:24px}.q .tx{font-size:17px}.foot .btn{max-width:none}main{padding:0 14px 140px}.ex-sum,.ex-instr{padding:16px 18px}}
 
 /* ---------- v39: el examen se ve completo en el celular y en la PC ---------- */
-body.exam main{padding-bottom:calc(var(--footH,96px) + 28px)}
-html.embed body.exam main{padding-bottom:calc(var(--footH,96px) + 22px)}
+/* La barra de «Entregar» va dentro de la página y se queda pegada abajo: al llegar al final queda DEBAJO de la última pregunta, nunca encima */
+body.exam main{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+body.exam .foot{position:-webkit-sticky;position:sticky;left:auto;right:auto;bottom:calc(12px + env(safe-area-inset-bottom));margin:20px 0 0;border:1px solid var(--line);border-radius:18px;padding:10px 10px 10px 16px;background:color-mix(in srgb,var(--card) 96%,transparent);box-shadow:0 12px 32px -14px rgba(16,24,40,.35),0 2px 6px -2px rgba(16,24,40,.08)}
+body.exam .foot .in{max-width:none}
+html.embed body.exam .foot{bottom:10px}
 .foot{transition:transform .22s ease}
-body.typing .foot{transform:translateY(115%)}
+body.typing .foot{transform:translateY(calc(100% + 26px));opacity:0;pointer-events:none}
+.foot{transition:transform .22s ease,opacity .18s ease}
 html.embed .bar{padding:8px 16px}
 html.embed .bar .t b{display:none}
 html.embed .bar .t span{font-size:13.5px;font-weight:600;color:var(--ink2)}
@@ -191,8 +195,9 @@ html.embed .timer{font-size:15.5px;padding:6px 11px}
 .ex-nav small{flex-basis:100%;color:var(--mut);font-size:12px}
 .q{scroll-margin-top:calc(var(--barH,76px) + 14px)}
 .saved{min-width:0}
-@media (max-width:560px){.foot{padding:10px 14px calc(10px + env(safe-area-inset-bottom))}.foot .in{gap:10px}.foot .btn{min-height:48px;flex:0 0 auto;padding:12px 20px}.saved{flex:1;font-size:11.5px}.ex-sum{padding:16px}.ex-nav button{min-width:36px;height:36px}}
-@media (max-height:500px){.foot{padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}.foot .btn{min-height:42px}.bar{padding-top:6px;padding-bottom:6px}}
+.q .n span{white-space:nowrap;flex:none}.q .n em{min-width:0}
+@media (max-width:560px){body.exam .foot{padding:8px 8px 8px 14px;border-radius:16px;bottom:calc(8px + env(safe-area-inset-bottom))}html.embed body.exam .foot{bottom:8px}.foot .in{gap:10px}.foot .btn{min-height:48px;flex:0 0 auto;padding:12px 20px}.saved{flex:1;font-size:11.5px}.ex-sum{padding:16px}.ex-nav button{min-width:36px;height:36px}}
+@media (max-height:500px){body.exam .foot{padding-top:6px;padding-bottom:6px}.foot .btn{min-height:42px}.bar{padding-top:6px;padding-bottom:6px}}
 </style>
 <script>!function(){try{var t=localStorage.getItem("praxisAulaTheme");"dark"!==t&&"light"!==t||document.documentElement.setAttribute("data-theme",t)}catch(t){}}();
 </script>

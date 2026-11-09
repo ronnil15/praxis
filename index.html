@@ -2267,6 +2267,34 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .st-btns .btn svg { width: 15px; height: 15px; }
 @media (max-width: 560px) { .st-sec { padding: .8rem .75rem; } .st-files .st-pt { grid-template-columns: 1.4rem 1fr auto; grid-template-areas: "i b e" "i s x"; } }
 
+/* ---------- v40: barra superior del celular con menú «Más» ---------- */
+.nav-more { display: none; }
+.nav-menu { position: fixed; z-index: 120; min-width: 210px; background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 14px; padding: .35rem; box-shadow: 0 18px 40px -12px rgba(15,23,42,.35); animation: navMenu .16s ease-out; }
+@keyframes navMenu { from { opacity: 0; transform: translateY(-6px) scale(.98); } }
+.nav-menu button { display: flex; align-items: center; gap: .7rem; width: 100%; padding: .7rem .8rem; border: 0; background: none; color: inherit; font: inherit; font-size: .92rem; font-weight: 600; border-radius: 10px; cursor: pointer; text-align: left; }
+.nav-menu button:hover, .nav-menu button:focus-visible { background: var(--surface-2); }
+.nav-menu svg { width: 18px; height: 18px; color: var(--primary); flex: none; }
+@media (max-width: 900px) {
+  .nav-more { display: inline-flex; }
+  .nav-actions > .nav-btn[data-act="backup-menu"], .nav-actions > .nav-btn[data-act="settings"], .nav-actions > .nav-btn[data-act="theme"], .nav-actions > .nav-btn[data-act="help"], .nav-actions > .nav-btn[data-act="license"] { display: none; }
+  .nav-inner { gap: .5rem; }
+  .nav-actions { gap: .28rem; min-width: 0; }
+  .brand { min-width: 0; flex: none; }
+}
+@media (max-width: 640px) { .app-name { display: none; } }
+@media (max-width: 640px) {
+  /* Pestañas del portal en una sola fila que se desliza, sin amontonarse */
+  .pt-tabs { width: auto; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .pt-tabs::-webkit-scrollbar { display: none; }
+  .pt-tabs > * { flex: none; white-space: nowrap; }
+}
+/* Columnas que se ajustan también en celulares muy angostos (320 px) */
+.pt-two { grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); }
+/* Laptops pequeñas: los botones de arriba solo con ícono para que no se salgan */
+@media (max-width: 1200px) { .nav-btn .lbl { display: none; } .app-sub { display: none; } }
+.viz-grid { grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); }
+.pl-cal-grid { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
 </head>
@@ -2291,6 +2319,7 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
       <button class="nav-btn" data-act="settings" title="Ajustes"><svg class="i" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.22l-2.39.96a7 7 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54a7.4 7.4 0 0 0-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7 7 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.5.5 0 0 0-.12-.61zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg><span class="lbl">Ajustes</span></button>
       <button class="nav-btn" data-act="help" title="Guía de uso"><svg class="i" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2zm2.07-7.75-.9.92A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.17-2.83l1.24-1.26A1.96 1.96 0 0 0 14 9a2 2 0 0 0-4 0H8a4 4 0 0 1 8 0c0 .88-.36 1.68-.93 2.25z"/></svg></button>
       <button class="nav-btn" data-act="theme" title="Cambiar a modo oscuro"></button>
+      <button class="nav-btn nav-more" data-act="nav-more" title="Más opciones" aria-label="Más opciones" aria-haspopup="menu"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
       <button class="nav-btn" data-act="license" title="Licencia"><svg class="i" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></button>
     </div>
   </div>
@@ -11423,6 +11452,12 @@ ACTIONS['drive-setup'] = () => driveDialog();
     '.ck-sheet button{animation:ckSheetI .3s ' + EASE + ' both;animation-delay:calc(var(--i,0)*28ms)}@keyframes ckSheetI{from{opacity:0;transform:translateY(6px)}}',
     '.ck-box textarea:disabled{opacity:.6;cursor:not-allowed}',
     '@media (max-width:640px){.ck-in{padding:12px 10px 8px}.ck-b{max-width:84%}.ck-hint{display:none}.ck-h{padding:11px 14px}.ck-c{padding:8px 10px 10px}.ck-down{bottom:84px}.ck-ga{width:26px;height:26px}.ck-aud{min-width:200px}}',
+    /* Nota de voz ordenada: botón · ondas · velocidad, y el tiempo debajo de las ondas (no se sale de la burbuja) */
+    '.ck-aud{display:grid;grid-template-columns:40px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;width:min(250px,64vw);min-width:0!important;padding:4px 0 0}',
+    '.ck-aud .ck-pl{grid-column:1;grid-row:1/3}.ck-aud .ck-wv{grid-column:2;grid-row:1;min-width:0;height:30px}',
+    '.ck-aud .ck-ad{grid-column:2;grid-row:2;min-width:0;text-align:left;font-size:11.5px;line-height:1.3;margin-top:1px}',
+    '.ck-aud .ck-sp{grid-column:3;grid-row:1/3;align-self:center;width:40px;min-width:40px;height:24px;padding:0;display:inline-grid;place-items:center;line-height:1;font:700 11.5px Inter,system-ui,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.01em}',
+    '.ck-b:has(.ck-aud){padding-bottom:5px}',
     '@media (prefers-reduced-motion:reduce){.ck *,.ck-lb *,.ck-sheet *{animation:none!important;transition:none!important}}'
   ].join('\n');
   function css() { if (document.getElementById('ckCss2')) return; var o = document.getElementById('ckCss'); if (o) o.remove(); var st = document.createElement('style'); st.id = 'ckCss2'; st.textContent = CSS; document.head.appendChild(st); }
@@ -12934,6 +12969,22 @@ function helpDialog(sec) {
   if (sec) setTimeout(() => { const d = ov.querySelector(`[data-hp="${sec}"]`); if (d) d.scrollIntoView({ block: 'start' }); }, 80);
 }
 ACTIONS['help'] = () => helpDialog();
+
+/* Barra superior en el celular: lo menos usado va al menú «Más» (⋮) para que todo quepa sin cortarse */
+function navMoreMenu(btn) {
+  const old = document.getElementById('navMore'); if (old) { old.remove(); return; }
+  const items = [['backup-menu', ICON.download, 'Respaldo'], ['settings', (document.querySelector('.nav-btn[data-act="settings"] svg') || {}).outerHTML || AI.tool, 'Ajustes'], ['theme', isDark() ? ICON.sun : ICON.moon, isDark() ? 'Modo claro' : 'Modo oscuro'], ['help', AI.book, 'Guía de uso'], ['license', AI.shield, 'Licencia']];
+  const m = document.createElement('div'); m.id = 'navMore'; m.className = 'nav-menu'; m.setAttribute('role', 'menu');
+  m.innerHTML = items.map(([a, ic, l]) => `<button type="button" role="menuitem" data-nm="${a}">${ic}<span>${l}</span></button>`).join('');
+  document.body.appendChild(m);
+  const r = btn.getBoundingClientRect(); m.style.top = (r.bottom + 8) + 'px'; m.style.right = Math.max(8, innerWidth - r.right) + 'px';
+  const close = () => { m.remove(); document.removeEventListener('pointerdown', out, true); document.removeEventListener('keydown', esc1, true); };
+  const out = e => { if (!m.contains(e.target) && !btn.contains(e.target)) close(); };
+  const esc1 = e => { if (e.key === 'Escape') close(); };
+  setTimeout(() => { document.addEventListener('pointerdown', out, true); document.addEventListener('keydown', esc1, true); }, 0);
+  m.querySelectorAll('[data-nm]').forEach(b => b.onclick = () => { close(); const f = ACTIONS[b.dataset.nm]; if (f) f(b); });
+}
+ACTIONS['nav-more'] = el => navMoreMenu(el);
 
 /* =========================================================
    Reportes imprimibles (PDF sin internet) y exportación CSV
