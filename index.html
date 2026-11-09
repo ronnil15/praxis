@@ -2195,6 +2195,77 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .drv-push { margin: .8rem 0; padding: .7rem .9rem; border: 1px dashed var(--border-2, var(--border)); border-radius: 12px; background: var(--surface-2); }
 .drv-push summary { cursor: pointer; }
 .drv-push .drv-steps { margin-top: .6rem; }
+.st-ic { display: inline-grid; place-items: center; color: var(--primary); }
+.st-ic svg { width: 18px; height: 18px; }
+.st-sec h4 { display: flex; align-items: center; gap: .45rem; }
+.st-pt > .st-ic { grid-area: i; color: var(--muted); }
+.st-total > .st-ic, .st-tr > .st-ic { color: var(--primary); }
+.st-tr > .st-ic { color: var(--warn-ink, #b54708); }
+.menu-list .btn svg { flex: none; }
+/* ---------- Docentes (etapa 5) ---------- */
+.tch-box.on .drv-ic { background: var(--primary-light); color: var(--primary); }
+.tch-pt > em { display: inline-flex; gap: .2rem; font-weight: 400; }
+.tch-pt .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: .04em; }
+.tch-new { border: 1px solid var(--primary-ring); background: var(--primary-light); border-radius: 12px; padding: .75rem .85rem; margin: 0 0 .5rem; display: grid; gap: .45rem; }
+.tch-new input { width: 100%; padding: .5rem .6rem; border-radius: 8px; border: 1px solid var(--border-2, var(--border)); background: var(--surface); color: var(--ink); font: inherit; font-size: .84rem; }
+.tch-new .st-btns { margin: 0; }
+.tch-notes { margin: .5rem 0 0; padding-left: 1.1rem; display: grid; gap: .35rem; }
+.au-inv { margin-top: .2rem; }
+/* ---------- Guía de uso (etapa 5) ---------- */
+.hp-q { display: flex; align-items: center; gap: .5rem; border: 1px solid var(--border-2, var(--border)); border-radius: 12px; padding: .5rem .7rem; background: var(--surface); margin-bottom: .8rem; }
+.hp-q span { color: var(--muted); display: inline-grid; } .hp-q svg { width: 17px; height: 17px; }
+.hp-q input { flex: 1; border: 0; background: transparent; color: var(--ink); font: inherit; outline: none; min-width: 0; }
+.hp-list { display: grid; gap: .5rem; }
+.hp-it { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.hp-it > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: .6rem; padding: .7rem .9rem; font-size: .92rem; }
+.hp-it > summary::-webkit-details-marker { display: none; }
+.hp-it > summary::after { content: ''; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s; }
+.hp-it[open] > summary::after { transform: rotate(-135deg); }
+.hp-it[open] > summary { border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.hp-b { padding: .7rem 1rem .9rem; font-size: .88rem; line-height: 1.55; }
+.hp-b ol, .hp-b ul { margin: 0 0 .6rem; padding-left: 1.2rem; display: grid; gap: .3rem; }
+.hp-b p { margin: 0 0 .6rem; }
+.hp-faq { margin: 0 0 .4rem; display: grid; gap: .15rem; } .hp-faq dt { font-weight: 700; margin-top: .45rem; } .hp-faq dd { margin: 0; color: var(--ink-2, var(--ink)); }
+.hp-foot { text-align: center; margin: 1rem 0 0; }
+/* ---------- Almacenamiento y copias (etapa 5) ---------- */
+.stor-box.on .drv-ic { background: var(--primary-light); color: var(--primary); }
+.st-link { background: none; border: 0; padding: 0; color: var(--primary); font-weight: 600; cursor: pointer; font: inherit; font-weight: 600; display: inline-flex; align-items: center; gap: .3rem; text-decoration: none; }
+.st-link svg { width: 14px; height: 14px; }
+.st-link:hover { text-decoration: underline; }
+.st-empty { text-align: center; padding: 1.6rem 1rem; color: var(--muted); }
+.st-empty svg { width: 34px; height: 34px; opacity: .6; }
+.st-empty .btn { margin-top: .6rem; }
+.st-sec { border: 1px solid var(--border); border-radius: 14px; padding: .9rem 1rem; margin: 0 0 .9rem; background: var(--surface); }
+.st-sec h4 { margin: 0 0 .7rem; font-size: .95rem; }
+.st-sec p { margin: .5rem 0 0; }
+.st-bar { margin: 0 0 .75rem; }
+.st-bl { display: flex; justify-content: space-between; gap: .6rem; flex-wrap: wrap; font-size: .86rem; margin-bottom: .3rem; }
+.st-bl span { color: var(--muted); font-size: .8rem; }
+.st-track { height: 10px; border-radius: 99px; background: var(--track, var(--surface-3)); overflow: hidden; }
+.st-track i { display: block; height: 100%; border-radius: inherit; background: var(--ok); transition: width .5s ease; }
+.st-bar.warn .st-track i { background: #f59e0b; }
+.st-bar.crit .st-track i { background: var(--bad); }
+.st-bar.crit .st-bl b { color: var(--bad); }
+.st-parts, .st-files { display: grid; gap: .1rem; margin: .4rem 0 .6rem; }
+.st-pt { display: grid; grid-template-columns: 1.6rem 1fr auto; grid-template-areas: "i b e" "i s e"; align-items: center; column-gap: .55rem; padding: .45rem .2rem; border-top: 1px solid var(--border); font-size: .86rem; }
+.st-pt:first-child { border-top: 0; }
+.st-pt > b { grid-area: b; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-pt > small { grid-area: s; color: var(--muted); font-size: .76rem; }
+.st-pt > em { grid-area: e; font-style: normal; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.st-files .st-pt { grid-template-columns: 1.6rem 1fr auto auto; grid-template-areas: "i b e x" "i s e x"; }
+.st-files .st-pt > button { grid-area: x; }
+.st-total { background: var(--surface-2); border-radius: 10px; padding: .55rem .5rem; }
+.st-tr > em { color: var(--warn-ink, #b54708); }
+.st-act { display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: .65rem 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.st-sec h4 + .st-act { border-top: 0; padding-top: 0; }
+.st-act > div { flex: 1 1 260px; min-width: 0; }
+.st-act b { display: block; font-size: .9rem; }
+.st-act small { color: var(--muted); font-size: .8rem; display: block; margin-top: .15rem; }
+.st-sel { display: inline-flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.st-sel select { width: auto; padding: .35rem .5rem; border-radius: 8px; border: 1px solid var(--border-2, var(--border)); background: var(--surface); color: var(--ink); font: inherit; font-size: .84rem; }
+.st-btns { display: flex; gap: .5rem; flex-wrap: wrap; margin: .7rem 0 .2rem; }
+.st-btns .btn svg { width: 15px; height: 15px; }
+@media (max-width: 560px) { .st-sec { padding: .8rem .75rem; } .st-files .st-pt { grid-template-columns: 1.4rem 1fr auto; grid-template-areas: "i b e" "i s x"; } }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -2218,6 +2289,7 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
       <button class="nav-btn" data-act="go-week" data-view="semana" title="Mi semana: lo que toca en cada módulo"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm2 16H8v-2h8zm0-4H8v-2h8zm-3-5V3.5L18.5 9z"/></svg><span class="lbl">Mi semana</span></button>
       <button class="nav-btn" data-act="backup-menu" title="Respaldos"><svg class="i" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span class="lbl">Respaldo</span></button>
       <button class="nav-btn" data-act="settings" title="Ajustes"><svg class="i" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.22l-2.39.96a7 7 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.47.41l-.36 2.54a7.4 7.4 0 0 0-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.5.5 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7 7 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.5.5 0 0 0-.12-.61zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg><span class="lbl">Ajustes</span></button>
+      <button class="nav-btn" data-act="help" title="Guía de uso"><svg class="i" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 17h-2v-2h2zm2.07-7.75-.9.92A3.4 3.4 0 0 0 13 15h-2v-.5a4 4 0 0 1 1.17-2.83l1.24-1.26A1.96 1.96 0 0 0 14 9a2 2 0 0 0-4 0H8a4 4 0 0 1 8 0c0 .88-.36 1.68-.93 2.25z"/></svg></button>
       <button class="nav-btn" data-act="theme" title="Cambiar a modo oscuro"></button>
       <button class="nav-btn" data-act="license" title="Licencia"><svg class="i" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></button>
     </div>
@@ -3262,7 +3334,7 @@ function queueRender() { if (renderQueued) return; renderQueued = true; setTimeo
 function renderHome() {
   const s = db.settings, mods = db.modules;
   const totalStu = uniqueStudentCount(), enr = enrollmentCount(), groups = groupCount();
-  const needBackup = mods.length && (!s.lastBackup || Date.now() - s.lastBackup > 7 * 864e5);
+  const needBackup = mods.length && Date.now() - Math.max(s.lastBackup || 0, s.bakAt || 0) > 7 * 864e5;
   return `
   <section class="card hero">
     <div>
@@ -3276,6 +3348,7 @@ function renderHome() {
     </div>
   </section>
   ${needBackup ? `<div class="alert alert-warn"><div><strong>Respaldo pendiente.</strong> ${s.lastBackup ? 'Tu último respaldo fue hace ' + daysAgo(s.lastBackup) + '.' : 'Todavía no has descargado ningún respaldo.'} ${typeof Cloud === 'object' && Cloud.user ? 'Tus datos están en la nube; el respaldo es una copia extra en tu equipo.' : 'Las notas solo están guardadas en este navegador.'}</div><button class="btn btn-sm btn-warn" data-act="backup-download">Descargar respaldo</button></div>` : ''}
+  ${typeof storageHomeBanner === 'function' ? storageHomeBanner() : ''}
   ${notifHomeBanner()}
   ${!s.school ? `<div class="alert alert-info"><div>Completa el nombre del centro y el año escolar en <strong>Ajustes</strong> para que salgan en los reportes.</div><button class="btn btn-sm btn-secondary" data-act="settings">Abrir ajustes</button></div>` : ''}
   ${renderHomeHorario()}
@@ -6346,7 +6419,7 @@ function settingsDialog() {
   const s = db.settings;
   openModal({
     title: 'Ajustes', icon: '⚙️', wide: true, sub: 'Estos datos aparecen en los reportes impresos.',
-    body: `${accountBox()}${typeof driveSettingsHTML === 'function' ? driveSettingsHTML() : ''}<div class="form-grid">
+    body: `${accountBox()}${typeof driveSettingsHTML === 'function' ? driveSettingsHTML() : ''}${typeof storageSettingsHTML === 'function' ? storageSettingsHTML() : ''}${typeof teachersSettingsHTML === 'function' ? teachersSettingsHTML() : ''}<div class="form-grid">
       <label class="field">Docente<input type="text" id="stTeacher" value="${esc(s.teacher)}"></label>
       <label class="field">Centro educativo<input type="text" id="stSchool" value="${esc(s.school)}" placeholder="Nombre del liceo o politécnico"></label>
       <label class="field">Año escolar<input type="text" id="stYear" value="${esc(s.year)}" placeholder="2026-2027"></label>
@@ -6424,12 +6497,14 @@ function backupMenu() {
       <button class="btn btn-primary" data-b="down">${ICON.download} Descargar respaldo (.json)</button>
       <button class="btn btn-secondary" data-b="up">${ICON.upload} Cargar un archivo (restaurar o agregar módulos)</button>
       <button class="btn btn-secondary" data-b="snap">${ICON.history} Puntos de restauración automáticos</button>
+      ${typeof storageDialog === 'function' && typeof driveUrl === 'function' && driveUrl() ? `<button class="btn btn-secondary" data-b="cloud">${AI.shield} Copias diarias en tu Google Drive${s.bakAt ? ' · última: ' + dateTime(s.bakAt) : ''}</button>` : ''}
     </div>
     <p class="muted small">Acepta respaldos de esta versión y de Praxis Pro 7.x. Antes de restaurar se crea un punto de restauración por si necesitas volver atrás.</p>`
   });
   md.el.querySelector('[data-b="down"]').onclick = () => { md.close(); downloadBackup(); };
   md.el.querySelector('[data-b="up"]').onclick = () => { md.close(); $('#fileRestore').click(); };
   md.el.querySelector('[data-b="snap"]').onclick = () => { md.close(); snapshotsDialog(); };
+  const cb = md.el.querySelector('[data-b="cloud"]'); if (cb) cb.onclick = () => { md.close(); storageDialog(); };
 }
 function summarize(d) {
   const stu = d.modules.reduce((a, m) => a + m.students.length, 0);
@@ -8181,7 +8256,32 @@ const AU_IC = {
   ok: '<svg viewBox="0 0 24 24"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>'
 };
 function auGreeting() { const h = new Date().getHours(); return h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches'; }
-function auSignupOpen() { return (typeof CLOUD_SIGNUP !== 'undefined' && CLOUD_SIGNUP) || /^#registro$/i.test(location.hash); }
+function auSignupOpen() { return (typeof CLOUD_SIGNUP !== 'undefined' && CLOUD_SIGNUP) || /^#registro$/i.test(location.hash) || !!auInvite(); }
+/** Código de invitación de docente (#invitacion=CÓDIGO); se recuerda mientras la pestaña esté abierta. */
+function auInvite() {
+  const m = /[#&]invitacion=([A-Za-z0-9]{8,16})/.exec(location.hash || '');
+  if (m) { try { sessionStorage.setItem('praxisInv', m[1].toUpperCase()); } catch (e) { } return m[1].toUpperCase(); }
+  try { return sessionStorage.getItem('praxisInv') || ''; } catch (e) { return ''; }
+}
+function auNewName() { try { return sessionStorage.getItem('praxisNewName') || ''; } catch (e) { return ''; } }
+function auInviteClear() {
+  try { sessionStorage.removeItem('praxisInv'); } catch (e) { }
+  if (/invitacion=/.test(location.hash)) try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { }
+}
+/** El docente invitado se agrega a la lista de docentes con su código (las reglas comprueban que sea válido). */
+async function cloudClaim(u, code) {
+  const F = firebase.firestore.FieldValue;
+  try {
+    await withTimeout(Cloud.fs.collection('admin').doc('teachers').update({ uids: F.arrayUnion(u.uid), ['inv.' + code]: F.delete(), last: code, ['n.' + u.uid]: { name: String(u.displayName || auNewName()).slice(0, 80), email: String(u.email || '').slice(0, 120), at: F.serverTimestamp() } }), 20000);
+    auInviteClear(); return 'ok';
+  } catch (e) {
+    const c = e && e.code;
+    if (c !== 'permission-denied' && c !== 'not-found') return 'net';
+    auInviteClear();
+    // ¿Ya era docente? (por ejemplo, abrió el enlace otra vez)
+    try { await withTimeout(Cloud.fs.collection('teachers').doc(u.uid).get({ source: 'server' }), 15000); return 'ya'; } catch (_) { return 'bad'; }
+  }
+}
 function authScreen(mode = 'login', msg = '') {
   let ov = document.getElementById('authScreen'), first = false;
   if (!ov) {
@@ -8209,7 +8309,7 @@ function authScreen(mode = 'login', msg = '') {
   let last = ''; try { last = localStorage.getItem('praxisLastEmail') || ''; } catch (e) { }
   const T = {
     login: [`${auGreeting()} 👋`, 'Entra con tu correo para ver tus módulos y notas.', 'Entrar'],
-    signup: ['Crear tu cuenta', 'Tus datos quedan privados: solo tú puedes verlos.', 'Crear mi cuenta'],
+    signup: [auInvite() ? 'Te invitaron a Praxis Pro' : 'Crear tu cuenta', auInvite() ? 'Crea tu cuenta de docente. Tus datos quedan privados: solo tú puedes verlos.' : 'Tus datos quedan privados: solo tú puedes verlos.', 'Crear mi cuenta'],
     reset: ['Recuperar contraseña', 'Te enviaremos un enlace a tu correo para crear una contraseña nueva.', 'Enviar enlace']
   }[mode];
   const field = (id, label, type, ic, ac, extra = '') => `<label class="au-field" for="${id}"><span class="au-lbl">${label}</span>
@@ -8218,6 +8318,7 @@ function authScreen(mode = 'login', msg = '') {
   pane.innerHTML = `<div class="au-mob-brand"><div class="au-logo sm"><span>${AppConfig.logo}</span></div><b>${AppConfig.appName}</b></div>
     <h2>${T[0]}</h2><p class="au-sub">${T[1]}</p>
     ${msg ? `<div class="au-msg ${/^✓/.test(msg) ? 'ok' : ''}" role="alert">${esc(msg)}</div>` : ''}
+    ${auInvite() && !msg ? `<div class="au-msg ok au-inv">✓ Invitación de docente lista. ${mode === 'login' ? 'Entra con tu cuenta y se aplicará.' : '¿Ya tienes cuenta? Usa «Volver a iniciar sesión».'}</div>` : ''}
     <form id="authForm" autocomplete="on" novalidate>
       ${mode === 'signup' ? field('auName', 'Tu nombre', 'text', 'user', 'name', 'placeholder="Como aparecerá en los reportes"') : ''}
       ${field('auEmail', 'Correo', 'email', 'mail', 'username', `required placeholder="tu@correo.com" value="${mode === 'login' ? esc(last) : ''}"`)}
@@ -8251,8 +8352,9 @@ function authScreen(mode = 'login', msg = '') {
       if (mode === 'login') { await Cloud.auth.signInWithEmailAndPassword(email, pass); try { localStorage.setItem('praxisLastEmail', email); } catch (e) { } }
       else if (mode === 'signup') {
         if (pass !== ov.querySelector('#auPass2').value) throw { code: 'mismatch' };
-        const cr = await Cloud.auth.createUserWithEmailAndPassword(email, pass);
         const nm = ov.querySelector('#auName').value.trim();
+        try { sessionStorage.setItem('praxisNewName', nm); } catch (e) { }
+        const cr = await Cloud.auth.createUserWithEmailAndPassword(email, pass);
         if (nm) { try { await cr.user.updateProfile({ displayName: nm }); } catch (e) { } }
         try { localStorage.setItem('praxisLastEmail', email); } catch (e) { }
       } else { await Cloud.auth.sendPasswordResetEmail(email); authScreen('login', '✓ Revisa tu correo (y la carpeta de spam) para cambiar la contraseña.'); }
@@ -8292,14 +8394,20 @@ function cloudBoot(afterLocal) {
   document.body.classList.add('auth-wait');
   Cloud.auth.onAuthStateChanged(async u => {
     document.body.classList.remove('auth-wait');
-    if (!u) { Cloud.user = null; authScreen('login'); return; }
+    if (!u) { Cloud.user = null; const m = Cloud._authMsg || ''; Cloud._authMsg = ''; authScreen(auInvite() && !m ? 'signup' : 'login', m); return; }
     if (typeof PORTAL_DOMAIN === 'string' && String(u.email || '').endsWith('@' + PORTAL_DOMAIN)) { await Cloud.auth.signOut(); authScreen('login', 'Esa es una cuenta de estudiante. Entra en «Mi aula».'); return; }
     if (Cloud.user && Cloud.user.uid === u.uid) return;
+    const inv = auInvite();
+    if (inv && navigator.onLine) {
+      const r = await cloudClaim(u, inv);
+      if (r === 'bad') { Cloud._authMsg = 'La invitación no es válida, ya se usó o venció. Pide un enlace nuevo a quien te invitó.'; await Cloud.auth.signOut(); return; }
+      if (r === 'ok') Cloud._welcome = true;
+    }
     Cloud.user = u; closeAuth();
     // Cada docente con su propia copia en este equipo
     STORE_KEY = 'praxisPro_v2_' + u.uid; SNAP_KEY = 'praxisPro_snapshots_' + u.uid;
     const st = loadDB();
-    if (st === 'new' && u.displayName) db.settings.teacher = u.displayName;
+    if (st === 'new' && (u.displayName || auNewName())) db.settings.teacher = u.displayName || auNewName();
     afterLocal(st);
     await cloudStart();
   });
@@ -8311,7 +8419,11 @@ async function cloudStart() {
   const ref = teacherRef();
   cloudSetStatus(navigator.onLine ? 'up' : 'off');
   let snap = null;
-  try { snap = await ref.get(); } catch (e) { try { snap = await ref.get({ source: 'cache' }); } catch (_) { } }
+  try { snap = await ref.get(); } catch (e) {
+    // Cuenta sin acceso de docente (no invitada o se le quitó el acceso)
+    if (e && e.code === 'permission-denied') { Cloud._authMsg = 'Esta cuenta no tiene acceso de docente a Praxis Pro. Si te invitaron, abre el enlace de invitación que te enviaron.'; Cloud.user = null; await Cloud.auth.signOut(); return; }
+    try { snap = await ref.get({ source: 'cache' }); } catch (_) { }
+  }
   if (snap && snap.exists) {
     // La nube manda: se toman los datos de la cuenta
     let mods = null;
@@ -8324,6 +8436,7 @@ async function cloudStart() {
   }
   await cloudLoadLib();
   Cloud.ready = true;
+  if (Cloud._welcome) { Cloud._welcome = false; setTimeout(() => toast('¡Bienvenido a Praxis Pro! Tu cuenta de docente quedó lista. Empieza creando tu primer módulo.', 'ok', 6000), 900); }
   cloudListen();
   if (navigator.onLine) Cloud.fs.waitForPendingWrites().then(() => cloudSetStatus('sync')).catch(() => { });
 }
@@ -8520,6 +8633,7 @@ const AI = {
   tool: _ai('<path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 0-5-5L13 5z"/>'),
   zap: _ai('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),
   book: _ai('<path d="M4 4h6a3 3 0 0 1 3 3v14a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v14a2 2 0 0 1 2-2h7z"/>'),
+  search: _ai('<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>'),
 };
 const AULA_KINDS = { 'Examen': AI.exam, 'Práctica': AI.tool, 'Quiz': AI.zap, 'Tarea': AI.book };
 const AULA_KCLS = { 'Examen': 'k-exam', 'Práctica': 'k-prac', 'Quiz': 'k-quiz', 'Tarea': 'k-task' };
@@ -10747,7 +10861,7 @@ async function driveCall(a, data = {}, ms = 60000) {
   const j = await r.json(); if (!j.ok) throw new Error(driveErr(j.e)); return j;
 }
 function driveErr(e) {
-  return ({ permiso: 'esa cuenta no es la dueña de este Drive', sesion: 'tu sesión venció; vuelve a entrar', accion: 'el programa de Drive está desactualizado; vuelve a pegar el código', 'no-existe': 'el archivo ya no existe en tu Drive' })[e] || String(e || 'error');
+  return ({ permiso: 'esa cuenta no es la dueña de este Drive', sesion: 'tu sesión venció; vuelve a entrar', accion: 'el programa de Drive está desactualizado; vuelve a pegar el código', 'no-existe': 'el archivo ya no existe en tu Drive', muchos: 'demasiados envíos seguidos; espera unos minutos y vuelve a intentar', datos: 'datos no válidos' })[e] || String(e || 'error');
 }
 const _driveBlobs = new Map();
 async function driveBlob(f) {
@@ -10772,11 +10886,11 @@ function driveScript() {
 // © ${new Date().getFullYear()} ${AppConfig.author}. Pega este código completo en Apps Script.
 const CFG = { project: '${C.projectId || ''}', key: '${C.apiKey || ''}', owner: '${uid}', root: 'Praxis Pro · Entregas' };
 
-function doGet() { return out({ ok: true, app: 'praxis-drive', v: 5 }); }
+function doGet() { return out({ ok: true, app: 'praxis-drive', v: 6 }); }
 function doPost(e) {
   try {
     const b = JSON.parse(e.postData.contents);
-    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cget: cget, cdel: cdel, ccopy: ccopy, push: push, pushx: pushx }[b.a];
+    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cget: cget, cdel: cdel, ccopy: ccopy, push: push, pushx: pushx, uso: uso, limpiar: limpiar, copia: copia }[b.a];
     return out(F ? F(b) : { ok: false, e: 'accion' });
   } catch (err) { return out({ ok: false, e: String(err && err.message || err) }); }
 }
@@ -10807,6 +10921,7 @@ function clean(s) { return String(s || '').replace(/[\\\\/:*?"<>|#%]+/g, ' ').re
 function up(b) {
   const eid = String(b.eid || '').replace(/[^A-Za-z0-9]/g, ''), num = parseInt(b.num, 10), code = String(b.code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (!eid || !(num > 0) || !code) throw new Error('datos');
+  lim('up:' + eid + ':' + num, 15, 600);
   const A = fsGet('aula/' + eid); if (!A.doc) throw new Error('no-existe');
   const F = A.doc.fields || {};
   if (val(F.status) !== 'open' || val(F.mode) !== 'file' || !(val(F.until) > Date.now())) throw new Error('cerrada');
@@ -10870,6 +10985,7 @@ const MEDIA = { 'image/jpeg': 'jpg', 'audio/webm': 'webm', 'audio/mp4': 'm4a', '
 function cimg(b) {
   const m = member(b), ty = String(b.ty || 'image/jpeg').split(';')[0];
   if (!MEDIA[ty]) throw new Error('tipo');
+  if (!m.mine) lim('m:' + m.u.localId, 30, 600);
   const bytes = Utilities.base64Decode(String(b.data || ''));
   if (!bytes.length || bytes.length > (ty.indexOf('video') === 0 ? 25 : 8) * 1048576) throw new Error('tamano');
   const dir = folder(folder(folder(root(), 'Mensajes'), m.pid), m.mine ? 'Docente' : m.u.localId);
@@ -10879,7 +10995,7 @@ function cimg(b) {
 }
 // Escuchar una nota de voz: solo quien pertenece a ese portal, y solo archivos de su carpeta de Mensajes
 function cget(b) {
-  const m = member(b);
+  const m = member(b); if (!m.mine) lim('g:' + m.u.localId, 150, 600);
   let f; try { f = DriveApp.getFileById(String(b.id || '')); } catch (e) { throw new Error('no-existe'); }
   const ps = f.getParents(); let ok = false;
   while (ps.hasNext()) { const p = ps.next(), pp = p.getParents(); while (pp.hasNext()) { const g = pp.next(); if (g.getName() === m.pid) { const gg = g.getParents(); while (gg.hasNext()) if (gg.next().getName() === 'Mensajes') ok = true; } } }
@@ -10890,7 +11006,7 @@ function cget(b) {
 // Reenviar: copia un archivo del chat de ese portal a la carpeta de quien reenvía
 function inMsgs(f, pid) { const ps = f.getParents(); while (ps.hasNext()) { const p = ps.next(), pp = p.getParents(); while (pp.hasNext()) { const g = pp.next(); if (g.getName() === pid) { const gg = g.getParents(); while (gg.hasNext()) if (gg.next().getName() === 'Mensajes') return true; } } } return false; }
 function ccopy(b) {
-  const m = member(b);
+  const m = member(b); if (!m.mine) lim('c:' + m.u.localId, 20, 600);
   let f; try { f = DriveApp.getFileById(String(b.id || '')); } catch (e) { throw new Error('no-existe'); }
   if (!inMsgs(f, m.pid)) throw new Error('permiso');
   const c = f.makeCopy(f.getName(), folder(folder(folder(root(), 'Mensajes'), m.pid), m.mine ? 'Docente' : m.u.localId));
@@ -10913,14 +11029,14 @@ function cdel(b) {
 function sa() { const j = PropertiesService.getScriptProperties().getProperty('SA'); if (!j) return null; try { const k = JSON.parse(j); return k.client_email && k.private_key ? k : null; } catch (e) { return null; } }
 function b64u(x) { return Utilities.base64EncodeWebSafe(x).replace(/=+$/, ''); }
 function saTok() {
-  const c = CacheService.getScriptCache(), hit = c.get('saTok'); if (hit) return hit;
+  const c = CacheService.getScriptCache(), hit = c.get('saTok2'); if (hit) return hit;
   const k = sa(); if (!k) throw new Error('sin-cuenta');
   const now = Math.floor(Date.now() / 1000), head = b64u(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-  const body = b64u(JSON.stringify({ iss: k.client_email, scope: 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 }));
+  const body = b64u(JSON.stringify({ iss: k.client_email, scope: 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/firebase.messaging https://www.googleapis.com/auth/monitoring.read', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 }));
   const sig = b64u(Utilities.computeRsaSha256Signature(head + '.' + body, k.private_key));
   const r = UrlFetchApp.fetch('https://oauth2.googleapis.com/token', { method: 'post', payload: { grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: head + '.' + body + '.' + sig }, muteHttpExceptions: true });
   if (r.getResponseCode() !== 200) throw new Error('cuenta: ' + r.getContentText().slice(0, 140));
-  const t = JSON.parse(r.getContentText()).access_token; c.put('saTok', t, 3000); return t;
+  const t = JSON.parse(r.getContentText()).access_token; c.put('saTok2', t, 3000); return t;
 }
 function FSB() { return 'https://firestore.googleapis.com/v1/projects/' + CFG.project + '/databases/(default)/documents'; }
 function adm(path, opt) {
@@ -10979,6 +11095,7 @@ function pushx(b) {
 function push(b) {
   const m = member(b), mid = String(b.mid || '').replace(/[^A-Za-z0-9]/g, '');
   if (m.mine || b.c !== 'p' || !mid) throw new Error('datos');
+  lim('p:' + m.u.localId, 30, 600);
   const c = CacheService.getScriptCache(); if (c.get('p' + mid)) return { ok: true, n: 0 };
   const r = adm('/portal/' + m.pid + '/c/' + m.u.localId + '/m/' + mid), d = r.j && docOf(r.j);
   if (!d || d.from !== 's' || Date.now() - (d.at || 0) > 600000) throw new Error('permiso');
@@ -11016,19 +11133,117 @@ function recordatorios() {
   });
   return 'Recordatorios enviados: ' + n;
 }
-// Ejecuta esta función una vez (botón ▶ Ejecutar) para que los recordatorios corran solos cada hora
-function activarRecordatorios() {
-  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'recordatorios') ScriptApp.deleteTrigger(t); });
-  ScriptApp.newTrigger('recordatorios').timeBased().everyHours(1).create();
-  return 'Listo: los recordatorios corren cada hora.';
+// ---------- Etapa 5: límites contra abuso, almacenamiento y copias de seguridad ----------
+// Cuenta cuántas veces alguien hizo algo en unos minutos; si se pasa, se le pide esperar
+function lim(key, max, secs) { const c = CacheService.getScriptCache(), k = 'rl:' + key, n = +(c.get(k) || 0) + 1; c.put(k, String(n), secs || 300); if (n > max) throw new Error('muchos'); }
+function nodo(id) { try { return DriveApp.getFileById(id); } catch (e) { return DriveApp.getFolderById(id); } }
+function tamCarpeta(f, dl) {
+  let b = 0, n = 0; const fs = f.getFiles();
+  while (fs.hasNext()) { if (Date.now() > dl) return { b: b, n: n, cut: 1 }; const x = fs.next(); b += x.getSize(); n++; }
+  const ds = f.getFolders();
+  while (ds.hasNext()) { const r = tamCarpeta(ds.next(), dl); b += r.b; n += r.n; if (r.cut) return { b: b, n: n, cut: 1 }; }
+  return { b: b, n: n };
 }
-function trigOn() { try { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'recordatorios'; }); } catch (e) { return false; } }
+// Archivos de Praxis Pro que siguen en la papelera de Drive (ocupan espacio hasta que se borran del todo)
+function papelera(dl) {
+  const out = [], it = DriveApp.searchFiles('trashed = true');
+  while (it.hasNext() && Date.now() < dl && out.length < 2000) { const f = it.next(); try { if (inRoot(f)) out.push({ id: f.getId(), b: f.getSize() }); } catch (e) { } }
+  const fo = DriveApp.searchFolders('trashed = true');
+  while (fo.hasNext() && Date.now() < dl && out.length < 2500) { const f = fo.next(); try { if (inRoot(f)) out.push({ id: f.getId(), b: 0, dir: 1 }); } catch (e) { } }
+  return out;
+}
+function borrarDel(ids) {
+  let n = 0, man = false; const tk = ScriptApp.getOAuthToken();
+  for (let i = 0; i < ids.length; i += 50) UrlFetchApp.fetchAll(ids.slice(i, i + 50).map(function (id) { return { url: 'https://www.googleapis.com/drive/v3/files/' + id, method: 'delete', headers: { Authorization: 'Bearer ' + tk }, muteHttpExceptions: true }; })).forEach(function (r) { const c = r.getResponseCode(); if (c === 204 || c === 200 || c === 404) n++; else if (c === 403) man = true; });
+  return { n: n, manual: man };
+}
+// Lecturas, escrituras y borrados de hoy en Firebase (el plan gratis se reinicia a medianoche, hora del Pacífico)
+function usoFS() {
+  const out = {};
+  try {
+    const now = new Date(), tz = 'America/Los_Angeles', start = new Date(Utilities.formatDate(now, tz, 'yyyy-MM-dd') + 'T00:00:00' + Utilities.formatDate(now, tz, 'XXX'));
+    const secs = Math.max(60, Math.ceil((now - start) / 60000) * 60);
+    ['read', 'write', 'delete'].forEach(function (k) {
+      if (out.err) return;
+      const q = 'filter=' + encodeURIComponent('metric.type="firestore.googleapis.com/document/' + k + '_count"') + '&interval.startTime=' + start.toISOString() + '&interval.endTime=' + now.toISOString() + '&aggregation.alignmentPeriod=' + secs + 's&aggregation.perSeriesAligner=ALIGN_SUM&aggregation.crossSeriesReducer=REDUCE_SUM';
+      const r = UrlFetchApp.fetch('https://monitoring.googleapis.com/v3/projects/' + CFG.project + '/timeSeries?' + q, { headers: { Authorization: 'Bearer ' + saTok() }, muteHttpExceptions: true });
+      if (r.getResponseCode() !== 200) { out.err = r.getResponseCode(); return; }
+      let n = 0; (JSON.parse(r.getContentText()).timeSeries || []).forEach(function (t) { (t.points || []).forEach(function (p) { n += +(p.value.int64Value || p.value.doubleValue || 0); }); });
+      out[k] = n;
+    });
+  } catch (e) { out.err = String(e.message || e).slice(0, 80); }
+  try {
+    const r = UrlFetchApp.fetch(FSB() + ':runAggregationQuery', { method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + saTok() }, muteHttpExceptions: true, payload: JSON.stringify({ structuredAggregationQuery: { structuredQuery: { from: [{ collectionId: 'm', allDescendants: true }] }, aggregations: [{ alias: 'n', count: {} }] } }) });
+    if (r.getResponseCode() === 200) out.msgs = +(((JSON.parse(r.getContentText())[0] || {}).result || {}).aggregateFields.n.integerValue || 0);
+  } catch (e) { }
+  return out;
+}
+function lastBak() { try { return JSON.parse(PropertiesService.getScriptProperties().getProperty('lastBak') || 'null'); } catch (e) { return null; } }
+// Cuánto ocupa todo: tu Drive completo, cada carpeta de Praxis Pro, la papelera y la base de datos
+function uso(b) {
+  teacher(b.tok); const dl = Date.now() + 25000, r = root(), parts = [];
+  const it = r.getFolders(); while (it.hasNext()) { const f = it.next(), s = tamCarpeta(f, dl); parts.push({ n: f.getName(), b: s.b, c: s.n, cut: s.cut || 0 }); }
+  const tr = papelera(dl + 8000);
+  return { ok: true, at: Date.now(), drive: { used: DriveApp.getStorageUsed(), limit: DriveApp.getStorageLimit() }, url: r.getUrl(), parts: parts, trash: { n: tr.length, b: tr.reduce(function (a, x) { return a + x.b; }, 0) }, fs: sa() ? usoFS() : { err: 'sin-cuenta' }, bak: lastBak() };
+}
+// Liberar espacio: borra del todo lo que Praxis Pro ya mandó a la papelera, o las copias viejas
+function limpiar(b) {
+  teacher(b.tok);
+  if (b.k === 'trash') { const tr = papelera(Date.now() + 25000), r = borrarDel(tr.filter(function (x) { return !x.dir; }).map(function (x) { return x.id; }).concat(tr.filter(function (x) { return x.dir; }).map(function (x) { return x.id; }))); return { ok: true, n: r.n, b: tr.reduce(function (a, x) { return a + x.b; }, 0), manual: r.manual }; }
+  if (b.k === 'bak') { const L = []; const it = carpetaCopias().getFiles(); while (it.hasNext()) L.push(it.next()); L.sort(function (x, y) { return y.getDateCreated() - x.getDateCreated(); }); const old = L.slice(Math.max(1, +b.keep || 7)); old.forEach(function (x) { x.setTrashed(true); }); return { ok: true, n: old.length }; }
+  throw new Error('datos');
+}
+function carpetaCopias() { return folder(root(), 'Copias de seguridad'); }
+// Copia de seguridad de todos tus datos (módulos, notas, asistencia, ajustes) en tu Drive; se guardan las 30 más recientes
+function copiaDiaria() {
+  if (!sa()) return 'Falta la cuenta de servicio (propiedad SA).';
+  const t = adm('/teachers/' + CFG.owner); if (!t.j) return 'No se encontró tu cuenta en la nube.';
+  let M = {}; try { M = JSON.parse(docOf(t.j).meta || '{}'); } catch (e) { }
+  const mods = {}; let pt = '';
+  do { const r = adm('/teachers/' + CFG.owner + '/modules?pageSize=100' + (pt ? '&pageToken=' + pt : '')); if (!r.j) break; (r.j.documents || []).forEach(function (d) { try { mods[d.name.split('/').pop()] = JSON.parse(docOf(d).data); } catch (e) { } }); pt = r.j.nextPageToken || ''; } while (pt);
+  const ord = (M.order || []).filter(function (id) { return mods[id]; }), order = ord.concat(Object.keys(mods).filter(function (id) { return ord.indexOf(id) < 0; }));
+  if (!order.length) return 'No hay módulos para copiar.';
+  const data = { version: M.v, settings: M.settings || {}, agenda: M.agenda || [], cal: M.cal, modules: order.map(function (id) { return mods[id]; }) };
+  return 'Copia guardada: ' + guardarCopia(JSON.stringify({ app: 'Praxis Pro', version: 2, appVersion: 'copia-nube', exported: new Date().toISOString(), data: data }), data.modules.length);
+}
+// Guarda el archivo en «Copias de seguridad» y deja solo las 30 más recientes
+function guardarCopia(txt, nm) {
+  const name = 'Praxis_copia_' + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd_HHmm') + '.json', dir = carpetaCopias();
+  const f = dir.createFile(Utilities.newBlob(txt, 'application/json', name));
+  const L = []; const it = dir.getFiles(); while (it.hasNext()) L.push(it.next());
+  L.sort(function (x, y) { return y.getDateCreated() - x.getDateCreated(); }); L.slice(30).forEach(function (x) { x.setTrashed(true); });
+  PropertiesService.getScriptProperties().setProperty('lastBak', JSON.stringify({ at: Date.now(), n: name, b: f.getSize(), m: nm, id: f.getId() }));
+  return name;
+}
+// «Hacer una copia ahora» (o la copia diaria al abrir Praxis Pro): el programa manda tus datos tal como están en tu equipo
+function copia(b) {
+  teacher(b.tok); lim('copia', 12, 3600);
+  const lb = lastBak();
+  if (b.auto && lb && Date.now() - lb.at < 20 * 36e5) return { ok: true, skip: 1, bak: lb };
+  let r;
+  if (typeof b.data === 'string' && b.data.length > 30) {
+    let o = null; try { o = JSON.parse(b.data); } catch (e) { }
+    if (!o || o.app !== 'Praxis Pro' || !o.data || !Array.isArray(o.data.modules)) throw new Error('datos');
+    if (!o.data.modules.length) return { ok: false, msg: 'No hay módulos para copiar.', bak: lb };
+    r = 'Copia guardada: ' + guardarCopia(b.data, o.data.modules.length);
+  } else r = copiaDiaria();
+  return { ok: r.indexOf('Copia guardada') === 0, msg: r, bak: lastBak(), url: carpetaCopias().getUrl() };
+}
+// Ejecuta esta función una vez (botón ▶ Ejecutar): recordatorios cada hora y copia de seguridad cada día
+function activarRecordatorios() { return activarAutomaticos(); }
+function activarAutomaticos() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (['recordatorios', 'copiaDiaria'].indexOf(t.getHandlerFunction()) >= 0) ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('recordatorios').timeBased().everyHours(1).create();
+  ScriptApp.newTrigger('copiaDiaria').timeBased().everyDays(1).atHour(2).create();
+  return 'Listo: recordatorios cada hora y copia de seguridad cada día (2 a. m.).';
+}
+function trigOn(fn) { try { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === (fn || 'recordatorios'); }); } catch (e) { return false; } }
 function ping(b) {
   if (b.tok) teacher(b.tok);
   let ok = false, err = '';
   if (sa()) { try { saTok(); ok = true; } catch (e) { err = String(e.message || e).slice(0, 160); } }
-  if (ok && !trigOn()) { try { activarRecordatorios(); } catch (e) { } }
-  return { ok: true, v: 5, folder: root().getName(), url: root().getUrl(), sa: ok, saErr: err, trig: trigOn() };
+  if (ok && (!trigOn() || !trigOn('copiaDiaria'))) { try { activarAutomaticos(); } catch (e) { } }
+  return { ok: true, v: 6, folder: root().getName(), url: root().getUrl(), sa: ok, saErr: err, trig: trigOn(), bakTrig: trigOn('copiaDiaria'), bak: lastBak() };
 }
 `;
 }
@@ -11070,7 +11285,7 @@ function driveDialog() {
         const u = ov.querySelector('#drvUrl').value.trim();
         if (!DRIVE_RE.test(u)) return msg('Esa no parece la URL correcta: debe empezar con https://script.google.com/macros/s/ y terminar en /exec.', 'bad-t');
         const old = db.settings.drive; db.settings.drive = u; msg('<span class="spin"></span> Probando…');
-        try { const j = await driveCall('ping', {}, 40000); msg(j.v >= 5 ? `${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>. ${j.sa ? 'Avisos listos' + (j.trig ? ' y recordatorios cada hora.' : '; falta ejecutar «activarRecordatorios».') : 'Avisos al celular: ' + (j.saErr ? 'la clave SA no funciona (' + esc(j.saErr) + ').' : 'falta la propiedad SA.')}` : `${AI.alert} Conectado, pero con el código anterior: para los avisos al celular y los recordatorios, actualízalo (paso de abajo).`, j.v >= 5 ? 'ok-t' : 'warn-t'); }
+        try { const j = await driveCall('ping', {}, 40000); msg(j.v >= 6 ? `${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>. ${j.sa ? 'Avisos listos' + (j.trig && j.bakTrig ? ', recordatorios cada hora y copia diaria.' : '; falta ejecutar «activarRecordatorios».') : 'Avisos al celular: ' + (j.saErr ? 'la clave SA no funciona (' + esc(j.saErr) + ').' : 'falta la propiedad SA.')}` : `${AI.alert} Conectado, pero con el código anterior: para el almacenamiento, las copias diarias y los límites de seguridad, actualízalo (paso de abajo).`, j.v >= 6 ? 'ok-t' : 'warn-t'); }
         catch (e) { db.settings.drive = old; msg('No funcionó: ' + esc(e.message || e) + '. Revisa que sea «Aplicación web», con acceso para «Cualquier usuario».', 'bad-t'); }
       };
     },
@@ -11078,7 +11293,7 @@ function driveDialog() {
       const u = ov.querySelector('#drvUrl').value.trim();
       if (u && !DRIVE_RE.test(u)) { toast('Revisa la URL: debe terminar en /exec.', 'error'); return false; }
       db.settings.drive = u; persist(); toast(u ? 'Google Drive conectado. Vuelve a habilitar las prácticas abiertas para que usen Drive.' : 'Google Drive desconectado.', 'ok', 4500);
-      const st = document.querySelector('.drv-box'); if (st) st.outerHTML = driveSettingsHTML();
+      const st = document.querySelector('.drv-box:not(.stor-box):not(.tch-box)'); if (st) st.outerHTML = driveSettingsHTML();
     } }]
   });
 }
@@ -11202,6 +11417,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
     '.ck-mc footer{display:flex;align-items:flex-end;gap:8px;padding:12px 14px 14px}.ck-mc footer textarea{flex:1;min-width:0;resize:none;border:1.5px solid rgba(255,255,255,.18)!important;border-radius:22px;background:rgba(255,255,255,.08)!important;color:#fff;font:inherit;font-size:15px;padding:10px 16px!important;max-height:120px;outline:0;box-shadow:none!important}.ck-mc footer textarea::placeholder{color:rgba(255,255,255,.55)}.ck-mc footer textarea:focus{border-color:rgba(255,255,255,.45)!important}',
     '.ck-mc footer .ck-send{width:46px;height:46px}.ck-mc .ck-mcb{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--ck-acc);transform-origin:left;transform:scaleX(0);transition:transform .3s}',
     '.ck-sheet{align-items:flex-end}@media (min-width:641px){.ck-sheet{align-items:center}.ck-sheet>div{border-radius:18px!important;max-width:340px!important;padding:8px!important;animation:ckPop .22s ' + SPRING + ' both!important;box-shadow:0 30px 60px -20px rgba(16,24,40,.45)}}',
+    '.ck-older{align-self:center;display:inline-flex;align-items:center;gap:7px;margin:4px 0 10px;padding:7px 14px;border-radius:99px;border:1px solid var(--ck-line);background:var(--ck-s1);color:var(--ck-acc);font:600 12.5px Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 2px 8px -4px rgba(16,24,40,.25);transition:transform .15s,border-color .15s}.ck-older:hover{border-color:var(--ck-acc)}.ck-older:active{transform:scale(.97)}.ck-older svg{width:15px;height:15px;transform:rotate(180deg)}.ck-older[disabled]{opacity:.7;cursor:default}',
     '.ck-sheet>div{max-height:82vh;overflow-y:auto;overscroll-behavior:contain}',
     '.ck-sheet h4{margin:6px 16px 4px;font:700 13px Inter,system-ui,sans-serif;color:var(--ck-mut,#667085);text-transform:uppercase;letter-spacing:.05em}.ck-sheet button small{display:block;font-size:12.5px;color:var(--ck-mut,#667085);font-weight:400;margin-top:1px}.ck-sheet button span{text-align:left;flex:1;min-width:0}.ck-sheet button.cancel{justify-content:center;color:var(--ck-mut,#667085);font-weight:600}',
     '.ck-sheet button{animation:ckSheetI .3s ' + EASE + ' both;animation-delay:calc(var(--i,0)*28ms)}@keyframes ckSheetI{from{opacity:0;transform:translateY(6px)}}',
@@ -11332,7 +11548,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
   function mount(el, o) {
     css(); o = o || {};
     var me = o.me || 's', mine = o.mine || function (x) { return x.from === me; };
-    var msgs = [], rows = {}, keys = [], first = true, file = null, reply = null, tmpN = 0, unseen = 0, alive = true, locked = '', gen = 0;
+    var msgs = [], rows = {}, keys = [], first = true, file = null, reply = null, tmpN = 0, unseen = 0, alive = true, locked = '', gen = 0, more = false, loadingMore = false, anchor = null;
     el.classList.add('ck');
     el.innerHTML = '<header class="ck-h"><div class="ck-av">' + esc(o.avatar || '?') + '</div><div class="ck-ht"><b>' + esc(o.title || '') + '</b><small>' + (o.group ? '' : I.lock) + esc(o.subtitle || 'Conversación privada') + '</small></div><div class="ck-hx"></div>' + (o.menu ? '<button type="button" class="ck-ib ck-more" title="Más opciones" aria-label="Más opciones">' + I.more + '</button>' : '') + '</header>' +
       '<div class="ck-ban" hidden></div>' +
@@ -11436,7 +11652,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
       if (P.txt !== false && ta.value.trim()) { cap.value = ta.value; ta.value = ''; sync(); }
       cap.oninput = function () { cap.style.height = 'auto'; cap.style.height = Math.min(120, cap.scrollHeight) + 'px'; };
       var go = function () {
-        if (mc !== m) return; var t = P.txt === false ? '' : cap.value.trim(); cap.value = '';
+        if (mc !== m || flood()) return; var t = P.txt === false ? '' : cap.value.trim(); cap.value = '';
         var re = reply ? { id: reply.id, t: reply.t, n: reply.n === 'ti' ? (o.myName || 'Yo') : reply.n } : null; reply = null; drawPre(); closeMC(true);
         if (!isV) { var tmp = { id: 'tmp' + (++tmpN), key: 'tmp' + tmpN, from: me, uid: o.myUid, name: o.myName, t: t, at: Date.now(), local: u, re: re, payload: { t: t, file: f, re: re } }; msgs.push(tmp); run(tmp); return; }
         vinfo.then(function (vi) {
@@ -11470,6 +11686,9 @@ ACTIONS['drive-setup'] = () => driveDialog();
       el.addEventListener('drop', function (e) { e.preventDefault(); dc = 0; el.classList.remove('dragging'); if (!locked) setFile(e.dataTransfer.files[0]); });
     }
     // ---------- Enviar (con reintento) ----------
+    // Freno suave contra el envío en ráfaga (también protege la cuota gratis de la nube)
+    var sends = [];
+    function flood() { var t = Date.now(); sends = sends.filter(function (x) { return t - x < 15000; }); if (sends.length >= 8) { err('Vas muy rápido: espera unos segundos antes de enviar otro mensaje.'); return true; } sends.push(t); return false; }
     function run(tmp) {
       tmp.pend = 1; tmp.fail = 0; draw(mine(tmp));
       Promise.resolve(o.onSend(tmp.payload)).then(function () { tmp.pend = 0; tmp.sent = Date.now(); draw(); }, function (e) {
@@ -11478,7 +11697,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
     }
     function doSend() {
       if (locked) return;
-      var t = ta.value.trim(), f = null; if (!t || P.txt === false) return;
+      var t = ta.value.trim(), f = null; if (!t || P.txt === false || flood()) return;
       var re = reply ? { id: reply.id, t: reply.t, n: reply.n === 'ti' ? (o.myName || 'Yo') : reply.n } : null;
       var tmp = { id: 'tmp' + (++tmpN), key: 'tmp' + tmpN, from: me, uid: o.myUid, name: o.myName, t: t, at: Date.now(), local: f ? f._u : '', re: re, payload: { t: t, file: f, re: re } };
       msgs.push(tmp); ta.value = ''; reply = null; drawPre(); sync(); closePick(); run(tmp);
@@ -11646,6 +11865,16 @@ ACTIONS['drive-setup'] = () => driveDialog();
         (!touch && acts.length ? '<div class="ck-acts">' + acts.map(function (a) { return '<button type="button" data-act="' + a.k + '" title="' + esc(a.label) + '"' + (a.del ? ' class="del"' : '') + '>' + a.icon + '</button>'; }).join('') + '</div>' : '');
       return w;
     }
+    function moreBtn() {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'ck-older';
+      b.innerHTML = loadingMore ? '<span class="ck-spin"></span> Cargando…' : I.down + ' Ver mensajes anteriores';
+      if (loadingMore) b.disabled = true;
+      b.onclick = function () {
+        if (loadingMore || !o.onMore) return; var keepA = list.scrollHeight - list.scrollTop; loadingMore = true; draw(); anchor = keepA;
+        Promise.resolve(o.onMore()).then(function (has) { anchor = list.scrollHeight - list.scrollTop; more = !!has; loadingMore = false; draw(); }, function () { loadingMore = false; draw(); err('No se pudieron cargar los mensajes anteriores.'); });
+      };
+      return b;
+    }
     function keyOfId(id) { var x = msgs.filter(function (m) { return m.id === id; })[0]; return x ? x.key : ''; }
     function draw(own) {
       if (!alive) return;
@@ -11664,9 +11893,11 @@ ACTIONS['drive-setup'] = () => driveDialog();
         if (r && playing && r.el.contains(playing)) { var oldA = playing, na = e.querySelector('.ck-aud'); if (na) { na.replaceWith(oldA); } }
         next[d.key] = { sig: s, el: e }; els.push(e);
       });
+      if (more) { var mb = rows['more:'] && rows['more:'].sig === String(loadingMore) ? rows['more:'] : { sig: String(loadingMore), el: moreBtn() }; next['more:'] = mb; els.unshift(mb.el); }
       var same = els.length === inner.children.length && els.every(function (e, i) { return inner.children[i] === e; });
       if (!same) inner.replaceChildren.apply(inner, els);
       rows = next;
+      if (anchor) { var a0 = anchor; anchor = null; list.scrollTop = list.scrollHeight - a0; first = false; return; }
       if (first || own || keep) requestAnimationFrame(function () { toBottom(!first && !own); });
       else if (fresh) { unseen += fresh; down.hidden = false; down.querySelector('span').textContent = unseen; }
       first = false;
@@ -11690,6 +11921,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
       setHeader: function (h) { if (h.title != null) el.querySelector('.ck-ht b').textContent = h.title; if (h.subtitle != null) el.querySelector('.ck-ht small').innerHTML = (o.group ? '' : I.lock) + esc(h.subtitle); if (h.extra != null) el.querySelector('.ck-hx').innerHTML = h.extra; },
       insert: insert, focus: function () { ta.focus({ preventScroll: true }); }, setText: function (t) { ta.value = t; sync(); ta.focus({ preventScroll: true }); },
       refresh: function () { perms(); sync(); gen++; draw(); },
+      setMore: function (v) { if (more === !!v) return; more = !!v; draw(); },
       destroy: function () { alive = false; stopAudio(); closeMC(true); if (rec) { rec.cancel = true; try { rec.mr.stop(); } catch (e) { } } document.removeEventListener('pointerdown', outside, true); if (docPaste) document.removeEventListener('paste', docPaste); }
     };
     perms(); sync();
@@ -11715,6 +11947,24 @@ function chatUnread(pid, uid) { const t = (Chat.threads[pid] || {})[uid]; return
 function chatCloseNotif(uid) { try { if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then(r => r && r.getNotifications({ tag: 'chat-' + uid })).then(ns => (ns || []).forEach(n => n.close())).catch(() => { }); } catch (e) { } }
 function chatUnreadCount(m) { const pid = m.portal && m.portal.pid; if (!pid) return 0; return Object.keys(Chat.threads[pid] || {}).filter(uid => chatUnread(pid, uid)).length; }
 function chatStudentOf(m, uid) { const sid = Object.keys(m.portal.accts || {}).find(k => m.portal.accts[k].uid === uid); return sid ? findStu(m, sid) : null; }
+
+/* ---------- Conversación por páginas: en vivo los últimos 50, los anteriores solo si se piden ---------- */
+const CHAT_PAGE = 50;
+function chatPager(col, onData) {
+  const P = { live: [], old: [], more: false, un: null };
+  P.all = () => { const ids = new Set(P.live.map(x => x.id)); return P.old.filter(x => !ids.has(x.id)).concat(P.live); };
+  P.un = col.orderBy('at').limitToLast(CHAT_PAGE).onSnapshot(sn => {
+    P.live = sn.docs.map(d => Object.assign({ id: d.id }, d.data())); if (!P.old.length) P.more = sn.size >= CHAT_PAGE; onData(P.all(), P);
+  }, e => onData(null, P, e));
+  P.loadMore = async () => {
+    const f = P.old[0] || P.live[0]; if (!f || !f.at) return false;
+    const sn = await col.orderBy('at').endBefore(f.at).limitToLast(CHAT_PAGE).get();
+    P.old = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).concat(P.old); P.more = sn.size >= CHAT_PAGE; onData(P.all(), P); return P.more;
+  };
+  P.drop = id => { P.old = P.old.filter(x => x.id !== id); };
+  P.stop = () => { try { P.un(); } catch (e) { } };
+  return P;
+}
 
 /* ---------- Permisos, ocultar «para mí», vaciar y borrar «para todos» ---------- */
 const CHAT_PERMS = [
@@ -11871,7 +12121,8 @@ function chatOpen(uid) {
     tools: [{ label: 'Enviar una corrección', icon: AI.check, onClick: () => chatCorrections(m, s) }],
     onSend: pl => chatSend(pl), onInfo: t => toast(t, 'ok'),
     delOpts: () => ({ me: true, all: true }),
-    onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(chatFs(pid).collection('c').doc(uid).collection('m'), x).then(() => chatThreadAfterDel(m, pid, uid)),
+    onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(chatFs(pid).collection('c').doc(uid).collection('m'), x).then(() => { if (Chat.pager) Chat.pager.drop(x.id); return chatThreadAfterDel(m, pid, uid); }),
+    onMore: () => Chat.pager ? Chat.pager.loadMore() : false,
     fwdTargets: () => chatTargets(m, pid, 'p:' + uid), onForward: (x, k) => chatForward(m, pid, x, k),
     menu: () => chatMenu(m, pid, uid, s),
     myName: (db.settings && db.settings.teacher) || 'Docente', teacherName: 'Tú', cardFoot: `${modShort(m)} ${m.course || ''} · Praxis Pro`,
@@ -11879,9 +12130,11 @@ function chatOpen(uid) {
   });
   chatStatus();
   chatDrawList();
-  Chat.mUnsub = firebase.firestore().collection('portal').doc(pid).collection('c').doc(uid).collection('m').orderBy('at').limitToLast(200).onSnapshot(sn => {
-    Chat.msgs = sn.docs.map(d => Object.assign({ id: d.id }, d.data())); chatDrawMsgs(); chatMarkSeen(pid, uid); chatBadges();
-  }, e => { if (Chat.kit) Chat.kit.error(typeof aulaErr === 'function' ? aulaErr(e) : String(e)); });
+  const pg = Chat.pager = chatPager(chatFs(pid).collection('c').doc(uid).collection('m'), (L, P, e) => {
+    if (e) { if (Chat.kit) Chat.kit.error(typeof aulaErr === 'function' ? aulaErr(e) : String(e)); return; }
+    Chat.msgs = L; chatDrawMsgs(); if (Chat.kit) Chat.kit.setMore(P.more); chatMarkSeen(pid, uid); chatBadges();
+  });
+  Chat.mUnsub = () => pg.stop();
   setTimeout(() => Chat.kit && Chat.kit.focus(), 50);
 }
 function chatDrawMsgs() { if (!Chat.kit || !Chat.open) return; const { pid, uid } = Chat.open; Chat.kit.set(Chat.msgs.filter(x => !chatHidden(pid, 'p:' + uid, x))); }
@@ -11902,7 +12155,7 @@ function chatMenu(m, pid, uid, s) {
   const I = ChatKit.icons, FV = firebase.firestore.FieldValue, TS = firebase.firestore.Timestamp, nm = s ? s.name.split(' ')[0] : 'el estudiante', ref = chatFs(pid).collection('c').doc(uid);
   const L = [{ icon: I.broom, label: 'Vaciar chat', sub: 'Para ti o para los dos', run: () => ChatKit.choose('¿Vaciar este chat?', [
     { icon: I.eyeoff, label: 'Vaciar solo para mí', sub: 'Los mensajes siguen guardados', run: () => chatClearMine(pid, 'p:' + uid).then(() => toast('Chat vaciado en tu pantalla.', 'ok')) },
-    { icon: I.trash, label: 'Vaciar para los dos', sub: 'Borra todo y libera el espacio en tu Drive', del: 1, run: () => confirmBox('¿Vaciar para los dos?', `Se borran todos los mensajes, fotos, videos y notas de voz con ${nm}. No se puede deshacer.`, 'Vaciar', async () => { try { const n = await chatPurge(ref.collection('m')); await ref.delete().catch(() => { }); toast(`Chat vaciado: ${n} mensajes borrados.`, 'ok'); } catch (e) { toast('No se pudo vaciar: ' + aulaErr(e), 'error'); } }) }
+    { icon: I.trash, label: 'Vaciar para los dos', sub: 'Borra todo y libera el espacio en tu Drive', del: 1, run: () => confirmBox('¿Vaciar para los dos?', `Se borran todos los mensajes, fotos, videos y notas de voz con ${nm}. No se puede deshacer.`, 'Vaciar', async () => { try { const n = await chatPurge(ref.collection('m')); if (Chat.pager) Chat.pager.old = []; await ref.delete().catch(() => { }); toast(`Chat vaciado: ${n} mensajes borrados.`, 'ok'); } catch (e) { toast('No se pudo vaciar: ' + aulaErr(e), 'error'); } }) }
   ]) }];
   L.push(chatBlocked(pid, uid) ? { icon: I.check, label: 'Desbloquear', sub: 'Podrá volver a escribirte', run: () => chatCfgSave(pid, { blk: { [uid]: FV.delete() } }, 'Desbloqueado.') }
     : { icon: AI.ban || I.lock, label: 'Bloquear', sub: 'No podrá escribirte en privado', del: 1, run: () => chatCfgSave(pid, { blk: { [uid]: true } }, `${nm} quedó bloqueado en tu chat privado.`) });
@@ -12032,7 +12285,7 @@ function grpWatch(m) {
 }
 /** Borra un grupo de exposición con todos sus mensajes (y los archivos en tu Drive). */
 async function grpDelete(pid, gid, quiet) {
-  try { const n = await chatPurge(grpRef(pid, gid).collection('m')); await withTimeout(grpRef(pid, gid).delete(), 15000); if (!quiet) toast(`Grupo eliminado${n ? ' con ' + n + ' mensajes' : ''}.`, 'ok'); return true; }
+  try { const n = await chatPurge(grpRef(pid, gid).collection('m')); if (Grp.pager) Grp.pager.old = []; await withTimeout(grpRef(pid, gid).delete(), 15000); if (!quiet) toast(`Grupo eliminado${n ? ' con ' + n + ' mensajes' : ''}.`, 'ok'); return true; }
   catch (e) { if (!quiet) toast('No se pudo eliminar el grupo: ' + aulaErr(e), 'error', 5000); return false; }
 }
 
@@ -12105,7 +12358,7 @@ function grpClearMenu(m, gid) {
   const pid = m.portal.pid, I = ChatKit.icons, c = grpCfg(gid);
   ChatKit.choose('¿Vaciar «' + c.name + '»?', [
     { icon: I.eyeoff, label: 'Vaciar solo para mí', sub: 'Los estudiantes siguen viendo los mensajes', run: () => chatClearMine(pid, 'g:' + gid).then(() => toast('Grupo vaciado en tu pantalla.', 'ok')) },
-    { icon: I.trash, label: 'Vaciar para todos', sub: 'Borra todo y libera el espacio en tu Drive', del: 1, run: () => confirmBox('¿Vaciar para todos?', 'Se borran todos los mensajes, fotos, videos y notas de voz del grupo. No se puede deshacer.', 'Vaciar', async () => { try { const n = await chatPurge(grpRef(pid, gid).collection('m')); toast(`Grupo vaciado: ${n} mensajes borrados.`, 'ok'); } catch (e) { toast('No se pudo vaciar: ' + aulaErr(e), 'error'); } }) }
+    { icon: I.trash, label: 'Vaciar para todos', sub: 'Borra todo y libera el espacio en tu Drive', del: 1, run: () => confirmBox('¿Vaciar para todos?', 'Se borran todos los mensajes, fotos, videos y notas de voz del grupo. No se puede deshacer.', 'Vaciar', async () => { try { const n = await chatPurge(grpRef(pid, gid).collection('m')); if (Grp.pager) Grp.pager.old = []; toast(`Grupo vaciado: ${n} mensajes borrados.`, 'ok'); } catch (e) { toast('No se pudo vaciar: ' + aulaErr(e), 'error'); } }) }
   ]);
 }
 function grpStop() { if (Grp.mun) { try { Grp.mun(); } catch (e) { } Grp.mun = null; } if (Grp.kit) { Grp.kit.destroy(); Grp.kit = null; } Grp.pid = null; }
@@ -12128,16 +12381,19 @@ function grpMount(m) {
     emptyTitle: c.team ? 'El grupo de exposición está listo' : 'El grupo está listo', emptyText: c.team ? 'Mándales su anuncio con el botón «📢 Anuncio» o escribe el primer mensaje.' : 'Escribe el primer mensaje: preséntalo y recuerda las normas.',
     upload: driveUrl() ? true : null, getMedia: id => chatMedia(id, pid), onError: t => toast(t, 'error', 4500), onInfo: t => toast(t, 'ok'),
     delOpts: () => ({ me: true, all: true }),
-    onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(col, x),
+    onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(col, x).then(() => { if (Grp.pager) Grp.pager.drop(x.id); }),
+    onMore: () => Grp.pager ? Grp.pager.loadMore() : false,
     fwdTargets: () => chatTargets(m, pid, 'g:' + gid), onForward: (x, k) => chatForward(m, pid, x, k),
     menu: () => [{ icon: ChatKit.icons.broom, label: 'Vaciar chat', run: () => grpClearMenu(m, gid) }].concat(grpCfg(gid).team ? [{ icon: '<span style="font-size:18px">📢</span>', label: 'Enviar anuncio de exposición', run: () => grpSendAnn(m, gid) }] : []),
     onSend: async pl => { const doc = await chatDoc(pl, pid, { from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0 }), r = col.doc(); await withTimeout(r.set(doc), 15000); grpPush(pid, gid, doc, r.id); }
   });
   grpRefresh(m); chatHidWatch(pid);
-  Grp.mun = col.orderBy('at').limitToLast(300).onSnapshot(sn => {
-    Grp.msgs = sn.docs.map(d => Object.assign({ id: d.id }, d.data())); grpDraw();
+  const pg = Grp.pager = chatPager(col, (L, P, e) => {
+    if (e) { if (Grp.kit) Grp.kit.error(aulaErr(e)); return; }
+    Grp.msgs = L; grpDraw(); if (Grp.kit) Grp.kit.setMore(P.more);
     try { localStorage.setItem('praxisGrpSeen:' + pid + ':' + gid, String(Date.now())); } catch (e) { }
-  }, e => { if (Grp.kit) Grp.kit.error(aulaErr(e)); });
+  });
+  Grp.mun = () => pg.stop();
 }
 function grpOpen(m) {
   const main = document.getElementById('gpMain'); if (!main || !chatOK()) return;
@@ -12364,6 +12620,320 @@ aulaAfterRender = function () {
     if (document.getElementById('pushCard')) { pushBind(); if (!Push.st && typeof driveUrl === 'function' && driveUrl()) { Push.st = { v: 0 }; pushCheck(); } }
   } catch (e) { console.error(e); }
 };
+
+/* =====================================================================
+   Etapa 5 · Almacenamiento y copias de seguridad
+   - Google Drive: espacio total y lo que usa Praxis Pro (entregas, mensajes, material, copias, papelera)
+   - Firebase: lecturas, escrituras y borrados de hoy (plan gratis) y mensajes guardados
+   - Liberar espacio: vaciar la papelera de Praxis Pro, borrar mensajes antiguos, liberar prácticas, copias viejas
+   - Copias diarias automáticas en tu Drive (las hace el script de Drive a las 2 a. m.)
+   ===================================================================== */
+const STOR_FREE = { read: 50000, write: 20000, delete: 20000 };
+function storB(n) { n = +n || 0; if (n < 1024) return n + ' B'; const u = ['KB', 'MB', 'GB', 'TB']; let i = -1; do { n /= 1024; i++; } while (n >= 1024 && i < 3); return (n >= 100 ? Math.round(n) : n.toFixed(n >= 10 ? 1 : 2).replace(/\.?0+$/, '')) + ' ' + u[i]; }
+function storN(n) { return (+n || 0).toLocaleString('es-DO'); }
+function storData() { return (db.settings && db.settings.stor) || null; }
+function storDrivePct(S) { const d = S && S.drive; return d && d.limit > 0 ? d.used / d.limit : 0; }
+function storFsPct(S) { const f = S && S.fs; if (!f || f.err) return 0; return Math.max((f.read || 0) / STOR_FREE.read, (f.write || 0) / STOR_FREE.write, (f.delete || 0) / STOR_FREE.delete); }
+function storLevel(p) { return p >= 0.95 ? 'crit' : p >= 0.8 ? 'warn' : 'ok'; }
+/** Pide al script de Drive cuánto se está usando (tarda unos segundos). */
+async function storCheck(quiet) {
+  if (typeof driveUrl !== 'function' || !driveUrl()) { if (!quiet) toast('Primero conecta tu Google Drive en Ajustes.', 'warn'); return null; }
+  try {
+    const j = await driveCall('uso', {}, 75000);
+    db.settings.stor = { at: j.at || Date.now(), drive: j.drive || {}, parts: (j.parts || []).slice(0, 40), trash: j.trash || {}, fs: j.fs || {}, bak: j.bak || null, url: j.url || '' };
+    storBakSeen(j.bak); saveNow(); return db.settings.stor;
+  } catch (e) {
+    if (!quiet) toast(/accion/.test(String(e && e.message)) ? 'Tu script de Drive es de una versión anterior: actualízalo (Ajustes › Drive) para ver el almacenamiento.' : 'No se pudo consultar el almacenamiento: ' + (e && e.message || e), 'error', 5000);
+    return null;
+  }
+}
+// Una vez cada 12 horas, en silencio, al abrir Praxis Pro
+let _storBoot = false;
+function storAuto() {
+  if (_storBoot || !chatOK() || typeof driveUrl !== 'function' || !driveUrl() || !navigator.onLine) return; _storBoot = true;
+  const S = storData();
+  if (!S || Date.now() - S.at > 12 * 36e5) setTimeout(() => storCheck(true).then(s => { if (s && state.view === 'home') render(); }), 9000);
+  // Copia diaria en tu Drive: si en las últimas 20 horas no se hizo ninguna (ni desde este equipo ni desde el script), se hace ahora
+  if (db.modules.length && Date.now() - (db.settings.bakAt || 0) > 20 * 36e5) setTimeout(() => storBackup(true).catch(() => { }), 25000);
+}
+/** Texto del respaldo (mismo formato que «Descargar respaldo»). */
+function storBakPayload() {
+  return JSON.stringify({ app: AppConfig.appName, version: 2, appVersion: AppConfig.version, exported: new Date().toISOString(), data: db }, function (k, v) { return k === 'stor' && this === db.settings ? undefined : v; });
+}
+function storBakSeen(b) { if (b && b.at && b.at > (db.settings.bakAt || 0)) db.settings.bakAt = b.at; }
+/** Guarda una copia de tus datos en tu Drive (auto = solo si hace falta). */
+async function storBackup(auto) {
+  const j = await driveCall('copia', { data: storBakPayload(), auto: auto ? 1 : 0 }, 120000);
+  storBakSeen(j.bak); const S = storData(); if (S && j.bak) S.bak = j.bak; saveNow();
+  return j;
+}
+/** Aviso en el Inicio cuando algo se está llenando. */
+function storageHomeBanner() {
+  const S = storData(); if (!S) return '';
+  const dp = storDrivePct(S), fp = storFsPct(S), lv = storLevel(Math.max(dp, fp)); if (lv === 'ok') return '';
+  const what = dp >= fp ? `Tu Google Drive está al <b>${Math.round(dp * 100)} %</b> (${storB(S.drive.used)} de ${storB(S.drive.limit)}).` : `La base de datos lleva hoy el <b>${Math.round(fp * 100)} %</b> de su uso gratis diario.`;
+  return `<div class="alert ${lv === 'crit' ? 'alert-bad' : 'alert-warn'}"><div><strong>${lv === 'crit' ? 'Almacenamiento casi lleno.' : 'El almacenamiento se está llenando.'}</strong> ${what} ${dp >= fp ? 'Libera espacio para que las entregas y los mensajes sigan funcionando.' : 'Se reinicia de madrugada (medianoche de California).'}</div><button class="btn btn-sm ${lv === 'crit' ? 'btn-danger' : 'btn-warn'}" data-act="storage">Ver almacenamiento</button></div>`;
+}
+/** Resumen corto en Ajustes. */
+function storageSettingsHTML() {
+  const S = storData(), dp = storDrivePct(S), lv = storLevel(Math.max(dp, storFsPct(S)));
+  return `<div class="drv-box stor-box ${S ? 'on' : ''}"><div class="drv-ic">${AI.chart}</div><div><b>Almacenamiento y copias de seguridad</b>
+    <small>${S ? `${S.drive && S.drive.limit > 0 ? `Drive: ${storB(S.drive.used)} de ${storB(S.drive.limit)} (${Math.round(dp * 100)} %)` : 'Drive: ' + storB(S.drive && S.drive.used)}${lv !== 'ok' ? ' · <span style="font-weight:700;color:var(--' + (lv === 'crit' ? 'bad' : 'warn-ink') + ')">revisa el espacio</span>' : ''}${S.bak ? ' · última copia: ' + esc(chatWhen(S.bak.at)) : ''}` : 'Mira cuánto espacio usas en Drive y en la nube, libera espacio y revisa tus copias diarias.'}</small></div>
+    <button class="btn btn-secondary btn-sm" type="button" data-act="storage">Ver</button></div>`;
+}
+function storBar(p, label, sub) {
+  const lv = storLevel(p);
+  return `<div class="st-bar ${lv}"><div class="st-bl"><b>${label}</b><span>${sub}</span></div><div class="st-track"><i style="width:${Math.min(100, Math.max(1.5, p * 100)).toFixed(1)}%"></i></div></div>`;
+}
+const STOR_NAMES = { 'Mensajes': ['chat', 'Mensajes: fotos, videos y notas de voz'], 'Material de apoyo': ['file', 'Material de apoyo'], 'Copias de seguridad': ['shield', 'Copias de seguridad'] };
+const stI = k => `<span class="st-ic">${AI[k] || ''}</span>`;
+function storDialogBody() {
+  const S = storData();
+  if (!S) return `<div class="st-empty">${AI.chart || ''}<p>Todavía no has consultado el almacenamiento.</p><button class="btn btn-primary" id="stCheck">${AI.refresh} Consultar ahora</button></div>`;
+  const dp = storDrivePct(S), parts = (S.parts || []).slice().sort((a, b) => b.b - a.b), app = parts.reduce((a, x) => a + x.b, 0), F = S.fs || {};
+  const files = []; db.modules.forEach(m => (m.aula || []).forEach(ex => { if (!aulaIsFile(ex) || ex.freed) return; const R = Object.values(ex.resp || {}), n = R.reduce((a, r) => a + (r.files || []).length, 0), b = R.reduce((a, r) => a + (r.files || []).reduce((x, f) => x + (f.sz || 0), 0), 0); if (n) files.push({ m, ex, n, b }); }));
+  files.sort((a, b) => b.b - a.b);
+  const fsOk = F && !F.err && F.read != null;
+  return `<p class="muted small" style="margin-top:-.2rem">Consultado ${esc(chatWhen(S.at))}. <button type="button" class="st-link" id="stCheck">${AI.refresh} Actualizar</button></p>
+    <section class="st-sec"><h4>${stI('folder')} Google Drive</h4>
+      ${S.drive && S.drive.limit > 0 ? storBar(dp, `${storB(S.drive.used)} de ${storB(S.drive.limit)}`, `${Math.round(dp * 100)} % usado · incluye tu Gmail y Google Fotos`) : '<p class="muted small">Tu cuenta no informa un límite de espacio.</p>'}
+      <div class="st-parts"><div class="st-pt st-total">${stI('folder')}<b>Praxis Pro en total</b><em>${storB(app)}</em></div>
+        ${parts.map(p => { const k = STOR_NAMES[p.n] || ['inbox', 'Entregas · ' + p.n]; return `<div class="st-pt">${stI(k[0])}<b>${esc(k[1])}</b><small>${storN(p.c)} archivos${p.cut ? ' (o más)' : ''}</small><em>${storB(p.b)}</em></div>`; }).join('')}
+        ${S.trash && S.trash.n ? `<div class="st-pt st-tr">${stI('trash')}<b>En la papelera de Praxis Pro</b><small>${storN(S.trash.n)} elementos · siguen ocupando espacio</small><em>${storB(S.trash.b)}</em></div>` : ''}</div>
+      ${S.url ? `<a class="st-link small" href="${esc(S.url)}" target="_blank" rel="noopener">${AI.folder} Abrir la carpeta en Drive</a>` : ''}</section>
+    <section class="st-sec"><h4>${stI('chart')} Base de datos · Firebase (plan gratis)</h4>
+      ${fsOk ? `${storBar((F.read || 0) / STOR_FREE.read, `Lecturas hoy: ${storN(F.read)}`, `de ${storN(STOR_FREE.read)} gratis al día`)}${storBar((F.write || 0) / STOR_FREE.write, `Escrituras hoy: ${storN(F.write)}`, `de ${storN(STOR_FREE.write)} gratis al día`)}${storBar((F.delete || 0) / STOR_FREE.delete, `Borrados hoy: ${storN(F.delete)}`, `de ${storN(STOR_FREE.delete)} gratis al día`)}<p class="muted small">El conteo diario se reinicia a la medianoche de California (de madrugada en República Dominicana: 3 o 4 a. m., según la época del año). Si se llega al límite, la nube espera hasta entonces; no se pierde nada.</p>`
+        : `<p class="muted small">${F.err === 'sin-cuenta' ? 'Para ver el uso diario falta la cuenta de servicio en tu script de Drive.' : 'El uso diario no está disponible desde aquí (falta el permiso «Visor de Monitoring» para la cuenta de servicio).'} Puedes verlo en la <a href="https://console.firebase.google.com/project/${esc((typeof CLOUD_CONFIG === 'object' && CLOUD_CONFIG.projectId) || '')}/firestore/databases/-default-/usage" target="_blank" rel="noopener">consola de Firebase › Uso</a>.</p>`}
+      ${F.msgs != null ? `<div class="st-pt">${stI('chat')}<b>Mensajes guardados</b><small>todos los chats y grupos</small><em>${storN(F.msgs)} · ≈ ${storB(F.msgs * 700)}</em></div>` : ''}
+      <p class="muted small">Espacio gratis de la base de datos: 1 GB. Tus notas y mensajes ocupan muy poco; las fotos y videos van a tu Drive.</p></section>
+    <section class="st-sec"><h4>${stI('trash')} Liberar espacio</h4>
+      <div class="st-act"><div><b>Vaciar la papelera de Praxis Pro</b><small>Lo que ya borraste (mensajes, prácticas liberadas, copias viejas) sigue ocupando espacio en la papelera de Drive hasta que se borra del todo.${S.trash && S.trash.n ? ' Ahora: ' + storB(S.trash.b) + '.' : ''}</small></div><button class="btn btn-secondary btn-sm" id="stTrash" ${S.trash && S.trash.n ? '' : 'disabled'}>Vaciar</button></div>
+      <div class="st-act"><div><b>Borrar mensajes antiguos</b><small>De todos tus chats y grupos, con sus fotos, videos y notas de voz.</small></div><span class="st-sel"><select id="stOld"><option value="1">De más de 1 mes</option><option value="3" selected>De más de 3 meses</option><option value="6">De más de 6 meses</option><option value="12">De más de 1 año</option></select><button class="btn btn-secondary btn-sm" id="stMsgs">Borrar</button></span></div>
+      <div class="st-act"><div><b>Prácticas con archivos en la nube</b><small>${files.length ? 'Libera las ya calificadas: las notas y comentarios se quedan.' : 'No hay prácticas con archivos guardados.'}</small></div></div>
+      ${files.length ? `<div class="st-files">${files.slice(0, 12).map(x => `<div class="st-pt">${stI('file')}<b>${esc(x.ex.title)}</b><small>${esc(modShort(x.m))} ${esc(x.m.course || '')} · ${x.n} archivos${aulaIsOpen(x.ex) ? ' · abierta' : ''}</small><em>${storB(x.b)}</em><button class="btn btn-ghost btn-sm" data-stfree="${esc(x.m.id)}|${esc(x.ex.id)}">Liberar</button></div>`).join('')}</div>` : ''}</section>
+    <section class="st-sec"><h4>${stI('shield')} Copias de seguridad</h4>
+      <p class="small">${S.bak ? `Última copia: <b>${esc(chatWhen(S.bak.at))}</b> · ${S.bak.m || '?'} módulos · ${storB(S.bak.b)}.` : 'Todavía no hay copias en la nube.'} Cada día se guarda una copia de todos tus datos en tu Drive (a las 2 a. m. desde tu script, o al abrir Praxis Pro si ese día no se hizo) y se conservan las 30 más recientes.</p>
+      <div class="st-btns"><button class="btn btn-primary btn-sm" id="stBak">${AI.check} Hacer una copia ahora</button><button class="btn btn-secondary btn-sm" id="stBakOld">Dejar solo las 7 más recientes</button></div>
+      <p class="muted small">Para restaurar: descarga la copia desde la carpeta «Copias de seguridad» de tu Drive y usa <b>Respaldo › Cargar un archivo</b>. Antes de restaurar se crea un punto de restauración.</p></section>`;
+}
+function storageDialog() {
+  const md = openModal({ title: 'Almacenamiento y copias', icon: AI.chart, wide: true, sub: 'Cuánto espacio usas, cómo liberarlo y tus copias de seguridad', body: `<div id="stBody">${storDialogBody()}</div>`, actions: [{ label: 'Cerrar' }] });
+  const ov = md.el, body = () => ov.querySelector('#stBody');
+  const busy = (b, t) => { b.disabled = true; b.dataset.t = b.innerHTML; b.innerHTML = `<span class="spin"></span> ${t}`; };
+  const redraw = () => { body().innerHTML = storDialogBody(); bind(); };
+  const bind = () => {
+    const q = id => ov.querySelector('#' + id);
+    q('stCheck').onclick = async e => { busy(e.currentTarget, 'Consultando…'); await storCheck(); redraw(); };
+    if (!storData()) return;
+    q('stTrash').onclick = e => confirmBox('¿Vaciar la papelera de Praxis Pro?', 'Se borran del todo los archivos de Praxis Pro que ya están en la papelera de tu Drive. No se puede deshacer. Los demás archivos de tu Drive no se tocan.', 'Vaciar', async () => {
+      const b = q('stTrash'); busy(b, 'Vaciando…');
+      try { const j = await driveCall('limpiar', { k: 'trash' }, 90000); if (j.manual) toast('Google no permitió borrarlos desde aquí. Abre drive.google.com › Papelera › Vaciar papelera.', 'warn', 7000); else toast(`Listo: ${j.n} elementos borrados (${storB(j.b)} liberados).`, 'ok', 4500); }
+      catch (err) { toast('No se pudo vaciar: ' + (err && err.message || err), 'error'); }
+      await storCheck(true); redraw();
+    });
+    q('stMsgs').onclick = () => { const mo = +q('stOld').value; confirmBox('¿Borrar mensajes antiguos?', `Se borran para todos los mensajes de más de ${mo === 12 ? '1 año' : mo + (mo === 1 ? ' mes' : ' meses')} de todos tus chats y grupos, con sus fotos, videos y notas de voz. No se puede deshacer.`, 'Borrar', async () => {
+      const b = q('stMsgs'); busy(b, 'Borrando…');
+      try { const n = await storPurgeOld(mo); toast(n ? `Listo: ${n} mensajes antiguos borrados.` : 'No había mensajes tan antiguos.', 'ok', 4500); if (n) await driveCall('limpiar', { k: 'trash' }, 90000).catch(() => { }); }
+      catch (err) { toast('No se pudo terminar: ' + aulaErr(err), 'error', 5000); }
+      await storCheck(true); redraw();
+    }); };
+    ov.querySelectorAll('[data-stfree]').forEach(b => b.onclick = () => { const [mid, eid] = b.dataset.stfree.split('|'); md.close(); state.view = 'module'; state.modId = mid; state.tab = 'aula'; render(); setTimeout(() => aulaFreeDialog(eid), 250); });
+    q('stBak').onclick = async e => { busy(e.currentTarget, 'Copiando…'); try { const j = await storBackup(false); if (j.ok) toast('Copia guardada en tu Drive: ' + (j.bak && j.bak.n || ''), 'ok', 4500); else toast(j.msg || 'No se pudo hacer la copia.', 'warn', 5000); } catch (err) { toast('No se pudo hacer la copia: ' + (err && err.message || err), 'error', 5000); } redraw(); };
+    q('stBakOld').onclick = () => confirmBox('¿Borrar copias viejas?', 'Se quedan solo las 7 copias más recientes. Las demás van a la papelera de Praxis Pro.', 'Borrar', async () => { try { const j = await driveCall('limpiar', { k: 'bak', keep: 7 }, 60000); toast(`${j.n} copias viejas a la papelera.`, 'ok'); } catch (err) { toast('No se pudo: ' + (err && err.message || err), 'error'); } await storCheck(true); redraw(); });
+  };
+  bind();
+  setTimeout(() => { const f = document.activeElement; if (f && ov.contains(f) && f.tagName === 'SELECT') f.blur(); const mb = ov.querySelector('.modal-body'); if (mb) mb.scrollTop = 0; }, 120);
+  if (!storData() && driveUrl()) ov.querySelector('#stCheck').click();
+}
+/** Borra los mensajes de más de N meses de todos los chats privados y grupos (y sus archivos). */
+async function storPurgeOld(months) {
+  const cut = new Date(); cut.setMonth(cut.getMonth() - months);
+  const TS = firebase.firestore.Timestamp.fromDate(cut); let n = 0, ids = [];
+  const purge = async col => {
+    for (let k = 0; k < 30; k++) {
+      const sn = await withTimeout(col.where('at', '<', TS).limit(300).get(), 30000); if (sn.empty) break;
+      const b = firebase.firestore().batch(); sn.docs.forEach(d => { ids = ids.concat(chatMediaIds(d.data())); b.delete(d.ref); }); await withTimeout(b.commit(), 30000); n += sn.size;
+      if (sn.size < 300) break;
+    }
+  };
+  for (const m of db.modules) {
+    if (!m.portal || !m.portal.pid) continue;
+    const P = chatFs(m.portal.pid);
+    const th = await withTimeout(P.collection('c').get(), 30000); for (const d of th.docs) await purge(d.ref.collection('m'));
+    const gs = await withTimeout(P.collection('g').get(), 30000); for (const d of gs.docs) await purge(d.ref.collection('m'));
+  }
+  if (ids.length) await chatTrash(ids);
+  return n;
+}
+ACTIONS['storage'] = () => storageDialog();
+const _storPrevAfter = typeof aulaAfterRender === 'function' ? aulaAfterRender : null;
+aulaAfterRender = function () { if (_storPrevAfter) _storPrevAfter(); try { storAuto(); } catch (e) { console.error(e); } };
+
+/* =====================================================================
+   Etapa 5 · Varios docentes
+   - El administrador (dueño del proyecto) crea enlaces de invitación de un solo uso (vencen en 7 días).
+   - Quien abre el enlace crea su cuenta de docente y se agrega solo con ese código (lo comprueban las reglas).
+   - Cada docente tiene su espacio privado: sus módulos, su portal, sus estudiantes y su propio Google Drive.
+   - Datos: admin/teachers = { uids: [uid], inv: { CÓDIGO: vence }, n: { uid: { name, email, at } }, last }
+   ===================================================================== */
+const Tch = { admin: null, doc: null };
+const TCH_WEB = /^https?:$/.test(location.protocol) ? new URL('./', location.href).href : 'https://ronnil15.github.io/praxis/';
+function tchRef() { return firebase.firestore().collection('admin').doc('teachers'); }
+/** ¿Esta cuenta es la del administrador? Solo él puede leer admin/teachers. */
+async function tchProbe() {
+  if (!chatOK() || Tch.admin === false) return false;
+  try { const d = await withTimeout(tchRef().get(), 15000); Tch.admin = true; Tch.doc = d.exists ? d.data() : {}; return true; }
+  catch (e) { if (e && e.code === 'permission-denied') Tch.admin = false; return false; }
+}
+function tchPending(D) { const I = (D && D.inv) || {}; return Object.keys(I).filter(k => chatMs(I[k]) > Date.now()).sort((a, b) => chatMs(I[a]) - chatMs(I[b])); }
+function tchList(D) { const N = (D && D.n) || {}; return ((D && D.uids) || []).map(u => Object.assign({ uid: u }, N[u] || {})); }
+function tchBoxHTML() {
+  const D = Tch.doc || {}, n = (D.uids || []).length, p = tchPending(D).length;
+  return `<div class="drv-box tch-box on" id="tchBox"><div class="drv-ic">${AI.users}</div><div><b>Docentes</b>
+    <small>${n ? `${n} docente${n === 1 ? '' : 's'} invitado${n === 1 ? '' : 's'}` : 'Invita a otros docentes: cada uno tendrá su espacio privado.'}${p ? ` · ${p} invitación${p === 1 ? '' : 'es'} pendiente${p === 1 ? '' : 's'}` : ''}</small></div>
+    <button class="btn btn-secondary btn-sm" type="button" data-act="teachers">Administrar</button></div>`;
+}
+/** Recuadro en Ajustes (solo aparece para el administrador). */
+function teachersSettingsHTML() {
+  if (!chatOK() || Tch.admin === false) return '';
+  setTimeout(async () => { const ok = await tchProbe(), b = document.getElementById('tchBox'); if (!b) return; if (ok) b.outerHTML = tchBoxHTML(); else b.remove(); }, 30);
+  return Tch.admin ? tchBoxHTML() : '<div id="tchBox" hidden></div>';
+}
+function tchCode() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', r = new Uint32Array(10); crypto.getRandomValues(r); return Array.from(r, x => A[x % A.length]).join(''); }
+function tchLink(code) { return TCH_WEB + '#invitacion=' + code; }
+function tchBody() {
+  const D = Tch.doc || {}, L = tchList(D), P = tchPending(D);
+  return `<p class="small" style="margin-top:0">Cada docente entra con <b>su propio correo y contraseña</b> y tiene su espacio privado: sus módulos, notas, portal de estudiantes y su propio Google Drive. Nadie ve los datos de otro docente, tampoco tú.</p>
+    <section class="st-sec"><h4><span class="st-ic">${AI.send}</span> Invitar a un docente</h4>
+      <p class="small" style="margin-top:0">Crea un enlace y envíaselo por WhatsApp o correo. Sirve <b>una sola vez</b> y vence en <b>7 días</b>.</p>
+      <div id="tchNew"></div>
+      <div class="st-btns"><button class="btn btn-primary btn-sm" id="tchMake">${AI.plus} Crear enlace de invitación</button></div></section>
+    ${P.length ? `<section class="st-sec"><h4><span class="st-ic">${AI.clock}</span> Invitaciones pendientes</h4><div class="st-parts">${P.map(c => `<div class="st-pt tch-pt"><span class="st-ic">${AI.key}</span><b class="mono">${c.slice(0, 5)}-${c.slice(5)}</b><small>Vence ${esc(chatWhen(chatMs(D.inv[c])))}</small><em><button class="btn btn-ghost btn-sm" data-tcp="${c}">${AI.copy} Copiar</button><button class="btn btn-ghost btn-sm" data-tcx="${c}">Anular</button></em></div>`).join('')}</div></section>` : ''}
+    <section class="st-sec"><h4><span class="st-ic">${AI.users}</span> Docentes con acceso</h4><div class="st-parts">
+      <div class="st-pt tch-pt"><span class="st-ic">${AI.shield}</span><b>${esc(Cloud.user.displayName || db.settings.teacher || 'Tú')}</b><small>${esc(Cloud.user.email || '')} · administrador</small><em></em></div>
+      ${L.map(t => `<div class="st-pt tch-pt"><span class="st-ic">${AI.user}</span><b>${esc(t.name || t.email || 'Docente')}</b><small>${esc(t.email || '')}${t.at ? ' · desde ' + esc(chatWhen(chatMs(t.at))) : ''}</small><em><button class="btn btn-ghost btn-sm" data-tcr="${esc(t.uid)}">Quitar acceso</button></em></div>`).join('') || '<p class="muted small" style="margin:.4rem 0 0">Todavía no has invitado a nadie.</p>'}</div></section>
+    <details class="drv-push"><summary><b>Bueno saber</b></summary><ul class="small tch-notes">
+      <li>El docente invitado conecta <b>su propio Google Drive</b> (Ajustes › Google Drive) para recibir entregas y archivos del chat.</li>
+      <li>Los <b>avisos al celular con la app cerrada</b> y los recordatorios automáticos necesitan la cuenta de servicio del proyecto. Por seguridad <b>no compartas esa clave</b>: el docente invitado igual tiene avisos con la app abierta y la copia diaria al abrir Praxis Pro.</li>
+      <li>Todos comparten el plan gratis de la nube (50 000 lecturas al día). Mira el uso en <b>Ajustes › Almacenamiento</b>.</li>
+      <li>Si quitas el acceso a alguien, ya no podrá entrar ni administrar su portal. Sus datos no se borran.</li></ul></details>`;
+}
+function teachersDialog() {
+  const md = openModal({ title: 'Docentes', icon: AI.users, wide: true, sub: 'Invita a otros docentes a usar Praxis Pro con su propia cuenta', body: `<div id="tchBody"><p class="muted"><span class="spin"></span> Cargando…</p></div>`, actions: [{ label: 'Cerrar' }] });
+  const ov = md.el, F = firebase.firestore.FieldValue, body = () => ov.querySelector('#tchBody');
+  const reload = async () => { await tchProbe(); draw(); const b = document.getElementById('tchBox'); if (b) b.outerHTML = tchBoxHTML(); };
+  const copy = async (txt, msg) => { try { await navigator.clipboard.writeText(txt); toast(msg || 'Copiado.', 'ok'); } catch (e) { toast('Copia este enlace: ' + txt, 'info', 9000); } };
+  const draw = () => { body().innerHTML = tchBody(); bind(); };
+  const bind = () => {
+    ov.querySelector('#tchMake').onclick = async e => {
+      const b = e.currentTarget; b.disabled = true;
+      const code = tchCode(), exp = firebase.firestore.Timestamp.fromMillis(Date.now() + 7 * 864e5);
+      try { await withTimeout(tchRef().set({ inv: { [code]: exp } }, { merge: true }), 20000); }
+      catch (err) { b.disabled = false; return toast('No se pudo crear la invitación: ' + aulaErr(err), 'error', 5000); }
+      Tch.doc = Tch.doc || {}; Tch.doc.inv = Object.assign({}, Tch.doc.inv, { [code]: exp }); draw();
+      const url = tchLink(code), box = ov.querySelector('#tchNew');
+      box.innerHTML = `<div class="tch-new"><b>Enlace listo</b><input readonly value="${esc(url)}" onclick="this.select()"><div class="st-btns"><button class="btn btn-primary btn-sm" id="tchCopy">${AI.copy} Copiar enlace</button>${navigator.share ? `<button class="btn btn-secondary btn-sm" id="tchShare">${AI.share} Compartir</button>` : ''}</div><small class="muted">Al abrirlo verá «Crear tu cuenta». Si ya tiene una cuenta, que entre con ella desde el mismo enlace.</small></div>`;
+      box.querySelector('#tchCopy').onclick = () => copy(url, 'Enlace copiado. Envíaselo al docente.');
+      const sh = box.querySelector('#tchShare'); if (sh) sh.onclick = () => navigator.share({ title: 'Invitación a Praxis Pro', text: 'Te invito a usar Praxis Pro, la plataforma de notas por competencias. Crea tu cuenta aquí (el enlace vence en 7 días):', url }).catch(() => { });
+    };
+    ov.querySelectorAll('[data-tcp]').forEach(b => b.onclick = () => copy(tchLink(b.dataset.tcp), 'Enlace copiado.'));
+    ov.querySelectorAll('[data-tcx]').forEach(b => b.onclick = () => confirmBox('¿Anular la invitación?', 'El enlace dejará de funcionar.', 'Anular', async () => {
+      try { await withTimeout(tchRef().update({ ['inv.' + b.dataset.tcx]: F.delete() }), 20000); toast('Invitación anulada.', 'ok'); } catch (err) { toast('No se pudo: ' + aulaErr(err), 'error'); }
+      reload();
+    }));
+    ov.querySelectorAll('[data-tcr]').forEach(b => b.onclick = () => {
+      const t = tchList(Tch.doc).find(x => x.uid === b.dataset.tcr) || {};
+      confirmBox('¿Quitar el acceso?', `${t.name || t.email || 'Este docente'} ya no podrá entrar a Praxis Pro ni administrar su portal. Sus datos no se borran; puedes invitarlo otra vez cuando quieras.`, 'Quitar acceso', async () => {
+        try { await withTimeout(tchRef().update({ uids: F.arrayRemove(b.dataset.tcr), ['n.' + b.dataset.tcr]: F.delete() }), 20000); toast('Acceso quitado.', 'ok'); } catch (err) { toast('No se pudo: ' + aulaErr(err), 'error'); }
+        reload();
+      });
+    });
+  };
+  tchProbe().then(ok => { if (ok) draw(); else body().innerHTML = `<p class="modal-msg">Solo el administrador de Praxis Pro puede invitar docentes${navigator.onLine ? '' : ' (y necesitas internet)'}.</p>`; });
+}
+ACTIONS['teachers'] = () => teachersDialog();
+
+/* =====================================================================
+   Etapa 5 · Guía de uso del docente (botón «?» de la barra superior)
+   Secciones cortas, con buscador. Cada sección puede llevar un botón que abre la pantalla indicada.
+   ===================================================================== */
+const HELP = [
+  { id: 'inicio', ic: 'spark', t: 'Primeros pasos', b: `<ol>
+    <li>En <b>Inicio › Nuevo módulo</b> elige el módulo de la malla (o escribe uno) y el curso.</li>
+    <li>En el módulo, pestaña <b>Configuración</b>: revisa los RA, su valor y las actividades de cada RA.</li>
+    <li>Agrega a tus estudiantes (puedes pegarlos desde una lista de Excel).</li>
+    <li>Llena las notas en <b>Registro por RA</b>. Todo se guarda solo, en este equipo y en tu cuenta.</li></ol>
+    <p>Completa en <b>Ajustes</b> tu nombre, el centro y el año escolar para que salgan en los reportes.</p>`, go: ['settings', 'Abrir Ajustes'] },
+  { id: 'notas', ic: 'chart', t: 'Notas, RA y recuperación', b: `<ul>
+    <li><b>Nota final</b> = aportes de los RA (70) + cierre (30). El aporte de un RA = (obtenido ÷ posible) × valor del RA.</li>
+    <li>Un RA queda <b>logrado</b> con 70 % o más y las actividades mínimas. Aprobado ≥ 70 · En riesgo 60–69 · Reprobado &lt; 60.</li>
+    <li><b>Recuperación</b> muestra quién necesita recuperar cada RA y guarda la nota de recuperación aparte.</li>
+    <li>Las <b>alertas tempranas</b> del Inicio te avisan de ausencias seguidas, bajadas de nota y RA en riesgo.</li>
+    <li>La inteligencia artificial nunca cambia una nota sin que tú lo confirmes.</li></ul>` },
+  { id: 'plan', ic: 'cal', t: 'Horario, planificación y asistencia', b: `<ul>
+    <li><b>Mi horario</b>: marca tus horas de clase; la planificación y la asistencia se ordenan según el horario.</li>
+    <li><b>Planificación</b> (en cada módulo): anual, semanal y diaria, con PDF listo para imprimir.</li>
+    <li><b>Asistencia</b>: toca para cambiar presente, ausente, tarde o excusa. El calendario escolar y los feriados ya están cargados.</li>
+    <li><b>Mi semana</b> te muestra lo que toca en cada módulo.</li></ul>` },
+  { id: 'aula', ic: 'cap', t: 'Aula: prácticas y exámenes en línea', b: `<ol>
+    <li>En el módulo, pestaña <b>Aula › Nuevo</b>: examen (preguntas) o práctica con archivo (entrega).</li>
+    <li>Pulsa <b>Habilitar</b>. Comparte el enlace o el QR; si pusiste código, el estudiante lo necesita para entrar.</li>
+    <li>Las respuestas llegan solas. Califica con la rúbrica y pasa la nota a la casilla del registro.</li>
+    <li>Cuando termines, <b>Inhabilita</b> la práctica. Los archivos de las entregas van a tu Google Drive; puedes descargarlos en ZIP y <b>Liberar espacio</b>: las notas se quedan.</li></ol>` },
+  { id: 'portal', ic: 'school', t: 'Portal «Mi aula» de los estudiantes', b: `<ul>
+    <li>Pestaña <b>Portal › Cuentas</b>: crea el usuario y la contraseña de cada estudiante y cópialos para enviárselos.</li>
+    <li>El estudiante entra en <b>Mi aula</b> (se instala como app en el celular) y ve sus notas, sus pendientes, avisos y documentos.</li>
+    <li><b>Notas</b>: decide qué se publica y pulsa <b>Publicar ahora</b>. <b>Avisos y documentos</b>: anuncios y archivos para todo el curso.</li>
+    <li><b>Mensajes</b>: chat privado con cada estudiante (texto, fotos, videos y notas de voz). En <b>Permisos</b> decides qué puede enviar el curso.</li>
+    <li><b>Grupo del curso</b> y grupos de exposición (Herramientas › Grupos guardados › Chat de grupos): tú moderas; puedes silenciar, bloquear, sacar a alguien, fijar un aviso y poner horario.</li></ul>` },
+  { id: 'avisos', ic: 'bell', t: 'Avisos al celular', b: `<ul>
+    <li>En <b>Portal › Avisos y documentos</b>, la tarjeta <b>Avisos al celular</b> te dice si todo está listo y activa los avisos en este equipo.</li>
+    <li>Los estudiantes reciben avisos de tus mensajes, anuncios, documentos, notas nuevas y <b>recordatorios</b> 24 h y 2 h antes de cada fecha límite (solo quien no ha entregado).</li>
+    <li><b>iPhone</b>: primero hay que instalar Mi aula (Compartir › Agregar a pantalla de inicio), abrirla desde el ícono y ahí activar los avisos.</li>
+    <li>En la PC el navegador debe estar abierto (aunque sea minimizado) para que lleguen.</li></ul>` },
+  { id: 'drive', ic: 'folder', t: 'Google Drive (archivos gratis)', b: `<ul>
+    <li>Las entregas y los archivos del chat se guardan en <b>tu</b> Google Drive, en la carpeta «Praxis Pro · Entregas».</li>
+    <li>Se conecta una sola vez en <b>Ajustes › Google Drive</b> pegando el programa en Apps Script.</li>
+    <li>Cuando Praxis Pro te pida actualizar el programa: pega el código nuevo, guarda y ve a <b>Implementar › Gestionar implementaciones › ✎ › Nueva versión</b>. La dirección no cambia.</li></ul>`, go: ['drive-setup', 'Abrir Google Drive'] },
+  { id: 'espacio', ic: 'shield', t: 'Almacenamiento y copias de seguridad', b: `<ul>
+    <li><b>Ajustes › Almacenamiento</b> muestra cuánto usas de tu Drive y de la nube gratis. En el Inicio aparece un aviso cuando algo pasa del 80 %.</li>
+    <li>Para liberar espacio: vacía la papelera de Praxis Pro, borra mensajes antiguos o libera las prácticas ya calificadas.</li>
+    <li>Cada día se guarda una <b>copia de todos tus datos</b> en tu Drive (carpeta «Copias de seguridad»). También puedes descargar un respaldo en <b>Respaldo</b>.</li>
+    <li>Para <b>restaurar</b>: descarga la copia desde tu Drive y usa <b>Respaldo › Cargar un archivo</b>. Antes se crea un punto de restauración por si quieres volver atrás.</li></ul>`, go: ['storage', 'Ver almacenamiento'] },
+  { id: 'docentes', ic: 'users', t: 'Varios docentes', b: `<ul>
+    <li>El administrador invita en <b>Ajustes › Docentes › Crear enlace de invitación</b> (un solo uso, vence en 7 días).</li>
+    <li>El docente invitado abre el enlace, crea su cuenta y tiene su espacio privado: sus módulos, su portal y su propio Google Drive.</li>
+    <li>Nadie ve los datos de otro docente. El administrador puede quitar el acceso cuando quiera.</li></ul>` },
+  { id: 'seguridad', ic: 'lock', t: 'Seguridad y privacidad', b: `<ul>
+    <li>Las notas y mensajes son datos de menores: no los compartas fuera de Praxis Pro.</li>
+    <li>Cada estudiante solo ve lo suyo; los grupos solo los ven sus miembros. Las reglas de la nube lo comprueban siempre.</li>
+    <li>Nunca compartas tu contraseña ni las claves de tu script de Drive. En equipos compartidos, cierra sesión en <b>Ajustes</b>.</li>
+    <li>Hay límites contra abuso: si alguien envía demasiados mensajes o archivos en pocos minutos, debe esperar un momento.</li></ul>` },
+  { id: 'problemas', ic: 'alert', t: 'Si algo no funciona', b: `<dl class="hp-faq">
+    <dt>Dice «sin conexión» o «subiendo…»</dt><dd>Tus cambios están guardados en este equipo y se suben solos cuando vuelva internet.</dd>
+    <dt>El programa de Drive está desactualizado</dt><dd>Ajustes › Google Drive › copia el código nuevo, pégalo en Apps Script y haz «Nueva versión».</dd>
+    <dt>A un estudiante no le llegan los avisos</dt><dd>Que abra Mi aula, toque la campana y «Activar avisos». En iPhone, desde la app instalada.</dd>
+    <dt>Un estudiante olvidó su contraseña</dt><dd>Portal › Cuentas › «Cambiar la contraseña» y envíale la nueva.</dd>
+    <dt>«Vas muy rápido» o «demasiados envíos»</dt><dd>Es el límite contra abuso. Espera unos minutos y vuelve a intentar.</dd>
+    <dt>El almacenamiento está casi lleno</dt><dd>Ajustes › Almacenamiento › Liberar espacio.</dd></dl>` }
+];
+function helpDialog(sec) {
+  const body = `<div class="hp"><label class="hp-q"><span>${AI.search}</span><input type="search" id="hpQ" placeholder="Buscar en la guía (ej.: contraseña, Drive, avisos)" autocomplete="off"></label>
+    <div class="hp-list">${HELP.map(h => `<details class="hp-it" data-hp="${h.id}"${h.id === sec ? ' open' : ''}><summary><span class="st-ic">${AI[h.ic] || ''}</span><b>${h.t}</b></summary><div class="hp-b">${h.b}${h.go ? `<button class="btn btn-secondary btn-sm" data-hgo="${h.go[0]}">${AI.arrow} ${h.go[1]}</button>` : ''}</div></details>`).join('')}</div>
+    <p class="hp-none muted" hidden>No encontré nada con esa palabra. Prueba con otra.</p>
+    <p class="muted small hp-foot">${esc(AppConfig.appName)} ${esc(AppConfig.version)} · Desarrollado por ${esc(AppConfig.author)}</p></div>`;
+  const md = openModal({ title: 'Guía de uso', icon: '❔', wide: true, sub: 'Todo lo que necesitas para trabajar con Praxis Pro', body, actions: [{ label: 'Cerrar' }] });
+  const ov = md.el, q = ov.querySelector('#hpQ'), its = [...ov.querySelectorAll('.hp-it')], none = ov.querySelector('.hp-none');
+  const norm = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  q.oninput = () => {
+    const w = norm(q.value.trim()); let k = 0;
+    its.forEach(d => { const hit = !w || norm(d.textContent).includes(w); d.hidden = !hit; if (hit) k++; if (w) d.open = hit; });
+    none.hidden = k > 0;
+  };
+  ov.querySelectorAll('[data-hgo]').forEach(b => b.onclick = () => { md.close(); const f = ACTIONS[b.dataset.hgo]; if (f) setTimeout(() => f(b), 200); });
+  if (sec) setTimeout(() => { const d = ov.querySelector(`[data-hp="${sec}"]`); if (d) d.scrollIntoView({ block: 'start' }); }, 80);
+}
+ACTIONS['help'] = () => helpDialog();
 
 /* =========================================================
    Reportes imprimibles (PDF sin internet) y exportación CSV
