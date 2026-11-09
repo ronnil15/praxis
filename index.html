@@ -16,7 +16,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
-<script>var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDomain":"praxis-pro-a65b2.firebaseapp.com","projectId":"praxis-pro-a65b2","storageBucket":"praxis-pro-a65b2.firebasestorage.app","messagingSenderId":"788262926679","appId":"1:788262926679:web:61d814e54cb27c825da612"}; var CLOUD_SIGNUP = false;
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
+<script>var CLOUD_CONFIG = {"apiKey":"AIzaSyAXcerrATxzz1679BjzP3AGJ6K4g0dkQ5I","authDomain":"praxis-pro-a65b2.firebaseapp.com","projectId":"praxis-pro-a65b2","storageBucket":"praxis-pro-a65b2.firebasestorage.app","messagingSenderId":"788262926679","appId":"1:788262926679:web:61d814e54cb27c825da612"}; var CLOUD_SIGNUP = false; var CLOUD_VAPID = "BHfyUx7sSdX1gnzutEW6hylxvcsXekcd6x_kozmbDiBEaYlso_qjSIs7pK5k-C42xIPg1cUnxjk9GNzcNdpbmE0";
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   var hadSW = !!navigator.serviceWorker.controller, swReloaded = false;
   addEventListener('load', function () { navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then(function (reg) { reg.update(); document.addEventListener('visibilitychange', function () { if (!document.hidden) reg.update(); }); }); });
@@ -2183,6 +2184,17 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .gc-op input { margin-top: .2rem; }
 .gc-op b { display: block; } .gc-op small { display: block; color: var(--muted); font-size: .8rem; line-height: 1.35; margin-top: .15rem; }
 @media (max-width: 640px) { .gc-opts { grid-template-columns: 1fr; } }
+/* ---------- Etapa 4: avisos al celular ---------- */
+.push-card { margin-bottom: 1rem; }
+.push-st { list-style: none; padding: 0; margin: .4rem 0 .8rem; display: flex; flex-direction: column; gap: .35rem; }
+.push-st li { display: flex; align-items: center; gap: .5rem; font-size: .86rem; }
+.push-st li svg { width: 16px; height: 16px; flex: none; }
+.push-st li.ok { color: var(--ink); } .push-st li.ok svg { color: var(--ok, #14804a); }
+.push-st li.no svg { color: var(--bad, #c4271c); } .push-st li.wa svg { color: var(--warn, #b54708); }
+.push-card .gp-sw { padding: .55rem 0; border-top: 1px solid var(--border); }
+.drv-push { margin: .8rem 0; padding: .7rem .9rem; border: 1px dashed var(--border-2, var(--border)); border-radius: 12px; background: var(--surface-2); }
+.drv-push summary { cursor: pointer; }
+.drv-push .drv-steps { margin-top: .6rem; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -8488,6 +8500,7 @@ const AI = {
   x: _ai('<path d="M6 6l12 12M18 6L6 18"/>'),
   alert: _ai('<path d="M12 3l10 18H2z"/><path d="M12 10v4M12 17.5v.01"/>'),
   refresh: _ai('<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>'),
+  bell: _ai('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>'),
   share: _ai('<path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v13"/>'),
   expand: _ai('<path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>'),
   print: _ai('<path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>'),
@@ -10377,7 +10390,7 @@ function portalAuthErr(e) {
 /* ---------- Lo que ve cada estudiante ---------- */
 function portalMeta(m) {
   const P = m.portal;
-  return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1, drv: typeof driveId === 'function' ? driveId() : '',
+  return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1, drv: typeof driveId === 'function' ? driveId() : '', rem: P.rem !== false, tz: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })(),
     news: P.news.slice(-30).map(n => ({ id: n.id, t: n.t, at: n.at })), docs: P.docs.map(d => ({ id: d.id, t: d.t, url: d.url, k: d.k, ra: d.ra, at: d.at })) };
 }
 function portalPayload(m, s) {
@@ -10399,7 +10412,7 @@ function portalPayload(m, s) {
   const st = statusOf(r);
   const tot = portalSees(P.tot, s) ? { total: r2(r.total), acc: r2(r.acc), fin: r.finalSet ? r2(r.fin) : null, cond: st.label, cls: st.cls } : null;
   const pend = (m.aula || []).filter(ex => ex.pub && aulaIsOpen(ex) && aulaAssigned(m, ex).some(x => x.id === s.id)).map(ex => ({
-    t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLinkPortal(ex), code: 0, dur: ex.dur || 0, instr: String(ex.instr || '').slice(0, 600), mat: aulaIsFile(ex) ? (ex.mat || []).slice(0, 10) : [], pts: aulaTotal(ex),
+    eid: ex.id, t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLinkPortal(ex), code: 0, dur: ex.dur || 0, instr: String(ex.instr || '').slice(0, 600), mat: aulaIsFile(ex) ? (ex.mat || []).slice(0, 10) : [], pts: aulaTotal(ex),
     done: Object.keys(ex.resp).some(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; }) ? 1 : 0
   }));
   return { num: s.num, name: s.name, ras, tot, pend };
@@ -10554,9 +10567,9 @@ function portalUserCell(m, s) {
 function portalAvisosHTML(m) {
   const P = m.portal, raOpts = m.ras.map((ra, i) => `<option value="${i + 1}">RA ${i + 1}</option>`).join('');
   const DK = { pdf: 'PDF', doc: 'DOC', ppt: 'PPT', xls: 'XLS', video: 'VID', link: 'WEB' };
-  return `<div class="pt-two">
+  return `${typeof pushCardHTML === 'function' ? pushCardHTML(m) : ''}<div class="pt-two">
     <section class="card pt-sec"><h3><span class="pt-ic">${AI.alert}</span>Avisos</h3>
-      <p class="muted small">Les llega como notificación a los estudiantes que tengan el portal abierto o instalado.</p>
+      <p class="muted small">Les llega como notificación al celular, aunque tengan Mi aula cerrada (si activaron los avisos).</p>
       <label class="field">Nuevo aviso<textarea id="pnText" rows="3" maxlength="500" placeholder="Ej.: Traigan su laptop el lunes."></textarea></label>
       <div class="pt-formfoot"><span class="muted small">Máximo 500 caracteres</span><button class="btn btn-primary" data-act="portal-news-add">${AI.arrow} Publicar aviso</button></div>
       <div class="pt-list">${P.news.slice().reverse().map(n => `<div class="pt-item"><span class="pt-dk">${AI.alert}</span><div><div style="white-space:pre-wrap">${esc(n.t)}</div><small class="muted">${esc(aulaWhen(n.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-news-del" data-id="${n.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.inbox} Todavía no hay avisos.</div>`}</div></section>
@@ -10759,11 +10772,11 @@ function driveScript() {
 // © ${new Date().getFullYear()} ${AppConfig.author}. Pega este código completo en Apps Script.
 const CFG = { project: '${C.projectId || ''}', key: '${C.apiKey || ''}', owner: '${uid}', root: 'Praxis Pro · Entregas' };
 
-function doGet() { return out({ ok: true, app: 'praxis-drive', v: 4 }); }
+function doGet() { return out({ ok: true, app: 'praxis-drive', v: 5 }); }
 function doPost(e) {
   try {
     const b = JSON.parse(e.postData.contents);
-    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cget: cget, cdel: cdel, ccopy: ccopy }[b.a];
+    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cget: cget, cdel: cdel, ccopy: ccopy, push: push, pushx: pushx }[b.a];
     return out(F ? F(b) : { ok: false, e: 'accion' });
   } catch (err) { return out({ ok: false, e: String(err && err.message || err) }); }
 }
@@ -10895,7 +10908,128 @@ function cdel(b) {
   });
   return { ok: true, n: n };
 }
-function ping(b) { if (b.tok) teacher(b.tok); return { ok: true, v: 4, folder: root().getName(), url: root().getUrl() }; }
+// ---------- Etapa 4: avisos al celular (Firebase Cloud Messaging) y recordatorios de entregas ----------
+// Necesita la cuenta de servicio de Firebase guardada en: Configuración del proyecto › Propiedades de la secuencia de comandos › SA
+function sa() { const j = PropertiesService.getScriptProperties().getProperty('SA'); if (!j) return null; try { const k = JSON.parse(j); return k.client_email && k.private_key ? k : null; } catch (e) { return null; } }
+function b64u(x) { return Utilities.base64EncodeWebSafe(x).replace(/=+$/, ''); }
+function saTok() {
+  const c = CacheService.getScriptCache(), hit = c.get('saTok'); if (hit) return hit;
+  const k = sa(); if (!k) throw new Error('sin-cuenta');
+  const now = Math.floor(Date.now() / 1000), head = b64u(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+  const body = b64u(JSON.stringify({ iss: k.client_email, scope: 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/firebase.messaging', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 }));
+  const sig = b64u(Utilities.computeRsaSha256Signature(head + '.' + body, k.private_key));
+  const r = UrlFetchApp.fetch('https://oauth2.googleapis.com/token', { method: 'post', payload: { grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: head + '.' + body + '.' + sig }, muteHttpExceptions: true });
+  if (r.getResponseCode() !== 200) throw new Error('cuenta: ' + r.getContentText().slice(0, 140));
+  const t = JSON.parse(r.getContentText()).access_token; c.put('saTok', t, 3000); return t;
+}
+function FSB() { return 'https://firestore.googleapis.com/v1/projects/' + CFG.project + '/databases/(default)/documents'; }
+function adm(path, opt) {
+  opt = opt || {}; opt.headers = { Authorization: 'Bearer ' + saTok() }; opt.muteHttpExceptions = true;
+  if (opt.payload && typeof opt.payload !== 'string') { opt.payload = JSON.stringify(opt.payload); opt.contentType = 'application/json'; }
+  const r = UrlFetchApp.fetch(FSB() + path, opt), c = r.getResponseCode();
+  return { code: c, j: c === 200 ? JSON.parse(r.getContentText() || '{}') : null };
+}
+function v2(f) {
+  if (!f) return null;
+  if ('arrayValue' in f) return (f.arrayValue.values || []).map(v2);
+  if ('mapValue' in f) { const o = {}, F = f.mapValue.fields || {}; Object.keys(F).forEach(function (k) { o[k] = v2(F[k]); }); return o; }
+  if ('nullValue' in f) return null;
+  return val(f);
+}
+function docOf(j) { return j ? v2({ mapValue: { fields: j.fields || {} } }) : null; }
+function query(parent, from, field, value) {
+  const q = { structuredQuery: { from: [{ collectionId: from }], where: { fieldFilter: { field: { fieldPath: field }, op: 'EQUAL', value: { stringValue: value } } } } };
+  const r = UrlFetchApp.fetch(FSB() + parent + ':runQuery', { method: 'post', contentType: 'application/json', payload: JSON.stringify(q), headers: { Authorization: 'Bearer ' + saTok() }, muteHttpExceptions: true });
+  if (r.getResponseCode() !== 200) return [];
+  return JSON.parse(r.getContentText()).filter(function (x) { return x.document; }).map(function (x) { const d = docOf(x.document); d._id = x.document.name.split('/').pop(); return d; });
+}
+function students(pid) { return query('', 'pstu', 'owner', CFG.owner).filter(function (d) { return d.p && d.p[pid]; }).map(function (d) { return d._id; }); }
+function tokensOf(uids) {
+  const out = {}, base = 'projects/' + CFG.project + '/databases/(default)/documents/push/';
+  for (let i = 0; i < uids.length; i += 100) {
+    const r = UrlFetchApp.fetch(FSB() + ':batchGet', { method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + saTok() }, muteHttpExceptions: true, payload: JSON.stringify({ documents: uids.slice(i, i + 100).map(function (u) { return base + u; }) }) });
+    if (r.getResponseCode() === 200) JSON.parse(r.getContentText()).forEach(function (x) { if (x.found) out[x.found.name.split('/').pop()] = docOf(x.found).tk || []; });
+  }
+  return out;
+}
+// Envía el aviso a todos los equipos (celular, PC) de esas personas; borra los equipos que ya no existen
+function fcm(uids, data) {
+  const T = tokensOf(uids), reqs = [], who = [], tk = saTok(), url = 'https://fcm.googleapis.com/v1/projects/' + CFG.project + '/messages:send';
+  Object.keys(T).forEach(function (uid) { (T[uid] || []).forEach(function (t) { who.push([uid, t]); reqs.push({ url: url, method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + tk }, muteHttpExceptions: true, payload: JSON.stringify({ message: { token: t, data: data, webpush: { headers: { Urgency: 'high', TTL: '86400' } } } }) }); }); });
+  let n = 0; const bad = {};
+  for (let i = 0; i < reqs.length; i += 50) UrlFetchApp.fetchAll(reqs.slice(i, i + 50)).forEach(function (r, k) {
+    const c = r.getResponseCode(), w = who[i + k];
+    if (c === 200) n++; else if (c === 404 || /UNREGISTERED|not a valid FCM registration token/.test(r.getContentText())) (bad[w[0]] = bad[w[0]] || []).push(w[1]);
+  });
+  Object.keys(bad).forEach(function (uid) { const L = (T[uid] || []).filter(function (t) { return bad[uid].indexOf(t) < 0; }); adm('/push/' + uid + '?updateMask.fieldPaths=tk', { method: 'patch', payload: { fields: { tk: { arrayValue: { values: L.map(function (t) { return { stringValue: t }; }) } } } } }); });
+  return n;
+}
+// El docente avisa a sus estudiantes: mensajes, avisos, documentos, entregas y notas
+function pushx(b) {
+  teacher(b.tok); const pid = String(b.pid || '').replace(/[^A-Za-z0-9]/g, ''); if (!pid) throw new Error('datos');
+  let all = null, n = 0;
+  (b.list || []).slice(0, 40).forEach(function (it) {
+    const x = (it.x || []).map(String); let u = it.u === '*' ? (all = all || students(pid)) : (it.u || []).map(String);
+    u = u.filter(function (id) { return x.indexOf(id) < 0; }).slice(0, 300);
+    if (u.length) n += fcm(u, { t: String(it.t || '').slice(0, 80), b: String(it.b || '').slice(0, 180), go: String(it.go || 'inicio').slice(0, 40), id: String(it.id || '').slice(0, 80) });
+  });
+  return { ok: true, n: n };
+}
+// Un estudiante avisa al docente de su mensaje privado (se comprueba que el mensaje exista, sea suyo y sea reciente)
+function push(b) {
+  const m = member(b), mid = String(b.mid || '').replace(/[^A-Za-z0-9]/g, '');
+  if (m.mine || b.c !== 'p' || !mid) throw new Error('datos');
+  const c = CacheService.getScriptCache(); if (c.get('p' + mid)) return { ok: true, n: 0 };
+  const r = adm('/portal/' + m.pid + '/c/' + m.u.localId + '/m/' + mid), d = r.j && docOf(r.j);
+  if (!d || d.from !== 's' || Date.now() - (d.at || 0) > 600000) throw new Error('permiso');
+  c.put('p' + mid, '1', 3600);
+  const st = adm('/portal/' + m.pid + '/s/' + m.u.localId), s = (st.j && docOf(st.j)) || {};
+  const body = d.t ? String(d.t).slice(0, 160) : d.aud ? 'Nota de voz' : d.vid ? 'Video' : 'Foto';
+  return { ok: true, n: fcm([CFG.owner], { t: 'Mensaje de ' + (s.name || 'un estudiante'), b: body, go: 'chat:' + m.pid + ':' + m.u.localId, tag: 'chat-' + m.u.localId, id: 'pm:' + mid }) };
+}
+const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+function cuando(ms, zona) {
+  const tz = zona || Session.getScriptTimeZone(), d = new Date(ms), h = +Utilities.formatDate(d, tz, 'H'), mi = Utilities.formatDate(d, tz, 'mm');
+  const dia = DIAS[+Utilities.formatDate(d, tz, 'u') % 7], hoy = Utilities.formatDate(new Date(), tz, 'yyyyMMdd') === Utilities.formatDate(d, tz, 'yyyyMMdd');
+  return (hoy ? 'hoy' : 'el ' + dia) + ' a las ' + ((h % 12) || 12) + ':' + mi + (h < 12 ? ' a. m.' : ' p. m.');
+}
+// Cada hora: recuerda las fechas límite (24 h y 2 h antes) solo a quien todavía no ha entregado
+function recordatorios() {
+  if (!sa()) return 'Falta la cuenta de servicio (propiedad SA).';
+  const P = PropertiesService.getScriptProperties(), now = Date.now(), sent = P.getProperties(); let n = 0;
+  Object.keys(sent).forEach(function (k) { if (k.indexOf('r|') === 0 && +sent[k] < now - 3 * 864e5) P.deleteProperty(k); });
+  query('', 'portal', 'owner', CFG.owner).forEach(function (pt) {
+    if (pt.rem === false) return;
+    const r = adm('/portal/' + pt._id + '/s?pageSize=300'); if (!r.j) return;
+    (r.j.documents || []).forEach(function (sd) {
+      const uid = sd.name.split('/').pop(), s = docOf(sd);
+      (s.pend || []).forEach(function (p) {
+        if (!p || p.done || !p.eid) return;
+        const dl = Date.parse(p.due || p.until || ''); if (!dl) return;
+        const h = (dl - now) / 36e5, tag = h <= 0 ? '' : h <= 2.5 ? '2' : h <= 24 ? '24' : ''; if (!tag) return;
+        const key = 'r|' + p.eid + '|' + uid + '|' + tag; if (sent[key]) return;
+        if (adm('/aula/' + p.eid + '/' + (p.file ? 'ent' : 'resp') + '/' + s.num).code === 200) { P.setProperty(key, String(dl)); return; }
+        n += fcm([uid], { t: tag === '2' ? 'Última llamada: ' + (p.file ? 'entrega' : 'examen') : 'Recordatorio de ' + (p.file ? 'entrega' : 'examen'), b: (p.t || '') + ' · vence ' + cuando(dl, pt.tz) + '.', go: 'entregas', id: 'rem:' + p.eid + ':' + tag });
+        P.setProperty(key, String(dl));
+      });
+    });
+  });
+  return 'Recordatorios enviados: ' + n;
+}
+// Ejecuta esta función una vez (botón ▶ Ejecutar) para que los recordatorios corran solos cada hora
+function activarRecordatorios() {
+  ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'recordatorios') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('recordatorios').timeBased().everyHours(1).create();
+  return 'Listo: los recordatorios corren cada hora.';
+}
+function trigOn() { try { return ScriptApp.getProjectTriggers().some(function (t) { return t.getHandlerFunction() === 'recordatorios'; }); } catch (e) { return false; } }
+function ping(b) {
+  if (b.tok) teacher(b.tok);
+  let ok = false, err = '';
+  if (sa()) { try { saTok(); ok = true; } catch (e) { err = String(e.message || e).slice(0, 160); } }
+  if (ok && !trigOn()) { try { activarRecordatorios(); } catch (e) { } }
+  return { ok: true, v: 5, folder: root().getName(), url: root().getUrl(), sa: ok, saErr: err, trig: trigOn() };
+}
 `;
 }
 
@@ -10918,6 +11052,14 @@ function driveDialog() {
       <li><b>Autoriza el acceso</b> con tu cuenta. Si Google dice «no verificada», toca <b>Configuración avanzada › Ir a Praxis Pro Drive</b>: el programa es tuyo y solo trabaja en la carpeta «Praxis Pro · Entregas».</li>
       <li><b>Copia la «URL de la aplicación web»</b> (termina en <code>/exec</code>) y pégala aquí:</li></ol>
       <div class="drv-upd"><b>¿Ya lo tenías conectado?</b> Para actualizarlo (por ejemplo, para las fotos en Mensajes): en Apps Script borra el código, pega el nuevo y guarda; luego <b>Implementar › Administrar implementaciones › ✎ Editar › Versión: Nueva versión › Implementar</b>. La URL no cambia.</div>
+      <details class="drv-push"><summary><b>📲 Avisos al celular y recordatorios (etapa 4)</b> · pasos de una sola vez</summary>
+        <ol class="drv-steps">
+          <li>En la <a href="https://console.firebase.google.com/project/${esc((typeof CLOUD_CONFIG === 'object' && CLOUD_CONFIG.projectId) || '')}/settings/serviceaccounts/adminsdk" target="_blank" rel="noopener">consola de Firebase › Configuración del proyecto › Cuentas de servicio</a>, toca <b>Generar nueva clave privada</b>. Se descarga un archivo <code>.json</code>. <b>Es una clave secreta: no la compartas con nadie.</b></li>
+          <li>En Apps Script, abre <b>⚙ Configuración del proyecto › Propiedades de la secuencia de comandos › Agregar propiedad</b>. Nombre: <code>SA</code>. Valor: abre el archivo <code>.json</code> con el Bloc de notas, copia <b>todo</b> su contenido y pégalo. Toca <b>Guardar</b>.</li>
+          <li>Pega el código nuevo (arriba), guarda y haz <b>Nueva versión</b> al implementar. Si Google pide permisos nuevos, acéptalos.</li>
+          <li>En el editor elige la función <b>activarRecordatorios</b> y toca <b>▶ Ejecutar</b> una vez. Desde entonces, cada hora revisa las fechas límite.</li>
+          <li>Vuelve aquí y toca <b>Probar la conexión</b>: debe decir «avisos listos».</li>
+        </ol></details>
       <label class="field">URL de la aplicación web<input type="url" id="drvUrl" value="${esc(driveUrl())}" placeholder="https://script.google.com/macros/s/…/exec" spellcheck="false"></label>
       <div class="drv-test"><button type="button" class="btn btn-secondary btn-sm" id="drvTest">${AI.refresh} Probar la conexión</button><span id="drvMsg" class="small muted"></span></div>
       <p class="muted small">Cada estudiante solo puede subir mientras la práctica está habilitada, con el código vigente y los tipos y tamaños que tú permites. Solo tú, con tu cuenta, puedes ver, descargar o borrar las entregas.</p>`,
@@ -10928,7 +11070,7 @@ function driveDialog() {
         const u = ov.querySelector('#drvUrl').value.trim();
         if (!DRIVE_RE.test(u)) return msg('Esa no parece la URL correcta: debe empezar con https://script.google.com/macros/s/ y terminar en /exec.', 'bad-t');
         const old = db.settings.drive; db.settings.drive = u; msg('<span class="spin"></span> Probando…');
-        try { const j = await driveCall('ping', {}, 40000); msg(j.v >= 4 ? `${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>` : `${AI.alert} Conectado, pero con el código anterior: para enviar videos y borrar archivos del chat, actualízalo (paso de abajo).`, j.v >= 4 ? 'ok-t' : 'warn-t'); }
+        try { const j = await driveCall('ping', {}, 40000); msg(j.v >= 5 ? `${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>. ${j.sa ? 'Avisos listos' + (j.trig ? ' y recordatorios cada hora.' : '; falta ejecutar «activarRecordatorios».') : 'Avisos al celular: ' + (j.saErr ? 'la clave SA no funciona (' + esc(j.saErr) + ').' : 'falta la propiedad SA.')}` : `${AI.alert} Conectado, pero con el código anterior: para los avisos al celular y los recordatorios, actualízalo (paso de abajo).`, j.v >= 5 ? 'ok-t' : 'warn-t'); }
         catch (e) { db.settings.drive = old; msg('No funcionó: ' + esc(e.message || e) + '. Revisa que sea «Aplicación web», con acceso para «Cualquier usuario».', 'bad-t'); }
       };
     },
@@ -11568,7 +11710,9 @@ function chatMs(x) { return x && x.toMillis ? x.toMillis() : x && x.seconds ? x.
 function chatSeenKey(pid, uid) { return 'praxisChatSeen:' + pid + ':' + uid; }
 function chatSeen(pid, uid) { try { return +localStorage.getItem(chatSeenKey(pid, uid)) || 0; } catch (e) { return 0; } }
 function chatMarkSeen(pid, uid) { const t = (Chat.threads[pid] || {})[uid]; try { localStorage.setItem(chatSeenKey(pid, uid), String(Math.max(Date.now(), t ? chatMs(t.at) : 0))); } catch (e) { } }
-function chatUnread(pid, uid) { const t = (Chat.threads[pid] || {})[uid]; return !!(t && t.by === 's' && chatMs(t.at) > chatSeen(pid, uid)); }
+function chatUnread(pid, uid) { const t = (Chat.threads[pid] || {})[uid]; return !!(t && t.by === 's' && t.ev !== 'del' && chatMs(t.at) > chatSeen(pid, uid)); }
+/** Cierra el aviso del sistema de una conversación (cuando su mensaje se borró). */
+function chatCloseNotif(uid) { try { if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistration().then(r => r && r.getNotifications({ tag: 'chat-' + uid })).then(ns => (ns || []).forEach(n => n.close())).catch(() => { }); } catch (e) { } }
 function chatUnreadCount(m) { const pid = m.portal && m.portal.pid; if (!pid) return 0; return Object.keys(Chat.threads[pid] || {}).filter(uid => chatUnread(pid, uid)).length; }
 function chatStudentOf(m, uid) { const sid = Object.keys(m.portal.accts || {}).find(k => m.portal.accts[k].uid === uid); return sid ? findStu(m, sid) : null; }
 
@@ -11649,9 +11793,10 @@ async function chatFwdDoc(x, base, pid) {
 }
 async function chatForward(m, pid, x, k) {
   const tname = (db.settings && db.settings.teacher) || 'Docente';
-  if (k.startsWith('g:')) return withTimeout(chatFs(pid).collection('g').doc(k.slice(2)).collection('m').doc().set(await chatFwdDoc(x, { from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0 }, pid)), 15000);
-  const uid = k.slice(2), s = chatStudentOf(m, uid), ref = chatFs(pid).collection('c').doc(uid), doc = await chatFwdDoc(x, { from: 't' }, pid);
-  await withTimeout(ref.collection('m').doc().set(doc), 15000);
+  if (k.startsWith('g:')) { const gd = await chatFwdDoc(x, { from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0 }, pid), r = chatFs(pid).collection('g').doc(k.slice(2)).collection('m').doc(); await withTimeout(r.set(gd), 15000); if (typeof grpPush === 'function') grpPush(pid, k.slice(2), gd, r.id); return; }
+  const uid = k.slice(2), s = chatStudentOf(m, uid), ref = chatFs(pid).collection('c').doc(uid), doc = await chatFwdDoc(x, { from: 't' }, pid), mr = ref.collection('m').doc();
+  await withTimeout(mr.set(doc), 15000);
+  if (typeof pushx === 'function') pushx(pid, [{ u: [uid], t: 'Mensaje de tu profesor', b: chatLast(doc), go: 'mensajes', id: 'pm:' + mr.id }]);
   await withTimeout(ref.set({ last: chatLast(doc), at: firebase.firestore.FieldValue.serverTimestamp(), by: 't', name: s ? s.name.slice(0, 80) : '', num: s ? s.num : 0 }), 15000);
 }
 
@@ -11668,12 +11813,14 @@ function chatEnsure() {
       Chat.threads[pid] = next;
       if (Chat.ready[pid]) Object.keys(next).forEach(uid => {
         const t = next[uid], o = prev[uid];
-        if (t.by === 's' && chatMs(t.at) && (!o || chatMs(o.at) !== chatMs(t.at)) && !(Chat.open && Chat.open.pid === pid && Chat.open.uid === uid && document.visibilityState === 'visible')) {
+        if (t.ev === 'del' && o && chatMs(o.at) !== chatMs(t.at)) chatCloseNotif(uid);
+        if (t.by === 's' && t.ev !== 'del' && chatMs(t.at) && (!o || chatMs(o.at) !== chatMs(t.at)) && !(Chat.open && Chat.open.pid === pid && Chat.open.uid === uid && document.visibilityState === 'visible')) {
           const m = findMod(want[pid]), s = m && chatStudentOf(m, uid), who = s ? s.name : (t.name || 'Un estudiante');
           toast(`Mensaje de ${who}: ${String(t.last || '').slice(0, 70)}`, 'info', 5000);
           if (typeof showNotif === 'function' && document.visibilityState !== 'visible') showNotif(`Mensaje de ${who}`, String(t.last || ''), 'chat-' + uid, m ? `mod:${m.id}:portal` : 'home');
         }
       });
+      if (Chat.ready[pid]) Object.keys(prev).forEach(uid => { if (!next[uid]) chatCloseNotif(uid); });
       Chat.ready[pid] = true;
       if (Chat.open && Chat.open.pid === pid && document.visibilityState === 'visible' && document.querySelector('#chMain.ck')) chatMarkSeen(pid, Chat.open.uid);
       chatBadges();
@@ -11724,7 +11871,7 @@ function chatOpen(uid) {
     tools: [{ label: 'Enviar una corrección', icon: AI.check, onClick: () => chatCorrections(m, s) }],
     onSend: pl => chatSend(pl), onInfo: t => toast(t, 'ok'),
     delOpts: () => ({ me: true, all: true }),
-    onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(chatFs(pid).collection('c').doc(uid).collection('m'), x),
+    onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(chatFs(pid).collection('c').doc(uid).collection('m'), x).then(() => chatThreadAfterDel(m, pid, uid)),
     fwdTargets: () => chatTargets(m, pid, 'p:' + uid), onForward: (x, k) => chatForward(m, pid, x, k),
     menu: () => chatMenu(m, pid, uid, s),
     myName: (db.settings && db.settings.teacher) || 'Docente', teacherName: 'Tú', cardFoot: `${modShort(m)} ${m.course || ''} · Praxis Pro`,
@@ -11738,6 +11885,13 @@ function chatOpen(uid) {
   setTimeout(() => Chat.kit && Chat.kit.focus(), 50);
 }
 function chatDrawMsgs() { if (!Chat.kit || !Chat.open) return; const { pid, uid } = Chat.open; Chat.kit.set(Chat.msgs.filter(x => !chatHidden(pid, 'p:' + uid, x))); }
+/** Tras borrar en privado: el resumen del hilo muestra el último mensaje que queda, sin avisar a nadie. */
+async function chatThreadAfterDel(m, pid, uid) {
+  try {
+    const ref = chatFs(pid).collection('c').doc(uid), sn = await ref.collection('m').orderBy('at').limitToLast(1).get(), d = sn.docs[sn.docs.length - 1], s = chatStudentOf(m, uid);
+    await ref.set({ last: d ? chatLast(d.data()) : '', at: firebase.firestore.FieldValue.serverTimestamp(), by: 't', name: s ? s.name.slice(0, 80) : '', num: s ? s.num : 0, ev: 'del' });
+  } catch (e) { }
+}
 /** Aviso arriba del chat si el estudiante está bloqueado o silenciado. */
 function chatStatus() {
   if (!Chat.kit || !Chat.open) return; const { pid, uid } = Chat.open, mu = chatMutedTo(pid, uid);
@@ -11788,9 +11942,11 @@ async function chatSend(pl) {
   const m = curMod(), s = chatStudentOf(m, Chat.open.uid), FV = firebase.firestore.FieldValue, open = Chat.open;
   const ref = firebase.firestore().collection('portal').doc(open.pid).collection('c').doc(open.uid);
   const doc = await chatDoc(pl, open.pid, { from: 't' });
-  await withTimeout(ref.collection('m').doc().set(doc), 15000);
+  const mr = ref.collection('m').doc();
+  await withTimeout(mr.set(doc), 15000);
   await withTimeout(ref.set({ last: chatLast(doc), at: FV.serverTimestamp(), by: 't', name: s ? s.name.slice(0, 80) : '', num: s ? s.num : 0 }), 15000);
   Chat.draft = ''; chatMarkSeen(open.pid, open.uid);
+  if (typeof pushx === 'function') pushx(open.pid, [{ u: [open.uid], t: 'Mensaje de tu profesor', b: chatLast(doc), go: 'mensajes', id: 'pm:' + mr.id }]);
 }
 /** Mensaje con la corrección de una práctica o examen de ese estudiante. */
 function chatCorrections(m, s) {
@@ -11975,7 +12131,7 @@ function grpMount(m) {
     onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(col, x),
     fwdTargets: () => chatTargets(m, pid, 'g:' + gid), onForward: (x, k) => chatForward(m, pid, x, k),
     menu: () => [{ icon: ChatKit.icons.broom, label: 'Vaciar chat', run: () => grpClearMenu(m, gid) }].concat(grpCfg(gid).team ? [{ icon: '<span style="font-size:18px">📢</span>', label: 'Enviar anuncio de exposición', run: () => grpSendAnn(m, gid) }] : []),
-    onSend: async pl => { const doc = await chatDoc(pl, pid, { from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0 }); await withTimeout(col.doc().set(doc), 15000); }
+    onSend: async pl => { const doc = await chatDoc(pl, pid, { from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0 }), r = col.doc(); await withTimeout(r.set(doc), 15000); grpPush(pid, gid, doc, r.id); }
   });
   grpRefresh(m); chatHidWatch(pid);
   Grp.mun = col.orderBy('at').limitToLast(300).onSnapshot(sn => {
@@ -12006,8 +12162,14 @@ function grpCardAll(m, gs) {
     rows: gs.groups.slice().sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999') || (a.time || '').localeCompare(b.time || '')).slice(0, 20).map(g => ({ g: g.name, tema: g.tema || '', when: grpWhen(g), mem: grpMemNames(m, g).slice(0, 300) })) };
 }
 async function grpPostCard(pid, gid, card) {
-  const tname = (db.settings && db.settings.teacher) || 'Docente';
-  await withTimeout(grpRef(pid, gid).collection('m').doc().set({ from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0, t: '', card, at: firebase.firestore.FieldValue.serverTimestamp() }), 15000);
+  const tname = (db.settings && db.settings.teacher) || 'Docente', r = grpRef(pid, gid).collection('m').doc(), doc = { from: 't', uid: Cloud.user.uid, name: tname.slice(0, 80), num: 0, t: '', card, at: firebase.firestore.FieldValue.serverTimestamp() };
+  await withTimeout(r.set(doc), 15000); grpPush(pid, gid, doc, r.id);
+}
+/** Aviso al celular de los integrantes cuando el docente escribe en un grupo. */
+function grpPush(pid, gid, doc, mid) {
+  if (typeof pushx !== 'function') return;
+  const c = grpCfg(gid, pid), u = c.team ? c.m.slice() : '*';
+  pushx(pid, [{ u, x: c.team ? [] : c.out.slice(), t: gid === 'main' ? 'Tu profesor escribió en el grupo' : 'Tu profesor escribió en ' + c.name, b: chatLast(doc), go: 'mensajes', id: 'g:' + mid }]);
 }
 function grpSendAnn(m, gid) {
   const d = grpData(m.portal.pid, gid), gs = d && (m.groups || []).find(x => x.id === d.set), g = gs && gs.groups[d.gi];
@@ -12080,6 +12242,126 @@ aulaAfterRender = function () {
     if (state.view === 'module' && state.tab === 'portal' && state.portalTab === 'grupo' && m && m.portal && m.portal.pid && document.getElementById('gpMain')) grpOpen(m);
     else if (Grp.pid) grpStop();
     if (m && document.querySelector('[data-grp-chat]')) document.querySelectorAll('[data-grp-chat]').forEach(b => grpChatBadge(m, b));
+  } catch (e) { console.error(e); }
+};
+
+/* =====================================================================
+   Etapa 4 · Avisos con la app cerrada (Firebase Cloud Messaging) y recordatorios
+   push/{uid}            → { tk: [tokens de este usuario], at }  (cada quien escribe el suyo)
+   El envío lo hace tu script de Drive (Apps Script) con la cuenta de servicio de Firebase:
+     pushx  → el docente avisa a sus estudiantes (mensajes, avisos, documentos, entregas, notas)
+     push   → un estudiante avisa al docente de su mensaje privado (el script lo comprueba)
+     recordatorios() → cada hora: fechas límite a 24 h y a 2 h (solo a quien no ha entregado)
+   ===================================================================== */
+const Push = { tok: '', st: null };
+function pushVapid() { return typeof CLOUD_VAPID === 'string' ? CLOUD_VAPID : ''; }
+function pushReady() { return !!(pushVapid() && typeof firebase === 'object' && firebase.messaging && 'serviceWorker' in navigator && location.protocol === 'https:'); }
+/** Registra este equipo para recibir los mensajes de tus estudiantes aunque Praxis Pro esté cerrado. */
+async function pushTeacherInit(quiet) {
+  if (!pushReady() || !chatOK() || !notifGranted()) return false;
+  try {
+    if (!(await firebase.messaging.isSupported())) return false;
+    const reg = await navigator.serviceWorker.getRegistration(); if (!reg) return false;
+    const t = await firebase.messaging().getToken({ vapidKey: pushVapid(), serviceWorkerRegistration: reg }); if (!t) return false;
+    Push.tok = t;
+    const key = 'praxisTok:' + Cloud.user.uid, prev = String(localStorage.getItem(key) || '').split('|');
+    if (prev[0] === t && Date.now() - (+prev[1] || 0) < 7 * 864e5) return true;
+    const ref = firebase.firestore().collection('push').doc(Cloud.user.uid), d = await ref.get();
+    const L = ((d.exists && d.data().tk) || []).filter(x => x !== t).slice(-4); L.push(t);
+    await ref.set({ tk: L, at: firebase.firestore.FieldValue.serverTimestamp() });
+    localStorage.setItem(key, t + '|' + Date.now());
+    if (!quiet) toast('Listo: este equipo te avisará de los mensajes aunque Praxis Pro esté cerrado.', 'ok', 4000);
+    return true;
+  } catch (e) { console.warn('Avisos', e); if (!quiet) toast('No se pudieron activar los avisos en este equipo: ' + (e && e.message || e), 'error', 5000); return false; }
+}
+/** Manda avisos a los celulares de tus estudiantes (no espera: si falla, la app sigue igual). */
+function pushx(pid, list) {
+  list = (list || []).filter(x => x && (x.u === '*' || (x.u && x.u.length)));
+  if (!list.length || !pid || typeof driveUrl !== 'function' || !driveUrl() || !navigator.onLine) return;
+  driveCall('pushx', { pid, list: list.slice(0, 40).map(x => ({ u: x.u, x: x.x || [], t: String(x.t || '').slice(0, 80), b: String(x.b || '').slice(0, 180), go: x.go || 'inicio', id: String(x.id || '').slice(0, 80) })) }, 60000).catch(() => { });
+}
+/** Qué cambió para cada estudiante desde el último envío (avisos, documentos, entregas y notas). */
+function pushDiff(m) {
+  const P = m.portal; if (!P || !P.on || !P.pid) return [];
+  const h = t => typeof aulaHash === 'function' ? aulaHash(String(t), 12) : String(t).slice(0, 40);
+  const now = { n: P.news.map(n => n.id), d: P.docs.map(d => d.id), s: {} }, out = [];
+  const pend = {}, grades = [];
+  m.students.forEach(s => {
+    const a = P.accts[s.id]; if (!a || !a.uid) return;
+    const pl = portalPayload(m, s), g = {};
+    pl.ras.forEach(r => { if (!r.hid) g[r.n] = h(r.pts + '|' + (r.acts || []).map(x => x.g).join(',')); });
+    const p = pl.pend.filter(x => !x.done).map(x => ({ id: (x.eid || x.t) + '|' + (x.until || ''), x }));
+    now.s[s.id] = { g, p: p.map(x => x.id) };
+    const old = P.nsig && P.nsig.s && P.nsig.s[s.id]; if (!old) return;
+    const ch = Object.keys(g).filter(n => old.g[n] !== g[n]);
+    if (ch.length) grades.push({ uid: a.uid, ras: ch, pl });
+    p.forEach(({ id, x }) => { if ((old.p || []).indexOf(id) < 0) { (pend[id] = pend[id] || { x, u: [] }).u.push(a.uid); } });
+  });
+  if (P.nsig) {
+    P.news.filter(n => (P.nsig.n || []).indexOf(n.id) < 0).forEach(n => out.push({ u: '*', t: 'Aviso de tu profesor', b: n.t, go: 'inicio', id: 'n:' + n.id }));
+    P.docs.filter(d => (P.nsig.d || []).indexOf(d.id) < 0).forEach(d => out.push({ u: '*', t: 'Documento nuevo', b: d.t + (d.ra ? ' · RA ' + d.ra : ''), go: 'documentos', id: 'd:' + d.id }));
+    Object.keys(pend).forEach(id => { const { x, u } = pend[id], dl = x.due || x.until; out.push({ u, t: x.file ? 'Nueva práctica para entregar' : 'Examen disponible', b: x.t + (dl ? ' · hasta ' + new Date(dl).toLocaleString('es-DO', { weekday: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''), go: 'entregas', id: 'p:' + h(id) }); });
+    if (P.pushNotas !== false) grades.forEach(({ uid, ras, pl }) => { const r = pl.ras.find(x => x.n === +ras[0]); out.push({ u: [uid], t: ras.length > 1 ? 'Notas publicadas' : 'Nota publicada · RA ' + ras[0], b: ras.length > 1 ? 'Tu profesor actualizó ' + ras.length + ' resultados de aprendizaje.' : (r ? 'Ahora tienes ' + r.pts + ' de ' + r.w + ' puntos.' : ''), go: 'notas', id: 'gr:' + uid.slice(0, 6) + ':' + h(ras.join(',') + Date.now()) }); });
+  }
+  P.nsig = now;
+  return out;
+}
+// Después de cada sincronización del portal: avisar lo nuevo
+const _pushSync0 = portalSync;
+portalSync = async function (m, force) {
+  const n = await _pushSync0(m, force);
+  try { const L = pushDiff(m); if (L.length) pushx(m.portal.pid, L); _portalPersist(); } catch (e) { console.warn('Avisos', e); }
+  return n;
+};
+// Tocar el aviso de un mensaje abre la conversación con ese estudiante
+const _pushGo0 = notifGo;
+notifGo = function (go) {
+  const g = String(go || '');
+  if (g.startsWith('chat:')) {
+    const [, pid, uid] = g.split(':'), m = db.modules.find(x => x.portal && x.portal.pid === pid);
+    if (m) { state.view = 'module'; state.modId = m.id; state.tab = 'portal'; state.portalTab = 'mensajes'; Chat.open = { pid, uid }; render(); window.scrollTo(0, 0); return; }
+  }
+  _pushGo0(go);
+};
+/** Estado del script de Drive (versión, cuenta de servicio, recordatorios). */
+async function pushCheck() {
+  try { const j = await driveCall('ping', {}, 40000); Push.st = { v: j.v || 0, sa: !!j.sa, trig: !!j.trig, err: j.saErr || '' }; }
+  catch (e) { Push.st = { v: 0, err: String(e && e.message || e) }; }
+  const box = document.getElementById('pushCard'); if (box) box.outerHTML = pushCardHTML(curMod());
+  pushBind();
+  return Push.st;
+}
+function pushCardHTML(m) {
+  const P = m.portal, st = Push.st, ok = (c, t, w) => `<li class="${c ? 'ok' : w ? 'wa' : 'no'}">${c ? AI.check : AI.alert}<span>${t}</span></li>`;
+  const perm = notifSupported() ? Notification.permission : 'na';
+  return `<section class="card pt-sec push-card" id="pushCard"><h3><span class="pt-ic">${AI.bell || '🔔'}</span>Avisos al celular</h3>
+    <p class="muted small">Con esto, a tus estudiantes les llegan tus mensajes, avisos, documentos, prácticas nuevas y notas <b>aunque tengan Mi aula cerrada</b>, y a ti los mensajes de ellos.</p>
+    <ul class="push-st">
+      ${ok(!!pushVapid(), 'Clave de notificaciones web de Firebase')}
+      ${st ? ok(st.v >= 5, st.v >= 5 ? 'Script de Drive actualizado (v' + st.v + ')' : 'Script de Drive: falta la versión 5 (Ajustes › Drive › Copiar código, y «Nueva versión»)') : ok(false, 'Script de Drive: sin comprobar', 1)}
+      ${st && st.v >= 5 ? ok(st.sa, st.sa ? 'Cuenta de servicio conectada' : 'Falta la cuenta de servicio en el script (ver pasos en Ajustes › Drive)') : ''}
+      ${st && st.v >= 5 ? ok(st.trig, st.trig ? 'Recordatorios automáticos activos (cada hora)' : 'Recordatorios: en Apps Script ejecuta una vez «activarRecordatorios»', !st.trig) : ''}
+      ${ok(!!Push.tok, Push.tok ? 'Este equipo recibe los mensajes de tus estudiantes' : perm === 'denied' ? 'Este navegador tiene bloqueados los avisos' : 'Este equipo todavía no recibe avisos', !Push.tok)}
+    </ul>
+    <label class="gp-sw"><span><b>Recordar fechas límite</b><small>24 horas y 2 horas antes, solo a quien no ha entregado.</small></span><input type="checkbox" class="gp-tg" id="pushRem" ${P.rem !== false ? 'checked' : ''}></label>
+    <label class="gp-sw"><span><b>Avisar cuando publico notas</b><small>Cada estudiante recibe solo las suyas.</small></span><input type="checkbox" class="gp-tg" id="pushNotas" ${P.pushNotas !== false ? 'checked' : ''}></label>
+    <div class="pt-formfoot"><button type="button" class="btn btn-ghost btn-sm" id="pushChk">${AI.refresh || '↻'} Comprobar</button>${!Push.tok && perm !== 'denied' ? `<button type="button" class="btn btn-secondary btn-sm" id="pushMe">${AI.bell || '🔔'} Recibir en este equipo</button>` : ''}</div></section>`;
+}
+function pushBind() {
+  const m = curMod(), q = id => document.getElementById(id); if (!q('pushCard') || !m || !m.portal) return;
+  q('pushRem').onchange = e => { m.portal.rem = e.target.checked; persist(); toast(e.target.checked ? 'Recordatorios activados.' : 'Recordatorios desactivados.', 'ok'); };
+  q('pushNotas').onchange = e => { m.portal.pushNotas = e.target.checked; persist(); };
+  q('pushChk').onclick = () => { q('pushChk').disabled = true; pushCheck(); };
+  const me = q('pushMe'); if (me) me.onclick = async () => { if (!notifGranted()) { const p = await Notification.requestPermission(); if (p !== 'granted') return toast('No se activaron los avisos en este navegador.', 'warn'); } if (!pushVapid()) return toast('Falta la clave de notificaciones web de Firebase.', 'warn', 4000); await pushTeacherInit(); pushCheck(); };
+}
+// Al entrar a tu cuenta: registrar este equipo (si ya diste permiso de avisos)
+const _pushPrevAfter = typeof aulaAfterRender === 'function' ? aulaAfterRender : null;
+let _pushBoot = false;
+aulaAfterRender = function () {
+  if (_pushPrevAfter) _pushPrevAfter();
+  try {
+    if (!_pushBoot && chatOK()) { _pushBoot = true; setTimeout(() => pushTeacherInit(true), 4000); }
+    if (document.getElementById('pushCard')) { pushBind(); if (!Push.st && typeof driveUrl === 'function' && driveUrl()) { Push.st = { v: 0 }; pushCheck(); } }
   } catch (e) { console.error(e); }
 };
 
