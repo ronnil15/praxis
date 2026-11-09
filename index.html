@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Praxis Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <meta name="theme-color" content="#0f172a">
 <meta name="description" content="Praxis Pro: registro de notas, asistencia y planificación por competencias">
 <link rel="manifest" href="manifest.webmanifest">
@@ -1922,6 +1924,74 @@ svg.ai { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.16em; }
 .pt-near { margin-top: .25rem; font-size: .8rem; }
 .pt-tbl .pt-user { width: 170px; max-width: 100%; }
 
+/* =====================================================================
+   Pulido visual (v26): tipografía, formularios, botones, barra y tarjetas
+   ===================================================================== */
+body { font-family: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif; font-feature-settings: "cv11", "ss01"; -webkit-font-smoothing: antialiased; letter-spacing: -.003em; }
+h1, h2, h3, h4 { letter-spacing: -.015em; }
+svg.gi { width: 1.1em; height: 1.1em; flex: none; vertical-align: -.18em; }
+.modal-icon svg.gi { width: 20px; height: 20px; vertical-align: 0; }
+.empty .big svg.gi { width: 40px; height: 40px; color: var(--muted); }
+.empty .big { line-height: 1; }
+
+/* Formularios: misma altura, peso normal y flecha propia en las listas */
+input[type=url], input[type=tel] { font: inherit; font-size: 16px; color: var(--ink); border: 1px solid var(--border-2); border-radius: 9px; background: var(--surface); padding: .5rem .65rem; outline: none; width: 100%; }
+input[type=text], input[type=number], input[type=search], input[type=date], input[type=time], input[type=email], input[type=password], input[type=url], input[type=tel], select, textarea { font-weight: 400; font-size: 15px; border-radius: 10px; border-color: var(--border-2); }
+input[type=text], input[type=search], input[type=date], input[type=time], input[type=email], input[type=password], input[type=url], input[type=tel], select { min-height: 42px; }
+input.cell { min-height: 0; }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: .75; font-weight: 400; }
+input:hover:not(:focus):not(.cell), select:hover:not(:focus), textarea:hover:not(:focus) { border-color: var(--muted); }
+select { appearance: none; -webkit-appearance: none; padding-right: 2.2rem; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .7rem center; background-size: 16px; }
+textarea { padding: .65rem .75rem; line-height: 1.5; }
+label.field, div.field { font-size: .82rem; font-weight: 600; gap: .4rem; letter-spacing: 0; }
+input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 16%, transparent); }
+
+/* Botones */
+.btn { min-height: 40px; border-radius: 10px; font-weight: 600; font-size: .875rem; letter-spacing: -.005em; }
+.btn-sm { min-height: 32px; border-radius: 8px; }
+.btn-icon { min-height: 0; }
+.btn-primary { box-shadow: 0 1px 0 rgba(255,255,255,.14) inset, 0 1px 2px rgba(15,23,42,.18); }
+.btn-secondary { box-shadow: 0 1px 2px rgba(15,23,42,.05); }
+
+/* Barra superior: botones planos, sin bordes, con el activo resaltado */
+.navbar { box-shadow: 0 1px 0 rgba(255,255,255,.04), 0 6px 16px -10px rgba(0,0,0,.5); }
+.nav-btn { background: transparent; border-color: transparent; color: #cbd5e1; font-weight: 500; font-size: .84rem; padding: .5rem .7rem; transition: background .15s, color .15s; }
+.nav-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+.nav-btn.active { background: rgba(255,255,255,.12); color: #fff; font-weight: 600; }
+.app-sub { letter-spacing: .6px; }
+
+/* Tarjetas y encabezados */
+.card { border-radius: 16px; box-shadow: 0 1px 2px rgba(15,23,42,.04); }
+:root[data-theme="dark"] .card { box-shadow: none; }
+.card-pad { padding: 1.25rem 1.4rem; }
+.section-head h2 { font-size: 1.15rem; font-weight: 700; }
+.al-col h4 { text-transform: none; letter-spacing: 0; font-size: .88rem; font-weight: 600; color: var(--ink); }
+.al-col h4 svg.gi { color: var(--muted); }
+.fest-strip-h { text-transform: none; letter-spacing: 0; font-size: .8rem; font-weight: 600; display: inline-flex; align-items: center; gap: .35rem; }
+.cloud-state { display: inline-flex; align-items: center; gap: .35rem; text-transform: none; letter-spacing: 0; font-weight: 600; }
+.badge { letter-spacing: .02em; }
+
+/* Portal en Praxis Pro: avisos y documentos más ordenados */
+.pt-two { gap: 1.1rem; }
+.pt-sec { padding: 1.3rem 1.4rem; }
+.pt-sec h3 { font-size: 1.05rem; display: flex; align-items: center; gap: .55rem; margin-bottom: .3rem; }
+.pt-sec h3 .pt-ic { width: 32px; height: 32px; border-radius: 9px; background: var(--primary-light); color: var(--primary); display: grid; place-items: center; }
+.pt-sec h3 .pt-ic svg { width: 18px; height: 18px; }
+.pt-sec > p.muted { margin-bottom: .9rem; }
+.pt-docf { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
+.pt-docf .pt-full { grid-column: 1 / -1; }
+.pt-formfoot { display: flex; justify-content: flex-end; align-items: center; gap: .6rem; margin-top: .85rem; }
+.pt-formfoot .muted { margin-right: auto; }
+.pt-list { margin-top: 1rem; border-top: 1px solid var(--border); }
+.pt-item { align-items: center; gap: .8rem; padding: .75rem 0; }
+.pt-item:first-child { border-top: 0; }
+.pt-item > div { flex: 1; min-width: 0; }
+.pt-item .pt-dk { width: 36px; height: 36px; border-radius: 9px; display: grid; place-items: center; font-size: .66rem; font-weight: 800; letter-spacing: .04em; flex: none; background: var(--surface-3); color: var(--ink-2); }
+.pt-item a { font-weight: 600; color: var(--ink); }
+.pt-item a:hover { color: var(--primary); }
+.pt-empty { display: flex; align-items: center; gap: .7rem; padding: .9rem 0 .2rem; color: var(--muted); font-size: .88rem; }
+@media (max-width: 560px) { .pt-docf { grid-template-columns: 1fr; } }
+
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
 </head>
@@ -2826,11 +2896,64 @@ const ICON = {
   history: '<svg class="i" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8z"/></svg>'
 };
 
+/* ---------- Íconos de línea en lugar de emojis ---------- */
+const GLYPH_P = {
+  users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 19a6 6 0 0 1 12 0M16 4.6a3.2 3.2 0 0 1 0 6.3M21 19a6 6 0 0 0-3.6-5.5"/>',
+  note: '<path d="M14 3.5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z"/><path d="M14 3.5v5h5M9 13h6M9 16.5h4"/>',
+  cal: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>',
+  pen: '<path d="M15 5l4 4L8 20H4v-4z"/><path d="M13 7l4 4"/>',
+  eraser: '<path d="M7 20h13M5.5 15.5l9-9a2 2 0 0 1 2.8 0l1.2 1.2a2 2 0 0 1 0 2.8L11 18H8z"/>',
+  bell: '<path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/>',
+  alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/>',
+  cloud: '<path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5a4.2 4.2 0 0 1-.5 8.5z"/>',
+  clip: '<rect x="6" y="4.5" width="12" height="16" rx="2"/><path d="M9.5 3h5v3h-5zM9 11h6M9 15h4"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+  star: '<path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 16.4l-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z"/>',
+  book: '<path d="M5 4.5h10a3 3 0 0 1 3 3v12H8a3 3 0 0 1-3-3z"/><path d="M5 16.5a3 3 0 0 1 3-3h10"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  user: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/>',
+  chart: '<path d="M4 19h16"/><rect x="5.5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="6" width="3" height="11" rx="1"/><rect x="15.5" y="13" width="3" height="4" rx="1"/>',
+  spark: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18.5 15l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>',
+  shuffle: '<path d="M16 4h4v4M4 20L20 4M20 16v4h-4M15 15l5 5M4 4l5 5"/>',
+  save: '<path d="M5 4h11l3 3v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>',
+  palette: '<path d="M12 3.5a8.5 8.5 0 0 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.3-1-1.6-1-2.6 0-.9.7-1.6 1.7-1.6h2a4 4 0 0 0 4-4c0-4-3.8-7.1-8.5-7.1z"/><circle cx="8" cy="11" r="1"/><circle cx="11" cy="7.5" r="1"/><circle cx="15.5" cy="8.5" r="1"/>',
+  school: '<path d="M3 10l9-5 9 5-9 5-9-5z"/><path d="M7 12.2V16c0 1.2 2.2 2.6 5 2.6s5-1.4 5-2.6v-3.8"/>',
+  tool: '<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3l7.5-7.5zM4 20l3-3"/>',
+  folder: '<path d="M3.5 7.5A2 2 0 0 1 5.5 5.5h3.6l2 2h7.4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>',
+  grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8"/>',
+  ban: '<circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/>',
+  inbox: '<path d="M4 13l2.5-7.5h11L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h4.5l1 2h5l1-2H20"/>',
+  down: '<path d="M4 7l6 6 4-4 6 6M20 11v4h-4"/>',
+  bolt: '<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/>',
+  shield: '<path d="M12 3.5l7 3v5.2c0 4.3-3 7.6-7 8.8-4-1.2-7-4.5-7-8.8V6.5z"/>',
+  pin: '<path d="M12 21s6-5.6 6-10.5a6 6 0 0 0-12 0C6 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>',
+  cup: '<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5v2.5M11 3.5v2.5"/>',
+  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.6 3.5 5.4 3.5 8.5s-1.1 5.9-3.5 8.5c-2.4-2.6-3.5-5.4-3.5-8.5s1.1-5.9 3.5-8.5z"/>',
+  sound: '<path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  flag: '<path d="M5 21V4.5M5 4.5h11l-2 4 2 4H5"/>',
+  help: '<circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.4M12 16.8v.1"/>'
+};
+const GLYPH_MAP = { '👥': 'users', '📝': 'note', '📅': 'cal', '🗓': 'cal', '📆': 'cal', '✏': 'pen', '✍': 'pen', '✎': 'pen', '🧹': 'eraser', '🔔': 'bell', '⚠': 'alert', '☁': 'cloud', '📋': 'clip', '✔': 'check', '★': 'star', '📘': 'book', '📒': 'book', '📜': 'note', '🕘': 'clock', '👤': 'user', '📊': 'chart', '🎉': 'spark', '✨': 'spark', '🎲': 'shuffle', '🔀': 'shuffle', '💾': 'save', '🎨': 'palette', '🏫': 'school', '🛠': 'tool', '📂': 'folder', '🗂': 'folder', '🧩': 'grid', '🎯': 'target', '🚫': 'ban', '📭': 'inbox', '📉': 'down', '⚡': 'bolt', '⚙': 'gear', '🛡': 'shield', '📍': 'pin', '📌': 'pin', '☕': 'cup', '🌎': 'globe', '🔊': 'sound', '🇩🇴': 'flag', '❔': 'help', '👋': '' };
+const GLYPH_RE = new RegExp('(?:' + Object.keys(GLYPH_MAP).sort((a, b) => b.length - a.length).join('|') + ')\\uFE0F?\\s?', 'gu');
+function glyphSvg(k) { return k ? `<svg class="gi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPH_P[k]}</svg>` : ''; }
+function noEmoji(t) { return String(t == null ? '' : t).replace(GLYPH_RE, '').trim(); }
+// Cambia los emojis del HTML por íconos de línea (solo en el texto, nunca dentro de atributos ni de <option>)
+function glyph(html) {
+  html = String(html == null ? '' : html); if (!GLYPH_RE.test(html)) return html; GLYPH_RE.lastIndex = 0;
+  let plain = 0;
+  return html.split(/(<[^>]*>)/).map(part => {
+    if (part[0] === '<') { const t = /^<\/?(option|textarea|title|select)\b/i.exec(part); if (t) plain += part[1] === '/' ? -1 : 1; return part; }
+    return part.replace(GLYPH_RE, m => { const e = m.replace(/️?\s?$/u, ''), sp = /\s$/.test(m) ? ' ' : ''; return plain > 0 ? '' : glyphSvg(GLYPH_MAP[e]) + (GLYPH_MAP[e] ? sp : ''); });
+  }).join('');
+}
+
 /* ---------- Avisos ---------- */
 function toast(msg, type = 'info', ms = 2600) {
   const box = $('#toasts'); if (!box) return;
   const t = document.createElement('div');
-  t.className = 'toast toast-' + type; t.textContent = msg;
+  t.className = 'toast toast-' + type; t.textContent = noEmoji(msg);
   box.appendChild(t);
   while (box.children.length > 3) box.firstElementChild.remove();
   requestAnimationFrame(() => t.classList.add('show'));
@@ -2842,9 +2965,9 @@ function openModal({ title, sub = '', icon = '•', body = '', actions = [], wid
   const ov = document.createElement('div');
   ov.className = 'modal-overlay';
   ov.innerHTML = `<div class="modal ${wide ? 'modal-wide' : ''}" role="dialog" aria-modal="true">
-    <div class="modal-head"><div class="modal-icon">${icon}</div><div><h3>${esc(title)}</h3>${sub ? `<p>${esc(sub)}</p>` : ''}</div>
+    <div class="modal-head"><div class="modal-icon">${glyph(icon) || icon}</div><div><h3>${esc(title)}</h3>${sub ? `<p>${esc(sub)}</p>` : ''}</div>
     <button class="modal-x" data-close aria-label="Cerrar">✕</button></div>
-    <div class="modal-body">${body}</div><div class="modal-foot"></div></div>`;
+    <div class="modal-body">${glyph(body)}</div><div class="modal-foot"></div></div>`;
   const foot = ov.querySelector('.modal-foot');
   const close = () => { ov.classList.remove('open'); document.removeEventListener('keydown', onKey, true); setTimeout(() => ov.remove(), 180); };
   actions.forEach(a => {
@@ -2909,11 +3032,11 @@ function render() {
   const app = $('#app');
   try {
     ensureShape();
-    if (state.view === 'module' && curMod()) app.innerHTML = renderModule(curMod());
-    else if (state.view === 'calendar') app.innerHTML = renderCalendar();
-    else if (state.view === 'semana') app.innerHTML = renderMiSemana();
-    else if (state.view === 'horario') app.innerHTML = renderHorario();
-    else { state.view = 'home'; state.modId = null; app.innerHTML = renderHome(); }
+    if (state.view === 'module' && curMod()) app.innerHTML = glyph(renderModule(curMod()));
+    else if (state.view === 'calendar') app.innerHTML = glyph(renderCalendar());
+    else if (state.view === 'semana') app.innerHTML = glyph(renderMiSemana());
+    else if (state.view === 'horario') app.innerHTML = glyph(renderHorario());
+    else { state.view = 'home'; state.modId = null; app.innerHTML = glyph(renderHome()); }
   } catch (err) {
     console.error(err);
     app.innerHTML = `<div class="empty"><div class="big">🛠️</div><p><strong>Esta pantalla no se pudo mostrar.</strong></p><p class="small">Tus datos están a salvo. Detalle técnico: ${esc(err && err.message || err)}</p><p style="margin-top:1rem"><button class="btn btn-primary" data-act="go-home">Volver al inicio</button></p></div>`;
@@ -7668,6 +7791,7 @@ function playNotifSound(name, vol) {
 async function showNotif(title, body, tag, go) {
   if (tag !== 'test-silent') playNotifSound();
   if (!notifGranted()) return false;
+  title = noEmoji(title); body = noEmoji(body);
   const opt = { body, tag, icon: 'icon-192.png', badge: 'icon-192.png', data: { go }, renotify: true };
   try {
     if ('serviceWorker' in navigator && location.protocol === 'https:') {
@@ -7837,7 +7961,7 @@ function cloudSetStatus(s) {
   const el = document.getElementById('cloudState'); if (!el) return;
   const map = { sync: ['cloud-ok', '☁ En la nube', 'Todo está guardado en tu cuenta'], up: ['cloud-up', '☁ Subiendo…', 'Subiendo cambios a tu cuenta'], off: ['cloud-off', '☁ Sin conexión', 'Sin internet: tus cambios se guardan en este equipo y se suben solos al volver la conexión'], err: ['cloud-err', '☁ Error', 'No se pudo subir a la nube. Tus datos siguen en este equipo.'] };
   const [c, t, tt] = map[s] || map.sync;
-  el.className = 'cloud-state ' + c; el.textContent = t; el.title = tt; el.hidden = false;
+  el.className = 'cloud-state ' + c; el.innerHTML = glyph(esc(t)); el.title = tt; el.hidden = false;
 }
 
 /* ---------- Pantalla de acceso ---------- */
@@ -10181,19 +10305,21 @@ function portalUserCell(m, s) {
 }
 function portalAvisosHTML(m) {
   const P = m.portal, raOpts = m.ras.map((ra, i) => `<option value="${i + 1}">RA ${i + 1}</option>`).join('');
+  const DK = { pdf: 'PDF', doc: 'DOC', ppt: 'PPT', xls: 'XLS', video: 'VID', link: 'WEB' };
   return `<div class="pt-two">
-    <section class="card pt-sec"><h3>Avisos</h3>
+    <section class="card pt-sec"><h3><span class="pt-ic">${AI.alert}</span>Avisos</h3>
+      <p class="muted small">Les llega como notificación a los estudiantes que tengan el portal abierto o instalado.</p>
       <label class="field">Nuevo aviso<textarea id="pnText" rows="3" maxlength="500" placeholder="Ej.: Traigan su laptop el lunes."></textarea></label>
-      <div class="row-wrap"><button class="btn btn-primary" data-act="portal-news-add">${AI.send || AI.arrow} Publicar aviso</button></div>
-      <div class="pt-list">${P.news.slice().reverse().map(n => `<div class="pt-item"><div><div>${esc(n.t)}</div><small class="muted">${esc(aulaWhen(n.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-news-del" data-id="${n.id}" title="Quitar">${AI.trash}</button></div>`).join('') || '<p class="muted small">Todavía no hay avisos.</p>'}</div></section>
-    <section class="card pt-sec"><h3>Documentos y enlaces</h3>
-      <p class="muted small">Pega el enlace de un archivo (Google Drive, OneDrive…) o de un video. Comparte el archivo como «Cualquier persona con el enlace puede ver».</p>
-      <div class="form-grid"><label class="field">Título<input type="text" id="pdT" maxlength="120" placeholder="Ej.: Guía RA 2 · Formularios"></label>
-        <label class="field">Enlace<input type="url" id="pdU" maxlength="600" placeholder="https://…"></label>
+      <div class="pt-formfoot"><span class="muted small">Máximo 500 caracteres</span><button class="btn btn-primary" data-act="portal-news-add">${AI.arrow} Publicar aviso</button></div>
+      <div class="pt-list">${P.news.slice().reverse().map(n => `<div class="pt-item"><span class="pt-dk">${AI.alert}</span><div><div style="white-space:pre-wrap">${esc(n.t)}</div><small class="muted">${esc(aulaWhen(n.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-news-del" data-id="${n.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.inbox} Todavía no hay avisos.</div>`}</div></section>
+    <section class="card pt-sec"><h3><span class="pt-ic">${AI.folder}</span>Documentos y enlaces</h3>
+      <p class="muted small">Pega el enlace de un archivo (Google Drive, OneDrive…) o de un video. Compártelo como «Cualquier persona con el enlace puede ver».</p>
+      <div class="pt-docf"><label class="field pt-full">Título<input type="text" id="pdT" maxlength="120" placeholder="Ej.: Guía RA 2 · Formularios"></label>
+        <label class="field pt-full">Enlace<input type="url" id="pdU" maxlength="600" placeholder="https://drive.google.com/…"></label>
         <label class="field">Tipo<select id="pdK">${Object.entries(PORTAL_DOC_KINDS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label>
-        <label class="field">RA<select id="pdR"><option value="">General</option>${raOpts}</select></label></div>
-      <div class="row-wrap"><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar</button></div>
-      <div class="pt-list">${P.docs.slice().reverse().map(d => `<div class="pt-item"><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.t)}</a><small class="muted"> · ${esc(PORTAL_DOC_KINDS[d.k] || 'Enlace')}${d.ra ? ' · RA ' + esc(d.ra) : ''} · ${esc(aulaWhen(d.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-doc-del" data-id="${d.id}" title="Quitar">${AI.trash}</button></div>`).join('') || '<p class="muted small">Todavía no hay documentos.</p>'}</div></section></div>`;
+        <label class="field">Resultado de aprendizaje<select id="pdR"><option value="">General (todo el módulo)</option>${raOpts}</select></label></div>
+      <div class="pt-formfoot"><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar documento</button></div>
+      <div class="pt-list">${P.docs.slice().reverse().map(d => `<div class="pt-item"><span class="pt-dk">${DK[d.k] || 'WEB'}</span><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.t)}</a><div><small class="muted">${esc(PORTAL_DOC_KINDS[d.k] || 'Enlace')}${d.ra ? ' · RA ' + esc(d.ra) : ' · General'} · ${esc(aulaWhen(d.at))}</small></div></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-doc-del" data-id="${d.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.folder} Todavía no hay documentos.</div>`}</div></section></div>`;
 }
 
 /* ---------- Diálogos ---------- */
