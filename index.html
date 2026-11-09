@@ -10684,11 +10684,11 @@ function driveScript() {
 // © ${new Date().getFullYear()} ${AppConfig.author}. Pega este código completo en Apps Script.
 const CFG = { project: '${C.projectId || ''}', key: '${C.apiKey || ''}', owner: '${uid}', root: 'Praxis Pro · Entregas' };
 
-function doGet() { return out({ ok: true, app: 'praxis-drive', v: 2 }); }
+function doGet() { return out({ ok: true, app: 'praxis-drive', v: 3 }); }
 function doPost(e) {
   try {
     const b = JSON.parse(e.postData.contents);
-    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg }[b.a];
+    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cget: cget }[b.a];
     return out(F ? F(b) : { ok: false, e: 'accion' });
   } catch (err) { return out({ ok: false, e: String(err && err.message || err) }); }
 }
@@ -10766,7 +10766,7 @@ function who(tok) {
   if (r.getResponseCode() !== 200) throw new Error('sesion');
   const u = (JSON.parse(r.getContentText()).users || [])[0]; if (!u) throw new Error('sesion'); return u;
 }
-function cimg(b) {
+function member(b) {
   const u = who(b.tok), pid = String(b.pid || '').replace(/[^A-Za-z0-9]/g, '');
   if (!pid) throw new Error('datos');
   if (u.localId !== CFG.owner) {
@@ -10775,14 +10775,31 @@ function cimg(b) {
     const p = ((((JSON.parse(r.getContentText()).fields || {}).p || {}).mapValue || {}).fields) || {};
     if (!p[pid]) throw new Error('permiso');
   }
+  return { u: u, pid: pid, mine: u.localId === CFG.owner };
+}
+const MEDIA = { 'image/jpeg': 'jpg', 'audio/webm': 'webm', 'audio/mp4': 'm4a', 'audio/ogg': 'ogg', 'audio/mpeg': 'mp3', 'audio/aac': 'aac' };
+// Fotos y notas de voz del chat: las sube el docente o un estudiante de ese portal
+function cimg(b) {
+  const m = member(b), ty = String(b.ty || 'image/jpeg').split(';')[0];
+  if (!MEDIA[ty]) throw new Error('tipo');
   const bytes = Utilities.base64Decode(String(b.data || ''));
   if (!bytes.length || bytes.length > 8 * 1048576) throw new Error('tamano');
-  const dir = folder(folder(folder(root(), 'Mensajes'), pid), u.localId === CFG.owner ? 'Docente' : u.localId);
-  const f = dir.createFile(Utilities.newBlob(bytes, 'image/jpeg', 'foto-' + Date.now() + '.jpg'));
-  try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) { }
+  const dir = folder(folder(folder(root(), 'Mensajes'), m.pid), m.mine ? 'Docente' : m.u.localId);
+  const f = dir.createFile(Utilities.newBlob(bytes, ty, (ty.indexOf('audio') === 0 ? 'voz-' : 'foto-') + Date.now() + '.' + MEDIA[ty]));
+  if (ty.indexOf('image') === 0) { try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) { } }
   return { ok: true, id: f.getId() };
 }
-function ping(b) { if (b.tok) teacher(b.tok); return { ok: true, v: 2, folder: root().getName(), url: root().getUrl() }; }
+// Escuchar una nota de voz: solo quien pertenece a ese portal, y solo archivos de su carpeta de Mensajes
+function cget(b) {
+  const m = member(b);
+  let f; try { f = DriveApp.getFileById(String(b.id || '')); } catch (e) { throw new Error('no-existe'); }
+  const ps = f.getParents(); let ok = false;
+  while (ps.hasNext()) { const p = ps.next(), pp = p.getParents(); while (pp.hasNext()) { const g = pp.next(); if (g.getName() === m.pid) { const gg = g.getParents(); while (gg.hasNext()) if (gg.next().getName() === 'Mensajes') ok = true; } } }
+  if (!ok) throw new Error('permiso');
+  const bl = f.getBlob();
+  return { ok: true, ty: bl.getContentType(), data: Utilities.base64Encode(bl.getBytes()) };
+}
+function ping(b) { if (b.tok) teacher(b.tok); return { ok: true, v: 3, folder: root().getName(), url: root().getUrl() }; }
 `;
 }
 
@@ -10815,7 +10832,7 @@ function driveDialog() {
         const u = ov.querySelector('#drvUrl').value.trim();
         if (!DRIVE_RE.test(u)) return msg('Esa no parece la URL correcta: debe empezar con https://script.google.com/macros/s/ y terminar en /exec.', 'bad-t');
         const old = db.settings.drive; db.settings.drive = u; msg('<span class="spin"></span> Probando…');
-        try { const j = await driveCall('ping', {}, 40000); msg(j.v >= 2 ? `${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>` : `${AI.alert} Conectado, pero con el código anterior: para enviar fotos en Mensajes, actualízalo (paso de abajo).`, j.v >= 2 ? 'ok-t' : 'warn-t'); }
+        try { const j = await driveCall('ping', {}, 40000); msg(j.v >= 3 ? `${AI.check} Conectado. Carpeta: <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.folder)}</a>` : `${AI.alert} Conectado, pero con el código anterior: para enviar fotos y notas de voz en Mensajes, actualízalo (paso de abajo).`, j.v >= 3 ? 'ok-t' : 'warn-t'); }
         catch (e) { db.settings.drive = old; msg('No funcionó: ' + esc(e.message || e) + '. Revisa que sea «Aplicación web», con acceso para «Cualquier usuario».', 'bad-t'); }
       };
     },
@@ -10890,6 +10907,19 @@ ACTIONS['drive-setup'] = () => driveDialog();
     '.ck-lb{position:fixed;inset:0;z-index:2000;background:rgba(5,8,16,.88);display:flex;align-items:center;justify-content:center;padding:20px;animation:ckFade .2s both;cursor:zoom-out}@keyframes ckFade{from{opacity:0}}',
     '.ck-lb img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 30px 60px rgba(0,0,0,.5);animation:ckIn .3s both}',
     '.ck-lb a,.ck-lb button{position:absolute;top:16px;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer}.ck-lb button{right:16px}.ck-lb a{right:66px}',
+    '.ck-aud{display:flex;align-items:center;gap:10px;min-width:230px;padding:2px 0}',
+    '.ck-pl{width:38px;height:38px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;flex:none;padding:0;background:var(--ck-acc);color:#fff;transition:transform .12s}.ck-pl:active{transform:scale(.92)}.ck-pl svg{width:18px;height:18px}',
+    '.ck-me .ck-pl{background:#fff;color:var(--ck-acc)}',
+    '.ck-wv{position:relative;flex:1;height:30px;display:flex;align-items:center;gap:2px;cursor:pointer}',
+    '.ck-wv i{flex:1;min-width:2px;border-radius:2px;background:currentColor;opacity:.32;transition:opacity .15s}.ck-wv i.on{opacity:1}',
+    '.ck-ad{font-size:12px;font-variant-numeric:tabular-nums;opacity:.85;min-width:34px;text-align:right}',
+    '.ck-sp{border:0;border-radius:99px;padding:2px 7px;white-space:nowrap;min-width:32px;font:700 11px Inter,system-ui,sans-serif;cursor:pointer;background:color-mix(in srgb,currentColor 14%,transparent);color:inherit}',
+    '.ck-rec{display:flex;align-items:center;gap:10px;padding:4px 4px 4px 12px;min-height:48px;animation:ckIn .2s both}',
+    '.ck-dot{width:10px;height:10px;border-radius:50%;background:#e5484d;animation:ckPulse 1.1s infinite}@keyframes ckPulse{50%{opacity:.25}}',
+    '.ck-rt{font-variant-numeric:tabular-nums;font-weight:600;font-size:15px;min-width:44px}',
+    '.ck-lv{flex:1;display:flex;align-items:center;gap:2px;height:28px;overflow:hidden;justify-content:flex-end}.ck-lv i{width:3px;border-radius:2px;background:var(--ck-acc);flex:none}',
+    '.ck-rec .ck-aud{flex:1;color:var(--ck-ink)}.ck-rec .ck-pl{width:34px;height:34px}',
+    '.ck-ib.danger:hover{background:color-mix(in srgb,#e5484d 12%,transparent);color:#e5484d}',
     '@media (max-width:640px){.ck-in{padding:14px 12px 8px}.ck-b{max-width:84%}.ck-hint{display:none}.ck-h{padding:12px 14px}.ck-c{padding:8px 10px 10px}.ck-down{bottom:80px}}',
     '@media (prefers-reduced-motion:reduce){.ck *{animation:none!important;transition:none!important}}'
   ].join('\n');
@@ -10902,6 +10932,11 @@ ACTIONS['drive-setup'] = () => driveDialog();
     send: ic('<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>'),
     x: ic('<path d="M6 6l12 12M18 6L6 18"/>'), down: ic('<path d="M6 9l6 6 6-6"/>'), lock: ic('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
     check: ic('<path d="M5 12.5l4.5 4.5L19 7"/>'), clock: ic('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'), alert: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16.2v.1"/>'),
+    mic: ic('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>'),
+    play: '<svg class="ck-i" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+    pause: '<svg class="ck-i" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6.5" y="5" width="4" height="14" rx="1.2"/><rect x="13.5" y="5" width="4" height="14" rx="1.2"/></svg>',
+    trash: ic('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/>'),
+    stop: '<svg class="ck-i" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"/></svg>',
     chat: ic('<path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 20 12z"/>'), award: ic('<circle cx="12" cy="9" r="5"/><path d="M8.5 13l-1.5 8 5-3 5 3-1.5-8"/>'), ext: ic('<path d="M14 5h5v5M19 5l-8 8"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>')
   };
   function msOf(x) { return x && x.toMillis ? x.toMillis() : x && x.seconds ? x.seconds * 1000 : typeof x === 'number' ? x : Date.parse(x) || 0; }
@@ -10954,7 +10989,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
       '<div class="ck-box"><button type="button" class="ck-ib" data-emo title="Emojis" aria-label="Emojis">' + I.smile + '</button>' +
       '<textarea rows="1" maxlength="1000" placeholder="' + esc(o.placeholder || 'Escribe un mensaje…') + '" aria-label="Mensaje"></textarea>' +
       (o.upload ? '<button type="button" class="ck-ib" data-att title="Adjuntar una imagen" aria-label="Adjuntar una imagen">' + I.img + '</button><input type="file" accept="image/*" hidden>' : '') +
-      '<button type="button" class="ck-send" disabled aria-label="Enviar">' + I.send + '</button></div>' +
+      '<button type="button" class="ck-send" disabled aria-label="Enviar">' + I.send + '</button></div><div class="ck-recbox" hidden></div>' +
       '<div class="ck-hint"><span>Enter para enviar · Shift+Enter para otra línea</span><span data-cnt></span></div></div>' +
       (o.upload ? '<div class="ck-drop">' + I.img + ' Suelta la imagen para adjuntarla</div>' : '');
     var $ = function (s) { return el.querySelector(s); };
@@ -10964,10 +10999,11 @@ ACTIONS['drive-setup'] = () => driveDialog();
     if (o.draft) ta.value = o.draft;
     var touch = matchMedia('(hover: none)').matches;
     var grow = function () { ta.style.height = 'auto'; ta.style.height = Math.min(160, ta.scrollHeight) + 'px'; };
-    var sync = function () { send.disabled = !(ta.value.trim() || file); var n = ta.value.length, c = $('[data-cnt]'); if (c) c.textContent = n > 800 ? n + '/1000' : ''; grow(); if (o.onDraft) o.onDraft(ta.value); };
+    var canRec = !!(o.upload && G.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia), micMode = false;
+    var sync = function () { var empty = !(ta.value.trim() || file); micMode = canRec && empty; send.disabled = empty && !canRec; send.innerHTML = micMode ? I.mic : I.send; send.setAttribute('aria-label', micMode ? 'Grabar nota de voz' : 'Enviar'); send.title = micMode ? 'Grabar una nota de voz' : 'Enviar'; var n = ta.value.length, c = $('[data-cnt]'); if (c) c.textContent = n > 800 ? n + '/1000' : ''; grow(); if (o.onDraft) o.onDraft(ta.value); };
     ta.addEventListener('input', sync);
     ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !touch && !e.isComposing) { e.preventDefault(); doSend(); } });
-    send.onclick = doSend;
+    send.onclick = function () { if (micMode) startRec(); else doSend(); };
     var nearBottom = function () { return list.scrollHeight - list.scrollTop - list.clientHeight < 80; };
     var toBottom = function (smooth) { list.style.scrollBehavior = smooth ? 'smooth' : 'auto'; list.scrollTop = list.scrollHeight; unseen = 0; down.hidden = true; stick = true; };
     list.addEventListener('scroll', function () { if (nearBottom()) { unseen = 0; down.hidden = true; } });
@@ -11014,6 +11050,71 @@ ACTIONS['drive-setup'] = () => driveDialog();
       el.addEventListener('dragover', function (e) { e.preventDefault(); });
       el.addEventListener('drop', function (e) { e.preventDefault(); dc = 0; el.classList.remove('dragging'); setFile(e.dataTransfer.files[0]); });
     }
+    // ---------- Notas de voz ----------
+    var rec = null, box = $('.ck-box'), recbox = $('.ck-recbox');
+    function fmt(sec) { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + ('0' + sec % 60).slice(-2); }
+    function startRec() {
+      if (rec) return;
+      navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(function (stream) {
+        var ty = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/webm'].filter(function (t) { return MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t); })[0] || '';
+        var mr = new MediaRecorder(stream, ty ? { mimeType: ty, audioBitsPerSecond: 32000 } : undefined), parts = [], t0 = Date.now();
+        rec = { mr: mr, stream: stream, parts: parts, t0: t0, cancel: false };
+        mr.ondataavailable = function (e) { if (e.data && e.data.size) parts.push(e.data); };
+        mr.onstop = function () {
+          stream.getTracks().forEach(function (t) { t.stop(); }); clearInterval(rec.tick); if (rec.ac) try { rec.ac.close(); } catch (e) { }
+          var d = (Date.now() - t0) / 1000, r = rec; rec = null;
+          if (r.cancel || d < 0.8) { closeRec(); return; }
+          var blob = new Blob(parts, { type: (mr.mimeType || ty || 'audio/webm').split(';')[0] });
+          preview(blob, d);
+        };
+        mr.start(250);
+        box.hidden = true; recbox.hidden = false;
+        recbox.innerHTML = '<div class="ck-rec"><span class="ck-dot"></span><span class="ck-rt">0:00</span><div class="ck-lv"></div><button type="button" class="ck-ib danger" data-rc="x" title="Descartar" aria-label="Descartar">' + I.trash + '</button><button type="button" class="ck-send" data-rc="stop" title="Terminar" aria-label="Terminar">' + I.stop + '</button></div>';
+        recbox.querySelector('[data-rc=x]').onclick = function () { if (rec) { rec.cancel = true; rec.mr.stop(); } };
+        recbox.querySelector('[data-rc=stop]').onclick = function () { if (rec) rec.mr.stop(); };
+        var lv = recbox.querySelector('.ck-lv'), an = null, buf = null;
+        try { var AC = G.AudioContext || G.webkitAudioContext; rec.ac = new AC(); an = rec.ac.createAnalyser(); an.fftSize = 256; rec.ac.createMediaStreamSource(stream).connect(an); buf = new Uint8Array(an.fftSize); } catch (e) { }
+        rec.tick = setInterval(function () {
+          if (!rec) return; var sec = (Date.now() - t0) / 1000; recbox.querySelector('.ck-rt').textContent = fmt(sec);
+          var v = .15; if (an) { an.getByteTimeDomainData(buf); var mx = 0; for (var i = 0; i < buf.length; i++) mx = Math.max(mx, Math.abs(buf[i] - 128)); v = Math.min(1, .12 + mx / 60); }
+          var b = document.createElement('i'); b.style.height = Math.round(4 + v * 24) + 'px'; lv.appendChild(b); if (lv.children.length > 80) lv.removeChild(lv.firstChild);
+          if (sec >= (o.maxRec || 120)) rec.mr.stop();
+        }, 120);
+      }).catch(function () { if (o.onError) o.onError('No se pudo usar el micrófono. Revisa que el navegador tenga permiso.'); });
+    }
+    function closeRec() { recbox.hidden = true; recbox.innerHTML = ''; box.hidden = false; ta.focus({ preventScroll: true }); }
+    function preview(blob, d) {
+      var u = URL.createObjectURL(blob);
+      recbox.innerHTML = '<div class="ck-rec">' + audHTML({ local: u, d: d, id: 'prev' }) + '<button type="button" class="ck-ib danger" data-rc="x" title="Borrar" aria-label="Borrar">' + I.trash + '</button><button type="button" class="ck-send" data-rc="go" title="Enviar nota de voz" aria-label="Enviar nota de voz">' + I.send + '</button></div>';
+      recbox.querySelector('[data-rc=x]').onclick = function () { stopAudio(); URL.revokeObjectURL(u); closeRec(); };
+      recbox.querySelector('[data-rc=go]').onclick = function () { stopAudio(); closeRec(); sendAudio(blob, d, u); };
+    }
+    function sendAudio(blob, d, u) {
+      var tmp = { id: 'tmp' + (++tmpN), from: me, t: '', at: Date.now(), pend: 1, aud: { local: u, d: d } };
+      msgs.push(tmp); draw(true);
+      Promise.resolve(o.onSend({ t: '', audio: { blob: blob, d: Math.round(d * 10) / 10, ty: blob.type } })).then(function () { tmp.pend = 0; tmp.sent = 1; draw(); }, function (e) { tmp.pend = 0; tmp.fail = 1; draw(); if (o.onError) o.onError(String(e && e.message || e || 'No se pudo enviar.')); });
+    }
+    // Reproductor
+    var player = null, playing = null, cache = {};
+    function bars(seed) { var h = 0, out = ''; for (var i = 0; i < String(seed).length; i++) h = (h * 31 + String(seed).charCodeAt(i)) >>> 0; for (var k = 0; k < 34; k++) { h = (h * 1103515245 + 12345) >>> 0; var v = 4 + (h % 22); out += '<i style="height:' + v + 'px"></i>'; } return out; }
+    function audHTML(a) { return '<div class="ck-aud" data-aid="' + esc(a.id || '') + '" data-local="' + esc(a.local || '') + '" data-d="' + (a.d || 0) + '"><button type="button" class="ck-pl" aria-label="Reproducir">' + I.play + '</button><div class="ck-wv">' + bars(a.id || a.local) + '</div><span class="ck-ad">' + fmt(a.d || 0) + '</span><button type="button" class="ck-sp" title="Velocidad">1×</button></div>'; }
+    function stopAudio() { if (player) { player.pause(); } if (playing) { var b = playing.querySelector('.ck-pl'); if (b) b.innerHTML = I.play; } playing = null; }
+    function paint(el, k) { var bs = el.querySelectorAll('.ck-wv i'), n = Math.round(k * bs.length); for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', i < n); }
+    el.addEventListener('click', function (e) {
+      var a = e.target.closest('.ck-aud'); if (!a) return;
+      if (e.target.closest('.ck-sp')) { var sp = e.target.closest('.ck-sp'), r = { '1×': 1.5, '1.5×': 2, '2×': 1 }[sp.textContent] || 1; sp.textContent = r + '×'; a.setAttribute('data-rate', r); if (player && playing === a) player.playbackRate = r; return; }
+      var wv = e.target.closest('.ck-wv');
+      if (playing === a && player) { if (wv && player.duration) { var rc = wv.getBoundingClientRect(); player.currentTime = Math.max(0, Math.min(1, (e.clientX - rc.left) / rc.width)) * player.duration; return; } if (player.paused) { player.play(); a.querySelector('.ck-pl').innerHTML = I.pause; } else { player.pause(); a.querySelector('.ck-pl').innerHTML = I.play; } return; }
+      stopAudio(); playing = a; var btn = a.querySelector('.ck-pl'); btn.innerHTML = '<span class="ck-load" style="width:16px;height:16px;border-width:2px;border-color:rgba(127,127,127,.35);border-top-color:currentColor"></span>';
+      var id = a.getAttribute('data-aid'), local = a.getAttribute('data-local');
+      var src = local ? Promise.resolve(local) : cache[id] ? Promise.resolve(cache[id]) : o.getMedia ? Promise.resolve(o.getMedia(id)).then(function (b) { return (cache[id] = URL.createObjectURL(b)); }) : Promise.reject(new Error('audio'));
+      src.then(function (u) {
+        if (playing !== a) return;
+        if (!player) { player = new Audio(); player.addEventListener('timeupdate', function () { if (playing && player.duration && isFinite(player.duration)) { paint(playing, player.currentTime / player.duration); playing.querySelector('.ck-ad').textContent = fmt(player.currentTime); } }); player.addEventListener('ended', function () { if (playing) { paint(playing, 0); playing.querySelector('.ck-ad').textContent = fmt(+playing.getAttribute('data-d')); } stopAudio(); }); }
+        player.src = u; player.playbackRate = +(a.getAttribute('data-rate') || 1);
+        return player.play().then(function () { btn.innerHTML = I.pause; });
+      }).catch(function () { btn.innerHTML = I.play; playing = null; if (o.onError) o.onError('No se pudo reproducir la nota de voz.'); });
+    });
     function doSend() {
       var t = ta.value.trim(), f = file; if (!t && !f) return;
       var tmp = { id: 'tmp' + (++tmpN), from: me, t: t, at: Date.now(), pend: 1, local: f ? f._u : '' };
@@ -11032,27 +11133,29 @@ ACTIONS['drive-setup'] = () => driveDialog();
         var isFirst = !p || p.from !== x.from || x.at - p.at > 4 * 6e4 || dayOf(p.at) !== d, isLast = !n || n.from !== x.from || n.at - x.at > 4 * 6e4 || dayOf(n.at) !== d;
         var isNew = !first && !seen[x.id]; if (isNew && x.from !== me) fresh++; seen[x.id] = 1;
         var cor = /^Corrección de «/.test(x.t || ''), big = !x.img && !x.local && onlyEmoji(x.t);
+        var aud = x.aud ? audHTML({ id: x.aud.id || '', local: x.aud.local || '', d: x.aud.d || 0 }) : '';
         var img = x.img && x.img.id ? '<button type="button" class="ck-img" data-id="' + esc(x.img.id) + '"><img loading="lazy" alt="Imagen" src="' + esc(thumb(x.img.id)) + '"' + (x.img.w ? ' width="' + x.img.w + '" height="' + x.img.h + '"' : '') + ' onerror="this.parentNode.outerHTML=\'<small>Imagen no disponible</small>\'"></button>' : x.local ? '<button type="button" class="ck-img" data-local="' + esc(x.local) + '"><img alt="Imagen" src="' + esc(x.local) + '"></button>' : '';
         var st = x.from === me ? (x.fail ? I.alert : x.pend ? I.clock : I.check) : '';
         h += '<div class="ck-m ' + (x.from === me ? 'ck-me' : 'ck-th') + (isFirst ? ' ck-first' : '') + (isLast ? ' ck-last' : '') + (isNew ? ' ck-new' : '') + (x.pend ? ' ck-pend' : '') + (x.fail ? ' ck-fail' : '') + '"><div class="ck-b' + (cor ? ' cor' : '') + (big ? ' ck-big' : '') + '">' +
-          (cor ? '<div class="ck-cor">' + I.award + 'Corrección</div>' : '') + img + (x.t ? '<div class="ck-t">' + linkify(x.t) + '</div>' : '') +
+          (cor ? '<div class="ck-cor">' + I.award + 'Corrección</div>' : '') + img + aud + (x.t ? '<div class="ck-t">' + linkify(x.t) + '</div>' : '') +
           '<div class="ck-time">' + (x.fail ? 'No se envió' : esc(hm(x.at))) + st + '</div></div></div>';
       });
       inner.innerHTML = h || '<div class="ck-empty"><i>' + I.chat + '</i><b>' + esc(o.emptyTitle || 'Todavía no hay mensajes') + '</b>' + esc(o.emptyText || '') + '</div>';
       if (first || own || keep) toBottom(!first && !own ? true : false);
       else if (fresh) { unseen += fresh; down.hidden = false; down.querySelector('span').textContent = unseen; }
       first = false;
+      if (playing && playing.getAttribute('data-aid')) { var na = inner.querySelector('.ck-aud[data-aid="' + playing.getAttribute('data-aid') + '"]'); if (na && na !== playing) { playing = na; na.querySelector('.ck-pl').innerHTML = player && !player.paused ? I.pause : I.play; } }
     }
     var api = {
       set: function (L) {
-        var real = (L || []).map(function (x, i) { return { id: x.id || ('m' + i), from: x.from, t: x.t || '', at: msOf(x.at) || Date.now(), img: x.img || null }; });
-        var temps = msgs.filter(function (x) { return String(x.id).indexOf('tmp') === 0 && !real.some(function (r) { return r.from === x.from && r.t === x.t && Math.abs(r.at - x.at) < 120000 && !!r.img === !!x.local; }); });
+        var real = (L || []).map(function (x, i) { return { id: x.id || ('m' + i), from: x.from, t: x.t || '', at: msOf(x.at) || Date.now(), img: x.img || null, aud: x.aud || null }; });
+        var temps = msgs.filter(function (x) { return String(x.id).indexOf('tmp') === 0 && !real.some(function (r) { return r.from === x.from && r.t === x.t && Math.abs(r.at - x.at) < 120000 && !!r.img === !!x.local && !!r.aud === !!x.aud; }); });
         temps.filter(function (x) { return x.sent; }).forEach(function (x) { x.at = Date.now(); });
         msgs = real.concat(temps.filter(function (x) { return !x.sent || Date.now() - x.at < 15000; })); draw();
       },
       error: function (t) { inner.innerHTML = '<div class="ck-empty"><i>' + I.alert + '</i><b>No se pudieron cargar los mensajes</b>' + esc(t || '') + '</div>'; },
       insert: insert, focus: function () { ta.focus(); }, setText: function (t) { ta.value = t; sync(); ta.focus(); },
-      destroy: function () { alive = false; document.removeEventListener('pointerdown', outside, true); }
+      destroy: function () { alive = false; stopAudio(); if (rec) { rec.cancel = true; try { rec.mr.stop(); } catch (e) { } } document.removeEventListener('pointerdown', outside, true); }
     };
     sync();
     return api;
@@ -11142,7 +11245,8 @@ function chatOpen(uid) {
     onError: t => toast(t, 'error', 4500),
     upload: driveUrl() ? true : null,
     tools: [{ label: 'Enviar una corrección', icon: AI.check, onClick: () => chatCorrections(m, s) }],
-    onSend: ({ t, file }) => chatSend(t, file)
+    onSend: ({ t, file, audio }) => chatSend(t, file, audio),
+    getMedia: id => chatMedia(id, pid)
   });
   chatDrawList();
   Chat.mUnsub = firebase.firestore().collection('portal').doc(pid).collection('c').doc(uid).collection('m').orderBy('at').limitToLast(200).onSnapshot(sn => {
@@ -11150,20 +11254,29 @@ function chatOpen(uid) {
   }, e => { if (Chat.kit) Chat.kit.error(typeof aulaErr === 'function' ? aulaErr(e) : String(e)); });
   setTimeout(() => Chat.kit && Chat.kit.focus(), 50);
 }
-function chatDrawMsgs() { if (Chat.kit) Chat.kit.set(Chat.msgs.map(x => ({ id: x.id, from: x.from, t: x.t, at: x.at, img: x.img }))); }
+function chatDrawMsgs() { if (Chat.kit) Chat.kit.set(Chat.msgs.map(x => ({ id: x.id, from: x.from, t: x.t, at: x.at, img: x.img, aud: x.aud }))); }
 /** Sube una foto del chat a tu Drive y devuelve { id, w, h }. */
 async function chatUpload(file, pid) {
   const c = await ChatKit.compress(file), data = await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = bad; r.readAsDataURL(c.blob); });
   const j = await driveCall('cimg', { pid, data, ty: 'image/jpeg' }, 90000);
   return { id: j.id, w: c.w, h: c.h };
 }
-async function chatSend(text, file) {
-  const t = String(text || '').trim(); if ((!t && !file) || !Chat.open) return;
+function blobB64(b) { return new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = bad; r.readAsDataURL(b); }); }
+/** Descarga una nota de voz desde tu Drive (con tu sesión). */
+async function chatMedia(id, pid) {
+  const j = await driveCall('cget', { id, pid }, 60000);
+  const bin = atob(j.data), a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  return new Blob([a], { type: j.ty || 'audio/webm' });
+}
+async function chatSend(text, file, audio) {
+  const t = String(text || '').trim(); if ((!t && !file && !audio) || !Chat.open) return;
   const m = curMod(), s = chatStudentOf(m, Chat.open.uid), FV = firebase.firestore.FieldValue, open = Chat.open;
   const ref = firebase.firestore().collection('portal').doc(open.pid).collection('c').doc(open.uid);
   const img = file ? await chatUpload(file, open.pid) : null;
-  await withTimeout(ref.collection('m').doc().set(Object.assign({ from: 't', t: t.slice(0, 1000), at: FV.serverTimestamp() }, img ? { img } : {})), 15000);
-  await withTimeout(ref.set({ last: (t || '📷 Foto').slice(0, 140), at: FV.serverTimestamp(), by: 't', name: s ? s.name.slice(0, 80) : '', num: s ? s.num : 0 }), 15000);
+  let aud = null;
+  if (audio) { const j = await driveCall('cmed', { pid: open.pid, data: await blobB64(audio.blob), ty: audio.ty }, 90000); aud = { id: j.id, d: audio.d, ty: audio.ty }; }
+  await withTimeout(ref.collection('m').doc().set(Object.assign({ from: 't', t: t.slice(0, 1000), at: FV.serverTimestamp() }, img ? { img } : {}, aud ? { aud } : {})), 15000);
+  await withTimeout(ref.set({ last: (t || (aud ? '🎤 Nota de voz' : '📷 Foto')).slice(0, 140), at: FV.serverTimestamp(), by: 't', name: s ? s.name.slice(0, 80) : '', num: s ? s.num : 0 }), 15000);
   Chat.draft = ''; chatMarkSeen(open.pid, open.uid);
 }
 /** Mensaje con la corrección de una práctica o examen de ese estudiante. */
