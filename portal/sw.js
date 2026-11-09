@@ -1,5 +1,5 @@
 // Mi aula: guarda la página para abrirla rápido y sin conexión (los datos vienen de la nube).
-const V = 'miaula-10.14.1-v29';
+const V = 'miaula-10.14.1-v30';
 const SHELL = ['./', './manifest.webmanifest', './icon-192.png', './icon-512.png', "https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js", "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js", "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).catch(() => { })); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('miaula-') && k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
