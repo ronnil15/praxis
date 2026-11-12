@@ -2500,6 +2500,126 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 /* v41: con la campana y las notas, en laptops «Respaldo» y «Ajustes» quedan solo con ícono */
 @media (max-width: 1440px) { .nav-btn[data-act="backup-menu"] .lbl, .nav-btn[data-act="settings"] .lbl { display: none; } }
 @media (max-width: 345px) { .nav-actions > .nav-btn[data-act="go-calendar"] { display: none; } .nav-actions { gap: .18rem; } }
+/* ---------- v42 · Campana, bandeja y notas adhesivas renovadas ---------- */
+.nav-bell svg { transform-origin: 50% 12%; transition: transform .2s; }
+.nav-bell:hover svg { transform: rotate(-8deg); }
+.nav-bell.ring svg { animation: bellRing 1.2s ease 1; }
+.nav-badge { top: -4px; right: -4px; min-width: 19px; height: 19px; padding: 0 5px; background: linear-gradient(135deg, #ff5a5f, #e11d48); font: 800 10.5px/19px Inter, system-ui, sans-serif; letter-spacing: -.02em; box-shadow: 0 0 0 2px var(--nav), 0 4px 10px -2px rgba(225, 29, 72, .6); }
+.nav-bell.has .nav-badge { animation: badgePulse 2.6s ease-out 1s infinite; }
+.nav-badge.pop { animation: badgePop .5s cubic-bezier(.3, 1.6, .5, 1), badgePulse 2.6s ease-out 1s infinite; }
+@keyframes badgePop { 0% { transform: scale(.3); } 60% { transform: scale(1.2); } 100% { transform: none; } }
+@keyframes badgePulse { 0% { box-shadow: 0 0 0 2px var(--nav), 0 0 0 2px rgba(239, 68, 68, .55); } 70% { box-shadow: 0 0 0 2px var(--nav), 0 0 0 9px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 2px var(--nav), 0 0 0 2px rgba(239, 68, 68, 0); } }
+:root[data-motion-off] .nav-badge, :root[data-motion-off] .nav-bell svg { animation: none !important; }
+.tray { width: min(440px, calc(100vw - 20px)); border-radius: 20px; box-shadow: 0 32px 70px -22px rgba(15, 23, 42, .5), 0 0 0 1px rgba(15, 23, 42, .04); transform-origin: top right; animation: trayIn2 .32s cubic-bezier(.2, .9, .3, 1.12); }
+@keyframes trayIn2 { from { opacity: 0; transform: translateY(-10px) scale(.96); } }
+.tray-h { gap: .45rem; padding: 1rem .8rem .8rem 1rem; border-bottom: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 7%, var(--surface)), var(--surface)); }
+.tray-hic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; flex: none; background: linear-gradient(135deg, var(--primary), #7c3aed); color: #fff; box-shadow: 0 8px 18px -8px var(--primary); }
+.tray-hic svg { width: 19px; height: 19px; }
+.tray-h b { display: flex; align-items: center; gap: .45rem; font: 800 1.05rem/1.2 Manrope, Inter, system-ui, sans-serif; }
+.tray-hn { font-style: normal; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 99px; background: #ef4444; color: #fff; font: 800 .7rem/20px Inter, system-ui, sans-serif; text-align: center; }
+.tray-hn[hidden] { display: none; }
+.tray-h .btn { border-radius: 10px; }
+.tray-chips { padding: .1rem 1rem .8rem; gap: .4rem; }
+.tray-chips button { padding: .4rem .78rem; background: var(--surface); transition: background .15s, color .15s, border-color .15s, transform .12s; }
+.tray-chips button:hover { border-color: var(--border-2); }
+.tray-chips button:active { transform: scale(.96); }
+.tray-chips button.on { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.tray-chips button.on i { background: #ef4444; box-shadow: 0 0 0 2px var(--ink); }
+.tray-list { padding: .35rem .5rem .7rem; }
+.tray-day { padding: .75rem .65rem .35rem; font-size: .68rem; letter-spacing: .08em; background: color-mix(in srgb, var(--surface) 90%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.tray-it { grid-template-columns: 42px minmax(0, 1fr) auto; gap: .75rem; padding: .72rem .6rem .72rem .75rem; border-radius: 14px; animation: trayItIn .38s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 25ms); }
+@keyframes trayItIn { from { opacity: 0; transform: translateY(6px); } }
+:root[data-motion-off] .tray-it, :root[data-motion-off] .tray { animation: none; }
+.tray-it + .tray-it { margin-top: 2px; }
+.tray-it.un { background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.tray-it.un:hover, .tray-it.un:focus-visible { background: color-mix(in srgb, var(--primary) 10%, transparent); }
+.tray-it.un::before { left: 0; top: 50%; width: 4px; height: 28px; margin-top: -14px; border-radius: 0 4px 4px 0; background: var(--primary); }
+.tray-ic { width: 42px; height: 42px; border-radius: 14px; background: color-mix(in srgb, var(--c) 13%, var(--surface)); }
+.tray-av { position: relative; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg, hsl(var(--h) 68% 58%), hsl(calc(var(--h) + 38) 66% 45%)); color: #fff; font: 800 .8rem Inter, system-ui, sans-serif; letter-spacing: .02em; }
+.tray-av i { position: absolute; right: -3px; bottom: -3px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff; box-shadow: 0 0 0 2px var(--surface); }
+.tray-av i svg { width: 11px; height: 11px; }
+.tray-t { display: flex; align-items: baseline; gap: .5rem; min-width: 0; }
+.tray-t b { flex: 1; min-width: 0; }
+.tray-t time { flex: none; font-size: .72rem; color: var(--muted); font-weight: 500; }
+.tray-it.un .tray-t time { color: var(--primary); font-weight: 700; }
+.tray-tx span { margin-top: .12rem; color: var(--ink-2); line-height: 1.42; }
+.tray-tx small { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; margin-top: .38rem; }
+.tray-tx small em { font-style: normal; font-weight: 700; font-size: .67rem; padding: .08rem .45rem; border-radius: 99px; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.tray-acts { display: flex; flex-direction: column; gap: 2px; }
+.tray-x { width: 28px; height: 28px; }
+.tray-rd:hover { color: var(--ok); background: var(--ok-bg); }
+.tray-empty { padding: 3rem 1.5rem; }
+.tray-empty .tray-em { position: relative; width: 74px; height: 74px; background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 16%, var(--surface)), color-mix(in srgb, #7c3aed 14%, var(--surface))); color: var(--primary); margin-bottom: .8rem; }
+.tray-empty .tray-em svg { width: 32px; height: 32px; animation: emFloat 3.2s ease-in-out infinite; }
+.tray-empty .tray-em i { position: absolute; top: 12px; right: 14px; width: 12px; height: 12px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 3px var(--surface); }
+@keyframes emFloat { 50% { transform: translateY(-4px) rotate(-7deg); } }
+.tray-empty b { font: 800 1rem Manrope, Inter, system-ui, sans-serif; }
+.tray-foot { padding: .7rem 1rem; }
+@media (max-width: 640px) {
+  .tray { width: 100%; border-radius: 0; transform-origin: top center; animation: trayUp .3s cubic-bezier(.2, .9, .3, 1); }
+  @keyframes trayUp { from { opacity: 0; transform: translateY(16px); } }
+  .tray-h { padding-top: calc(1rem + env(safe-area-inset-top)); }
+  .tray-h .btn { padding-left: .5rem; padding-right: .5rem; }
+  .tray-it { padding: .8rem .6rem .8rem .75rem; }
+  .tray-x { opacity: .75; }
+  .tray-foot { padding-bottom: calc(.8rem + env(safe-area-inset-bottom)); }
+}
+/* Notas adhesivas: papel con cinta, barra de formato discreta y tarjetas */
+.sn { overflow: visible; border-radius: 16px; background: linear-gradient(165deg, color-mix(in srgb, var(--sn-bg) 62%, #fff) 0%, var(--sn-bg) 58%); border: 1px solid color-mix(in srgb, var(--sn-h) 50%, transparent); box-shadow: 0 1px 0 rgba(255, 255, 255, .75) inset, 0 26px 50px -22px rgba(15, 23, 42, .5), 0 6px 14px -6px rgba(15, 23, 42, .2); }
+.sn.dark { background: linear-gradient(165deg, #474c56 0%, var(--sn-bg) 60%); border-color: rgba(255, 255, 255, .08); }
+.sn.drag { transform: rotate(-1deg) scale(1.01); box-shadow: 0 36px 70px -20px rgba(15, 23, 42, .6); }
+.sn-tape { position: absolute; top: -11px; left: 50%; z-index: 3; width: 86px; height: 22px; transform: translateX(-50%) rotate(-2.5deg); background: linear-gradient(180deg, rgba(255, 255, 255, .62), rgba(255, 255, 255, .42)); border: 1px solid rgba(0, 0, 0, .05); border-radius: 3px; box-shadow: 0 2px 5px rgba(0, 0, 0, .1); pointer-events: none; }
+.sn.dark .sn-tape { background: rgba(255, 255, 255, .16); }
+.sn-h { height: 38px; padding: 0 6px; border-radius: 15px 15px 0 0; background: color-mix(in srgb, var(--sn-h) 52%, transparent); }
+.sn.dark .sn-h { background: rgba(0, 0, 0, .18); }
+.sn-grip { background: radial-gradient(circle, rgba(0, 0, 0, .16) 1.1px, transparent 1.3px) center / 7px 7px no-repeat; background-size: 7px 7px; opacity: 0; transition: opacity .2s; mask: linear-gradient(90deg, transparent 30%, #000 45%, #000 55%, transparent 70%); -webkit-mask: linear-gradient(90deg, transparent 30%, #000 45%, #000 55%, transparent 70%); background-repeat: repeat-x; background-position: center; }
+.sn:hover .sn-grip { opacity: 1; }
+.sn-b { border-radius: 9px; }
+.sn-rem { margin: .55rem .8rem 0; padding: .3rem .65rem; background: color-mix(in srgb, #f59e0b 20%, transparent); color: #92400e; }
+.sn-rem[hidden] { display: none; }
+.sn.dark .sn-rem { background: rgba(251, 191, 36, .16); color: #fcd34d; }
+.sn-body { padding: .8rem 1rem .6rem; font-size: .95rem; line-height: 1.55; }
+.sn-body b, .sn-body strong { font-weight: 700; }
+.sn-body:empty::before { font-style: italic; }
+.sn-tb { gap: 2px; padding: 4px 6px 5px; border-top: 0; border-radius: 0 0 15px 15px; opacity: 0; transform: translateY(3px); transition: opacity .2s, transform .2s; }
+.sn:hover .sn-tb, .sn:focus-within .sn-tb { opacity: 1; transform: none; }
+@media (hover: none) { .sn-tb { opacity: 1; transform: none; } }
+.sn-tb button { min-width: 30px; height: 30px; border-radius: 9px; }
+.sn-tb button svg { width: 16px; height: 16px; }
+.sn-tb button:active { transform: scale(.92); }
+.sn-rs { width: 16px; height: 16px; right: 3px; bottom: 3px; background: radial-gradient(circle, rgba(0, 0, 0, .3) 1.1px, transparent 1.3px) 0 0 / 5px 5px; -webkit-mask: linear-gradient(135deg, transparent 50%, #000 50%); mask: linear-gradient(135deg, transparent 50%, #000 50%); border-bottom-right-radius: 12px; }
+.sn.dark .sn-rs { background: radial-gradient(circle, rgba(255, 255, 255, .35) 1.1px, transparent 1.3px) 0 0 / 5px 5px; }
+.sn-panel .sn-list { grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: .75rem; padding: .8rem .9rem 1rem; }
+.sn-card { position: relative; display: flex; flex-direction: column; min-height: 104px; border-top: 0; border-radius: 14px; padding: .85rem .8rem .65rem; background: linear-gradient(165deg, color-mix(in srgb, var(--sn-bg) 62%, #fff), var(--sn-bg)); box-shadow: 0 1px 2px rgba(15, 23, 42, .1), 0 0 0 1px color-mix(in srgb, var(--sn-h) 60%, transparent) inset; animation: snCardIn .35s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 30ms); transition: transform .18s, box-shadow .18s; }
+@keyframes snCardIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+.sn-card::before { content: ""; position: absolute; left: 14px; right: 14px; top: 0; height: 4px; border-radius: 0 0 4px 4px; background: var(--sn-h); }
+.sn-card:hover, .sn-card:focus-visible { transform: translateY(-2px) rotate(-.5deg); box-shadow: 0 16px 28px -14px rgba(15, 23, 42, .45), 0 0 0 1px color-mix(in srgb, var(--sn-h) 80%, transparent) inset; }
+.sn-card.dark { color: #eef1f5; background: linear-gradient(165deg, #474c56, #383c44); }
+.sn-card.open { box-shadow: 0 1px 2px rgba(15, 23, 42, .1), 0 0 0 2px color-mix(in srgb, var(--primary) 55%, transparent) inset; }
+.sn-ct { align-items: flex-start; }
+.sn-ct b { flex: 1; min-width: 0; font: 700 .9rem/1.35 Manrope, Inter, system-ui, sans-serif; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.sn-card p { -webkit-line-clamp: 4; font-size: .82rem; opacity: .82; margin: .3rem 0 0; }
+.sn-cm { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; margin-top: auto; padding-top: .55rem; font-size: .7rem; }
+.sn-cm > span:first-child { opacity: .7; }
+.sn-co { padding: .05rem .45rem; border-radius: 99px; background: rgba(0, 0, 0, .08); font-weight: 700; }
+.sn-card.dark .sn-co { background: rgba(255, 255, 255, .14); }
+.sn-cm .sn-cr { padding: .05rem .45rem; border-radius: 99px; background: rgba(245, 158, 11, .24); }
+.sn-cx { margin-top: -4px; margin-right: -4px; }
+.sn-panel [data-snn] svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+:root[data-motion-off] .sn-card, :root[data-motion-off] .sn { animation: none; }
+/* v42 · Detalles generales: selección, barras de desplazamiento y botones con respuesta */
+::selection { background: color-mix(in srgb, var(--primary) 26%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
+  ::-webkit-scrollbar-thumb { background-color: color-mix(in srgb, var(--muted) 35%, transparent); border-radius: 99px; border: 3px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background-color: color-mix(in srgb, var(--muted) 58%, transparent); }
+  ::-webkit-scrollbar-track { background: transparent; }
+  .btn-primary:hover { box-shadow: 0 10px 20px -10px rgba(79, 70, 229, .75); transform: translateY(-1px); }
+}
+.nav-btn { transition: background .15s, color .15s, transform .12s, box-shadow .2s; }
+.btn { transition: background .15s, border-color .15s, color .15s, transform .12s, box-shadow .2s; }
+.nav-btn:active { transform: scale(.95); }
+.nav-btn.active { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), 0 6px 14px -8px rgba(0, 0, 0, .5); }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -3283,7 +3403,8 @@ function normAgenda(e) {
   if (!e || typeof e !== 'object' || !isoDate(e.date)) return null;
   return {
     id: String(e.id || uid()), title: String(e.title || 'Evento').slice(0, 120), date: e.date, time: isoTime(e.time),
-    type: EV_TYPES[e.type] ? e.type : 'Otro', modId: e.modId ? String(e.modId) : '', notes: String(e.notes || ''), done: !!e.done
+    type: EV_TYPES[e.type] ? e.type : 'Otro', modId: e.modId ? String(e.modId) : '', notes: String(e.notes || ''), done: !!e.done,
+    ...(typeof e.pub === 'boolean' ? { pub: e.pub } : {})
   };
 }
 /** Tipo de evento a partir del nombre de un criterio (Práctica, Examen, …). */
@@ -3317,7 +3438,7 @@ function allEvents(filterMod) {
   });
   db.agenda.forEach(e => {
     if (filterMod && e.modId !== filterMod) return;
-    out.push({ src: 'ev', key: e.id, date: e.date, time: e.time, type: e.type, title: e.title, sub: '', modId: e.modId, mod: findMod(e.modId), done: e.done, notes: e.notes });
+    out.push({ src: 'ev', key: e.id, date: e.date, time: e.time, type: e.type, title: e.title, sub: '', modId: e.modId, mod: findMod(e.modId), done: e.done, notes: e.notes, pub: e.pub });
   });
   return out.sort((a, b) => (a.date + (a.time || '99')).localeCompare(b.date + (b.time || '99')));
 }
@@ -4483,6 +4604,7 @@ function eventDialog({ date, src, key, sid } = {}) {
       <small>Al vincularla, la fecha y el nombre aparecen en la columna de esa actividad y el calendario te avisará si quedan estudiantes sin nota.</small>
     </label>
     <label class="field" id="evNotesWrap">Notas<textarea id="evNotes" rows="2" placeholder="Instrucciones, materiales, criterios…">${esc(v.notes)}</textarea></label>
+    <label class="check ev-pub" id="evPubWrap"><input type="checkbox" id="evPub" ${(ev ? portalEvShared(ev) : !!PORTAL_EV_AUTO[v.type]) ? 'checked' : ''}> <span><b>Mostrar en Mi aula</b><small class="muted"> · lo ven en su calendario los estudiantes de ese curso (las notas no se comparten)</small></span></label>
     ${isEv ? `<label class="check"><input type="checkbox" id="evDone" ${v.done ? 'checked' : ''}> Completado</label>` : ''}`;
 
   const actions = [{ label: 'Cancelar' }];
@@ -4506,7 +4628,9 @@ function eventDialog({ date, src, key, sid } = {}) {
           if (isEv) db.agenda = db.agenda.filter(e => e.id !== ev.id);
         } else {
           if (!title) { toast('Escribe un título.', 'error'); ov.querySelector('#evTitle').focus(); return false; }
-          const data = normAgenda({ id: ev ? ev.id : uid(), title, date: d, time: h, type: ov.querySelector('#evType').value, modId: ov.querySelector('#evMod').value, notes: ov.querySelector('#evNotes').value.trim(), done: isEv ? ov.querySelector('#evDone').checked : false });
+          const mid = ov.querySelector('#evMod').value;
+          const data = normAgenda({ id: ev ? ev.id : uid(), title, date: d, time: h, type: ov.querySelector('#evType').value, modId: mid, notes: ov.querySelector('#evNotes').value.trim(), done: isEv ? ov.querySelector('#evDone').checked : false, ...(mid ? { pub: ov.querySelector('#evPub').checked } : {}) });
+          if (isEv && !mid) delete ev.pub;
           if (isEv) Object.assign(ev, data); else db.agenda.push(data);
         }
       }
@@ -4525,9 +4649,11 @@ function eventDialog({ date, src, key, sid } = {}) {
         if (!m) { link.innerHTML = '<option value="">No vincular</option>'; return; }
         link.innerHTML = actOptionsHTML(m, { type: typeSel.value });
       };
-      const toggleNotes = () => { ov.querySelector('#evNotesWrap').style.display = link.value ? 'none' : ''; };
+      const pub = ov.querySelector('#evPub'); let pubTouched = !!ev && typeof ev.pub === 'boolean';
+      pub.addEventListener('change', () => { pubTouched = true; });
+      const toggleNotes = () => { ov.querySelector('#evNotesWrap').style.display = link.value ? 'none' : ''; ov.querySelector('#evPubWrap').style.display = !link.value && modSel.value ? '' : 'none'; };
       modSel.addEventListener('change', () => { fill(); toggleNotes(); });
-      typeSel.addEventListener('change', () => { const keep = link.value; fill(); if (keep) link.value = keep; toggleNotes(); });
+      typeSel.addEventListener('change', () => { const keep = link.value; fill(); if (keep) link.value = keep; if (!pubTouched) pub.checked = !!PORTAL_EV_AUTO[typeSel.value]; toggleNotes(); });
       link.addEventListener('change', toggleNotes);
       fill(); toggleNotes();
     }
@@ -9052,7 +9178,7 @@ function normAula(e) {
     status: ['draft', 'open', 'closed'].includes(e.status) ? e.status : 'draft', code: String(e.code || ''), pub: String(e.pub || ''), until: String(e.until || ''),
     kdocs: Array.isArray(e.kdocs) ? e.kdocs.map(String) : [], openedAt: String(e.openedAt || ''), lastOpen: String(e.lastOpen || ''), closedAt: String(e.closedAt || ''),
     blocked: e.blocked && typeof e.blocked === 'object' ? e.blocked : {}, res: ['off', 'close', 'now'].includes(e.res) ? e.res : 'off', resDetail: e.resDetail !== false, resPushed: e.resPushed && typeof e.resPushed === 'object' ? e.resPushed : {},
-    outBase: e.outBase && typeof e.outBase === 'object' ? e.outBase : {}, lockLeave: !!e.lockLeave, unlockAt: e.unlockAt && typeof e.unlockAt === 'object' ? e.unlockAt : {}, lockSent: e.lockSent && typeof e.lockSent === 'object' ? e.lockSent : {},
+    outBase: e.outBase && typeof e.outBase === 'object' ? e.outBase : {}, lockLeave: !!e.lockLeave, lockN: Math.max(0, Math.min(4, Math.round(+e.lockN || 0))), unlockAt: e.unlockAt && typeof e.unlockAt === 'object' ? e.unlockAt : {}, lockSent: e.lockSent && typeof e.lockSent === 'object' ? e.lockSent : {},
     auto: e.auto !== false, created: String(e.created || new Date().toISOString()),
     mode: e.mode === 'file' ? 'file' : 'quiz', ft: (Array.isArray(e.ft) ? e.ft : ['pdf', 'word', 'ppt', 'img']).filter(k => AULA_FT[k]), mb: [2, 5, 10, 20].includes(+e.mb) ? +e.mb : 10, nf: Math.max(1, Math.min(5, parseInt(e.nf, 10) || 3)),
     mat: (Array.isArray(e.mat) ? e.mat : []).filter(x => x && /^https:\/\//.test(x.url)).slice(0, 10).map(x => ({ nm: String(x.nm || 'Material').slice(0, 100), url: String(x.url).slice(0, 600) })),
@@ -9224,10 +9350,10 @@ async function aulaPublish(m, ex) {
   if (ex.pin && aulaEnsurePins(m, list)) persist();
   const ref = aulaRef(ex);
   const until = ex.until ? new Date(ex.until) : new Date(Date.now() + 3 * 3600e3);
-  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, res: ex.res, lock: ex.lockLeave, v: 3, drv: (typeof driveId === 'function' && driveId()) || '', upd: FV.serverTimestamp(), ...(aulaIsFile(ex) ? { mode: 'file', mb: ex.mb, nf: ex.nf, ct: aulaCT(ex), due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
+  await withTimeout(ref.set({ owner: Cloud.user.uid, title: ex.title, kind: ex.kind, mod: modShort(m), course: m.course || '', status: ex.status, until: TS.fromDate(until), dur: ex.dur, n: ex.qs.length, pts: aulaTotal(ex), pin: ex.pin, one: ex.oneDev, res: ex.res, lock: ex.lockLeave, lockN: ex.lockLeave ? ex.lockN || 0 : 0, v: 3, drv: (typeof driveId === 'function' && driveId()) || '', upd: FV.serverTimestamp(), ...(aulaIsFile(ex) ? { mode: 'file', mb: ex.mb, nf: ex.nf, ct: aulaCT(ex), due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
   const ros = {}; list.forEach(s => { ros[s.num] = aulaToks(s.name).map(t => aulaHash(ex.pub + ':' + t)); });
   const oldCode = ex._old; delete ex._old;
-  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: aulaInstrFull(ex), dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, lock: ex.lockLeave, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })), ...(aulaIsFile(ex) ? { mode: 'file', ext: aulaExts(ex), ftn: ex.ft.map(k => AULA_FT[k][0]), mb: ex.mb, nf: ex.nf, due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
+  await withTimeout(ref.collection('q').doc(ex.code).set({ title: ex.title, kind: ex.kind, instr: aulaInstrFull(ex), dur: ex.dur, shuffle: ex.shuffle, pin: ex.pin, one: ex.oneDev, lock: ex.lockLeave, lockN: ex.lockLeave ? ex.lockN || 0 : 0, ulk: aulaHash(ex.pub + ':' + ex.unlock, 32), ros, qs: ex.qs.map(q => ({ id: q.id, t: q.t, text: q.text, opts: q.t === 'mc' ? q.opts : [], pts: q.pts })), ...(aulaIsFile(ex) ? { mode: 'file', ext: aulaExts(ex), ftn: ex.ft.map(k => AULA_FT[k][0]), mb: ex.mb, nf: ex.nf, due: TS.fromDate(ex.due ? new Date(ex.due) : until) } : {}) }), 15000);
   // Permisos para entregar: uno por estudiante asignado (con su clave si se pide)
   const want = list.filter(s => ex.blocked[s.id] !== 'block').map(s => `${s.num}-${ex.pin ? m.aulaPins[s.id] : ''}`);
   const b = Cloud.fs.batch(); let n = 0;
@@ -9257,7 +9383,7 @@ async function aulaDeleteCloud(ex) {
 }
 /** Veces que salió de la página (entregado o respondiendo), descontando lo que limpiaste. */
 /** ¿Está bloqueado por salir de la página? (examen con bloqueo, salió y aún no le permites seguir) */
-function aulaLeaveLocked(ex, num) { const lv = AulaLive.xid === ex.id && AulaLive.live[num]; return !!(ex.lockLeave && lv && !ex.resp[num] && (lv.b || 0) > (+ex.unlockAt[num] || 0)); }
+function aulaLeaveLocked(ex, num) { const lv = AulaLive.xid === ex.id && AulaLive.live[num]; return !!(ex.lockLeave && lv && !ex.resp[num] && (lv.b || 0) - (+ex.unlockAt[num] || 0) > (ex.lockN || 0)); }
 function aulaOutRaw(ex, num) { const r = ex.resp[num]; if (r) return r.blurs || 0; const lv = AulaLive.xid === ex.id && AulaLive.live[num]; return lv ? lv.b || 0 : 0; }
 function aulaOutN(ex, num) { return Math.max(0, aulaOutRaw(ex, num) - (+ex.outBase[num] || 0)); }
 function aulaOutBadge(n) { return n ? `<span class="out-n ${n > 2 ? 'bad' : ''}" title="Veces que salió de la página">${n}</span>` : '<span class="out-n zero">0</span>'; }
@@ -9336,12 +9462,12 @@ function aulaWatch(m, ex) {
     const mm = findMod(AulaLive.mid), e = aulaFind(mm, AulaLive.xid);
     if (AulaLive.liveReady && e) Object.entries(L).forEach(([num, v]) => {
       const before = (AulaLive.live[num] || {}).b || 0;
-      if (v.b > before && !e.resp[num]) { const s = aulaStudent(mm, e, num); toast(`${s ? s.num + '. ' + s.name : 'Nº ' + num} salió de la página del examen (${v.b} ${v.b === 1 ? 'vez' : 'veces'})${e.lockLeave ? ': su examen quedó bloqueado' : ''}.`, v.b > 2 ? 'error' : 'warn', 4500); }
+      if (v.b > before && !e.resp[num]) { const s = aulaStudent(mm, e, num), lk = e.lockLeave && v.b - (+e.unlockAt[num] || 0) > (e.lockN || 0); toast(`${s ? s.num + '. ' + s.name : 'Nº ' + num} salió de la página del examen (${v.b} ${v.b === 1 ? 'vez' : 'veces'})${lk ? ': su examen quedó bloqueado' : e.lockLeave ? ': recibió un aviso' : ''}.`, lk || v.b > 2 ? 'error' : 'warn', 4500); }
     });
     AulaLive.liveReady = true;
     // Bloqueo por salir: también en la nube, para que no lo salte entrando desde otro navegador
     if (e && e.lockLeave && aulaIsOpen(e)) Object.entries(L).forEach(([num, v]) => {
-      if (e.resp[num] || (v.b || 0) <= (+e.unlockAt[num] || 0) || e.lockSent[num] === v.b) return;
+      if (e.resp[num] || (v.b || 0) - (+e.unlockAt[num] || 0) <= (e.lockN || 0) || e.lockSent[num] === v.b) return;
       e.lockSent[num] = v.b; aulaRef(e).collection('x').doc(num).set({ m: 'lock', n: aulaRand(6) }).catch(() => { delete e.lockSent[num]; });
       persist();
     });
@@ -9503,7 +9629,7 @@ function renderAulaExam(m, ex) {
     ${stats ? `<details class="card aula-qstats"><summary><strong>Aciertos por pregunta</strong> <span class="muted small">(para saber qué repasar)</span></summary><div class="aq-stats">${stats}</div></details>` : ''}
     <div class="card table-card">
       ${open ? `<div class="tbl-bar"><div class="seg seg-sm">${[['all', 'Todos', asg.length], ['sent', 'Entregaron y en curso', asg.length - nPend], ['pend', 'Pendientes', nPend]].map(([k, l, n]) => `<button type="button" data-act="aula-rows" data-id="${k}" class="${view === k ? 'on' : ''}">${l} <span>${n}</span></button>`).join('')}</div>
-        <div class="row-wrap">${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}<button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>
+        <div class="row-wrap">${view === 'sent' && nPend ? `<span class="muted small">${nPend} pendiente${nPend === 1 ? '' : 's'} oculto${nPend === 1 ? '' : 's'}</span>` : ''}${nPend && m.portal && m.portal.on ? `<button type="button" class="btn btn-sm btn-ghost" data-act="aula-resync" data-id="${ex.id}" title="Si alguien no lo ve en Mi aula, vuelve a enviárselo">${AI.refresh} Reenviar a Mi aula</button>` : ''}<button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>
       ${view !== 'pend' || nPend ? '' : '<p class="muted small tbl-empty">No hay pendientes: todos entregaron o están respondiendo.</p>'}`
       : `<div class="tbl-bar tbl-off"><div class="tb-off">${AI.lock}<div><b>${ex.status === 'draft' ? 'Sin habilitar' : 'Inhabilitado'}</b><span class="muted small">${state.aulaShowList ? `Lista del examen: ${asg.length} estudiante${asg.length === 1 ? '' : 's'}. Nadie puede entrar hasta que lo habilites.` : nums.length ? 'Solo se muestran los que entregaron.' : 'No hay estudiantes en espera. Al habilitarlo eliges quién lo toma.'}</span></div></div>
         <div class="row-wrap"><button type="button" class="btn btn-sm btn-ghost" data-act="aula-showlist">${AI.users} ${state.aulaShowList ? 'Ocultar la lista' : `Ver la lista (${asg.length})`}</button><button type="button" class="btn btn-sm btn-secondary" data-act="aula-assign" data-id="${ex.id}">${AI.users} Elegir quién lo toma</button></div></div>`}
@@ -9625,7 +9751,9 @@ function aulaEditor(id, preset) {
         <div id="aeToBox" class="ae-tobox"></div></div>
       <div class="ae-sec"><h4>3 · Seguridad</h4>
         <label class="check" data-fm="quiz"><input type="checkbox" id="aeShuf" ${ex.shuffle ? 'checked' : ''}> Mezclar el orden de las preguntas y opciones para cada estudiante</label>
-        <label class="check" data-fm="quiz"><input type="checkbox" id="aeLock" ${ex.lockLeave ? 'checked' : ''}> Bloquear el examen si sale de la página <span class="muted small">(solo sigue cuando tú lo permitas · ideal para exámenes en casa)</span></label>
+        <div class="ae-lock" data-fm="quiz"><label class="check"><input type="checkbox" id="aeLock" ${ex.lockLeave ? 'checked' : ''}> Bloquear el examen si sale de la página <span class="muted small">(solo sigue cuando tú lo permitas)</span></label>
+          <label class="ae-lockn">Se bloquea <select id="aeLockN">${[[0, 'a la primera salida'], [1, 'a la 2.ª salida (un aviso antes)'], [2, 'a la 3.ª salida (dos avisos antes)']].map(([v, l]) => `<option value="${v}" ${(ex.lockN || 0) === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+          <p class="muted small">Cuenta solo si cambia de app o de pestaña, apaga la pantalla o cierra la app (1,5 s o más). Girar el teléfono, abrir el teclado o bajar las notificaciones no cuenta, y la pantalla se mantiene encendida durante el examen.</p></div>
         <label class="check" data-fm="quiz"><input type="checkbox" id="aeOne" ${ex.oneDev ? 'checked' : ''}> Un celular, una entrega <span class="muted small">(si dos comparten celular, tú lo desbloqueas con un código)</span></label>
         <label class="check"><input type="checkbox" id="aePin" ${ex.pin ? 'checked' : ''}> Pedir la clave personal de 4 números <span class="muted small">(nadie puede entrar con el número de otro)</span></label>
         <p class="muted small" data-fm="quiz">Siempre: el nombre debe corresponder al número de la lista y cada número entrega una sola vez.</p>
@@ -9643,7 +9771,7 @@ function aulaEditor(id, preset) {
       label: orig ? 'Guardar cambios' : isF() ? 'Guardar práctica' : 'Guardar examen', cls: 'btn-primary', onClick: ov => {
         ex.title = ov.querySelector('#aeTitle').value.trim(); ex.kind = ov.querySelector('#aeKind').value; ex.dur = +ov.querySelector('#aeDur').value;
         ex.actKey = ov.querySelector('#aeAct').value; ex.instr = ov.querySelector('#aeInstr').value.trim(); ex.shuffle = ov.querySelector('#aeShuf').checked;
-        ex.oneDev = ov.querySelector('#aeOne').checked; ex.lockLeave = ov.querySelector('#aeLock').checked; ex.pin = ov.querySelector('#aePin').checked; ex.resDetail = ov.querySelector('#aeResDet').checked;
+        ex.oneDev = ov.querySelector('#aeOne').checked; ex.lockLeave = ov.querySelector('#aeLock').checked; ex.lockN = +((ov.querySelector('#aeLockN') || {}).value || 0); ex.pin = ov.querySelector('#aePin').checked; ex.resDetail = ov.querySelector('#aeResDet').checked;
         const errs = [];
         if (!ex.title) errs.push('Escribe el título.');
         if (ex.to.mode === 'group' && !groups.length) errs.push('No hay grupos: elige «Todo el curso» o «Elegir estudiantes».');
@@ -9797,7 +9925,7 @@ function aulaStartDialog(id, extend = false) {
           if (prep) await aulaReopenSend(ex, prep.out);
           if (retake) { const rn = Object.keys(ex.resp).filter(n => { const s = aulaStudent(m, ex, n); return s && on.has(s.id); }); if (rn.length) await aulaApplyOp(m, ex, rn, 'reset').catch(e => toast('No se pudieron borrar las entregas: ' + aulaErr(e), 'warn', 5000)); }
         }, e => { if (prep) Object.assign(ex, prep.keep); throw e; })).then(() => {
-          persist(); if (typeof portalSoon === 'function') portalSoon(800); close(); render(); toast(extend ? (F ? 'Fecha límite cambiada.' : 'Tiempo extendido.') : '¡Habilitado! Muestra el QR a tus estudiantes.', 'ok', 3200);
+          persist(); if (typeof portalExamNow === 'function') portalExamNow(m); close(); render(); toast(extend ? (F ? 'Fecha límite cambiada.' : 'Tiempo extendido.') : '¡Habilitado! Ya aparece en Mi aula de tus estudiantes.', 'ok', 3200);
           if (!extend) setTimeout(() => aulaShare(ex.id), 250);
         }).catch(e => { btn.disabled = false; btn.textContent = extend ? 'Extender' : 'Habilitar ahora'; toast(aulaErr(e), 'error', 6000); });
         return false;
@@ -9838,7 +9966,7 @@ function aulaClose(id) {
   const m = curMod(), ex = aulaFind(m, id); if (!ex) return;
   confirmBox('¿Inhabilitar el examen?', 'Nadie más podrá entrar ni entregar. Quien esté respondiendo queda en pausa con sus respuestas guardadas en su celular: si lo vuelves a habilitar, sigue donde se quedó. La lista queda limpia (puedes verla con «Ver la lista»).', 'Inhabilitar', () => {
     const was = ex.closedAt; ex.closedAt = new Date().toISOString();
-    aulaSetStatus(m, ex, 'closed').then(() => { aulaPushResults(m, ex); persist(); if (typeof portalSoon === 'function') portalSoon(800); render(); toast('Inhabilitado.', 'ok'); }).catch(e => { ex.closedAt = was; throw e; }).catch(e => toast(aulaErr(e), 'error', 5000));
+    aulaSetStatus(m, ex, 'closed').then(() => { aulaPushResults(m, ex); persist(); if (typeof portalExamNow === 'function') portalExamNow(m); render(); toast('Inhabilitado.', 'ok'); }).catch(e => { ex.closedAt = was; throw e; }).catch(e => toast(aulaErr(e), 'error', 5000));
   });
 }
 let _qrLoad = null;
@@ -10415,6 +10543,12 @@ Object.assign(ACTIONS, {
   'aula-back': () => { state.aulaSel = null; render(); },
   'aula-edit': el => aulaEditor(el.dataset.id),
   'aula-start': el => aulaStartDialog(el.dataset.id),
+  'aula-resync': async el => {
+    const m = curMod(); if (!m || !m.portal || !m.portal.on || typeof portalSync !== 'function') return;
+    el.disabled = true; toast('Enviando a Mi aula de cada estudiante…', 'info', 2000);
+    try { await portalRetry(() => portalPushMeta(m, true)); await portalSync(m, true); toast(m.portal.syncFail ? `Se envió, pero ${m.portal.syncFail} no se pudieron actualizar. Revisa el internet e inténtalo otra vez.` : 'Listo: el examen ya aparece en Mi aula de todos los que lo toman. Si alguien tenía Mi aula abierta, que la recargue.', m.portal.syncFail ? 'warn' : 'ok', 5000); }
+    catch (e) { toast(aulaErr(e), 'error', 5000); } finally { el.disabled = false; }
+  },
   'aula-extend': el => aulaStartDialog(el.dataset.id, true),
   'aula-close': el => aulaClose(el.dataset.id),
   'aula-share': el => aulaShare(el.dataset.id),
@@ -10812,7 +10946,7 @@ function normPortal(p) {
   const ras = {}; if (o.ras && typeof o.ras === 'object') Object.entries(o.ras).forEach(([k, v]) => { ras[k] = vis(v); });
   const accts = {}; if (o.accts && typeof o.accts === 'object') Object.entries(o.accts).forEach(([k, a]) => { if (a && a.u) accts[k] = { u: String(a.u), uid: String(a.uid || ''), pw: String(a.pw || ''), at: String(a.at || '') }; });
   const arr = (a, n) => (Array.isArray(a) ? a : []).filter(x => x && typeof x === 'object' && x.id).slice(-n);
-  return { on: !!o.on, pid: String(o.pid || ''), accts, ras, tot: vis(o.tot), hide: o.hide && typeof o.hide === 'object' ? o.hide : {}, news: arr(o.news, 50), docs: arr(o.docs, 200), pushed: o.pushed && typeof o.pushed === 'object' ? o.pushed : {}, metaH: String(o.metaH || ''), lastSync: String(o.lastSync || ''), pst: o.pst && typeof o.pst === 'object' ? o.pst : {} };
+  return { on: !!o.on, pid: String(o.pid || ''), accts, ras, tot: vis(o.tot), hide: o.hide && typeof o.hide === 'object' ? o.hide : {}, news: arr(o.news, 50), docs: arr(o.docs, 200), pushed: o.pushed && typeof o.pushed === 'object' ? o.pushed : {}, rem: o.rem !== false, pushNotas: o.pushNotas !== false, cal: o.cal !== false, metaH: String(o.metaH || ''), lastSync: String(o.lastSync || ''), pst: o.pst && typeof o.pst === 'object' ? o.pst : {} };
 }
 
 /* ---------- Utilidades ---------- */
@@ -10878,10 +11012,82 @@ function portalAuthErr(e) {
 }
 
 /* ---------- Lo que ve cada estudiante ---------- */
+/** Versión de esta app: Mi aula se actualiza sola si un estudiante la tiene abierta con una versión anterior. */
+const PRAXIS_BUILD = +'42' || 0;
 function portalMeta(m) {
   const P = m.portal;
   return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1, drv: typeof driveId === 'function' ? driveId() : '', rem: P.rem !== false, tz: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })(),
-    news: P.news.slice(-30).map(n => ({ id: n.id, t: n.t, at: n.at })), docs: P.docs.map(d => ({ id: d.id, t: d.t, url: d.url, k: d.k, ra: d.ra, at: d.at })) };
+    news: P.news.slice(-30).map(n => ({ id: n.id, t: n.t, at: n.at })), docs: P.docs.map(d => ({ id: d.id, t: d.t, url: d.url, k: d.k, ra: d.ra, at: d.at })),
+    ex: portalOpenExams(m), ...portalAgenda(m), ...(PRAXIS_BUILD ? { pv: PRAXIS_BUILD } : {}) };
+}
+/* ---------- Agenda de Mi aula: calendario y horario del curso ---------- */
+// Tipos de la agenda que se comparten solos (las reuniones y «Otro» solo si las marcas como visibles)
+const PORTAL_EV_AUTO = { 'Tarea': 1, 'Práctica': 1, 'Exposición': 1, 'Examen': 1, 'Proyecto': 1, 'Participación': 1 };
+const portalEvShared = e => e.pub === true || (e.pub !== false && !!PORTAL_EV_AUTO[e.type]);
+/** Módulos del mismo curso (el horario y las fechas que ve el estudiante son las de su curso contigo). */
+function portalCourseMods(m) { const ck = norm(m.course || ''); return ck ? db.modules.filter(x => norm(x.course || '') === ck) : [m]; }
+/** Feriados, efemérides, calendario escolar, actividades con fecha y horario de clases (nada de otros cursos ni de estudiantes). */
+function portalAgenda(m) {
+  // Nunca debe impedir que se publique un examen o un aviso: si algo falla, Mi aula sigue sin agenda
+  try { return portalAgenda0(m); } catch (e) { console.warn('Agenda de Mi aula', e); return { cal: null, hor: null }; }
+}
+function portalAgenda0(m) {
+  if (m.portal.cal === false) return { cal: null, hor: null };
+  const t = todayISO(), C = db.cal, from = addDays(t, -40);
+  const last = C && C.periods.length ? C.periods[C.periods.length - 1].end : '';
+  const to = last && last > addDays(t, 60) ? (last < addDays(t, 400) ? last : addDays(t, 400)) : addDays(t, 240);
+  const inR = d => d >= from && d <= to;
+  const fest = [];
+  for (let y = +from.slice(0, 4); y <= +to.slice(0, 4); y++) Object.entries(festYear(y)).forEach(([d, L]) => { if (inR(d)) L.forEach(it => fest.push([d, it.k, it.n, it.k === 'dia' ? '' : String(it.d || '').slice(0, 160), it.note || ''])); });
+  fest.sort((a, b) => a[0].localeCompare(b[0]));
+  const school = C ? { y: C.year, per: C.periods.map(p => [p.id, p.start, p.end]), off: C.holidays.filter(x => inR(x.date)).map(x => [x.date, x.name]),
+    brk: C.breaks.filter(x => x.end >= from && x.start <= to).map(x => [x.name, x.start, x.end]), ent: Object.entries(entregaDays()).filter(([d]) => inR(d)).map(([d, e]) => [d, e.p]) } : null;
+  const mods = portalCourseMods(m), many = mods.length > 1, ev = [];
+  mods.forEach(x => {
+    const hide = (x.portal && x.portal.hide) || {}, tag = many ? modShort(x) : '';
+    allEvents(x.id).forEach(e => {
+      if (!inR(e.date) || (e.src === 'act' && hide[e.key]) || (e.src === 'ev' && !portalEvShared(e))) return;
+      ev.push([e.date, e.time || '', e.type, String(e.title || '').slice(0, 90), tag]);
+    });
+    (x.aula || []).forEach(a => {
+      if (!a.pub || !aulaIsOpen(a) || !aulaIsFile(a) || !a.due || !(x.portal && x.portal.on)) return;
+      const d = String(a.due).slice(0, 10); if (inR(d)) ev.push([d, String(a.due).slice(11, 16), 'Entrega', String(a.title || '').slice(0, 90), tag]);
+    });
+  });
+  ev.sort((a, b) => (a[0] + (a[1] || '99')).localeCompare(b[0] + (b[1] || '99')));
+  const h = hor(), slots = horSlots(h), cells = [];
+  Object.entries(h.cells).forEach(([k, v]) => { const i = mods.findIndex(x => x.id === v.m); if (i < 0) return; const [wd, n] = k.split('-').map(Number); if (h.days.includes(wd)) cells.push([wd, n, i]); });
+  const H = cells.length ? { d: h.days, s: slots.filter(x => x.k === 'h').map(x => [x.n, x.start, x.end]), b: slots.filter(x => x.k === 'b').map(x => [x.name, x.start, x.end]),
+    m: mods.map(x => [modShort(x), modFull(x), horColor(x, h), (x.portal && x.portal.on && x.portal.pid) || '']), c: cells.sort((a, b) => a[0] - b[0] || a[1] - b[1]) } : null;
+  return { cal: { fest, esc: school, ev: ev.slice(0, 220) }, hor: H };
+}
+/** Horario para los avisos de clase (los envía tu script de Drive aunque Mi aula esté cerrada). */
+function portalClsPayload() {
+  const h = hor(), C = db.cal, t = todayISO(), to = addDays(t, 365), b = [], off = new Set();
+  db.modules.filter(m => m.portal && m.portal.on && m.portal.pid && m.portal.cal !== false).forEach(m => h.days.forEach(wd => horBlocks(wd, h).forEach(x => { if (x.mod && x.mod.id === m.id) b.push([wd, x.start, x.end, m.portal.pid, modShort(m).slice(0, 40)]); })));
+  for (let y = +t.slice(0, 4); y <= +to.slice(0, 4); y++) Object.entries(festYear(y)).forEach(([d, L]) => { if (d >= t && d <= to && L.some(x => x.k === 'fer')) off.add(d); });
+  if (C) C.holidays.forEach(x => { if (x.date >= t && x.date <= to) off.add(x.date); });
+  let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { }
+  return { tz, b: b.slice(0, 120), off: [...off].sort().slice(0, 150), brk: C ? C.breaks.filter(x => x.end >= t).map(x => [x.start, x.end]).slice(0, 30) : [], per: C ? C.periods.map(p => [p.start, p.end]) : [] };
+}
+let _clsFail = 0;
+/** Si el horario o el calendario cambiaron, se lo pasa al script (una vez; si el script es viejo, reintenta en 6 horas). */
+async function portalClsPush() {
+  if (typeof driveUrl !== 'function' || !driveUrl() || !navigator.onLine || Date.now() - _clsFail < 6 * 36e5) return;
+  const data = portalClsPayload(), h = aulaHash(JSON.stringify(data), 24), key = 'praxisCls:' + ((Cloud.user && Cloud.user.uid) || '');
+  let prev = ''; try { prev = localStorage.getItem(key) || ''; } catch (e) { }
+  if (prev === h) return;
+  try { await driveCall('cls', { cls: data }, 60000); try { localStorage.setItem(key, h); } catch (e) { } }
+  catch (e) { _clsFail = Date.now(); console.warn('Horario para avisos', e && e.message || e); }
+}
+/** Exámenes y prácticas abiertos ahora, con quién los toma. Mi aula los ve al instante aunque su lista personal todavía no se haya actualizado. */
+function portalOpenExams(m) {
+  const P = m.portal, withAcct = m.students.filter(s => P.accts[s.id] && P.accts[s.id].uid);
+  return (m.aula || []).filter(ex => ex.pub && aulaIsOpen(ex)).map(ex => {
+    const who = aulaAssigned(m, ex).filter(s => P.accts[s.id] && P.accts[s.id].uid);
+    return { eid: ex.id, t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLinkPortal(ex), dur: ex.dur || 0, pts: aulaTotal(ex),
+      instr: String(ex.instr || '').slice(0, 300), mat: aulaIsFile(ex) ? (ex.mat || []).slice(0, 10) : [], to: who.length >= withAcct.length ? 'all' : who.map(s => P.accts[s.id].uid) };
+  });
 }
 function portalPayload(m, s) {
   const P = m.portal, r = calcStudent(m, s);
@@ -10905,7 +11111,8 @@ function portalPayload(m, s) {
     eid: ex.id, t: ex.title, k: ex.kind, file: aulaIsFile(ex) ? 1 : 0, until: ex.until || '', due: ex.due || '', url: aulaLinkPortal(ex), code: 0, dur: ex.dur || 0, instr: String(ex.instr || '').slice(0, 600), mat: aulaIsFile(ex) ? (ex.mat || []).slice(0, 10) : [], pts: aulaTotal(ex),
     done: Object.keys(ex.resp).some(k => { const x = aulaStudent(m, ex, k); return x && x.id === s.id; }) ? 1 : 0
   }));
-  return { num: s.num, name: s.name, ras, tot, pend };
+  // Clave personal del Aula: Mi aula la pone sola al abrir un examen (el estudiante ya entró con su cuenta)
+  return { num: s.num, name: s.name, ras, tot, pend, pin: (m.aulaPins || {})[s.id] || '' };
 }
 
 /* ---------- Sincronizar con la nube ---------- */
@@ -10914,12 +11121,33 @@ const _portalPersist = persist;
 // Cada vez que se guarda algo (notas, Aula, ajustes), el portal se actualiza solo unos segundos después
 persist = function () { _portalPersist(); if (db.modules.some(m => m.portal && m.portal.on)) portalSoon(); };
 function portalSoon(ms = 12000) { clearTimeout(_portalT); _portalT = setTimeout(() => portalSyncAll().catch(() => { }), ms); }
+let _portalAgain = false;
 async function portalSyncAll() {
-  if (_portalBusy || !aulaCloudOK() || !navigator.onLine) return 0;
-  _portalBusy = true; let n = 0;
-  try { for (const m of db.modules) if (m.portal && m.portal.on && m.portal.pid) n += await portalSync(m).catch(e => { console.warn('Portal', e); return 0; }); }
-  finally { _portalBusy = false; }
+  if (!aulaCloudOK() || !navigator.onLine) return 0;
+  // Si ya hay una actualización en curso, se repite al terminar (antes se perdía y algunos no veían el examen)
+  if (_portalBusy) { _portalAgain = true; return 0; }
+  _portalBusy = true; let n = 0, k = 0;
+  try {
+    do {
+      _portalAgain = false;
+      for (const m of db.modules) if (m.portal && m.portal.on && m.portal.pid) n += await portalSync(m).catch(e => { console.warn('Portal', e); return 0; });
+    } while (_portalAgain && ++k < 4);
+  } finally { _portalBusy = false; }
+  portalClsPush().catch(() => { });
   return n;
+}
+/** Al habilitar o cerrar un examen: la lista de Mi aula se actualiza en el momento (y luego la de cada estudiante). */
+function portalExamNow(m) {
+  if (!m || !m.portal || !m.portal.on || !m.portal.pid || !aulaCloudOK()) return;
+  portalRetry(() => portalPushMeta(m, true)).catch(e => console.warn('Portal', e));
+  portalSoon(400);
+}
+/** Reintenta una escritura que falló por la red (no si fue falta de permiso). */
+async function portalRetry(fn, tries = 3) {
+  for (let i = 0; ; i++) {
+    try { return await fn(); }
+    catch (e) { if (i >= tries - 1 || String(e && e.code || e).includes('permission')) throw e; await new Promise(r => setTimeout(r, 1200 * (i + 1))); }
+  }
 }
 async function portalPushMeta(m, force) {
   const data = portalMeta(m), h = aulaHash(JSON.stringify(data), 32);
@@ -10928,19 +11156,28 @@ async function portalPushMeta(m, force) {
   m.portal.metaH = h; return 1;
 }
 async function portalSync(m, force) {
-  const P = m.portal; let n = await portalPushMeta(m, force);
-  const ref = Cloud.fs.collection('portal').doc(P.pid).collection('s');
-  for (const s of m.students) {
-    const a = P.accts[s.id]; if (!a || !a.uid) continue;
-    const data = portalPayload(m, s), h = aulaHash(JSON.stringify(data), 32);
+  const P = m.portal; let n = 0, fails = 0;
+  try { n += await portalRetry(() => portalPushMeta(m, force)); } catch (e) { fails++; console.warn('Portal', e); }
+  const ref = Cloud.fs.collection('portal').doc(P.pid).collection('s'), FV = firebase.firestore.FieldValue;
+  P.pst = P.pst || {};
+  const jobs = m.students.filter(s => P.accts[s.id] && P.accts[s.id].uid);
+  const one = async s => {
+    const a = P.accts[s.id];
     // Nombre y número oficiales del estudiante (con ellos firma en los grupos; las reglas no aceptan otros)
-    const pk = s.num + '|' + s.name; P.pst = P.pst || {};
-    if (P.pst[s.id] !== pk) { await withTimeout(Cloud.fs.collection('pstu').doc(a.uid).set({ owner: Cloud.user.uid, p: { [P.pid]: { mod: modShort(m), course: m.course || '', num: s.num, name: s.name } } }, { merge: true }), 15000); P.pst[s.id] = pk; n++; }
-    if (!force && P.pushed[s.id] === h) continue;
-    await withTimeout(ref.doc(a.uid).set({ ...data, upd: firebase.firestore.FieldValue.serverTimestamp() }), 15000);
+    const pk = s.num + '|' + s.name;
+    if (P.pst[s.id] !== pk) { await portalRetry(() => withTimeout(Cloud.fs.collection('pstu').doc(a.uid).set({ owner: Cloud.user.uid, p: { [P.pid]: { mod: modShort(m), course: m.course || '', num: s.num, name: s.name } } }, { merge: true }), 15000)); P.pst[s.id] = pk; n++; }
+    const data = portalPayload(m, s), h = aulaHash(JSON.stringify(data), 32);
+    if (!force && P.pushed[s.id] === h) return;
+    await portalRetry(() => withTimeout(ref.doc(a.uid).set({ ...data, upd: FV.serverTimestamp() }), 15000));
     P.pushed[s.id] = h; n++;
-  }
+  };
+  // De 6 en 6 (más rápido con cursos grandes); si uno falla, los demás siguen y se reintenta después
+  let i = 0;
+  const lane = async () => { while (i < jobs.length) { const s = jobs[i++]; try { await one(s); } catch (e) { fails++; console.warn('Portal', s.name, e); } } };
+  await Promise.all(Array.from({ length: Math.min(6, jobs.length) }, lane));
+  P.syncFail = fails;
   if (n) { P.lastSync = new Date().toISOString(); _portalPersist(); if (state.tab === 'portal') aulaRenderSoon(); }
+  if (fails) portalSoon(30000);
   return n;
 }
 
@@ -11060,7 +11297,7 @@ function portalUserCell(m, s) {
 function portalAvisosHTML(m) {
   const P = m.portal, raOpts = m.ras.map((ra, i) => `<option value="${i + 1}">RA ${i + 1}</option>`).join('');
   const DK = { pdf: 'PDF', doc: 'DOC', ppt: 'PPT', xls: 'XLS', video: 'VID', link: 'WEB' };
-  return `${typeof pushCardHTML === 'function' ? pushCardHTML(m) : ''}<div class="pt-two">
+  return `${typeof pushCardHTML === 'function' ? pushCardHTML(m) : ''}${portalAgendaCardHTML(m)}<div class="pt-two">
     <section class="card pt-sec"><h3><span class="pt-ic">${AI.alert}</span>Avisos</h3>
       <p class="muted small">Les llega como notificación al celular, aunque tengan Mi aula cerrada (si activaron los avisos).</p>
       <label class="field">Nuevo aviso<textarea id="pnText" rows="3" maxlength="500" placeholder="Ej.: Traigan su laptop el lunes."></textarea></label>
@@ -11074,6 +11311,18 @@ function portalAvisosHTML(m) {
         <label class="field">Resultado de aprendizaje<select id="pdR"><option value="">General (todo el módulo)</option>${raOpts}</select></label></div>
       <div class="pt-formfoot"><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar documento</button></div>
       <div class="pt-list">${P.docs.slice().reverse().map(d => `<div class="pt-item"><span class="pt-dk">${DK[d.k] || 'WEB'}</span><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.t)}</a><div><small class="muted">${esc(PORTAL_DOC_KINDS[d.k] || 'Enlace')}${d.ra ? ' · RA ' + esc(d.ra) : ' · General'} · ${esc(aulaWhen(d.at))}</small></div></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-doc-del" data-id="${d.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.folder} Todavía no hay documentos.</div>`}</div></section></div>`;
+}
+
+/** Tarjeta «Calendario y horario en Mi aula». */
+function portalAgendaCardHTML(m) {
+  const P = m.portal, A = portalAgenda(Object.assign({}, m, { portal: Object.assign({}, P, { cal: true }) })), h = A.hor, cal = A.cal || { ev: [], fest: [] };
+  const t = todayISO(), nEv = cal.ev.filter(e => e[0] >= t).length, nFer = cal.fest.filter(f => f[0] >= t && f[1] === 'fer').length;
+  const hrs = h ? h.c.length : 0, mods = portalCourseMods(m);
+  return `<section class="card pt-sec pt-agenda" id="ptAgenda"><h3><span class="pt-ic">${AI.cal}</span>Calendario y horario en Mi aula</h3>
+    <p class="muted small">Tus estudiantes ven los feriados, los días sin clase, las fechas de clases, prácticas, exámenes y entregas de su curso, y su horario contigo: qué les toca ahora, lo siguiente y un aviso antes de cada clase (si lo activan).</p>
+    <label class="gp-sw"><span><b>Compartir calendario y horario</b><small>${nEv} fecha${nEv === 1 ? '' : 's'} próxima${nEv === 1 ? '' : 's'} · ${nFer} feriado${nFer === 1 ? '' : 's'} · ${hrs ? hrs + ' hora' + (hrs === 1 ? '' : 's') + ' de clase a la semana' : 'sin horario todavía'}${mods.length > 1 ? ' · ' + mods.length + ' módulos de ' + esc(m.course) : ''}</small></span><input type="checkbox" class="gp-tg" id="ptCal" ${P.cal !== false ? 'checked' : ''}></label>
+    <p class="small muted pt-agenda-how">Las fechas salen de tu <b>Calendario</b> (actividades con fecha del registro y eventos marcados «Mostrar en Mi aula»; las reuniones no se comparten) y las horas de <b>Mi horario</b>. Nada de notas ni datos de otros cursos.</p>
+    <div class="pt-formfoot"><button type="button" class="btn btn-ghost btn-sm" data-act="go-calendar">${AI.cal} Calendario</button><button type="button" class="btn btn-ghost btn-sm" data-act="go-horario">${AI.clock} Mi horario</button></div></section>`;
 }
 
 /* ---------- Diálogos ---------- */
@@ -11265,11 +11514,11 @@ function driveScript() {
 // © ${new Date().getFullYear()} ${AppConfig.author}. Pega este código completo en Apps Script.
 const CFG = { project: '${C.projectId || ''}', key: '${C.apiKey || ''}', owner: '${uid}', root: 'Praxis Pro · Entregas' };
 
-function doGet() { return out({ ok: true, app: 'praxis-drive', v: 7 }); }
+function doGet() { return out({ ok: true, app: 'praxis-drive', v: 8 }); }
 function doPost(e) {
   try {
     const b = JSON.parse(e.postData.contents);
-    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cget: cget, cdel: cdel, ccopy: ccopy, push: push, pushx: pushx, pushe: pushe, uso: uso, limpiar: limpiar, copia: copia }[b.a];
+    const F = { up: up, get: get, del: del, delp: delp, mat: mat, ping: ping, cimg: cimg, cmed: cimg, cdoc: cdoc, cls: cls, cget: cget, cdel: cdel, ccopy: ccopy, push: push, pushx: pushx, pushe: pushe, uso: uso, limpiar: limpiar, copia: copia }[b.a];
     return out(F ? F(b) : { ok: false, e: 'accion' });
   } catch (err) { return out({ ok: false, e: String(err && err.message || err) }); }
 }
@@ -11372,6 +11621,20 @@ function cimg(b) {
   if (ty.indexOf('image') === 0) { try { f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) { } }
   return { ok: true, id: f.getId() };
 }
+// Documentos del chat (PDF, Word, Excel, PowerPoint, ZIP, Packet Tracer…): nada que se pueda ejecutar, hasta 10 MB
+const DOCS = ['pdf', 'doc', 'docx', 'odt', 'rtf', 'txt', 'xls', 'xlsx', 'ods', 'csv', 'ppt', 'pptx', 'pps', 'ppsx', 'odp', 'zip', 'rar', '7z', 'pkt', 'pka', 'sql', 'drawio', 'json', 'xml'];
+function cdoc(b) {
+  const raw = String(b.nm || 'archivo'), ext = (raw.match(/[.]([A-Za-z0-9]{1,6})$/) || ['', ''])[1].toLowerCase(), m = member(b);
+  const nm = clean(raw.replace(/[.][A-Za-z0-9]{1,6}$/, '')).slice(0, 70) + '.' + ext;
+  if (DOCS.indexOf(ext) < 0) throw new Error('tipo');
+  if (!m.mine) lim('d:' + m.u.localId, 20, 600);
+  const bytes = Utilities.base64Decode(String(b.data || ''));
+  if (!bytes.length || bytes.length > 10 * 1048576) throw new Error('tamano');
+  const ty = /^[a-z]+[/][A-Za-z0-9.+-]{1,90}$/.test(String(b.ty || '')) && String(b.ty).indexOf('html') < 0 && String(b.ty).indexOf('javascript') < 0 ? String(b.ty) : 'application/octet-stream';
+  const dir = folder(folder(folder(root(), 'Mensajes'), m.pid), m.mine ? 'Docente' : m.u.localId);
+  const f = dir.createFile(Utilities.newBlob(bytes, ty, nm));
+  return { ok: true, id: f.getId(), sz: bytes.length };
+}
 // Escuchar una nota de voz: solo quien pertenece a ese portal, y solo archivos de su carpeta de Mensajes
 function cget(b) {
   const m = member(b); if (!m.mine) lim('g:' + m.u.localId, 150, 600);
@@ -11448,8 +11711,10 @@ function tokensOf(uids) {
   return out;
 }
 // Envía el aviso a todos los equipos (celular, PC) de esas personas; borra los equipos que ya no existen
-function fcm(uids, data) {
-  const T = tokensOf(uids), reqs = [], who = [], tk = saTok(), url = 'https://fcm.googleapis.com/v1/projects/' + CFG.project + '/messages:send';
+function fcm(uids, data) { return fcmT(tokensOf(uids), data); }
+// Envía a los equipos ya conocidos ({ uid: [tokens] })
+function fcmT(T, data) {
+  const reqs = [], who = [], tk = saTok(), url = 'https://fcm.googleapis.com/v1/projects/' + CFG.project + '/messages:send';
   Object.keys(T).forEach(function (uid) { (T[uid] || []).forEach(function (t) { who.push([uid, t]); reqs.push({ url: url, method: 'post', contentType: 'application/json', headers: { Authorization: 'Bearer ' + tk }, muteHttpExceptions: true, payload: JSON.stringify({ message: { token: t, data: data, webpush: { headers: { Urgency: 'high', TTL: '86400' } } } }) }); }); });
   let n = 0; const bad = {};
   for (let i = 0; i < reqs.length; i += 50) UrlFetchApp.fetchAll(reqs.slice(i, i + 50)).forEach(function (r, k) {
@@ -11525,8 +11790,14 @@ function pushe(b) {
   c.put(ck, '1', 900);
   return { ok: true, n: fcm([CFG.owner], { t: 'Nº ' + num + ' · ' + String(d.name || 'Estudiante').slice(0, 50) + (file ? ' entregó' : ' terminó'), b: String(ex.title || 'Examen').slice(0, 120) + (ex.mod ? ' · ' + ex.mod + ' ' + (ex.course || '') : ''), go: 'aulap:' + eid, tag: 'ent-' + eid, id: 'ent:' + eid + ':' + num }) };
 }
-// Cada 5 minutos: los recordatorios de tus notas adhesivas (aunque Praxis Pro esté cerrado)
+// Cada 5 minutos: los recordatorios de tus notas adhesivas y los avisos de clase de Mi aula (aunque Praxis Pro esté cerrado)
 function avisosNotas() {
+  let a = '', c = '';
+  try { a = notasTick(); } catch (e) { a = 'Notas: ' + (e && e.message || e); }
+  try { c = avisosClases(); } catch (e) { c = 'Clases: ' + (e && e.message || e); }
+  return a + ' · ' + c;
+}
+function notasTick() {
   if (!sa()) return 'Falta la cuenta de servicio (propiedad SA).';
   const r = adm('/teachers/' + CFG.owner + '/lib/rem'), d = r.j && docOf(r.j); if (!d || !d.r) return 'Sin recordatorios.';
   const P = PropertiesService.getScriptProperties(), now = Date.now(); let n = 0;
@@ -11539,6 +11810,51 @@ function avisosNotas() {
   });
   const all = P.getProperties(); Object.keys(all).forEach(function (k) { if (k.indexOf('n|') === 0 && +all[k] < now - 3 * 864e5) P.deleteProperty(k); });
   return 'Recordatorios de notas enviados: ' + n;
+}
+// Tu horario para los avisos de clase (Praxis Pro lo envía cuando cambia): bloques [día, inicio, fin, portal, módulo] y días sin clase
+function cls(b) {
+  teacher(b.tok);
+  const o = b.cls || {}, dia = function (x) { return /^\\d{4}-\\d\\d-\\d\\d$/.test(String(x)); }, rango = function (r) { return Array.isArray(r) && dia(r[0]) && dia(r[1]); };
+  const C = {
+    tz: String(o.tz || '').replace(/[^A-Za-z_\\/+-]/g, '').slice(0, 40),
+    b: (Array.isArray(o.b) ? o.b : []).filter(function (x) { return Array.isArray(x) && x.length >= 5; }).slice(0, 120).map(function (x) { return [Math.round(+x[0]) || 0, Math.round(+x[1]) || 0, Math.round(+x[2]) || 0, String(x[3]).replace(/[^A-Za-z0-9]/g, '').slice(0, 40), String(x[4] || 'Clase').slice(0, 40)]; }),
+    off: (Array.isArray(o.off) ? o.off : []).filter(dia).slice(0, 150),
+    brk: (Array.isArray(o.brk) ? o.brk : []).filter(rango).slice(0, 30), per: (Array.isArray(o.per) ? o.per : []).filter(rango).slice(0, 8)
+  };
+  const s = JSON.stringify(C); if (s.length > 8800) throw new Error('grande');
+  PropertiesService.getScriptProperties().setProperty('cls', s);
+  return { ok: true, n: C.b.length };
+}
+function h12(min) { const h = Math.floor(min / 60), m = min % 60; return ((h % 12) || 12) + ':' + (m < 10 ? '0' : '') + m + (h < 12 ? ' a. m.' : ' p. m.'); }
+// Estudiantes que pidieron el aviso de ese módulo con esa anticipación: { uid: [tokens] }
+function suscritos(key) {
+  const q = { structuredQuery: { from: [{ collectionId: 'push' }], where: { fieldFilter: { field: { fieldPath: 'cls' }, op: 'ARRAY_CONTAINS', value: { stringValue: key } } }, limit: 400 } };
+  const r = UrlFetchApp.fetch(FSB() + ':runQuery', { method: 'post', contentType: 'application/json', payload: JSON.stringify(q), headers: { Authorization: 'Bearer ' + saTok() }, muteHttpExceptions: true });
+  const T = {}; if (r.getResponseCode() !== 200) return T;
+  JSON.parse(r.getContentText()).forEach(function (x) { if (!x.document) return; const d = docOf(x.document); if (d && d.tk && d.tk.length) T[x.document.name.split('/').pop()] = d.tk; });
+  return T;
+}
+// Cada 5 minutos: «tu clase empieza en 10 minutos» a quien lo activó en Mi aula (no en feriados, recesos ni fuera del año escolar)
+function avisosClases() {
+  const P = PropertiesService.getScriptProperties(); let C = null; try { C = JSON.parse(P.getProperty('cls') || 'null'); } catch (e) { }
+  if (!C || !C.b || !C.b.length) return 'Sin horario.';
+  if (!sa()) return 'Falta la cuenta de servicio.';
+  const tz = C.tz || Session.getScriptTimeZone(), now = new Date(), hoy = Utilities.formatDate(now, tz, 'yyyy-MM-dd'), wd = +Utilities.formatDate(now, tz, 'u') % 7;
+  const min = +Utilities.formatDate(now, tz, 'H') * 60 + +Utilities.formatDate(now, tz, 'm'), dentro = function (r) { return r[0] <= hoy && hoy <= r[1]; };
+  if ((C.off || []).indexOf(hoy) >= 0 || (C.brk || []).some(dentro) || (C.per && C.per.length && !C.per.some(dentro))) return 'Hoy no hay clases.';
+  let n = 0;
+  C.b.forEach(function (x) {
+    if (x[0] !== wd || !x[3] || min >= x[1]) return;
+    [5, 10, 15].forEach(function (ant) {
+      if (min < x[1] - ant - 2) return;
+      const key = 'c|' + x[3] + '|' + hoy + '|' + x[1] + '|' + ant; if (P.getProperty(key)) return; P.setProperty(key, String(Date.now()));
+      const T = suscritos(x[3] + ':' + ant); if (!Object.keys(T).length) return;
+      const falta = Math.max(1, x[1] - min);
+      n += fcmT(T, { t: 'Tu clase empieza en ' + falta + ' min', b: x[4] + ' · ' + h12(x[1]) + ' a ' + h12(x[2]), go: 'agenda', id: 'cls:' + x[3] + ':' + hoy + ':' + x[1] });
+    });
+  });
+  const all = P.getProperties(), viejo = Date.now() - 2 * 864e5; Object.keys(all).forEach(function (k) { if (k.indexOf('c|') === 0 && +all[k] < viejo) P.deleteProperty(k); });
+  return 'Avisos de clase: ' + n;
 }
 function proxima(at, rep) { const t = new Date(at); do { t.setDate(t.getDate() + (rep === 'w' ? 7 : 1)); } while (rep === 'wd' && (t.getDay() === 0 || t.getDay() === 6)); return t.getTime(); }
 const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
@@ -11681,7 +11997,7 @@ function ping(b) {
   let ok = false, err = '';
   if (sa()) { try { saTok(); ok = true; } catch (e) { err = String(e.message || e).slice(0, 160); } }
   if (ok && (!trigOn() || !trigOn('copiaDiaria') || !trigOn('avisosNotas'))) { try { activarAutomaticos(); } catch (e) { } }
-  return { ok: true, v: 7, folder: root().getName(), url: root().getUrl(), sa: ok, saErr: err, trig: trigOn(), bakTrig: trigOn('copiaDiaria'), noteTrig: trigOn('avisosNotas'), bak: lastBak() };
+  return { ok: true, v: 8, folder: root().getName(), url: root().getUrl(), sa: ok, saErr: err, trig: trigOn(), bakTrig: trigOn('copiaDiaria'), noteTrig: trigOn('avisosNotas'), bak: lastBak() };
 }
 `;
 }
@@ -11803,6 +12119,14 @@ ACTIONS['drive-setup'] = () => driveDialog();
     '@keyframes ckPop{from{opacity:0;transform:scale(.9) translateY(6px)}}',
     '.ck-pick emoji-picker{--border-size:0;--border-radius:0;--background:var(--ck-s1);--input-border-radius:10px;--indicator-color:var(--ck-acc);--outline-color:var(--ck-acc);--num-columns:8;width:min(352px,calc(100vw - 40px));height:360px}',
     '.ck-quick{display:flex;gap:2px;padding:8px;border-top:1px solid var(--ck-line);flex-wrap:wrap}.ck-quick button{border:0;background:none;font-size:22px;width:38px;height:38px;border-radius:10px;cursor:pointer;transition:transform .15s ' + SPRING + '}.ck-quick button:hover{background:var(--ck-s2);transform:scale(1.18)}',
+    '.ck-doc{display:flex;align-items:center;gap:10px;width:100%;min-width:220px;max-width:320px;margin:2px 0 4px;padding:9px 10px;border:1px solid color-mix(in srgb,currentColor 12%,transparent);border-radius:12px;background:color-mix(in srgb,currentColor 5%,transparent);color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .15s,transform .15s}',
+    '.ck-doc:hover{background:color-mix(in srgb,currentColor 9%,transparent)}.ck-doc:active{transform:scale(.98)}.ck-doc.busy{opacity:.6;pointer-events:none}.ck-doc.up{cursor:default}',
+    '.ck-dic{flex:none;display:grid;place-items:center;width:40px;height:46px;border-radius:8px 14px 8px 8px;background:var(--dc);color:#fff;font:800 10.5px/1 Inter,system-ui,sans-serif;letter-spacing:.03em;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}',
+    '.ck-dtx{flex:1;min-width:0}.ck-dtx b{display:block;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ck-dtx small{display:block;font-size:11.5px;opacity:.72;margin-top:1px}',
+    '.ck-ddl{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,var(--dc) 16%,transparent);color:var(--dc)}.ck-ddl .ck-i{width:18px;height:18px}',
+    '.ck-me .ck-doc{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.12)}.ck-me .ck-ddl{background:rgba(255,255,255,.2);color:#fff}',
+    '.ck-mcd .ck-mcv{display:grid;place-items:center;padding:24px}.ck-dbig{display:grid;justify-items:center;gap:10px;text-align:center;max-width:320px;padding:28px 22px;border-radius:20px;background:var(--ck-bg,#fff);color:var(--ck-ink,#111);box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}',
+    '.ck-dbig .ck-dic{width:64px;height:76px;font-size:15px;border-radius:12px 22px 12px 12px}.ck-dbig b{font-size:15px;word-break:break-word}.ck-dbig small{opacity:.7}',
     '.ck-drop{position:absolute;inset:8px;z-index:30;display:none;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--ck-acc);border-radius:18px;background:color-mix(in srgb,var(--ck-s1) 88%,transparent);font-weight:600;color:var(--ck-acc)}.ck.dragging .ck-drop{display:flex;animation:ckFade .15s both}',
     '.ck-empty{margin:auto;text-align:center;max-width:320px;color:var(--ck-mut);font-size:14px;padding:30px 0;animation:ckIn .4s both}.ck-empty i{width:58px;height:58px;border-radius:18px;background:var(--ck-s1);border:1px solid var(--ck-line);display:grid;place-items:center;margin:0 auto 12px;color:var(--ck-acc)}.ck-empty i svg{width:26px;height:26px}.ck-empty b{display:block;color:var(--ck-ink);font-size:15px;margin-bottom:3px}',
     '.ck-sk{display:flex;flex-direction:column;gap:10px;padding:8px 0}.ck-sk i{display:block;height:38px;border-radius:16px;background:linear-gradient(90deg,var(--ck-s2) 25%,var(--ck-line) 50%,var(--ck-s2) 75%);background-size:200% 100%;animation:ckSh 1.2s infinite}.ck-sk i:nth-child(2n){align-self:flex-end;width:46%}.ck-sk i:nth-child(2n+1){width:58%}@keyframes ckSh{to{background-position:-200% 0}}',
@@ -11908,6 +12232,9 @@ ACTIONS['drive-setup'] = () => driveDialog();
   function ic(d) { return '<svg class="ck-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; }
   function fic(d) { return '<svg class="ck-i" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' + d + '</svg>'; }
   var I = {
+    clip: ic('<path d="M20.5 11.6l-8.3 8.3a5.3 5.3 0 0 1-7.5-7.5l8.3-8.3a3.6 3.6 0 0 1 5.1 5.1l-8.4 8.3a1.8 1.8 0 0 1-2.5-2.5l7.7-7.7"/>'),
+    fdoc: ic('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>'),
+    dl: ic('<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 20h14"/>'),
     smile: ic('<circle cx="12" cy="12" r="8.5"/><path d="M8.5 14.5s1.2 1.8 3.5 1.8 3.5-1.8 3.5-1.8M9.2 9.6h.01M14.8 9.6h.01"/>'),
     img: ic('<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M20.5 15.5l-5-5L6 19"/>'),
     send: ic('<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>'), mic: ic('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/>'),
@@ -11950,7 +12277,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
   function onlyEmoji(t) { var s = String(t || '').trim(); if (!s || s.length > 12) return false; try { return /^(?:\p{Extended_Pictographic}|\p{Emoji_Component}|‍|️|\s)+$/u.test(s) && !/^[\d#*\s]+$/.test(s); } catch (e) { return false; } }
   function thumb(id, w) { return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w' + (w || 800); }
   function fmt(sec) { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + ('0' + sec % 60).slice(-2); }
-  function snippet(x) { return x.poll ? '📊 ' + (x.poll.q || 'Encuesta') : x.card ? '📢 ' + (x.card.title || 'Anuncio') : x.aud ? '🎤 Nota de voz' : x.t ? String(x.t).replace(/\s+/g, ' ').slice(0, 110) : x.vid ? '🎬 Video' : (x.img || x.local) ? '📷 Foto' : ''; }
+  function snippet(x) { return x.poll ? '📊 ' + (x.poll.q || 'Encuesta') : x.card ? '📢 ' + (x.card.title || 'Anuncio') : x.aud ? '🎤 Nota de voz' : x.doc ? '📎 ' + (x.doc.n || 'Documento') : x.t ? String(x.t).replace(/\s+/g, ' ').slice(0, 110) : x.vid ? '🎬 Video' : (x.img || x.local) ? '📷 Foto' : ''; }
   /** Datos de un video antes de subirlo: duración, tamaño y una miniatura (primer cuadro). */
   function videoInfo(file) {
     return new Promise(function (ok) {
@@ -11970,6 +12297,14 @@ ACTIONS['drive-setup'] = () => driveDialog();
     });
   }
   /** Hoja de opciones: abajo en el celular, al centro en la computadora. */
+  /* Documentos: PDF, Word, Excel, PowerPoint, texto, comprimidos, Packet Tracer… (nada que se pueda ejecutar) */
+  var DOCX = { pdf: ['PDF', '#e5484d'], doc: ['Word', '#2b6be6'], docx: ['Word', '#2b6be6'], odt: ['Documento', '#2b6be6'], rtf: ['Documento', '#2b6be6'], txt: ['Texto', '#64748b'],
+    xls: ['Excel', '#16a34a'], xlsx: ['Excel', '#16a34a'], ods: ['Hoja de cálculo', '#16a34a'], csv: ['CSV', '#16a34a'], ppt: ['PowerPoint', '#ea580c'], pptx: ['PowerPoint', '#ea580c'], pps: ['PowerPoint', '#ea580c'], ppsx: ['PowerPoint', '#ea580c'], odp: ['Presentación', '#ea580c'],
+    zip: ['ZIP', '#7c3aed'], rar: ['RAR', '#7c3aed'], '7z': ['7-Zip', '#7c3aed'], pkt: ['Packet Tracer', '#0e7490'], pka: ['Packet Tracer', '#0e7490'], sql: ['SQL', '#0e7490'], drawio: ['Diagrama', '#d97706'], json: ['JSON', '#64748b'], xml: ['XML', '#64748b'] };
+  var DOC_MB = 10, DOC_ACCEPT = Object.keys(DOCX).map(function (k) { return '.' + k; }).join(',');
+  function extOf(n) { var m = String(n || '').toLowerCase().match(/\.([a-z0-9]{1,6})$/); return m ? m[1] : ''; }
+  function docKind(d) { return DOCX[(d && (d.ext || extOf(d.n))) || ''] || ['Archivo', '#64748b']; }
+  function sizeOf(n) { n = +n || 0; return n >= 1048576 ? (n / 1048576).toFixed(1).replace('.0', '') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
   function choose(title, items) {
     var el = document.createElement('div'); el.className = 'ck-sheet'; el.setAttribute('role', 'dialog');
     el.innerHTML = '<div>' + (title ? '<h4>' + esc(title) + '</h4>' : '') + items.map(function (it, i) { return '<button type="button" data-i="' + i + '" style="--i:' + i + '"' + (it.del ? ' class="del"' : '') + '>' + (it.icon || '') + '<span>' + esc(it.label) + (it.sub ? '<small>' + esc(it.sub) + '</small>' : '') + '</span></button>'; }).join('') + '<button type="button" class="cancel" style="--i:' + items.length + '">Cancelar</button></div>';
@@ -12050,24 +12385,24 @@ ACTIONS['drive-setup'] = () => driveDialog();
       '<div class="ck-c"><div class="ck-tools"></div><div class="ck-pre" hidden></div><div class="ck-lock" hidden></div>' +
       '<div class="ck-box"><button type="button" class="ck-ib" data-emo title="Emojis" aria-label="Emojis">' + I.smile + '</button>' +
       '<textarea rows="1" maxlength="1000" placeholder="' + esc(o.placeholder || 'Escribe un mensaje…') + '" aria-label="Mensaje"></textarea>' +
-      (o.upload ? '<button type="button" class="ck-ib" data-att title="Foto o video" aria-label="Adjuntar foto o video">' + I.img + '</button><input type="file" accept="image/*,video/*" hidden>' : '') +
+      (o.upload ? '<button type="button" class="ck-ib" data-att title="Adjuntar" aria-label="Adjuntar foto, video o documento">' + (o.docs ? I.clip : I.img) + '</button><input type="file" accept="image/*,video/*" hidden><input type="file" data-docin accept="' + DOC_ACCEPT + '" hidden>' : '') +
       (o.onPoll ? '<button type="button" class="ck-ib" data-poll title="Crear una encuesta" aria-label="Crear una encuesta">' + I.poll + '</button>' : '') +
       '<button type="button" class="ck-send" disabled aria-label="Enviar">' + I.send.replace('class="ck-i"', 'class="ck-i s-send"') + I.mic.replace('class="ck-i"', 'class="ck-i s-mic"') + '</button></div><div class="ck-recbox" hidden></div>' +
       '<div class="ck-hint"><span>Enter para enviar · Shift+Enter para otra línea · *negrita* _cursiva_ ~tachado~</span><span data-cnt></span></div></div>' +
-      (o.upload ? '<div class="ck-drop">' + I.img + ' Suelta la foto o el video para enviarlo</div>' : '');
+      (o.upload ? '<div class="ck-drop">' + (o.docs ? I.clip + ' Suelta la foto, el video o el documento para enviarlo' : I.img + ' Suelta la foto o el video para enviarlo') + '</div>' : '');
     var $ = function (s) { return el.querySelector(s); };
-    var list = $('.ck-l'), inner = $('.ck-in'), ta = $('textarea'), send = $('.ck-send'), down = $('.ck-down'), pre = $('.ck-pre'), fi = $('input[type=file]'), box = $('.ck-box'), recbox = $('.ck-recbox'), ban = $('.ck-ban'), lockEl = $('.ck-lock'), hint = $('.ck-hint');
+    var list = $('.ck-l'), inner = $('.ck-in'), ta = $('textarea'), send = $('.ck-send'), down = $('.ck-down'), pre = $('.ck-pre'), fi = $('input[type=file]:not([data-docin])'), di = $('[data-docin]'), box = $('.ck-box'), recbox = $('.ck-recbox'), ban = $('.ck-ban'), lockEl = $('.ck-lock'), hint = $('.ck-hint');
     if (o.tools) $('.ck-tools').innerHTML = o.tools.map(function (t, i) { return '<button type="button" class="ck-tool" data-tool="' + i + '">' + (t.icon || '') + esc(t.label) + '</button>'; }).join('');
     el.querySelectorAll('[data-tool]').forEach(function (b) { b.onclick = function () { o.tools[+b.getAttribute('data-tool')].onClick(api); }; });
     if (o.draft) ta.value = o.draft;
     var more = $('.ck-more'); if (more) more.onclick = function () { var L = o.menu(api) || []; if (L.length) choose(null, L); };
     var touch = matchMedia('(hover: none)').matches, canRec0 = !!(o.upload && G.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia), canRec = canRec0, micMode = false, P = {};
     function perms() {
-      P = Object.assign({ txt: true, img: true, vid: true, aud: true }, o.perm ? o.perm() || {} : {});
+      P = Object.assign({ txt: true, img: true, vid: true, aud: true, doc: true }, o.perm ? o.perm() || {} : {});
       canRec = canRec0 && P.aud !== false;
       ta.disabled = P.txt === false;
       ta.placeholder = P.txt === false ? (P.img || P.vid || P.aud ? 'Aquí solo puedes enviar ' + [P.img && 'fotos', P.vid && 'videos', P.aud && 'notas de voz'].filter(Boolean).join(', ').replace(/, ([^,]*)$/, ' y $1') : 'No puedes escribir aquí') : (o.placeholder || 'Escribe un mensaje…');
-      var at = $('[data-att]'); if (at) at.hidden = P.img === false && P.vid === false;
+      var at = $('[data-att]'); if (at) { at.hidden = P.img === false && P.vid === false && !docsOn(); at.innerHTML = docsOn() ? I.clip : I.img; at.title = docsOn() ? (P.img === false && P.vid === false ? 'Enviar un documento' : 'Adjuntar foto, video o documento') : 'Foto o video'; }
       if (fi) fi.accept = [P.img !== false && 'image/*', P.vid !== false && 'video/*'].filter(Boolean).join(',');
     }
     function sync() {
@@ -12128,10 +12463,57 @@ ACTIONS['drive-setup'] = () => driveDialog();
       if (!keepText && m._cap && m._cap.value.trim() && !ta.value.trim()) { ta.value = m._cap.value; sync(); }
       m.classList.add('out'); var v = m.querySelector('video'); if (v) v.pause(); setTimeout(function () { m.remove(); }, 180);
     }
+    function docsOn() { return !!(o.docs && o.upload && P.doc !== false); }
+    /** Documento (PDF, Word, Excel…): vista previa, comentario opcional y enviar. */
+    function setDoc(f) {
+      if (!f || locked) return;
+      if (!docsOn()) return err('Aquí no se pueden enviar documentos.');
+      var ext = extOf(f.name);
+      if (!DOCX[ext]) return err('Ese tipo de archivo no se puede enviar. Se aceptan PDF, Word, Excel, PowerPoint, texto, ZIP, RAR y Packet Tracer.');
+      if (f.size > DOC_MB * 1048576) return err('El archivo pesa ' + sizeOf(f.size) + '. El máximo es ' + DOC_MB + ' MB.');
+      if (!f.size) return err('Ese archivo está vacío.');
+      closeMC(true); closePick();
+      var k = docKind({ ext: ext });
+      mc = document.createElement('div'); mc.className = 'ck-mc ck-mcd'; mc.setAttribute('role', 'dialog');
+      mc.innerHTML = '<header><button type="button" class="ck-ib" data-mx title="Cancelar" aria-label="Cancelar">' + I.x + '</button><div style="flex:1;min-width:0"><b>Enviar documento</b><small>' + esc(k[0]) + ' · ' + sizeOf(f.size) + '</small></div></header>' +
+        '<div class="ck-mcv"><div class="ck-dbig" style="--dc:' + k[1] + '"><span class="ck-dic">' + esc(ext.toUpperCase().slice(0, 4)) + '</span><b>' + esc(f.name) + '</b><small>' + esc(k[0]) + ' · ' + sizeOf(f.size) + '</small></div></div>' +
+        '<footer><textarea rows="1" maxlength="1000" placeholder="Añade un comentario…" aria-label="Comentario"' + (P.txt === false ? ' hidden' : '') + '></textarea><button type="button" class="ck-send" aria-label="Enviar">' + I.send + '</button></footer>';
+      el.appendChild(mc);
+      var cap = mc._cap = mc.querySelector('textarea'), m = mc;
+      if (P.txt !== false && ta.value.trim()) { cap.value = ta.value; ta.value = ''; sync(); }
+      var go = function () {
+        if (mc !== m || flood()) return; var t = P.txt === false ? '' : cap.value.trim(); cap.value = '';
+        var re = reply ? { id: reply.id, t: reply.t, n: reply.n === 'ti' ? (o.myName || 'Yo') : reply.n } : null; reply = null; drawPre(); closeMC(true);
+        var nm = String(f.name).slice(0, 120);
+        var tmp = { id: 'tmp' + (++tmpN), key: 'tmp' + tmpN, from: me, uid: o.myUid, name: o.myName, t: t, at: Date.now(), re: re, doc: { n: nm, sz: f.size, ext: ext, local: 1 },
+          payload: { t: t, re: re, doc: { blob: f, n: nm, ty: String(f.type || '').slice(0, 100), sz: f.size, ext: ext } } };
+        msgs.push(tmp); run(tmp);
+      };
+      mc.querySelector('.ck-send').onclick = go;
+      mc.querySelector('[data-mx]').onclick = function () { closeMC(); };
+      cap.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !touch && !e.isComposing) { e.preventDefault(); go(); } else if (e.key === 'Escape') closeMC(); });
+      mc.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMC(); });
+      setTimeout(function () { (P.txt === false ? mc && mc.querySelector('.ck-send') : cap).focus({ preventScroll: true }); }, 30);
+    }
+    /** Descarga (o abre) un documento del chat. */
+    function openDoc(d) {
+      if (!d || !d.id) return;
+      var b = list.querySelector('.ck-doc[data-doc="' + d.id + '"]'); if (b) b.classList.add('busy');
+      mediaURL(d.id).then(function (u) {
+        var a = document.createElement('a'); a.href = u; a.download = d.n || 'archivo'; a.rel = 'noopener';
+        if (!touch && (d.ext || extOf(d.n)) === 'pdf') { a.removeAttribute('download'); a.target = '_blank'; }
+        document.body.appendChild(a); a.click(); a.remove();
+      }, function () { err('No se pudo descargar el archivo. Revisa tu internet e inténtalo otra vez.'); }).then(function () { if (b) b.classList.remove('busy'); });
+    }
+    function docHTML(d) {
+      var k = docKind(d), ext = (d.ext || extOf(d.n) || '').toUpperCase().slice(0, 4);
+      return '<button type="button" class="ck-doc' + (d.local ? ' up' : '') + '" data-doc="' + esc(d.id || '') + '" style="--dc:' + k[1] + '"' + (d.local ? ' disabled' : '') + ' title="' + esc(d.local ? 'Subiendo…' : 'Descargar ' + (d.n || '')) + '"><span class="ck-dic">' + esc(ext || 'DOC') + '</span><span class="ck-dtx"><b>' + esc(d.n || 'Archivo') + '</b><small>' + esc(k[0]) + ' · ' + sizeOf(d.sz) + (d.local ? ' · subiendo…' : '') + '</small></span>' + (d.local ? '<span class="ck-spin"></span>' : '<span class="ck-ddl">' + I.dl + '</span>') + '</button>';
+    }
     function setFile(f) {
       if (!f || locked) return;
       var isV = /^video\//.test(f.type), isI = /^image\//.test(f.type);
-      if (!isV && !isI) return err('Solo se pueden enviar fotos y videos.');
+      if (!isV && !isI && docsOn() && DOCX[extOf(f.name)]) return setDoc(f);
+      if (!isV && !isI) return err(docsOn() ? 'Ese tipo de archivo no se puede enviar. Se aceptan fotos, videos, PDF, Word, Excel, PowerPoint, texto, ZIP y Packet Tracer.' : 'Solo se pueden enviar fotos y videos.');
       if (isI && P.img === false) return err('Aquí no se pueden enviar fotos.');
       if (isV && P.vid === false) return err('Aquí no se pueden enviar videos.');
       if (isI && f.size > 15 * 1048576) return err('La imagen pesa más de 15 MB.');
@@ -12164,7 +12546,15 @@ ACTIONS['drive-setup'] = () => driveDialog();
     }
     function clearFile() { file = null; sync(); }
     function setReply(x) { reply = x ? { id: x.id, t: snippet(x).slice(0, 110), n: mine(x) ? 'ti' : (x.name || (x.from === 't' ? (o.teacherName || 'Docente') : (o.title || 'Estudiante'))) } : null; drawPre(); if (x) ta.focus({ preventScroll: true }); }
-    if (fi) { $('[data-att]').onclick = function () { fi.click(); }; fi.onchange = function () { setFile(fi.files[0]); fi.value = ''; }; }
+    if (fi) {
+      $('[data-att]').onclick = function () {
+        var med = P.img !== false || P.vid !== false, dd = docsOn() && di;
+        if (med && dd) choose('Adjuntar', [{ label: 'Foto o video', icon: I.img, run: function () { fi.click(); } }, { label: 'Documento', sub: 'PDF, Word, Excel, PowerPoint, ZIP…', icon: I.fdoc, run: function () { di.click(); } }]);
+        else if (dd) di.click(); else fi.click();
+      };
+      fi.onchange = function () { setFile(fi.files[0]); fi.value = ''; };
+      if (di) di.onchange = function () { setDoc(di.files[0]); di.value = ''; };
+    }
     function pasteFile(e) {
       var it = [].slice.call((e.clipboardData || {}).items || []).filter(function (x) { return x.kind === 'file' && /^(image|video)\//.test(x.type); })[0];
       if (!it) return; e.preventDefault(); setFile(it.getAsFile());
@@ -12297,6 +12687,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
           choose('Reenviar a…', T.map(function (t) { return { icon: t.icon || I.fwd, label: t.label, sub: t.sub, run: function () { Promise.resolve(o.onForward(x, t.k)).then(function () { info('Reenviado a ' + t.label + '.'); }, function (e) { err(String(e && e.message || 'No se pudo reenviar.')); }); } }; }));
         } });
       }
+      if (x.doc && x.doc.id) L.push({ k: 'dl', icon: I.dl, label: 'Descargar', run: function () { openDoc(x.doc); } });
       if (x.t) L.push({ k: 'copy', icon: I.copy, label: 'Copiar texto', run: function () { (navigator.clipboard ? navigator.clipboard.writeText(x.t) : Promise.reject()).then(function () { info('Texto copiado.'); }, function () { }); } });
       var D = real && o.onDelete ? (o.delOpts ? o.delOpts(x) || {} : { all: !!(o.canDelete && o.canDelete(x)) }) : {};
       if (D.me || D.all) L.push({ k: 'del', icon: I.trash, label: 'Eliminar', del: 1, run: function () { askDel(x, D); } });
@@ -12304,10 +12695,10 @@ ACTIONS['drive-setup'] = () => driveDialog();
       return L;
     }
     function askDel(x, D) {
-      var media = x.img || x.aud || x.vid, items = [];
+      var media = x.img || x.aud || x.vid || x.doc, items = [];
       if (D.me) items.push({ icon: I.eyeoff, label: 'Eliminar para mí', sub: 'Solo desaparece de tu pantalla', run: function () { gone(x, 'me'); } });
       if (D.all) items.push({ icon: I.trash, label: 'Eliminar para todos', sub: D.allSub || ('Nadie lo verá' + (media ? ' y se libera el espacio' : '')), del: 1, run: function () { gone(x, 'all'); } });
-      choose(media ? (x.vid ? '¿Eliminar este video?' : x.aud ? '¿Eliminar esta nota de voz?' : '¿Eliminar esta foto?') : '¿Eliminar este mensaje?', items);
+      choose(media ? (x.vid ? '¿Eliminar este video?' : x.aud ? '¿Eliminar esta nota de voz?' : x.doc ? '¿Eliminar este documento?' : '¿Eliminar esta foto?') : '¿Eliminar este mensaje?', items);
     }
     function gone(x, scope) {
       var r = rows[x.key]; if (r) r.el.classList.add('ck-gone');
@@ -12321,6 +12712,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
       var pcl = e.target.closest('[data-pclose]'); if (pcl) { var xq = find(pcl.closest('.ck-m').getAttribute('data-key')); if (xq && o.onPollClose) Promise.resolve(o.onPollClose(xq)).then(function () { info('Votación cerrada.'); }, function (e2) { err(String(e2 && e2.message || 'No se pudo cerrar.')); }); return; }
       var im = e.target.closest('.ck-img'); if (im) { lightbox(im.getAttribute('data-id'), im.getAttribute('data-local')); return; }
       var vb = e.target.closest('.ck-vid'); if (vb) { stopAudio(); videoBox(vb.getAttribute('data-id'), vb.getAttribute('data-local'), mediaURL, err); return; }
+      var dc = e.target.closest('.ck-doc'); if (dc) { var did = dc.getAttribute('data-doc'), dm = msgs.filter(function (m) { return m.doc && m.doc.id === did; })[0]; if (dm) openDoc(dm.doc); return; }
       var cb = e.target.closest('.ck-cbtn'); if (cb) { var xc = find(cb.closest('.ck-m').getAttribute('data-key')); if (xc && xc.card) printCard(xc.card, o.cardFoot); return; }
       var q = e.target.closest('.ck-q'); if (q) { var t = rows[q.getAttribute('data-to')]; if (t) { t.el.scrollIntoView({ behavior: 'smooth', block: 'center' }); t.el.classList.remove('ck-hl'); void t.el.offsetWidth; t.el.classList.add('ck-hl'); } return; }
       var ab = e.target.closest('[data-act]'); if (ab) { var x0 = find(ab.closest('.ck-m').getAttribute('data-key')), it = x0 && actionsFor(x0).filter(function (a) { return a.k === ab.getAttribute('data-act'); })[0]; if (it) it.run(); ab.closest('.ck-m').classList.remove('ck-sel'); return; }
@@ -12341,17 +12733,18 @@ ACTIONS['drive-setup'] = () => driveDialog();
       });
       return out;
     }
-    function sigOf(d) { var x = d.x; return d.day ? d.day : [x.id, x.t, x.f || '', d.f, d.l, x.pend ? 1 : 0, x.fail ? 1 : 0, x.img ? x.img.id : '', x.aud ? (x.aud.id || 'l') : '', x.vid ? (x.vid.id || 'l') : '', x.card ? JSON.stringify(x.card).length : '', x.fw ? 1 : 0, x.re ? x.re.id : '', x.local ? 1 : 0, x.name || '', locked ? 1 : 0, gen, x.poll ? JSON.stringify(x.poll) + JSON.stringify(x.vt || {}) + (pollTick || '') : '', unr && unr.key === x.key ? 'u' + unr.n : ''].join('|'); }
+    function sigOf(d) { var x = d.x; return d.day ? d.day : [x.id, x.t, x.f || '', d.f, d.l, x.pend ? 1 : 0, x.fail ? 1 : 0, x.img ? x.img.id : '', x.aud ? (x.aud.id || 'l') : '', x.vid ? (x.vid.id || 'l') : '', x.doc ? (x.doc.id || 'l') : '', x.card ? JSON.stringify(x.card).length : '', x.fw ? 1 : 0, x.re ? x.re.id : '', x.local ? 1 : 0, x.name || '', locked ? 1 : 0, gen, x.poll ? JSON.stringify(x.poll) + JSON.stringify(x.vt || {}) + (pollTick || '') : '', unr && unr.key === x.key ? 'u' + unr.n : ''].join('|'); }
     function build(d, isNew) {
       var w = document.createElement('div');
       if (d.day) { w.className = 'ck-day'; w.textContent = d.day; return w; }
       var x = d.x, own = mine(x), grp = o.group && !own;
-      var cor = /^Corrección de «/.test(x.t || ''), big = !x.img && !x.local && !x.aud && !x.vid && !x.card && !x.re && onlyEmoji(x.t);
+      var cor = /^Corrección de «/.test(x.t || ''), big = !x.img && !x.local && !x.aud && !x.vid && !x.doc && !x.card && !x.re && onlyEmoji(x.t);
       var vid = x.vid ? '<button type="button" class="ck-vid" data-id="' + esc(x.vid.id || '') + '" data-local="' + esc(x.vid.local || '') + '">' + (x.vid.thl || x.vid.th ? '<img alt="Video" src="' + esc(x.vid.thl || thumb(x.vid.th, 640)) + '" onload="this.classList.add(\'ld\')"' + (x.vid.w ? ' width="' + x.vid.w + '" height="' + x.vid.h + '"' : '') + '>' : '<span style="display:block;height:150px"></span>') + '<span class="ck-vp">' + I.play + '</span><span class="ck-vd">' + I.vid + fmt(x.vid.d || 0) + '</span></button>' : '';
       var card = x.card ? '<div class="ck-card"><div class="ck-ch"><i>📢</i><div><small>' + esc(x.card.kind || 'Exposición') + '</small><b>' + esc(x.card.title || 'Anuncio') + '</b></div></div><div class="ck-cb">' + cardHTML(x.card) + '</div><button type="button" class="ck-cbtn">' + I.print + 'Ver y guardar en PDF</button></div>' : '';
       var fw = x.fw ? '<div class="ck-fw">' + I.fwd + 'Reenviado</div>' : '';
       var img = x.img && x.img.id ? '<button type="button" class="ck-img" data-id="' + esc(x.img.id) + '"><img alt="Imagen" src="' + esc(thumb(x.img.id)) + '"' + (x.img.w ? ' width="' + x.img.w + '" height="' + x.img.h + '"' : '') + ' onerror="this.parentNode.outerHTML=\'<small>Imagen no disponible</small>\'"></button>' : x.local ? '<button type="button" class="ck-img" data-local="' + esc(x.local) + '"><img class="ld" alt="Imagen" src="' + esc(x.local) + '"></button>' : '';
       var aud = x.aud ? audHTML({ id: x.aud.id || '', local: x.aud.local || '', d: x.aud.d || 0, w: x.aud.w || '' }) : '';
+      var docH = x.doc ? docHTML(x.doc) : '';
       var q = x.re ? '<button type="button" class="ck-q" data-to="' + esc(keyOfId(x.re.id)) + '"><b>' + esc(x.re.n || '') + '</b><span>' + esc(x.re.t || '') + '</span></button>' : '';
       var st = own ? (x.fail ? I.retry : x.pend ? I.clock : I.check) : '';
       var col = colorOf(x.uid || x.from), nm = grp && d.f ? '<div class="ck-nm" style="color:' + (x.from === 't' ? 'var(--ck-acc)' : col) + '">' + '<span>' + esc(x.name || (x.from === 't' ? 'Docente' : 'Estudiante')) + '</span>' + (x.from === 't' ? '<span class="ck-tag">Docente</span>' : '') + '</div>' : '';
@@ -12359,7 +12752,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
       w.className = 'ck-m ' + (own ? 'ck-me' : 'ck-th') + (d.f ? ' ck-first' : '') + (d.l ? ' ck-last' : '') + (isNew ? ' ck-new' : '') + (x.pend ? ' ck-pend' : '') + (x.fail ? ' ck-fail' : '');
       w.setAttribute('data-key', x.key);
       w.innerHTML = (unr && unr.key === x.key ? '<div class="ck-unr"><span>' + unr.n + (unr.n === 1 ? ' mensaje no leído' : ' mensajes no leídos') + '</span></div>' : '') + (o.group && !own ? '<span class="ck-ga" style="background:' + (x.from === 't' ? 'var(--ck-acc)' : col) + '">' + esc(initials(x.name || (x.from === 't' ? 'Docente' : '?'))) + '</span>' : '') +
-        '<div class="ck-b' + (cor ? ' cor' : '') + (big ? ' ck-big' : '') + (card ? ' ck-hascard' : '') + '">' + nm + fw + (cor ? '<div class="ck-cor">' + I.award + 'Corrección</div>' : '') + q + card + img + vid + aud + (x.poll ? pollHTML(x) : '') + (x.t ? '<div class="ck-t">' + richText(x.t) + '</div>' : '') +
+        '<div class="ck-b' + (cor ? ' cor' : '') + (big ? ' ck-big' : '') + (card ? ' ck-hascard' : '') + '">' + nm + fw + (cor ? '<div class="ck-cor">' + I.award + 'Corrección</div>' : '') + q + card + img + vid + aud + docH + (x.poll ? pollHTML(x) : '') + (x.t ? '<div class="ck-t">' + richText(x.t) + '</div>' : '') +
         '<div class="ck-time">' + (x.fail ? 'No se envió · toca para reintentar' : esc(hm(x.at))) + st + '</div></div>' +
         (!touch && acts.length ? '<div class="ck-acts">' + acts.map(function (a) { return '<button type="button" data-act="' + a.k + '" title="' + esc(a.label) + '"' + (a.del ? ' class="del"' : '') + '>' + a.icon + '</button>'; }).join('') + '</div>' : '');
       return w;
@@ -12508,7 +12901,7 @@ ACTIONS['drive-setup'] = () => driveDialog();
     function openGallery() {
       var g = document.createElement('div'); g.className = 'ck-gal';
       g.innerHTML = '<div class="ck-gh"><button type="button" class="ck-ib" data-gx aria-label="Volver">' + I.reply + '</button><b>Buscar y archivos</b></div><label class="ck-gs">' + I.search + '<input type="search" placeholder="Buscar mensajes, nombres o enlaces…" aria-label="Buscar en el chat"></label>' +
-        '<div class="ck-gt" role="tablist">' + [['all', 'Mensajes'], ['media', 'Fotos y videos'], ['aud', 'Notas de voz'], ['link', 'Enlaces'], ['poll', 'Encuestas']].map(function (t, i) { return '<button type="button" data-gtab="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</button>'; }).join('') + '</div><div class="ck-gb"><div class="ck-ge"><span class="ck-spin"></span><br>Cargando…</div></div>';
+        '<div class="ck-gt" role="tablist">' + [['all', 'Mensajes'], ['media', 'Fotos y videos'], ['doc', 'Documentos'], ['aud', 'Notas de voz'], ['link', 'Enlaces'], ['poll', 'Encuestas']].map(function (t, i) { return '<button type="button" data-gtab="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</button>'; }).join('') + '</div><div class="ck-gb"><div class="ck-ge"><span class="ck-spin"></span><br>Cargando…</div></div>';
       el.appendChild(g);
       var inp = g.querySelector('input'), body = g.querySelector('.ck-gb'), tab = 'all', ALL = null;
       g.querySelector('[data-gx]').onclick = function () { g.remove(); };
@@ -12527,19 +12920,21 @@ ACTIONS['drive-setup'] = () => driveDialog();
       function paintG() {
         if (!ALL) return; var q = fold(inp.value.trim()), L = ALL.filter(function (x) { return !q || fold(plain(x.t) + ' ' + who(x) + ' ' + (x.poll ? x.poll.q + ' ' + (x.poll.o || []).join(' ') : '') + ' ' + (x.card ? x.card.title || '' : '')).indexOf(q) >= 0; }), h = '';
         if (tab === 'media') { var M = L.filter(function (x) { return (x.img && x.img.id) || (x.vid && x.vid.id); }); h = M.length ? '<div class="ck-gg">' + M.map(function (x) { var v = x.vid, id = v ? v.th : x.img.id; return '<button type="button" data-gm="' + esc(x.id) + '" title="' + esc(who(x) + ' · ' + day(x)) + '">' + (id ? '<img loading="lazy" alt="" src="' + esc(thumb(id, 300)) + '">' : '') + (v ? '<span class="ck-gv">' + I.vid + fmt(v.d || 0) + '</span>' : '') + '</button>'; }).join('') + '</div>' : ''; }
+        else if (tab === 'doc') { h = L.filter(function (x) { return x.doc && x.doc.id; }).map(function (x) { var k = docKind(x.doc); return '<button type="button" class="ck-gr" data-gdoc="' + esc(x.id) + '"><i style="color:' + k[1] + '">' + I.fdoc + '</i><div><b>' + esc(x.doc.n || 'Archivo') + ' <small>· ' + esc(day(x)) + '</small></b><span>' + esc(who(x)) + ' · ' + esc(k[0]) + ' · ' + sizeOf(x.doc.sz) + '</span></div></button>'; }).join(''); }
         else if (tab === 'aud') { h = L.filter(function (x) { return x.aud; }).map(function (x) { return row2(x, I.mic, who(x), 'Nota de voz · ' + fmt(x.aud.d || 0)); }).join(''); }
         else if (tab === 'link') { var K = []; L.forEach(function (x) { (String(x.t || '').match(/https?:\/\/[^\s<]+/g) || []).forEach(function (u) { K.push({ x: x, u: u.replace(/[.,;:)]+$/, '') }); }); });
           h = K.map(function (k) { return '<div class="ck-gr" style="cursor:default"><i>' + I.link + '</i><div><b>' + esc(who(k.x)) + ' <small>· ' + esc(day(k.x)) + '</small></b><span><a href="' + esc(k.u) + '" target="_blank" rel="noopener noreferrer">' + esc(k.u) + '</a></span><small><button type="button" class="ck-gjump" data-gid="' + esc(k.x.id) + '" style="border:0;background:none;color:var(--ck-acc);font:600 12px Inter,system-ui,sans-serif;cursor:pointer;padding:2px 0">Ver en el chat</button></small></div></div>'; }).join(''); }
         else if (tab === 'poll') { h = L.filter(function (x) { return x.poll; }).map(function (x) { return row2(x, I.poll, who(x), esc(x.poll.q)); }).join(''); }
         else { var T = L.filter(function (x) { return x.t || x.card || x.poll; }).slice(0, 300); h = q || T.length ? T.map(function (x) { return row2(x, x.poll ? I.poll : x.card ? I.print : I.chat, who(x), x.poll ? esc(x.poll.q) : x.card ? esc(x.card.title || 'Anuncio') : hl(plain(x.t), q)); }).join('') : ''; }
-        body.innerHTML = h || '<div class="ck-ge">' + (tab === 'media' ? I.img : tab === 'aud' ? I.mic : tab === 'link' ? I.link : tab === 'poll' ? I.poll : I.search) + (q ? 'Nada coincide con «' + esc(inp.value.trim()) + '».' : { media: 'Todavía no hay fotos ni videos.', aud: 'Todavía no hay notas de voz.', link: 'Todavía no hay enlaces.', poll: 'Todavía no hay encuestas.', all: 'Todavía no hay mensajes.' }[tab]) + '</div>';
+        body.innerHTML = h || '<div class="ck-ge">' + (tab === 'media' ? I.img : tab === 'doc' ? I.fdoc : tab === 'aud' ? I.mic : tab === 'link' ? I.link : tab === 'poll' ? I.poll : I.search) + (q ? 'Nada coincide con «' + esc(inp.value.trim()) + '».' : { media: 'Todavía no hay fotos ni videos.', doc: 'Todavía no hay documentos.', aud: 'Todavía no hay notas de voz.', link: 'Todavía no hay enlaces.', poll: 'Todavía no hay encuestas.', all: 'Todavía no hay mensajes.' }[tab]) + '</div>';
+        body.querySelectorAll('[data-gdoc]').forEach(function (b) { b.onclick = function () { var x = ALL.filter(function (m) { return m.id === b.getAttribute('data-gdoc'); })[0]; if (x) openDoc(x.doc); }; });
         body.querySelectorAll('[data-gid]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-gid'); g.remove(); jumpTo(id); }; });
         body.querySelectorAll('[data-gm]').forEach(function (b) { b.onclick = function () { var x = ALL.filter(function (m) { return m.id === b.getAttribute('data-gm'); })[0]; if (!x) return; if (x.vid) videoBox(x.vid.id, '', mediaURL, err); else lightbox(x.img.id); }; });
       }
     }
     var api = {
       set: function (L) {
-        var real = (L || []).map(function (x, i) { var id = x.id || ('m' + i); return { id: id, key: id, from: x.from, uid: x.uid || '', name: x.name || '', t: x.t || '', at: msOf(x.at) || Date.now(), img: x.img || null, aud: x.aud || null, vid: x.vid || null, card: x.card || null, fw: x.fw || 0, re: x.re || null, poll: x.poll || null, vt: x.vt || null, _raw: x }; });
+        var real = (L || []).map(function (x, i) { var id = x.id || ('m' + i); return { id: id, key: id, from: x.from, uid: x.uid || '', name: x.name || '', t: x.t || '', at: msOf(x.at) || Date.now(), img: x.img || null, aud: x.aud || null, vid: x.vid || null, doc: x.doc || null, card: x.card || null, fw: x.fw || 0, re: x.re || null, poll: x.poll || null, vt: x.vt || null, _raw: x }; });
         var temps = msgs.filter(function (x) { return String(x.id).indexOf('tmp') === 0; });
         temps.forEach(function (tp) {
           var r = real.filter(function (r) { return mine(r) && r.t === tp.t && Math.abs(r.at - tp.at) < 180000 && !!r.img === !!tp.local && !!r.aud === !!tp.aud && !!r.vid === !!tp.vid && !r._m; })[0];
@@ -12602,7 +12997,7 @@ function chatNameOfUid(m, uid) { const s = m && m.portal ? chatStudentOf(m, uid)
 function chatStudentOf(m, uid) { const sid = Object.keys(m.portal.accts || {}).find(k => m.portal.accts[k].uid === uid); return sid ? findStu(m, sid) : null; }
 
 /* ---------- Conversación por páginas: en vivo los últimos 50, los anteriores solo si se piden ---------- */
-const CHAT_PAGE = 50;
+const CHAT_PAGE = 40;
 function chatPager(col, onData) {
   const P = { live: [], old: [], more: false, un: null };
   P.all = () => { const ids = new Set(P.live.map(x => x.id)); return P.old.filter(x => !ids.has(x.id)).concat(P.live); };
@@ -12622,7 +13017,7 @@ function chatPager(col, onData) {
 /* ---------- Permisos, ocultar «para mí», vaciar y borrar «para todos» ---------- */
 const CHAT_PERMS = [
   ['txt', 'Escribir mensajes', 'Texto, enlaces y emojis'], ['img', 'Enviar fotos', 'También pegar una imagen'], ['vid', 'Enviar videos', 'Hasta 20 MB'],
-  ['aud', 'Enviar notas de voz', ''], ['fwd', 'Reenviar mensajes', 'A su chat contigo o a sus grupos'], ['del', 'Borrar sus mensajes para todos', 'Solo durante la primera hora'], ['clr', 'Vaciar su chat', 'Lo limpia solo en su pantalla; tú lo sigues viendo']
+  ['aud', 'Enviar notas de voz', ''], ['doc', 'Enviar documentos', 'PDF, Word, Excel, PowerPoint, ZIP… hasta 10 MB'], ['fwd', 'Reenviar mensajes', 'A su chat contigo o a sus grupos'], ['del', 'Borrar sus mensajes para todos', 'Solo durante la primera hora'], ['clr', 'Vaciar su chat', 'Lo limpia solo en su pantalla; tú lo sigues viendo']
 ];
 function chatPerm(p) { const o = {}; CHAT_PERMS.forEach(([k]) => { o[k] = !p || p[k] !== false; }); return o; }
 function chatFs(pid) { return firebase.firestore().collection('portal').doc(pid); }
@@ -12634,7 +13029,7 @@ function chatHidWatch(pid) {
 function chatHidden(pid, key, x) { const H = Chat.hid[pid] || {}; return (H.x || []).includes(x.id) || (!!(H.c && H.c[key]) && chatMs(x.at) <= chatMs(H.c[key])); }
 function chatHide(pid, id) { return withTimeout(chatFs(pid).collection('h').doc(Cloud.user.uid).set({ x: firebase.firestore.FieldValue.arrayUnion(id) }, { merge: true }), 15000); }
 function chatClearMine(pid, key) { return withTimeout(chatFs(pid).collection('h').doc(Cloud.user.uid).set({ c: { [key]: firebase.firestore.FieldValue.serverTimestamp() } }, { merge: true }), 15000); }
-function chatMediaIds(x) { return [x.img && x.img.id, x.aud && x.aud.id, x.vid && x.vid.id, x.vid && x.vid.th].filter(Boolean); }
+function chatMediaIds(x) { return [x.img && x.img.id, x.aud && x.aud.id, x.vid && x.vid.id, x.vid && x.vid.th, x.doc && x.doc.id].filter(Boolean); }
 /** Manda a la papelera de tu Drive las fotos, videos y notas de voz que ya nadie verá. */
 function chatTrash(ids) {
   const L = [...new Set(ids)].filter(Boolean); if (!L.length || !driveUrl()) return Promise.resolve(0);
@@ -12686,7 +13081,8 @@ function chatTargets(m, pid, skip) {
 async function chatFwdDoc(x, base, pid) {
   const r = x._raw || x, d = Object.assign({ t: String(r.t || '').slice(0, 1000), fw: 1 }, base);
   const cp = async id => (await driveCall('ccopy', { pid, id }, 90000)).id;
-  if ((r.img || r.aud || r.vid) && !driveUrl()) throw new Error('Para reenviar fotos, videos o audios conecta tu Drive en Ajustes.');
+  if ((r.img || r.aud || r.vid || r.doc) && !driveUrl()) throw new Error('Para reenviar fotos, videos, audios o documentos conecta tu Drive en Ajustes.');
+  if (r.doc) d.doc = Object.assign({}, r.doc, { id: await cp(r.doc.id) });
   if (r.img) d.img = Object.assign({}, r.img, { id: await cp(r.img.id) });
   if (r.aud) d.aud = Object.assign({}, r.aud, { id: await cp(r.aud.id) });
   if (r.vid) d.vid = Object.assign({}, r.vid, { id: await cp(r.vid.id) }, r.vid.th ? { th: await cp(r.vid.th) } : {});
@@ -12787,7 +13183,7 @@ function chatOpen(uid) {
     emptyTitle: 'Todavía no hay mensajes', emptyText: 'Escríbele el primero, o mándale la corrección de una práctica.',
     onDraft: t => { Chat.draft = t; },
     onError: t => toast(t, 'error', 4500),
-    upload: driveUrl() ? true : null,
+    upload: driveUrl() ? true : null, docs: true,
     tools: [{ label: 'Enviar una corrección', icon: AI.check, onClick: () => chatCorrections(m, s) }],
     onSend: pl => chatSend(pl), onInfo: t => toast(t, 'ok'),
     delOpts: () => ({ me: true, all: true }),
@@ -12862,6 +13258,10 @@ async function chatDoc(pl, pid, base) {
     const v = pl.video, th = v.thumb ? (await driveCall('cimg', { pid, data: await blobB64(v.thumb.blob), ty: 'image/jpeg' }, 90000)).id : '';
     const j = await driveCall('cmed', { pid, data: await blobB64(v.blob), ty: String(v.ty || 'video/mp4').split(';')[0] }, 240000);
     doc.vid = { id: j.id, th, d: v.d || 0, w: (v.thumb && v.thumb.w) || 0, h: (v.thumb && v.thumb.h) || 0 };
+  }
+  if (pl.doc) {
+    const d = pl.doc, j = await driveCall('cdoc', { pid, data: await blobB64(d.blob), ty: d.ty || '', nm: d.n }, 240000);
+    doc.doc = { id: j.id, n: String(d.n || 'archivo').slice(0, 120), sz: +d.sz || 0, ty: String(d.ty || '').slice(0, 100), ext: String(d.ext || '').slice(0, 8) };
   }
   if (pl.re && pl.re.id) doc.re = { id: String(pl.re.id).slice(0, 60), t: String(pl.re.t || '').slice(0, 120), n: String(pl.re.n || '').slice(0, 80) };
   return doc;
@@ -13071,7 +13471,7 @@ function grpMount(m) {
     me: 't', group: true, mine: x => x.from === 't', title: c.team ? c.name : `Grupo · ${modShort(m)} ${m.course || ''}`, subtitle: '', avatar: c.team ? grpInit(c.name) : (chatInitials(modShort(m) + ' ' + (m.course || '')) || 'G'),
     placeholder: c.team ? `Escribe a ${c.name}…` : 'Escribe al grupo…', myName: tname, myUid: Cloud.user.uid, teacherName: tname, cardFoot: `${modShort(m)} ${m.course || ''} · Praxis Pro`,
     emptyTitle: c.team ? 'El grupo de exposición está listo' : 'El grupo está listo', emptyText: c.team ? 'Mándales su anuncio con el botón «📢 Anuncio» o escribe el primer mensaje.' : 'Escribe el primer mensaje: preséntalo y recuerda las normas.',
-    upload: driveUrl() ? true : null, getMedia: id => chatMedia(id, pid), onError: t => toast(t, 'error', 4500), onInfo: t => toast(t, 'ok'),
+    upload: driveUrl() ? true : null, docs: true, getMedia: id => chatMedia(id, pid), onError: t => toast(t, 'error', 4500), onInfo: t => toast(t, 'ok'),
     delOpts: () => ({ me: true, all: true }),
     onDelete: (x, sc) => sc === 'me' ? chatHide(pid, x.id) : chatDelAll(col, x).then(() => { if (Grp.pager) Grp.pager.drop(x.id); }),
     onMore: () => Grp.pager ? Grp.pager.loadMore() : false,
@@ -13309,7 +13709,7 @@ function pushCardHTML(m) {
     <p class="muted small">Con esto, a tus estudiantes les llegan tus mensajes, avisos, documentos, prácticas nuevas y notas <b>aunque tengan Mi aula cerrada</b>, y a ti los mensajes de ellos.</p>
     <ul class="push-st">
       ${ok(!!pushVapid(), 'Clave de notificaciones web de Firebase')}
-      ${st ? ok(st.v >= 7, st.v >= 7 ? 'Script de Drive actualizado (v' + st.v + ')' : st.v >= 5 ? 'Script de Drive v' + st.v + ': actualízalo a la v7 para avisos de grupos, entregas y notas (Ajustes › Drive › Copiar código, y «Nueva versión»)' : 'Script de Drive: falta la versión 7 (Ajustes › Drive › Copiar código, y «Nueva versión»)', st.v >= 5 && st.v < 7) : ok(false, 'Script de Drive: sin comprobar', 1)}
+      ${st ? ok(st.v >= 8, st.v >= 8 ? 'Script de Drive actualizado (v' + st.v + ')' : st.v >= 5 ? 'Script de Drive v' + st.v + ': actualízalo a la v8 para documentos en el chat y avisos antes de cada clase (Ajustes › Drive › Copiar código, y «Nueva versión»)' : 'Script de Drive: falta la versión 8 (Ajustes › Drive › Copiar código, y «Nueva versión»)', st.v >= 5 && st.v < 8) : ok(false, 'Script de Drive: sin comprobar', 1)}
       ${st && st.v >= 5 ? ok(st.sa, st.sa ? 'Cuenta de servicio conectada' : 'Falta la cuenta de servicio en el script (ver pasos en Ajustes › Drive)') : ''}
       ${st && st.v >= 5 ? ok(st.trig, st.trig ? 'Recordatorios automáticos activos (cada hora)' : 'Recordatorios: en Apps Script ejecuta una vez «activarRecordatorios»', !st.trig) : ''}
       ${ok(!!Push.tok, Push.tok ? 'Este equipo recibe los mensajes de tus estudiantes' : perm === 'denied' ? 'Este navegador tiene bloqueados los avisos' : 'Este equipo todavía no recibe avisos', !Push.tok)}
@@ -13320,6 +13720,7 @@ function pushCardHTML(m) {
 }
 function pushBind() {
   const m = curMod(), q = id => document.getElementById(id); if (!q('pushCard') || !m || !m.portal) return;
+  const cal = q('ptCal'); if (cal) cal.onchange = e => { m.portal.cal = e.target.checked; persist(); toast(e.target.checked ? 'Tus estudiantes verán el calendario y el horario en Mi aula.' : 'Mi aula ya no muestra el calendario ni el horario.', 'ok', 3200); };
   q('pushRem').onchange = e => { m.portal.rem = e.target.checked; persist(); toast(e.target.checked ? 'Recordatorios activados.' : 'Recordatorios desactivados.', 'ok'); };
   q('pushNotas').onchange = e => { m.portal.pushNotas = e.target.checked; persist(); };
   q('pushChk').onclick = () => { q('pushChk').disabled = true; pushCheck(); };
@@ -13702,7 +14103,11 @@ function trayAdd(ev, quiet) {
   else if (typeof playNotifSound === 'function') try { playNotifSound(); } catch (e) { }
 }
 function trayUnread() { if (!Tray.loaded) trayLoad(); return Tray.items.filter(x => !x.read).length; }
-function trayBadges() { const n = trayUnread(); document.querySelectorAll('[data-tray-n]').forEach(el => { el.textContent = n > 99 ? '99+' : n; el.hidden = !n; }); const b = document.querySelector('.nav-bell'); if (b) b.classList.toggle('ring', !!n); }
+function trayBadges() {
+  const n = trayUnread(), up = n > (Tray.lastN || 0); Tray.lastN = n;
+  document.querySelectorAll('[data-tray-n]').forEach(el => { const t = n > 99 ? '99+' : String(n); if (el.textContent !== t) { el.textContent = t; if (up) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); } } el.hidden = !n; el.classList.toggle('wide', n > 9); });
+  const b = document.querySelector('.nav-bell'); if (b) { b.classList.toggle('has', !!n); if (up) { b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring'); } else if (!n) b.classList.remove('ring'); b.setAttribute('aria-label', n ? `Notificaciones: ${n} sin leer` : 'Notificaciones'); }
+}
 /** Al abrir una conversación o grupo, sus avisos quedan leídos. */
 function trayReadGo(go) { if (!Tray.loaded) trayLoad(); let ch = 0; Tray.items.forEach(x => { if (!x.read && x.go === go) { x.read = true; ch = 1; } }); if (ch) { traySave(); trayBadges(); trayDraw(); } }
 /* ---------- Grupos: no leídos y avisos ---------- */
@@ -13809,16 +14214,20 @@ function trayGo(go) {
 /* ---------- El panel ---------- */
 function trayAgo(ms) { const s = Math.round((Date.now() - ms) / 1000); if (s < 60) return 'ahora'; if (s < 3600) return Math.floor(s / 60) + ' min'; if (s < 86400) return Math.floor(s / 3600) + ' h'; return new Date(ms).toLocaleDateString('es-DO', { day: 'numeric', month: 'short' }); }
 function trayDay(ms) { const d = new Date(ms), t = new Date(), y = new Date(); y.setDate(t.getDate() - 1); return d.toDateString() === t.toDateString() ? 'Hoy' : d.toDateString() === y.toDateString() ? 'Ayer' : cap(d.toLocaleDateString('es-DO', { weekday: 'long', day: 'numeric', month: 'long' })); }
+/** Iniciales para el avatar de quien escribe (dos letras). */
+function trayIni(t) { const w = String(t || '').replace(/^Nº\s*\d+\s*·\s*/, '').split(/\s+/).filter(x => /^[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(x)); return ((w[0] || '?')[0] + (w[1] ? w[1][0] : '')).toUpperCase(); }
+function trayHue(t) { let h = 0; String(t || '').split('').forEach(c => { h = (h * 31 + c.charCodeAt(0)) % 360; }); return h; }
 function trayListHTML() {
   const f = Tray.filter, L = Tray.items.filter(x => f === 'all' || (f === 'un' ? !x.read : x.k === f));
-  if (!L.length) return `<div class="tray-empty"><span>${AI.bell}</span><b>${f === 'un' ? 'Todo al día' : 'No hay avisos'}</b><small>${f === 'all' ? 'Aquí te llegan los mensajes, las entregas y los recordatorios.' : 'No hay avisos de este tipo.'}</small></div>`;
-  let day = '', h = '';
+  if (!L.length) return `<div class="tray-empty"><span class="tray-em">${AI.bell}<i></i></span><b>${f === 'un' ? '¡Todo al día!' : 'No hay avisos'}</b><small>${f === 'all' ? 'Aquí te llegan los mensajes de tus estudiantes, las entregas, los reportes y tus recordatorios.' : f === 'un' ? 'Leíste todos tus avisos.' : 'No hay avisos de este tipo.'}</small></div>`;
+  let day = '', h = '', i = 0;
   L.slice(0, 120).forEach(x => {
     const d = trayDay(x.at); if (d !== day) { day = d; h += `<div class="tray-day">${esc(d)}</div>`; }
-    const k = TRAY_K[x.k] || TRAY_K.msg;
-    h += `<div class="tray-it${x.read ? '' : ' un'}" data-tid="${esc(x.id)}" role="button" tabindex="0"><span class="tray-ic" style="--c:${k[2]}">${AI[k[1]] || ''}</span>
-      <div class="tray-tx"><b>${esc(x.k === 'msg' ? x.t : x.t)}</b><span>${esc(String(x.b || '').slice(0, 160))}</span><small>${x.k === 'msg' ? 'Mensaje privado · ' : ''}${esc(x.sub || '')}${x.sub ? ' · ' : ''}${esc(trayAgo(x.at))}</small></div>
-      <button type="button" class="tray-x" data-tx="${esc(x.id)}" title="Quitar" aria-label="Quitar este aviso">${AI.x || '×'}</button></div>`;
+    const k = TRAY_K[x.k] || TRAY_K.msg, who = x.k === 'msg' || (x.k === 'ent' && /·/.test(x.t));
+    const ic = who ? `<span class="tray-av" style="--h:${trayHue(x.t)}">${esc(trayIni(x.k === 'ent' ? x.t.split('·').slice(1).join(' ').replace(/ entregó| terminó/, '') : x.t))}<i style="--c:${k[2]}">${AI[k[1]] || ''}</i></span>` : `<span class="tray-ic" style="--c:${k[2]}">${AI[k[1]] || ''}</span>`;
+    h += `<div class="tray-it${x.read ? '' : ' un'} k-${x.k}" data-tid="${esc(x.id)}" role="button" tabindex="0" style="--i:${Math.min(i++, 12)}">${ic}
+      <div class="tray-tx"><div class="tray-t"><b>${esc(x.t)}</b><time>${esc(trayAgo(x.at))}</time></div><span>${esc(String(x.b || '').slice(0, 160))}</span><small><em style="--c:${k[2]}">${x.k === 'msg' ? 'Mensaje privado' : esc(k[0].replace(/s$/, ''))}</em>${x.sub ? esc(x.sub) : ''}</small></div>
+      <div class="tray-acts">${x.read ? '' : `<button type="button" class="tray-x tray-rd" data-trd="${esc(x.id)}" title="Marcar como leído" aria-label="Marcar como leído">${AI.check}</button>`}<button type="button" class="tray-x" data-tx="${esc(x.id)}" title="Quitar" aria-label="Quitar este aviso">${AI.x || '×'}</button></div></div>`;
   });
   return h;
 }
@@ -13826,6 +14235,7 @@ function trayDraw() {
   const p = document.getElementById('trayPanel'); if (!p) return;
   const n = trayUnread(), cnt = k => Tray.items.filter(x => !x.read && (k === 'un' || x.k === k)).length;
   p.querySelector('.tray-sub').textContent = n ? `${n} sin leer` : 'Todo leído';
+  const hn = p.querySelector('.tray-hn'); if (hn) { hn.textContent = n > 99 ? '99+' : n; hn.hidden = !n; }
   p.querySelector('.tray-chips').innerHTML = [['all', 'Todo'], ['un', 'Sin leer'], ['msg', 'Mensajes'], ['grp', 'Grupos'], ['ent', 'Entregas'], ['rep', 'Reportes'], ['note', 'Recordatorios']]
     .filter(([k]) => k === 'all' || k === 'un' || Tray.items.some(x => x.k === k))
     .map(([k, l]) => { const c = k === 'all' ? 0 : cnt(k); return `<button type="button" data-tf="${k}" class="${Tray.filter === k ? 'on' : ''}">${l}${c ? `<i>${c}</i>` : ''}</button>`; }).join('');
@@ -13836,9 +14246,10 @@ function trayDraw() {
   p.querySelectorAll('[data-tf]').forEach(b => b.onclick = () => { Tray.filter = b.dataset.tf; trayDraw(); });
   p.querySelectorAll('[data-tid]').forEach(el => {
     const go = () => { const x = Tray.items.find(i => i.id === el.dataset.tid); if (!x) return; x.read = true; traySave(); trayBadges(); trayClose(); trayGo(x.go); };
-    el.onclick = e => { if (e.target.closest('[data-tx]')) return; go(); };
+    el.onclick = e => { if (e.target.closest('[data-tx],[data-trd]')) return; go(); };
     el.onkeydown = e => { if (e.key === 'Enter') go(); };
   });
+  p.querySelectorAll('[data-trd]').forEach(b => b.onclick = e => { e.stopPropagation(); const x = Tray.items.find(i => i.id === b.dataset.trd); if (!x) return; x.read = true; traySave(); trayBadges(); const row = b.closest('.tray-it'); row.classList.remove('un'); b.remove(); trayDraw(); });
   p.querySelectorAll('[data-tx]').forEach(b => b.onclick = e => { e.stopPropagation(); const i = Tray.items.findIndex(x => x.id === b.dataset.tx); if (i < 0) return; const x = Tray.items.splice(i, 1)[0]; Tray.gone = (Tray.gone || []).concat(x.id).slice(-300); if (x.rid) trayRepDone(x.rid); const row = b.closest('.tray-it'); row.classList.add('out'); traySave(); trayBadges(); setTimeout(trayDraw, 180); });
   const pr = p.querySelector('[data-tperm]'); if (pr) pr.onclick = async () => { try { await Notification.requestPermission(); } catch (e) { } if (typeof pushTeacherInit === 'function') pushTeacherInit(true); trayDraw(); };
   const tp = p.querySelector('[data-tpush]'); if (tp) tp.onclick = () => { trayClose(); const m = db.modules.find(x => x.portal && x.portal.on); if (m) { state.view = 'module'; state.modId = m.id; state.tab = 'portal'; state.portalTab = 'avisos'; render(); window.scrollTo(0, 0); } else toast('Activa primero el portal de un módulo.', 'info'); };
@@ -13848,7 +14259,7 @@ function trayOpen(btn) {
   if (document.getElementById('trayPanel')) return trayClose();
   if (!Tray.loaded) trayLoad();
   const p = document.createElement('div'); p.id = 'trayPanel'; p.className = 'tray'; p.setAttribute('role', 'dialog'); p.setAttribute('aria-label', 'Notificaciones');
-  p.innerHTML = `<div class="tray-h"><div><b>Notificaciones</b><small class="tray-sub"></small></div><button type="button" class="btn btn-ghost btn-sm" data-tall title="Marcar todo como leído">${AI.check}<span class="tray-lbl"> Leído</span></button><button type="button" class="btn btn-ghost btn-sm" data-tclr title="Quitar todos los avisos">${AI.trash}</button><button type="button" class="btn btn-ghost btn-icon btn-sm" data-tclose aria-label="Cerrar">${AI.x || '×'}</button></div>
+  p.innerHTML = `<div class="tray-h"><span class="tray-hic">${AI.bell}</span><div><b>Notificaciones <i class="tray-hn" hidden></i></b><small class="tray-sub"></small></div><button type="button" class="btn btn-ghost btn-sm" data-tall title="Marcar todo como leído">${AI.check}<span class="tray-lbl"> Leído</span></button><button type="button" class="btn btn-ghost btn-sm" data-tclr title="Quitar todos los avisos">${AI.trash}</button><button type="button" class="btn btn-ghost btn-icon btn-sm" data-tclose aria-label="Cerrar">${AI.x || '×'}</button></div>
     <div class="tray-chips"></div><div class="tray-list"></div><div class="tray-foot"></div>`;
   document.body.appendChild(p);
   if (innerWidth > 640 && btn) { const r = btn.getBoundingClientRect(); p.style.top = (r.bottom + 10) + 'px'; p.style.right = Math.max(10, innerWidth - r.right - 8) + 'px'; }
@@ -13910,7 +14321,9 @@ const NOTE_I = {
   plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>', more: '<svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg>',
   x: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>', bell: '<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0"/></svg>',
   list: '<svg viewBox="0 0 24 24"><rect x="8" y="3" width="13" height="13" rx="2"/><path d="M4 8v11a2 2 0 0 0 2 2h11"/></svg>', trash: '<svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>',
-  ul: '<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.3"/><circle cx="4.5" cy="12" r="1.3"/><circle cx="4.5" cy="18" r="1.3"/></svg>'
+  ul: '<svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.3"/><circle cx="4.5" cy="12" r="1.3"/><circle cx="4.5" cy="18" r="1.3"/></svg>',
+  b: '<svg viewBox="0 0 24 24"><path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7.5a3.5 3.5 0 0 1 0 7H7z"/></svg>', i: '<svg viewBox="0 0 24 24"><path d="M11 5h6M7 19h6M14 5l-4 14"/></svg>',
+  u: '<svg viewBox="0 0 24 24"><path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14"/></svg>', s: '<svg viewBox="0 0 24 24"><path d="M4 12h16M16 6.6A4.3 4.3 0 0 0 12 5c-2.4 0-4 1.3-4 3 0 1.4 1 2.3 2.6 2.9M14.3 13.6c1.2.6 1.9 1.4 1.9 2.6 0 1.8-1.8 3-4.3 3a5 5 0 0 1-4.6-2.4"/></svg>'
 };
 /** Dibuja (o trae al frente) la ventana de una nota. */
 function noteRender(id, focus) {
@@ -13919,10 +14332,10 @@ function noteRender(id, focus) {
   const C = NOTE_COLORS[n.color] || NOTE_COLORS.amarillo, mob = innerWidth < 700;
   if (!el) {
     el = document.createElement('div'); el.className = 'sn'; el.dataset.nid = id; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Nota');
-    el.innerHTML = `<div class="sn-h"><button type="button" class="sn-b" data-n="new" title="Nueva nota" aria-label="Nueva nota">${NOTE_I.plus}</button><span class="sn-grip"></span><button type="button" class="sn-b sn-bell" data-n="rem" title="Recordatorio" aria-label="Recordatorio">${NOTE_I.bell}</button><button type="button" class="sn-b" data-n="menu" title="Color y más" aria-label="Más opciones">${NOTE_I.more}</button><button type="button" class="sn-b" data-n="close" title="Cerrar nota (no se borra)" aria-label="Cerrar nota">${NOTE_I.x}</button></div>
+    el.innerHTML = `<span class="sn-tape" aria-hidden="true"></span><div class="sn-h"><button type="button" class="sn-b" data-n="new" title="Nueva nota" aria-label="Nueva nota">${NOTE_I.plus}</button><span class="sn-grip"></span><button type="button" class="sn-b sn-bell" data-n="rem" title="Recordatorio" aria-label="Recordatorio">${NOTE_I.bell}</button><button type="button" class="sn-b" data-n="menu" title="Color y más" aria-label="Más opciones">${NOTE_I.more}</button><button type="button" class="sn-b" data-n="close" title="Cerrar nota (no se borra)" aria-label="Cerrar nota">${NOTE_I.x}</button></div>
       <div class="sn-rem" hidden></div>
       <div class="sn-body" contenteditable="true" spellcheck="true" data-ph="Escribe una nota…"></div>
-      <div class="sn-tb"><button type="button" data-cmd="bold" title="Negrita (Ctrl+B)"><b>B</b></button><button type="button" data-cmd="italic" title="Cursiva (Ctrl+I)"><i>I</i></button><button type="button" data-cmd="underline" title="Subrayado (Ctrl+U)"><u>U</u></button><button type="button" data-cmd="strikeThrough" title="Tachado"><s>S</s></button><button type="button" data-cmd="insertUnorderedList" title="Viñetas">${NOTE_I.ul}</button><span class="sn-sp"></span><button type="button" data-n="list" title="Todas las notas">${NOTE_I.list}</button><button type="button" data-n="del" title="Eliminar nota">${NOTE_I.trash}</button></div>
+      <div class="sn-tb"><button type="button" data-cmd="bold" title="Negrita (Ctrl+B)" aria-label="Negrita">${NOTE_I.b}</button><button type="button" data-cmd="italic" title="Cursiva (Ctrl+I)" aria-label="Cursiva">${NOTE_I.i}</button><button type="button" data-cmd="underline" title="Subrayado (Ctrl+U)" aria-label="Subrayado">${NOTE_I.u}</button><button type="button" data-cmd="strikeThrough" title="Tachado (Ctrl+Shift+X)" aria-label="Tachado">${NOTE_I.s}</button><button type="button" data-cmd="insertUnorderedList" title="Viñetas">${NOTE_I.ul}</button><span class="sn-sp"></span><button type="button" data-n="list" title="Todas las notas">${NOTE_I.list}</button><button type="button" data-n="del" title="Eliminar nota">${NOTE_I.trash}</button></div>
       <span class="sn-rs" aria-hidden="true"></span>`;
     layer.appendChild(el);
     const body = el.querySelector('.sn-body'); body.innerHTML = n.html || '';
@@ -14046,9 +14459,9 @@ function noteAlert(n, at) {
 function notesListHTML(q) {
   const f = fold(q || ''), L = notesAll().filter(n => !f || fold(notePlain(n)).includes(f)).sort((a, b) => (b.upd || 0) - (a.upd || 0));
   if (!L.length) return `<div class="sn-empty">${q ? 'Ninguna nota coincide.' : '<b>Todavía no tienes notas</b><small>Anota lo que no se te puede olvidar y ponle un recordatorio.</small>'}</div>`;
-  return L.map(n => { const C = NOTE_COLORS[n.color] || NOTE_COLORS.amarillo, p = notePlain(n), r = n.rem;
-    return `<div class="sn-card" data-open="${n.id}" style="--sn-bg:${C[0]};--sn-h:${C[1]}" role="button" tabindex="0"><div class="sn-ct"><small>${esc(new Date(n.upd || n.created).toLocaleDateString('es-DO', { day: 'numeric', month: 'short' }))}${r && r.at && !r.done ? ` · <span class="sn-cr">${NOTE_I.bell}${esc(noteWhen(r.at))}</span>` : ''}</small>
-      <button type="button" class="sn-cx" data-del="${n.id}" title="Eliminar" aria-label="Eliminar nota">${NOTE_I.trash}</button></div><p>${p ? esc(p.slice(0, 220)) : '<i>Nota vacía</i>'}</p></div>`; }).join('');
+  return L.map((n, i) => { const C = NOTE_COLORS[n.color] || NOTE_COLORS.amarillo, p = notePlain(n).trim(), r = n.rem, ls = p.split('\n'), t = (ls.find(x => x.trim()) || '').trim(), rest = p.slice(p.indexOf(t) + t.length).trim();
+    return `<div class="sn-card${n.color === 'noche' ? ' dark' : ''}${n.open ? ' open' : ''}" data-open="${n.id}" style="--sn-bg:${C[0]};--sn-h:${C[1]};--i:${Math.min(i, 10)}" role="button" tabindex="0"><div class="sn-ct"><b>${t ? esc(t.slice(0, 80)) : '<i>Nota vacía</i>'}</b>
+      <button type="button" class="sn-cx" data-del="${n.id}" title="Eliminar" aria-label="Eliminar nota">${NOTE_I.trash}</button></div>${rest ? `<p>${esc(rest.slice(0, 220))}</p>` : ''}<small class="sn-cm"><span>${esc(new Date(n.upd || n.created).toLocaleDateString('es-DO', { day: 'numeric', month: 'short' }))}</span>${n.open ? '<span class="sn-co">Abierta</span>' : ''}${r && r.at && !r.done ? `<span class="sn-cr">${NOTE_I.bell}${esc(noteWhen(r.at))}</span>` : ''}</small></div>`; }).join('');
 }
 function notesListDraw() { const b = document.getElementById('snList'); if (!b) return; b.innerHTML = notesListHTML((document.getElementById('snQ') || {}).value); notesListBind(); }
 function notesListBind() {
