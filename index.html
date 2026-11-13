@@ -2626,6 +2626,7 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .pt-agenda .pt-formfoot { flex-wrap: wrap; }
 .pt-agenda .pt-formfoot .btn-primary { margin-right: auto; }
 .pt-agst { margin: .6rem 0 0; }
+.pt-item a, .pt-item > div { min-width: 0; overflow-wrap: anywhere; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -11019,7 +11020,7 @@ function portalAuthErr(e) {
 
 /* ---------- Lo que ve cada estudiante ---------- */
 /** Versión de esta app: Mi aula se actualiza sola si un estudiante la tiene abierta con una versión anterior. */
-const PRAXIS_BUILD = +'44' || 0;
+const PRAXIS_BUILD = +'45' || 0;
 function portalMeta(m) {
   const P = m.portal;
   return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1, drv: typeof driveId === 'function' ? driveId() : '', rem: P.rem !== false, tz: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })(),
@@ -11330,7 +11331,7 @@ function portalAvisosHTML(m) {
       <p class="muted small">Sube un archivo desde tu computadora (se guarda en tu Google Drive y tus estudiantes lo abren desde Mi aula) o pega el enlace de un archivo o video (http o https). Si es un enlace de Drive u OneDrive, compártelo como «Cualquier persona con el enlace puede ver».</p>
       <div class="pt-docf"><label class="field pt-full">Título<input type="text" id="pdT" maxlength="120" placeholder="Ej.: Guía RA 2 · Formularios"></label>
         <label class="field pt-full">Enlace<input type="text" id="pdU" maxlength="600" inputmode="url" spellcheck="false" placeholder="https://drive.google.com/… · http://… · www.…"></label>
-        <label class="field">Tipo<select id="pdK">${Object.entries(PORTAL_DOC_KINDS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label>
+        <label class="field">Tipo<select id="pdK"><option value="">Automático (según el archivo o enlace)</option>${Object.entries(PORTAL_DOC_KINDS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label>
         <label class="field">Resultado de aprendizaje<select id="pdR"><option value="">General (todo el módulo)</option>${raOpts}</select></label></div>
       <div class="pt-formfoot"><label class="btn btn-ghost pt-upf" title="PDF, Word, PowerPoint, Excel, imágenes… hasta 20 MB">${AI.file} Subir archivo desde mi PC<input type="file" id="pdF" hidden></label><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar enlace</button></div>
       <div class="pt-list">${P.docs.slice().reverse().map(d => `<div class="pt-item"><span class="pt-dk">${DK[d.k] || 'WEB'}</span><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.t)}</a><div><small class="muted">${esc(PORTAL_DOC_KINDS[d.k] || 'Enlace')}${d.ra ? ' · RA ' + esc(d.ra) : ' · General'} · ${esc(aulaWhen(d.at))}</small></div></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-doc-del" data-id="${d.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.folder} Todavía no hay documentos.</div>`}</div></section></div>`;
@@ -11363,6 +11364,15 @@ function portalDocKind(name) {
   const x = String(name || '').toLowerCase().split('.').pop();
   return x === 'pdf' ? 'pdf' : ['doc', 'docx', 'odt', 'rtf', 'txt'].includes(x) ? 'doc' : ['ppt', 'pptx', 'odp', 'pps', 'ppsx'].includes(x) ? 'ppt' : ['xls', 'xlsx', 'ods', 'csv'].includes(x) ? 'xls' : ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(x) ? 'video' : 'link';
 }
+/** Tipo según el enlace: video de YouTube/Vimeo, documento/presentación/hoja de Google, o la extensión del archivo. */
+function portalDocKindUrl(u) {
+  u = String(u || '').toLowerCase();
+  if (/youtube\.com|youtu\.be|vimeo\.com|tiktok\.com/.test(u)) return 'video';
+  if (/docs\.google\.com\/document/.test(u)) return 'doc';
+  if (/docs\.google\.com\/presentation|canva\.com/.test(u)) return 'ppt';
+  if (/docs\.google\.com\/spreadsheets/.test(u)) return 'xls';
+  const k = portalDocKind(u.split(/[?#]/)[0]); return k;
+}
 /** Sube un archivo de la computadora a tu Drive y lo agrega a Documentos de Mi aula. */
 async function portalDocUpload(inp) {
   const f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
@@ -11374,8 +11384,8 @@ async function portalDocUpload(inp) {
   try {
     const j = await driveUploadMat(f, m);
     if (!j || !j.url) throw new Error('Drive no devolvió el enlace');
-    const t = g('pdT') || f.name.replace(/\.[^.]+$/, '');
-    m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: String(j.url).slice(0, 600), k: g('pdK') && g('pdK') !== 'link' ? g('pdK') : portalDocKind(f.name), ra: g('pdR'), at: new Date().toISOString() });
+    const t = g('pdT') || f.name.replace(/\.[^.]+$/, '').replace(/_+/g, ' ').replace(/\s+/g, ' ').trim();
+    m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: String(j.url).slice(0, 600), k: g('pdK') || portalDocKind(f.name), ra: g('pdR'), at: new Date().toISOString() });
     persist(); render(); portalSoon(500); toast('Documento subido: tus estudiantes ya lo ven en Mi aula.', 'ok', 4500);
   } catch (e) { toast('No se pudo subir: ' + (e.message || e), 'error', 6000); }
   if (lb) lb.classList.remove('busy');
@@ -11514,7 +11524,7 @@ Object.assign(ACTIONS, {
     if (portalLocalPath(g('pdU'))) { toast('Esa es una ruta de tu computadora: tus estudiantes no pueden abrirla. Usa «Subir archivo desde mi PC» y elige ese archivo.', 'warn', 7000); const f = document.getElementById('pdF'); if (f) f.click(); return; }
     if (!url) return toast('Pega un enlace válido (por ejemplo https://drive.google.com/… o www.youtube.com/…).', 'error', 5000);
     if (!t) return toast('Escribe el título.', 'error');
-    m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: url.slice(0, 600), k: g('pdK') || 'link', ra: g('pdR'), at: new Date().toISOString() });
+    m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: url.slice(0, 600), k: g('pdK') || portalDocKindUrl(url), ra: g('pdR'), at: new Date().toISOString() });
     persist(); render(); portalSoon(500); toast('Documento agregado.', 'ok');
   },
   'portal-doc-del': el => { const m = curMod(); m.portal.docs = m.portal.docs.filter(d => d.id !== el.dataset.id); persist(); render(); portalSoon(500); }
