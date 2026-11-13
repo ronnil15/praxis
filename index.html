@@ -2620,6 +2620,12 @@ input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px color-mix(in s
 .btn { transition: background .15s, border-color .15s, color .15s, transform .12s, box-shadow .2s; }
 .nav-btn:active { transform: scale(.95); }
 .nav-btn.active { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14), 0 6px 14px -8px rgba(0, 0, 0, .5); }
+/* v44: subir documentos desde la PC y estado de la agenda */
+.pt-upf { cursor: pointer; margin-right: auto; }
+.pt-upf.busy { opacity: .55; pointer-events: none; }
+.pt-agenda .pt-formfoot { flex-wrap: wrap; }
+.pt-agenda .pt-formfoot .btn-primary { margin-right: auto; }
+.pt-agst { margin: .6rem 0 0; }
 
 </style>
 <style id="pageStyle">@page { size: landscape; margin: 0; }</style>
@@ -11013,16 +11019,27 @@ function portalAuthErr(e) {
 
 /* ---------- Lo que ve cada estudiante ---------- */
 /** Versión de esta app: Mi aula se actualiza sola si un estudiante la tiene abierta con una versión anterior. */
-const PRAXIS_BUILD = +'43' || 0;
+const PRAXIS_BUILD = +'44' || 0;
 function portalMeta(m) {
   const P = m.portal;
   return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1, drv: typeof driveId === 'function' ? driveId() : '', rem: P.rem !== false, tz: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })(),
     news: P.news.slice(-30).map(n => ({ id: n.id, t: n.t, at: n.at })), docs: P.docs.map(d => ({ id: d.id, t: d.t, url: d.url, k: d.k, ra: d.ra, at: d.at })),
-    ex: portalOpenExams(m), ...portalAgendaFS(m), ...(PRAXIS_BUILD ? { pv: PRAXIS_BUILD } : {}) };
+    ex: portalOpenExams(m), ag: 1, ...(PRAXIS_BUILD ? { pv: PRAXIS_BUILD } : {}) };
 }
 /* ---------- Agenda de Mi aula: calendario y horario del curso ---------- */
 // Firestore no acepta listas dentro de listas: el calendario y el horario viajan como texto JSON
 function portalAgendaFS(m) { const A = portalAgenda(m); return { cal: A.cal ? JSON.stringify(A.cal) : null, hor: A.hor ? JSON.stringify(A.hor) : null }; }
+// Estado del último envío a Mi aula (para que el docente vea si llegó o qué falló)
+const _ptStat = {};
+function portalStat(m) { return _ptStat[m.portal && m.portal.pid] || {}; }
+function portalStatSet(m, k, v) { const pid = m.portal && m.portal.pid; if (!pid) return; (_ptStat[pid] = _ptStat[pid] || {})[k] = v; }
+/** El calendario y el horario van en su propio documento (portal/{pid}/cfg/ag): si algo falla ahí, los avisos, documentos y exámenes siguen llegando. */
+async function portalPushAgenda(m, force) {
+  const data = portalAgendaFS(m), h = aulaHash(JSON.stringify(data), 32);
+  if (!force && h === m.portal.agH) return 0;
+  await withTimeout(Cloud.fs.collection('portal').doc(m.portal.pid).collection('cfg').doc('ag').set({ ...data, upd: firebase.firestore.FieldValue.serverTimestamp() }), 15000);
+  m.portal.agH = h; return 1;
+}
 // Tipos de la agenda que se comparten solos (las reuniones y «Otro» solo si las marcas como visibles)
 const PORTAL_EV_AUTO = { 'Tarea': 1, 'Práctica': 1, 'Exposición': 1, 'Examen': 1, 'Proyecto': 1, 'Participación': 1 };
 const portalEvShared = e => e.pub === true || (e.pub !== false && !!PORTAL_EV_AUTO[e.type]);
@@ -11118,7 +11135,9 @@ function portalPayload(m, s) {
 }
 
 /* ---------- Sincronizar con la nube ---------- */
-let _portalT = null, _portalBusy = false;
+let _portalT = null, _portalBusy = false, _portalFirstDone = false;
+// Al abrir Praxis Pro (ya con la cuenta y el internet): se envía todo a Mi aula una vez, aunque no se cambie nada
+(function portalBoot() { let n = 0; const t = setInterval(() => { try { if (typeof aulaCloudOK === 'function' && aulaCloudOK() && db.modules.some(m => m.portal && m.portal.on && m.portal.pid)) { clearInterval(t); portalSoon(2500); } else if (++n > 300) clearInterval(t); } catch (e) { } }, 1000); })();
 const _portalPersist = persist;
 // Cada vez que se guarda algo (notas, Aula, ajustes), el portal se actualiza solo unos segundos después
 persist = function () { _portalPersist(); if (db.modules.some(m => m.portal && m.portal.on)) portalSoon(); };
@@ -11132,7 +11151,8 @@ async function portalSyncAll() {
   try {
     do {
       _portalAgain = false;
-      for (const m of db.modules) if (m.portal && m.portal.on && m.portal.pid) n += await portalSync(m).catch(e => { console.warn('Portal', e); return 0; });
+      const first = !_portalFirstDone; _portalFirstDone = true;
+      for (const m of db.modules) if (m.portal && m.portal.on && m.portal.pid) n += await portalSync(m, first).catch(e => { console.warn('Portal', e); return 0; });
     } while (_portalAgain && ++k < 4);
   } finally { _portalBusy = false; }
   portalClsPush().catch(() => { });
@@ -11159,7 +11179,8 @@ async function portalPushMeta(m, force) {
 }
 async function portalSync(m, force) {
   const P = m.portal; let n = 0, fails = 0;
-  try { n += await portalRetry(() => portalPushMeta(m, force)); } catch (e) { fails++; console.warn('Portal', e); }
+  try { n += await portalRetry(() => portalPushMeta(m, force)); portalStatSet(m, 'meta', ''); } catch (e) { fails++; portalStatSet(m, 'meta', aulaErr(e)); console.warn('Portal', e); }
+  try { n += await portalRetry(() => portalPushAgenda(m, force)); portalStatSet(m, 'ag', ''); portalStatSet(m, 'agAt', Date.now()); } catch (e) { fails++; portalStatSet(m, 'ag', aulaErr(e)); console.warn('Agenda de Mi aula', e); }
   const ref = Cloud.fs.collection('portal').doc(P.pid).collection('s'), FV = firebase.firestore.FieldValue;
   P.pst = P.pst || {};
   const jobs = m.students.filter(s => P.accts[s.id] && P.accts[s.id].uid);
@@ -11306,12 +11327,12 @@ function portalAvisosHTML(m) {
       <div class="pt-formfoot"><span class="muted small">Máximo 500 caracteres</span><button class="btn btn-primary" data-act="portal-news-add">${AI.arrow} Publicar aviso</button></div>
       <div class="pt-list">${P.news.slice().reverse().map(n => `<div class="pt-item"><span class="pt-dk">${AI.alert}</span><div><div style="white-space:pre-wrap">${esc(n.t)}</div><small class="muted">${esc(aulaWhen(n.at))}</small></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-news-del" data-id="${n.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.inbox} Todavía no hay avisos.</div>`}</div></section>
     <section class="card pt-sec"><h3><span class="pt-ic">${AI.folder}</span>Documentos y enlaces</h3>
-      <p class="muted small">Pega el enlace de un archivo (Google Drive, OneDrive…) o de un video. Compártelo como «Cualquier persona con el enlace puede ver».</p>
+      <p class="muted small">Sube un archivo desde tu computadora (se guarda en tu Google Drive y tus estudiantes lo abren desde Mi aula) o pega el enlace de un archivo o video (http o https). Si es un enlace de Drive u OneDrive, compártelo como «Cualquier persona con el enlace puede ver».</p>
       <div class="pt-docf"><label class="field pt-full">Título<input type="text" id="pdT" maxlength="120" placeholder="Ej.: Guía RA 2 · Formularios"></label>
-        <label class="field pt-full">Enlace<input type="url" id="pdU" maxlength="600" placeholder="https://drive.google.com/…"></label>
+        <label class="field pt-full">Enlace<input type="text" id="pdU" maxlength="600" inputmode="url" spellcheck="false" placeholder="https://drive.google.com/… · http://… · www.…"></label>
         <label class="field">Tipo<select id="pdK">${Object.entries(PORTAL_DOC_KINDS).map(([k, l]) => `<option value="${k}">${l}</option>`).join('')}</select></label>
         <label class="field">Resultado de aprendizaje<select id="pdR"><option value="">General (todo el módulo)</option>${raOpts}</select></label></div>
-      <div class="pt-formfoot"><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar documento</button></div>
+      <div class="pt-formfoot"><label class="btn btn-ghost pt-upf" title="PDF, Word, PowerPoint, Excel, imágenes… hasta 20 MB">${AI.file} Subir archivo desde mi PC<input type="file" id="pdF" hidden></label><button class="btn btn-primary" data-act="portal-doc-add">${ICON.plus} Agregar enlace</button></div>
       <div class="pt-list">${P.docs.slice().reverse().map(d => `<div class="pt-item"><span class="pt-dk">${DK[d.k] || 'WEB'}</span><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.t)}</a><div><small class="muted">${esc(PORTAL_DOC_KINDS[d.k] || 'Enlace')}${d.ra ? ' · RA ' + esc(d.ra) : ' · General'} · ${esc(aulaWhen(d.at))}</small></div></div><button class="btn btn-ghost btn-icon btn-sm" data-act="portal-doc-del" data-id="${d.id}" title="Quitar">${AI.trash}</button></div>`).join('') || `<div class="pt-empty">${AI.folder} Todavía no hay documentos.</div>`}</div></section></div>`;
 }
 
@@ -11324,8 +11345,42 @@ function portalAgendaCardHTML(m) {
     <p class="muted small">Tus estudiantes ven los feriados, los días sin clase, las fechas de clases, prácticas, exámenes y entregas de su curso, y su horario contigo: qué les toca ahora, lo siguiente y un aviso antes de cada clase (si lo activan).</p>
     <label class="gp-sw"><span><b>Compartir calendario y horario</b><small>${nEv} fecha${nEv === 1 ? '' : 's'} próxima${nEv === 1 ? '' : 's'} · ${nFer} feriado${nFer === 1 ? '' : 's'} · ${hrs ? hrs + ' hora' + (hrs === 1 ? '' : 's') + ' de clase a la semana' : 'sin horario todavía'}${mods.length > 1 ? ' · ' + mods.length + ' módulos de ' + esc(m.course) : ''}</small></span><input type="checkbox" class="gp-tg" id="ptCal" ${P.cal !== false ? 'checked' : ''}></label>
     <p class="small muted pt-agenda-how">Las fechas salen de tu <b>Calendario</b> (actividades con fecha del registro y eventos marcados «Mostrar en Mi aula»; las reuniones no se comparten) y las horas de <b>Mi horario</b>. Nada de notas ni datos de otros cursos.</p>
-    <div class="pt-formfoot"><button type="button" class="btn btn-ghost btn-sm" data-act="go-calendar">${AI.cal} Calendario</button><button type="button" class="btn btn-ghost btn-sm" data-act="go-horario">${AI.clock} Mi horario</button></div></section>`;
+    ${(() => { const st = portalStat(m); if (P.cal === false) return ''; if (st.ag) return `<div class="alert alert-bad pt-agst"><div><strong>No se pudo enviar a Mi aula.</strong> ${esc(st.ag)}</div></div>`; if (st.agAt) return `<p class="small ok-t pt-agst">${AI.check} Enviado a Mi aula a las ${new Date(st.agAt).toLocaleTimeString('es', { hour: 'numeric', minute: '2-digit' })}. Si un estudiante tenía Mi aula abierta, que la recargue.</p>`; return `<p class="small muted pt-agst">Se envía solo unos segundos después de abrir Praxis Pro y cada vez que cambias algo.</p>`; })()}
+    <div class="pt-formfoot"><button type="button" class="btn btn-primary btn-sm" data-act="portal-sync">${AI.refresh} Enviar ahora a Mi aula</button><button type="button" class="btn btn-ghost btn-sm" data-act="go-calendar">${AI.cal} Calendario</button><button type="button" class="btn btn-ghost btn-sm" data-act="go-horario">${AI.clock} Mi horario</button></div></section>`;
 }
+
+/* ---------- Documentos de Mi aula ---------- */
+/** Ruta de la computadora (C:\…, \\servidor\…, file:///…): no sirve para los estudiantes. */
+function portalLocalPath(u) { return /^(file:|[a-z]:[\\/]|\\\\|\/(users|home)\/)/i.test(String(u || '').trim()); }
+/** Acepta http y https; si falta, agrega https:// a «www.algo.com» o «algo.com/…». */
+function portalFixUrl(u) {
+  u = String(u || '').trim(); if (!u || /\s/.test(u) || portalLocalPath(u)) return '';
+  if (/^https?:\/\/[^\s/]+\.[^\s]+/i.test(u) || /^https?:\/\/localhost/i.test(u)) return u.slice(0, 600);
+  if (/^[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(u)) return ('https://' + u).slice(0, 600);
+  return '';
+}
+function portalDocKind(name) {
+  const x = String(name || '').toLowerCase().split('.').pop();
+  return x === 'pdf' ? 'pdf' : ['doc', 'docx', 'odt', 'rtf', 'txt'].includes(x) ? 'doc' : ['ppt', 'pptx', 'odp', 'pps', 'ppsx'].includes(x) ? 'ppt' : ['xls', 'xlsx', 'ods', 'csv'].includes(x) ? 'xls' : ['mp4', 'webm', 'mov', 'avi', 'mkv'].includes(x) ? 'video' : 'link';
+}
+/** Sube un archivo de la computadora a tu Drive y lo agrega a Documentos de Mi aula. */
+async function portalDocUpload(inp) {
+  const f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
+  const m = curMod(), g = id => ((document.getElementById(id) || {}).value || '').trim();
+  if (f.size > 20 * 1048576) return toast('El archivo pesa más de 20 MB. Súbelo a tu Google Drive, compártelo y pega el enlace.', 'error', 6000);
+  if (typeof driveUrl !== 'function' || !driveUrl()) return toast('Para subir archivos conecta Google Drive en Ajustes (el mismo de las prácticas con archivo).', 'error', 6000);
+  const lb = inp.closest('label'); if (lb) lb.classList.add('busy');
+  toast('Subiendo «' + f.name + '» a tu Drive…', 'info', 3000);
+  try {
+    const j = await driveUploadMat(f, m);
+    if (!j || !j.url) throw new Error('Drive no devolvió el enlace');
+    const t = g('pdT') || f.name.replace(/\.[^.]+$/, '');
+    m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: String(j.url).slice(0, 600), k: g('pdK') && g('pdK') !== 'link' ? g('pdK') : portalDocKind(f.name), ra: g('pdR'), at: new Date().toISOString() });
+    persist(); render(); portalSoon(500); toast('Documento subido: tus estudiantes ya lo ven en Mi aula.', 'ok', 4500);
+  } catch (e) { toast('No se pudo subir: ' + (e.message || e), 'error', 6000); }
+  if (lb) lb.classList.remove('busy');
+}
+document.addEventListener('change', e => { if (e.target && e.target.id === 'pdF') portalDocUpload(e.target); });
 
 /* ---------- Diálogos ---------- */
 function portalToDialog(m, id) {
@@ -11396,7 +11451,11 @@ Object.assign(ACTIONS, {
   'portal-sync': async el => {
     const m = curMod(); if (!aulaCloudOK()) return toast('Necesitas la versión web con tu cuenta e internet.', 'error');
     el.disabled = true;
-    try { const n = await portalSync(m, true); toast(n ? 'Publicado: los estudiantes ya lo ven.' : 'Todo estaba al día.', 'ok'); } catch (e) { toast(aulaErr(e), 'error', 6000); }
+    try {
+      const n = await portalSync(m, true), st = portalStat(m);
+      if (st.meta || st.ag) toast('No se pudo enviar a Mi aula: ' + (st.meta || st.ag), 'error', 7000);
+      else toast(m.portal.syncFail ? `Se envió, pero ${m.portal.syncFail} no se pudieron actualizar. Inténtalo otra vez.` : n ? 'Publicado: los estudiantes ya lo ven.' : 'Todo estaba al día.', m.portal.syncFail ? 'warn' : 'ok', 4500);
+    } catch (e) { toast(aulaErr(e), 'error', 6000); }
     el.disabled = false; render();
   },
   'portal-preview': () => portalPreview(curMod()),
@@ -11451,9 +11510,10 @@ Object.assign(ACTIONS, {
   'portal-news-del': el => { const m = curMod(); m.portal.news = m.portal.news.filter(n => n.id !== el.dataset.id); persist(); render(); portalSoon(500); },
   'portal-doc-add': () => {
     const m = curMod(), g = id => (document.getElementById(id).value || '').trim();
-    const t = g('pdT'), url = g('pdU');
+    const t = g('pdT'), url = portalFixUrl(g('pdU'));
+    if (portalLocalPath(g('pdU'))) { toast('Esa es una ruta de tu computadora: tus estudiantes no pueden abrirla. Usa «Subir archivo desde mi PC» y elige ese archivo.', 'warn', 7000); const f = document.getElementById('pdF'); if (f) f.click(); return; }
+    if (!url) return toast('Pega un enlace válido (por ejemplo https://drive.google.com/… o www.youtube.com/…).', 'error', 5000);
     if (!t) return toast('Escribe el título.', 'error');
-    if (!/^https:\/\/\S+$/i.test(url)) return toast('Pega un enlace que empiece con https://', 'error');
     m.portal.docs.push({ id: uid(), t: t.slice(0, 120), url: url.slice(0, 600), k: g('pdK') || 'link', ra: g('pdR'), at: new Date().toISOString() });
     persist(); render(); portalSoon(500); toast('Documento agregado.', 'ok');
   },
