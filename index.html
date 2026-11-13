@@ -9616,7 +9616,7 @@ function renderAulaExam(m, ex) {
     ${cloud ? '' : `<div class="alert alert-warn"><div><strong>Para habilitarlo a los estudiantes entra en la versión web con tu cuenta</strong> (necesita internet). Aquí puedes prepararlo, exportarlo e imprimirlo.</div></div>`}
     ${AulaLive.err && AulaLive.xid === ex.id ? `<div class="alert alert-bad"><div><strong>No se pudieron leer las entregas.</strong> ${AulaLive.err.includes('permission') ? 'Falta activar las reglas del Aula en Firebase.' : 'Revisa tu conexión.'} <small class="muted">(${esc(AulaLive.err)})</small></div></div>` : ''}
     <div class="aula-kpis">
-      ${aulaDonutKPI(nums.length - pend, pend, asg.length)}
+      ${aulaDonutKPI(nums.length - pend, pend, asg.length + nums.filter(k => { const s = m.students.find(x => x.num === k); return !s || !asgIds.has(s.id); }).length)}
       <div class="kpi"><b>${avg === null ? '—' : Math.round(avg) + '%'}</b><span>Promedio</span></div>
       <div class="kpi"><b style="color:var(--${pend ? 'gold' : 'ok'})">${pend}</b><span>Por corregir</span></div>
       ${aulaIsFile(ex) ? aulaSpaceCard(ex) : aulaOutCard(m, ex)}
@@ -11013,14 +11013,16 @@ function portalAuthErr(e) {
 
 /* ---------- Lo que ve cada estudiante ---------- */
 /** Versión de esta app: Mi aula se actualiza sola si un estudiante la tiene abierta con una versión anterior. */
-const PRAXIS_BUILD = +'42' || 0;
+const PRAXIS_BUILD = +'43' || 0;
 function portalMeta(m) {
   const P = m.portal;
   return { owner: Cloud.user.uid, mod: modShort(m), modName: modFull(m), course: m.course || '', teacher: (db.settings && db.settings.teacher) || '', v: 1, drv: typeof driveId === 'function' ? driveId() : '', rem: P.rem !== false, tz: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { return ''; } })(),
     news: P.news.slice(-30).map(n => ({ id: n.id, t: n.t, at: n.at })), docs: P.docs.map(d => ({ id: d.id, t: d.t, url: d.url, k: d.k, ra: d.ra, at: d.at })),
-    ex: portalOpenExams(m), ...portalAgenda(m), ...(PRAXIS_BUILD ? { pv: PRAXIS_BUILD } : {}) };
+    ex: portalOpenExams(m), ...portalAgendaFS(m), ...(PRAXIS_BUILD ? { pv: PRAXIS_BUILD } : {}) };
 }
 /* ---------- Agenda de Mi aula: calendario y horario del curso ---------- */
+// Firestore no acepta listas dentro de listas: el calendario y el horario viajan como texto JSON
+function portalAgendaFS(m) { const A = portalAgenda(m); return { cal: A.cal ? JSON.stringify(A.cal) : null, hor: A.hor ? JSON.stringify(A.hor) : null }; }
 // Tipos de la agenda que se comparten solos (las reuniones y «Otro» solo si las marcas como visibles)
 const PORTAL_EV_AUTO = { 'Tarea': 1, 'Práctica': 1, 'Exposición': 1, 'Examen': 1, 'Proyecto': 1, 'Participación': 1 };
 const portalEvShared = e => e.pub === true || (e.pub !== false && !!PORTAL_EV_AUTO[e.type]);
